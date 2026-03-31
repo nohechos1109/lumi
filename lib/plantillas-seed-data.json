@@ -1,0 +1,4054 @@
+{
+  "products": [
+    {
+      "id": "00000000-0009-0000-0000-000000000001",
+      "name": "VENTA MOSTRADOR",
+      "description": "FAVOR DE ESCRIBIR EL SERVICIO O PRODUCTO OFERTADO",
+      "currency": "MXN",
+      "cost_base": 0,
+      "utility_fixed": 0,
+      "utility_factor": 1
+    },
+    {
+      "id": "00000000-0009-0000-0000-000000000002",
+      "name": "SERVICIO TALLER",
+      "description": "SERVICIO DE REVISION EN TALLER",
+      "currency": "MXN",
+      "cost_base": 0,
+      "utility_fixed": 390,
+      "utility_factor": 1
+    },
+    {
+      "id": "00000000-0009-0000-0000-000000000003",
+      "name": "SERVICIO SITIO",
+      "description": "SERVICIO DE REVISION EN SITIO",
+      "currency": "MXN",
+      "cost_base": 0,
+      "utility_fixed": 590,
+      "utility_factor": 1
+    },
+    {
+      "id": "00000000-0009-0000-0000-000000000004",
+      "name": "SERVICIO SITIO",
+      "description": "SERVICIO DE REVISION EN SITIO 2 A 5 UNIDADES",
+      "currency": "MXN",
+      "cost_base": 0,
+      "utility_fixed": 990,
+      "utility_factor": 1
+    },
+    {
+      "id": "00000000-0009-0000-0000-000000000005",
+      "name": "SERVICIO SITIO",
+      "description": "SERVICIO DE REVISION EN SITIO 6 A 10 UNIDADES",
+      "currency": "MXN",
+      "cost_base": 0,
+      "utility_fixed": 1390,
+      "utility_factor": 1
+    },
+    {
+      "id": "00000000-0009-0000-0000-000000000006",
+      "name": "INSTALACION DASH",
+      "description": "SERVICIO DE RE/INSTALACION MANO DE OBRA",
+      "currency": "MXN",
+      "cost_base": 0,
+      "utility_fixed": 790,
+      "utility_factor": 1
+    },
+    {
+      "id": "00000000-0009-0000-0000-000000000007",
+      "name": "INSTALACION M1N",
+      "description": "SERVICIO DE RE/INSTALACION MANO DE OBRA",
+      "currency": "MXN",
+      "cost_base": 0,
+      "utility_fixed": 990,
+      "utility_factor": 1
+    },
+    {
+      "id": "00000000-0009-0000-0000-000000000008",
+      "name": "INSTALACION X3",
+      "description": "SERVICIO DE RE/INSTALACION MANO DE OBRA",
+      "currency": "MXN",
+      "cost_base": 0,
+      "utility_fixed": 1490,
+      "utility_factor": 1
+    },
+    {
+      "id": "00000000-0009-0000-0000-000000000009",
+      "name": "POLIZA DASHCAM",
+      "description": "EXTENSION DE GARANTIA 1 AÑO EN (DASHCAM, ALMACENAMIENTO)",
+      "currency": "MXN",
+      "cost_base": 0,
+      "utility_fixed": 1190,
+      "utility_factor": 1
+    },
+    {
+      "id": "00000000-0009-0000-0000-000000000010",
+      "name": "POLIZA DASH IA T1",
+      "description": "EXTENSION DE GARANTIA 1 AÑO EN (DASHCAM IA, ALMACENAMIENTO)",
+      "currency": "MXN",
+      "cost_base": 0,
+      "utility_fixed": 1490,
+      "utility_factor": 1
+    },
+    {
+      "id": "00000000-0009-0000-0000-000000000011",
+      "name": "POLIZA DASH IA T2",
+      "description": "EXTENSION DE GARANTIA 1 AÑO EN (DASHCAM IA, ALMACENAMIENTO, CÁMARAS)",
+      "currency": "MXN",
+      "cost_base": 0,
+      "utility_fixed": 1690,
+      "utility_factor": 1
+    },
+    {
+      "id": "00000000-0009-0000-0000-000000000012",
+      "name": "POLIZA DASH IA T3",
+      "description": "EXTENSION DE GARANTIA 1 AÑO EN (DASHCAM IA, ALMACENAMIENTO, CÁMARAS, DSM)",
+      "currency": "MXN",
+      "cost_base": 0,
+      "utility_fixed": 1890,
+      "utility_factor": 1
+    },
+    {
+      "id": "00000000-0009-0000-0000-000000000013",
+      "name": "POLIZA DASH IA T4",
+      "description": "EXTENSION DE GARANTIA 1 AÑO EN (DASHCAM IA, ALMACENAMIENTO, CÁMARAS, PANTALLA)",
+      "currency": "MXN",
+      "cost_base": 0,
+      "utility_fixed": 2290,
+      "utility_factor": 1
+    },
+    {
+      "id": "00000000-0009-0000-0000-000000000014",
+      "name": "POLIZA M1N T1",
+      "description": "GARANTIA A 1 AÑO (DVR/CAMARAS/ALMACENAMIENTO)",
+      "currency": "MXN",
+      "cost_base": 0,
+      "utility_fixed": 1490,
+      "utility_factor": 1
+    },
+    {
+      "id": "00000000-0009-0000-0000-000000000015",
+      "name": "POLIZA M1N T2",
+      "description": "GARANTIA A 1 AÑO (DVR/CAMARAS/ALMACENAMIENTO/PANTALLA)",
+      "currency": "MXN",
+      "cost_base": 0,
+      "utility_fixed": 2490,
+      "utility_factor": 1
+    },
+    {
+      "id": "00000000-0009-0000-0000-000000000016",
+      "name": "POLIZA M1N T3",
+      "description": "GARANTIA A 1 AÑO (DVR/CAMARAS/ALMACENAMIENTO/BOTONERA/IMPRESORA)",
+      "currency": "MXN",
+      "cost_base": 0,
+      "utility_fixed": 3490,
+      "utility_factor": 1
+    },
+    {
+      "id": "00000000-0009-0000-0000-000000000017",
+      "name": "POLIZA M1N T4",
+      "description": "GARANTIA A 1 AÑO (DVR/CAMARAS/ALMACENAMIENTO/BOTONERA/IMPRESORA/PANTALLA)",
+      "currency": "MXN",
+      "cost_base": 0,
+      "utility_fixed": 3990,
+      "utility_factor": 1
+    },
+    {
+      "id": "00000000-0009-0000-0000-000000000018",
+      "name": "POLIZA M1N T5",
+      "description": "GARANTIA A 1 AÑO (DVR/CAMARAS/ALMACENAMIENTO/BOTONERA/IMPRESORA/PANTALLA)",
+      "currency": "MXN",
+      "cost_base": 0,
+      "utility_fixed": 5490,
+      "utility_factor": 1
+    },
+    {
+      "id": "00000000-0009-0000-0000-000000000019",
+      "name": "POLIZA X3 T1",
+      "description": "EXTENSION DE GARANTIA 1 AÑO EN (DVR/CAMARAS/ALMACENAMIENTO)",
+      "currency": "MXN",
+      "cost_base": 0,
+      "utility_fixed": 2290,
+      "utility_factor": 1
+    },
+    {
+      "id": "00000000-0009-0000-0000-000000000020",
+      "name": "POLIZA X3 T2",
+      "description": "EXTENSION DE GARANTIA 1 AÑO EN (DVR/CAMARAS/ALMACENAMIENTO/PANTALLA)",
+      "currency": "MXN",
+      "cost_base": 0,
+      "utility_fixed": 2790,
+      "utility_factor": 1
+    },
+    {
+      "id": "00000000-0009-0000-0000-000000000021",
+      "name": "HOSPEDAJE CEIBA",
+      "description": "PAGO ANUAL DE SERVICIO DE HOSPEDAJE EN PLATAFORMA (CEIBA)",
+      "currency": "MXN",
+      "cost_base": 0,
+      "utility_fixed": 1163.79,
+      "utility_factor": 1
+    },
+    {
+      "id": "00000000-0009-0000-0000-000000000022",
+      "name": "HOSPEDAJE SMART",
+      "description": "PAGO ANUAL DE SERVICIO DE HOSPEDAJE EN PLATAFORMA (CEIBA/SMART CLOUD)",
+      "currency": "MXN",
+      "cost_base": 660,
+      "utility_fixed": 0,
+      "utility_factor": 3
+    },
+    {
+      "id": "00000000-0009-0000-0000-000000000023",
+      "name": "DVR DASHCAM",
+      "description": "DASHCAM CON DOBLE CAMARA/GPS/4G/WIFI/SLOT MICROSD(2)",
+      "currency": "USD",
+      "cost_base": 242.55,
+      "utility_fixed": 0,
+      "utility_factor": 1.3
+    },
+    {
+      "id": "00000000-0009-0000-0000-000000000024",
+      "name": "DVR DASHCAM AI",
+      "description": "DASHCAM CON DOBLE CAMARA/GPS/4G/WIFI/SLOT MICROSD(2)/INTELIGENCIA ARTIFICIAL",
+      "currency": "USD",
+      "cost_base": 288.29,
+      "utility_fixed": 0,
+      "utility_factor": 1.3
+    },
+    {
+      "id": "00000000-0009-0000-0000-000000000025",
+      "name": "DVR M1N (5Ch)",
+      "description": "GRABADOR CON 4 CANALES AHD & 1 CANAL IP/GPS/4G/SLOT SD(2)",
+      "currency": "USD",
+      "cost_base": 240,
+      "utility_fixed": 0,
+      "utility_factor": 1.3
+    },
+    {
+      "id": "00000000-0009-0000-0000-000000000026",
+      "name": "GRABADOR (6Ch)",
+      "description": "GRABADOR CON 4 CANALES AHD & 2 CANALES IP/GPS/4G/SLOT MICROSD(2)&SSD(1)",
+      "currency": "USD",
+      "cost_base": 304.05,
+      "utility_fixed": 0,
+      "utility_factor": 1.3
+    },
+    {
+      "id": "00000000-0009-0000-0000-000000000027",
+      "name": "DVR X3 (8Ch)",
+      "description": "GRABADOR CON 4 CANALES AHD & 8 CANALES IP/GPS/4G/SLOT MICROSD(1)&SSD(1)",
+      "currency": "USD",
+      "cost_base": 481.67,
+      "utility_fixed": 0,
+      "utility_factor": 1.3
+    },
+    {
+      "id": "00000000-0009-0000-0000-000000000028",
+      "name": "DVR 360° (4Ch)",
+      "description": "GRABADOR PARA VISTA 360°/GPS/WIFI/SLOT SD(2)",
+      "currency": "USD",
+      "cost_base": 319.44,
+      "utility_fixed": 0,
+      "utility_factor": 1.3
+    },
+    {
+      "id": "00000000-0009-0000-0000-000000000029",
+      "name": "SD64GBWD",
+      "description": "MEMORIA WESTERN DIGITAL PURPLE ESPECIAL PARA VIDEO VIGILANCIA 24/7 64GB",
+      "currency": "USD",
+      "cost_base": 7.37,
+      "utility_fixed": 0,
+      "utility_factor": 1.3
+    },
+    {
+      "id": "00000000-0009-0000-0000-000000000030",
+      "name": "SD128GBWD",
+      "description": "MEMORIA WESTERN DIGITAL PURPLE ESPECIAL PARA VIDEO VIGILANCIA 24/7 128GB",
+      "currency": "USD",
+      "cost_base": 12.36,
+      "utility_fixed": 0,
+      "utility_factor": 1.3
+    },
+    {
+      "id": "00000000-0009-0000-0000-000000000031",
+      "name": "SD256GBWD",
+      "description": "MEMORIA WESTERN DIGITAL PURPLE ESPECIAL PARA VIDEO VIGILANCIA 24/7 256GB",
+      "currency": "USD",
+      "cost_base": 37.21,
+      "utility_fixed": 0,
+      "utility_factor": 1.3
+    },
+    {
+      "id": "00000000-0009-0000-0000-000000000032",
+      "name": "SD512GBWD",
+      "description": "MEMORIA WESTERN DIGITAL PURPLE ESPECIAL PARA VIDEO VIGILANCIA 24/7 512GB",
+      "currency": "USD",
+      "cost_base": 129,
+      "utility_fixed": 0,
+      "utility_factor": 1.3
+    },
+    {
+      "id": "00000000-0009-0000-0000-000000000033",
+      "name": "DISCO 480GB",
+      "description": "DISCO DE ESTADO SOLIDO DE 480GB 2.5\" WESTERN DIGITAL",
+      "currency": "USD",
+      "cost_base": 27.8,
+      "utility_fixed": 0,
+      "utility_factor": 1.3
+    },
+    {
+      "id": "00000000-0009-0000-0000-000000000034",
+      "name": "DISCO 500GB",
+      "description": "DISCO DURO DE 500GB 2.5\" WESTERN DIGITAL BLACK",
+      "currency": "USD",
+      "cost_base": 60.42,
+      "utility_fixed": 0,
+      "utility_factor": 1.3
+    },
+    {
+      "id": "00000000-0009-0000-0000-000000000035",
+      "name": "DISCO 2TB",
+      "description": "DISCO DURO DE 2TB 2.5\" WESTERN DIGITAL BLUE",
+      "currency": "USD",
+      "cost_base": 82.2,
+      "utility_fixed": 0,
+      "utility_factor": 1.3
+    },
+    {
+      "id": "00000000-0009-0000-0000-000000000036",
+      "name": "CAM MINI2MP",
+      "description": "CAMARA MINI DOMO AHD PARA DVRMOVIL 2MP/AUDIO/IP66/5M IR/USO INTERIOR",
+      "currency": "USD",
+      "cost_base": 34.65,
+      "utility_fixed": 0,
+      "utility_factor": 1.3
+    },
+    {
+      "id": "00000000-0009-0000-0000-000000000037",
+      "name": "CAM TURRENT",
+      "description": "CAMARA TURRENT AHD PARA DVRMOVIL 2MP/IP66/10M IR/USO EXTERIOR",
+      "currency": "USD",
+      "cost_base": 49.37,
+      "utility_fixed": 0,
+      "utility_factor": 1.3
+    },
+    {
+      "id": "00000000-0009-0000-0000-000000000038",
+      "name": "ANTI",
+      "description": "CAMARA DOMO AHD ANTIVANDALICA PARA DVRMOVIL 2MP/IP66/10M IR/USO EXTERIOR",
+      "currency": "USD",
+      "cost_base": 27.72,
+      "utility_fixed": 0,
+      "utility_factor": 2
+    },
+    {
+      "id": "00000000-0009-0000-0000-000000000039",
+      "name": "CAM IP",
+      "description": "CAMARA MINI DOMO IP PARA DVRMOVIL 2MP/AUDIO/IP66/5M IR/USO INTERIOR",
+      "currency": "USD",
+      "cost_base": 43.49,
+      "utility_fixed": 0,
+      "utility_factor": 1.3
+    },
+    {
+      "id": "00000000-0009-0000-0000-000000000040",
+      "name": "CAM FISHEYE",
+      "description": "CAMARA FISHEYE AHD PARA DVRMOVIL 2MP/NO AUDIO/IP67/NO LEDS IR/USO EXTERIOR",
+      "currency": "USD",
+      "cost_base": 55.18,
+      "utility_fixed": 0,
+      "utility_factor": 1.3
+    },
+    {
+      "id": "00000000-0009-0000-0000-000000000041",
+      "name": "CAM P CIEGO",
+      "description": "CAMARA PUNTO CIEGO AHD PARA DVRMOVIL 2 MP/NO AUDIO/IP67/LEDS IR/USO EXTERIOR",
+      "currency": "USD",
+      "cost_base": 72.6,
+      "utility_fixed": 0,
+      "utility_factor": 1.3
+    },
+    {
+      "id": "00000000-0009-0000-0000-000000000042",
+      "name": "CAM DSM",
+      "description": "CAMARA IP DSM, IDENTIFICA EL STATUS DEL CONDUCTOR CON RECONOCIMIENTO FACIAL",
+      "currency": "USD",
+      "cost_base": 123.42,
+      "utility_fixed": 0,
+      "utility_factor": 1.3
+    },
+    {
+      "id": "00000000-0009-0000-0000-000000000043",
+      "name": "CABLE 3MTS",
+      "description": "CABLE DIN DE AVIACION 4 PINES DE 3MTS",
+      "currency": "USD",
+      "cost_base": 3.6,
+      "utility_fixed": 0,
+      "utility_factor": 1.3
+    },
+    {
+      "id": "00000000-0009-0000-0000-000000000044",
+      "name": "CABLE 5MTS",
+      "description": "CABLE DIN DE AVIACION 4 PINES DE 5MTS",
+      "currency": "USD",
+      "cost_base": 4.97,
+      "utility_fixed": 0,
+      "utility_factor": 1.3
+    },
+    {
+      "id": "00000000-0009-0000-0000-000000000045",
+      "name": "CABLE 7MTS",
+      "description": "CABLE DIN DE AVIACION 4 PINES DE 7MTS",
+      "currency": "USD",
+      "cost_base": 5.91,
+      "utility_fixed": 0,
+      "utility_factor": 1.3
+    },
+    {
+      "id": "00000000-0009-0000-0000-000000000046",
+      "name": "CABLE 10MTS",
+      "description": "CABLE DIN DE AVIACION 4 PINES DE 10MTS",
+      "currency": "USD",
+      "cost_base": 7.99,
+      "utility_fixed": 0,
+      "utility_factor": 1.3
+    },
+    {
+      "id": "00000000-0009-0000-0000-000000000047",
+      "name": "CABLE 11MTS",
+      "description": "CABLE DIN DE AVIACION 4 PINES DE 11MTS",
+      "currency": "USD",
+      "cost_base": 5.87,
+      "utility_fixed": 0,
+      "utility_factor": 1.7
+    },
+    {
+      "id": "00000000-0009-0000-0000-000000000048",
+      "name": "CABLE 15MTS",
+      "description": "CABLE DIN DE AVIACION 4 PINES DE 15MTS",
+      "currency": "USD",
+      "cost_base": 15.03,
+      "utility_fixed": 0,
+      "utility_factor": 1.3
+    },
+    {
+      "id": "00000000-0009-0000-0000-000000000049",
+      "name": "CABLE 30MTS",
+      "description": "CABLE DIN DE AVIACION 4 PINES DE 30MTS",
+      "currency": "USD",
+      "cost_base": 46.2,
+      "utility_fixed": 0,
+      "utility_factor": 1.3
+    },
+    {
+      "id": "00000000-0009-0000-0000-000000000050",
+      "name": "CABLE IP 3MTS",
+      "description": "CABLE DIN DE AVIACION 6 PINES DE 3MTS IP",
+      "currency": "USD",
+      "cost_base": 6.36,
+      "utility_fixed": 0,
+      "utility_factor": 1.3
+    },
+    {
+      "id": "00000000-0009-0000-0000-000000000051",
+      "name": "CABLE IP 5MTS",
+      "description": "CABLE DIN DE AVIACION 6 PINES DE 5MTS IP",
+      "currency": "USD",
+      "cost_base": 6.47,
+      "utility_fixed": 0,
+      "utility_factor": 1.7
+    },
+    {
+      "id": "00000000-0009-0000-0000-000000000052",
+      "name": "CABLE IP 7MTS",
+      "description": "CABLE DIN DE AVIACION 6 PINES DE 7MTS IP",
+      "currency": "USD",
+      "cost_base": 8.57,
+      "utility_fixed": 0,
+      "utility_factor": 1.3
+    },
+    {
+      "id": "00000000-0009-0000-0000-000000000053",
+      "name": "CABLE IP 11MTS",
+      "description": "CABLE DIN DE AVIACION 6 PINES DE 11MTS IP",
+      "currency": "USD",
+      "cost_base": 14.66,
+      "utility_fixed": 0,
+      "utility_factor": 1.3
+    },
+    {
+      "id": "00000000-0009-0000-0000-000000000054",
+      "name": "CABLE IP 15MTS",
+      "description": "CABLE DIN DE AVIACION 6 PINES DE 15MTS IP",
+      "currency": "USD",
+      "cost_base": 13.5,
+      "utility_fixed": 0,
+      "utility_factor": 1.7
+    },
+    {
+      "id": "00000000-0009-0000-0000-000000000055",
+      "name": "CABLE  CP4 RADIO",
+      "description": "CABLE ARNES PARA CONEXIÓN DE RADIO INTERCOMUNICADOR PARA CP4",
+      "currency": "MXN",
+      "cost_base": 359,
+      "utility_fixed": 0,
+      "utility_factor": 1
+    },
+    {
+      "id": "00000000-0009-0000-0000-000000000056",
+      "name": "CABLE CP4 RWATCH",
+      "description": "CABLE DE SALIDA DE VIDEO/1 SALIDA DE VIDEO 4 PINES/CONECTOR PARA R-WATCH PARA CP4",
+      "currency": "USD",
+      "cost_base": 9.9,
+      "utility_fixed": 0,
+      "utility_factor": 1.3
+    },
+    {
+      "id": "00000000-0009-0000-0000-000000000057",
+      "name": "CABLE CP4 CONVERTER",
+      "description": "CABLE CONVERTIDOR AVIACION DE 4 PINES PARA CP4",
+      "currency": "USD",
+      "cost_base": 5.81,
+      "utility_fixed": 0,
+      "utility_factor": 1.3
+    },
+    {
+      "id": "00000000-0009-0000-0000-000000000058",
+      "name": "MODULO DE ALARMA",
+      "description": "MODULO DE ALARMA 8 ENTRADAS/2 SALIDAS ADAPTADOR 4 PINES",
+      "currency": "USD",
+      "cost_base": 6.09,
+      "utility_fixed": 0,
+      "utility_factor": 1.3
+    },
+    {
+      "id": "00000000-0009-0000-0000-000000000059",
+      "name": "CABLE ARNES BOLETERA",
+      "description": "CABLE ARNES PARA CONEXIÓN DE BOLETERA",
+      "currency": "MXN",
+      "cost_base": 515,
+      "utility_fixed": 0,
+      "utility_factor": 2
+    },
+    {
+      "id": "00000000-0009-0000-0000-000000000060",
+      "name": "CABLE RS 4PUNTAS",
+      "description": "CABLE EXTENSION RS232/RS485, 4 PUNTAS",
+      "currency": "USD",
+      "cost_base": 16.05,
+      "utility_fixed": 0,
+      "utility_factor": 1.3
+    },
+    {
+      "id": "00000000-0009-0000-0000-000000000061",
+      "name": "CABLE POWER M1N",
+      "description": "CABLE DE ALIMENTACION PARA DVRMOVIL M1N/X3",
+      "currency": "USD",
+      "cost_base": 8.58,
+      "utility_fixed": 0,
+      "utility_factor": 1.3
+    },
+    {
+      "id": "00000000-0009-0000-0000-000000000062",
+      "name": "CABLE POWER DASH",
+      "description": "CABLE DE ALIMENTACION PARA DVRMOVIL DASHCAM",
+      "currency": "USD",
+      "cost_base": 18,
+      "utility_fixed": 0,
+      "utility_factor": 1.3
+    },
+    {
+      "id": "00000000-0009-0000-0000-000000000063",
+      "name": "CABLE VIDEO DASH",
+      "description": "CABLE DE VIDEO PARA DASHCAM 2 INPUT (1 AHD/1 IP) / 1 OUTPUT (VIDEO DE 4 PINES)",
+      "currency": "USD",
+      "cost_base": 14.52,
+      "utility_fixed": 0,
+      "utility_factor": 1.3
+    },
+    {
+      "id": "00000000-0009-0000-0000-000000000064",
+      "name": "CABLE EXPANSOR",
+      "description": "CABLE EXPANSOR CON ENTRADA DE VIDEO IPC2/R-WATCH/SALIDA DE VIDEO",
+      "currency": "USD",
+      "cost_base": 21.45,
+      "utility_fixed": 0,
+      "utility_factor": 1.3
+    },
+    {
+      "id": "00000000-0009-0000-0000-000000000065",
+      "name": "CABLE MMV7",
+      "description": "CABLE CONVERTIDOR DE 4 PINES PARA PANTALLAS MMV7 (AUDIO/VIDEO/ALIMENTACION)",
+      "currency": "USD",
+      "cost_base": 8.71,
+      "utility_fixed": 0,
+      "utility_factor": 1.3
+    },
+    {
+      "id": "00000000-0009-0000-0000-000000000066",
+      "name": "PANTALLA TFT 4",
+      "description": "PANTALLA 4 PULGADAS MONITOR TFT LED",
+      "currency": "MXN",
+      "cost_base": 307,
+      "utility_fixed": 0,
+      "utility_factor": 2.5
+    },
+    {
+      "id": "00000000-0009-0000-0000-000000000067",
+      "name": "PANTALLA MMV7",
+      "description": "PANTALLA 7 PULGADAS MONITOR CONEXIÓN AVIACION COMPATIBLE CON M1N",
+      "currency": "USD",
+      "cost_base": 112.2,
+      "utility_fixed": 0,
+      "utility_factor": 1.3
+    },
+    {
+      "id": "00000000-0009-0000-0000-000000000068",
+      "name": "PANTALLA CP4",
+      "description": "PANTALLA TOUCH 7 PULGADAS CON INTERCOMUNICADOR INTEGRADO",
+      "currency": "USD",
+      "cost_base": 178.38,
+      "utility_fixed": 0,
+      "utility_factor": 1.3
+    },
+    {
+      "id": "00000000-0009-0000-0000-000000000069",
+      "name": "BOLETERA T1",
+      "description": "BOLETERA 1 TARIFA/SWTICH ENCENDIDO",
+      "currency": "MXN",
+      "cost_base": 2080,
+      "utility_fixed": 0,
+      "utility_factor": 1.33
+    },
+    {
+      "id": "00000000-0009-0000-0000-000000000070",
+      "name": "BOLETERA T2",
+      "description": "BOLETERA 2 TARIFAS/SWTICH ENCENDIDO",
+      "currency": "MXN",
+      "cost_base": 2224.16,
+      "utility_fixed": 0,
+      "utility_factor": 1.33
+    },
+    {
+      "id": "00000000-0009-0000-0000-000000000071",
+      "name": "BOLETERA T3",
+      "description": "BOLETERA 3 TARIFAS/SWTICH ENCENDIDO",
+      "currency": "MXN",
+      "cost_base": 2368.28,
+      "utility_fixed": 0,
+      "utility_factor": 1.33
+    },
+    {
+      "id": "00000000-0009-0000-0000-000000000072",
+      "name": "BOLETERA T4",
+      "description": "BOLETERA 4 TARIFAS/SWTICH ENCENDIDO",
+      "currency": "MXN",
+      "cost_base": 2512.39,
+      "utility_fixed": 0,
+      "utility_factor": 1.33
+    },
+    {
+      "id": "00000000-0009-0000-0000-000000000073",
+      "name": "BOLETERA T5",
+      "description": "BOLETERA 5 TARIFAS/SWTICH ENCENDIDO",
+      "currency": "MXN",
+      "cost_base": 2656.51,
+      "utility_fixed": 0,
+      "utility_factor": 1.33
+    },
+    {
+      "id": "00000000-0009-0000-0000-000000000074",
+      "name": "IMPRESORA 340",
+      "description": "IMPRESORA TERMICA MODELO 340",
+      "currency": "USD",
+      "cost_base": 135.61,
+      "utility_fixed": 0,
+      "utility_factor": 1.33
+    },
+    {
+      "id": "00000000-0009-0000-0000-000000000075",
+      "name": "SOPORTE Z",
+      "description": "SOPORTE PARA BOLETERA METALICO COLOR NEGRO DE TIPO \"Z\"",
+      "currency": "MXN",
+      "cost_base": 120,
+      "utility_fixed": 0,
+      "utility_factor": 1.33
+    },
+    {
+      "id": "00000000-0009-0000-0000-000000000076",
+      "name": "SOPORTE 0.2",
+      "description": "SOPORTE PARA BOLETERA METALICO COLOR NEGRO DE 20 Centímetros",
+      "currency": "MXN",
+      "cost_base": 130,
+      "utility_fixed": 0,
+      "utility_factor": 1.33
+    },
+    {
+      "id": "00000000-0009-0000-0000-000000000077",
+      "name": "SOPORTE 0.3",
+      "description": "SOPORTE PARA BOLETERA METALICO COLOR NEGRO DE 30 Centímetros",
+      "currency": "MXN",
+      "cost_base": 150,
+      "utility_fixed": 0,
+      "utility_factor": 1.33
+    },
+    {
+      "id": "00000000-0009-0000-0000-000000000078",
+      "name": "SOPORTE 0.5",
+      "description": "SOPORTE PARA BOLETERA METALICO COLOR NEGRO DE 50 Centímetros",
+      "currency": "MXN",
+      "cost_base": 180,
+      "utility_fixed": 0,
+      "utility_factor": 1.33
+    },
+    {
+      "id": "00000000-0009-0000-0000-000000000079",
+      "name": "SOPORTE 0.7",
+      "description": "SOPORTE PARA BOLETERA METALICO COLOR NEGRO DE 70 Centímetros",
+      "currency": "MXN",
+      "cost_base": 220,
+      "utility_fixed": 0,
+      "utility_factor": 1.33
+    },
+    {
+      "id": "00000000-0009-0000-0000-000000000080",
+      "name": "GABINETE CH",
+      "description": "GABINETE CHICO METALICO PARA RESGUARDO DE DVRMOVIL",
+      "currency": "MXN",
+      "cost_base": 1650,
+      "utility_fixed": 0,
+      "utility_factor": 1.3
+    },
+    {
+      "id": "00000000-0009-0000-0000-000000000081",
+      "name": "PORTA FUSIBLE4",
+      "description": "CAJA DE FUSIBLES CON SOPORTE DE BLOQUEO E INDICADOR LED CON 4 BAHIAS",
+      "currency": "MXN",
+      "cost_base": 250,
+      "utility_fixed": 0,
+      "utility_factor": 1.3
+    },
+    {
+      "id": "00000000-0009-0000-0000-000000000082",
+      "name": "CABEZAL_340",
+      "description": "CABEZAL PARA IMPRESORA MODELO 340 TERMICA",
+      "currency": "MXN",
+      "cost_base": 1300,
+      "utility_fixed": 0,
+      "utility_factor": 1.33
+    },
+    {
+      "id": "00000000-0009-0000-0000-000000000083",
+      "name": "REGULADOR MINI",
+      "description": "REGULADOR PARA BOTONERA",
+      "currency": "MXN",
+      "cost_base": 0,
+      "utility_fixed": 0,
+      "utility_factor": 1
+    },
+    {
+      "id": "00000000-0009-0000-0000-000000000084",
+      "name": "EASY_CHECK",
+      "description": "DISPOSITIVO PARA CONFIGURACION DE DVRS MOVILES EASY CHECK",
+      "currency": "USD",
+      "cost_base": 35.69,
+      "utility_fixed": 0,
+      "utility_factor": 1.4
+    },
+    {
+      "id": "00000000-0009-0000-0000-000000000085",
+      "name": "ANTENA 4G",
+      "description": "ANTENA 4G PARA GRABADOR M1N",
+      "currency": "USD",
+      "cost_base": 6.6,
+      "utility_fixed": 0,
+      "utility_factor": 4
+    },
+    {
+      "id": "00000000-0009-0000-0000-000000000086",
+      "name": "ANTENA GPS",
+      "description": "ANTENA GPS PARA GRABADOR M1N",
+      "currency": "USD",
+      "cost_base": 35.21,
+      "utility_fixed": 0,
+      "utility_factor": 1.4
+    },
+    {
+      "id": "00000000-0009-0000-0000-000000000087",
+      "name": "DATAHUB",
+      "description": "DATAHUB, CAJA MUTICANAL/ENTRADAS Y SALIDAS DE ALARMA/COMPATIBLE CON DASHCAM",
+      "currency": "USD",
+      "cost_base": 71.28,
+      "utility_fixed": 0,
+      "utility_factor": 1.33
+    },
+    {
+      "id": "00000000-0009-0000-0000-000000000088",
+      "name": "BOTON DE PANICO",
+      "description": "BOTON DE PANICO ROJO",
+      "currency": "USD",
+      "cost_base": 8.15,
+      "utility_fixed": 0,
+      "utility_factor": 3
+    },
+    {
+      "id": "00000000-0009-0000-0000-000000000089",
+      "name": "DISPLAY DSM",
+      "description": "DISPLAY INTELIGENTE/ALERTA SOBRE EL ESTADO ANORMAL DE CONDUCCION",
+      "currency": "USD",
+      "cost_base": 32.6,
+      "utility_fixed": 0,
+      "utility_factor": 1.33
+    },
+    {
+      "id": "00000000-0009-0000-0000-000000000090",
+      "name": "BRAKET FISHEYE",
+      "description": "BRAKET PARA CAMARA FISHEYE",
+      "currency": "USD",
+      "cost_base": 8.71,
+      "utility_fixed": 0,
+      "utility_factor": 1.33
+    },
+    {
+      "id": "00000000-0009-0000-0000-000000000091",
+      "name": "BRAKET DASHCAM",
+      "description": "BRAKET PARA INSTALACION DE DASHCAM EN PARABRISAS",
+      "currency": "USD",
+      "cost_base": 7.92,
+      "utility_fixed": 0,
+      "utility_factor": 1.33
+    },
+    {
+      "id": "00000000-0009-0000-0000-000000000092",
+      "name": "BRAKET M1N",
+      "description": "BRAKET PARA MONTAJE DE GRABADOR EN GABINETE M1N",
+      "currency": "MXN",
+      "cost_base": 0.01,
+      "utility_fixed": 0,
+      "utility_factor": 1
+    },
+    {
+      "id": "00000000-0009-0000-0000-000000000093",
+      "name": "BRAKET BOTONERA",
+      "description": "BRAKET PARA MONTAJE DE IMPRESORA EN BOTONERA",
+      "currency": "MXN",
+      "cost_base": 0.01,
+      "utility_fixed": 0,
+      "utility_factor": 1
+    },
+    {
+      "id": "00000000-0009-0000-0000-000000000094",
+      "name": "DIADEMA",
+      "description": "AUDIFONO Y MIC DE DIADEMA PLANTRONICS BLACKWIRE C3210 ALAMBRICA MONOAURAL USB",
+      "currency": "USD",
+      "cost_base": 39.57,
+      "utility_fixed": 0,
+      "utility_factor": 1.5
+    },
+    {
+      "id": "00000000-0009-0000-0000-000000000095",
+      "name": "CHAPA SPYDER",
+      "description": "CHAPA PARA GABINETE METALICO SPYDER",
+      "currency": "MXN",
+      "cost_base": 40,
+      "utility_fixed": 0,
+      "utility_factor": 1.4
+    },
+    {
+      "id": "00000000-0009-0000-0000-000000000096",
+      "name": "CHAPA M1N",
+      "description": "CHAPA PARA GABINETE METALICO M1N",
+      "currency": "MXN",
+      "cost_base": 73.28,
+      "utility_fixed": 0,
+      "utility_factor": 1
+    },
+    {
+      "id": "00000000-0009-0000-0000-000000000097",
+      "name": "CHAPA M1N2.0",
+      "description": "CHAPA PARA GABINETE METALICO M1N2.0",
+      "currency": "MXN",
+      "cost_base": 73.28,
+      "utility_fixed": 0,
+      "utility_factor": 1
+    },
+    {
+      "id": "00000000-0009-0000-0000-000000000098",
+      "name": "CONVERTIDOR 12/24",
+      "description": "CONVERTIDOR DE VOLTAJE DE 12VCD A 24VCD",
+      "currency": "MXN",
+      "cost_base": 270,
+      "utility_fixed": 0,
+      "utility_factor": 2
+    },
+    {
+      "id": "00000000-0009-0000-0000-000000000099",
+      "name": "CONVERTIDOR 24/12",
+      "description": "CONVERTIDOR DE VOLTAJE DE 24VCD A 12VCD",
+      "currency": "MXN",
+      "cost_base": 232,
+      "utility_fixed": 0,
+      "utility_factor": 2
+    },
+    {
+      "id": "00000000-0009-0000-0000-000000000100",
+      "name": "LECTOR SD",
+      "description": "LECTOR DE TARJETAS SD, USB 3.0",
+      "currency": "USD",
+      "cost_base": 7.55,
+      "utility_fixed": 0,
+      "utility_factor": 1.5
+    },
+    {
+      "id": "00000000-0009-0000-0000-000000000101",
+      "name": "BOTON NEGRO",
+      "description": "BOTON PULSADOR NEGRO",
+      "currency": "USD",
+      "cost_base": 3.42,
+      "utility_fixed": 0,
+      "utility_factor": 1.33
+    },
+    {
+      "id": "00000000-0009-0000-0000-000000000102",
+      "name": "BOTON ROJO",
+      "description": "BOTON PULSADOR ROJO",
+      "currency": "USD",
+      "cost_base": 3.42,
+      "utility_fixed": 0,
+      "utility_factor": 1.33
+    },
+    {
+      "id": "00000000-0009-0000-0000-000000000103",
+      "name": "TAPON NGO",
+      "description": "TAPON NEGRO",
+      "currency": "USD",
+      "cost_base": 1.64,
+      "utility_fixed": 0,
+      "utility_factor": 1.33
+    },
+    {
+      "id": "00000000-0009-0000-0000-000000000104",
+      "name": "SWITCH 45°",
+      "description": "ACTUADOR SWITCH 45°",
+      "currency": "USD",
+      "cost_base": 8.1,
+      "utility_fixed": 0,
+      "utility_factor": 1.33
+    },
+    {
+      "id": "00000000-0009-0000-0000-000000000105",
+      "name": "SWITCH AUTO",
+      "description": "ACTUADOR SWITCH AUTORETORNO",
+      "currency": "USD",
+      "cost_base": 8.1,
+      "utility_fixed": 0,
+      "utility_factor": 1.33
+    },
+    {
+      "id": "00000000-0009-0000-0000-000000000106",
+      "name": "CLIP SUJETADOR",
+      "description": "CLIP SUJETADOR",
+      "currency": "USD",
+      "cost_base": 1.17,
+      "utility_fixed": 0,
+      "utility_factor": 1.33
+    },
+    {
+      "id": "00000000-0009-0000-0000-000000000107",
+      "name": "PASTILLA CONTACTO",
+      "description": "PASTILLA DE CONTACTO NORMALMENTE ABIERTO",
+      "currency": "USD",
+      "cost_base": 2.44,
+      "utility_fixed": 0,
+      "utility_factor": 1.33
+    },
+    {
+      "id": "00000000-0009-0000-0000-000000000108",
+      "name": "KIT ON/OFF",
+      "description": "KIT ON/OFF (CLIP, PASTILLA CONTACTO, ACTUADOR SW 45°)",
+      "currency": "USD",
+      "cost_base": 13,
+      "utility_fixed": 0,
+      "utility_factor": 1.33
+    },
+    {
+      "id": "00000000-0009-0000-0000-000000000109",
+      "name": "KIT AUTO",
+      "description": "SWITCH DE CORTE DE CAJA (CLIP, PASTILLA DE CONTACTO, ACTUADOR SW AUTORETORNO)",
+      "currency": "USD",
+      "cost_base": 13,
+      "utility_fixed": 0,
+      "utility_factor": 1.33
+    },
+    {
+      "id": "00000000-0009-0000-0000-000000000110",
+      "name": "KIT PANICO",
+      "description": "KIT PULSADOR (CLIP, PASTILLA DE CONTACTO, PULSADOR ROJO)",
+      "currency": "USD",
+      "cost_base": 8,
+      "utility_fixed": 0,
+      "utility_factor": 1.33
+    },
+    {
+      "id": "00000000-0009-0000-0000-000000000111",
+      "name": "CONTACTO 42",
+      "description": "CONTACTO MAGNETICO METALICO PARA PUERTA Y VENTANA.",
+      "currency": "USD",
+      "cost_base": 5.58,
+      "utility_fixed": 0,
+      "utility_factor": 2
+    },
+    {
+      "id": "00000000-0009-0000-0000-000000000112",
+      "name": "CONTACTO 75",
+      "description": "CONTACTO MAGNETICO PARA PUERTA, VENTANA O CORTINA, 75MM GAP",
+      "currency": "USD",
+      "cost_base": 9.35,
+      "utility_fixed": 0,
+      "utility_factor": 1.5
+    },
+    {
+      "id": "00000000-0009-0000-0000-000000000113",
+      "name": "SIM_AT&T",
+      "description": "SIM DE DATOS AT&T CON PLAN DE 2GB EN \"POOL DE DATOS\"",
+      "currency": "MXN",
+      "cost_base": 206.03,
+      "utility_fixed": 0,
+      "utility_factor": 1
+    },
+    {
+      "id": "00000000-0009-0000-0000-000000000114",
+      "name": "SIM_UNEFON",
+      "description": "SIM DE DATOS UNEFON",
+      "currency": "MXN",
+      "cost_base": 86.21,
+      "utility_fixed": 0,
+      "utility_factor": 1
+    },
+    {
+      "id": "00000000-0009-0000-0000-000000000115",
+      "name": "SIM_SMART 5GB",
+      "description": "SIM DE DATOS SMART SYSTEMS CON PLAN DE MENSUAL DE 5GB",
+      "currency": "MXN",
+      "cost_base": 220.69,
+      "utility_fixed": 0,
+      "utility_factor": 1
+    },
+    {
+      "id": "00000000-0009-0000-0000-000000000116",
+      "name": "SIM_SMART 10GB",
+      "description": "SIM DE DATOS SMART SYSTEMS CON PLAN DE MENSUAL DE 10GB",
+      "currency": "MXN",
+      "cost_base": 340.52,
+      "utility_fixed": 0,
+      "utility_factor": 1
+    },
+    {
+      "id": "00000000-0009-0000-0000-000000000117",
+      "name": "SIM_SMART 20GB",
+      "description": "SIM DE DATOS SMART SYSTEMS CON PLAN DE MENSUAL DE 20GB",
+      "currency": "MXN",
+      "cost_base": 461.21,
+      "utility_fixed": 0,
+      "utility_factor": 1
+    },
+    {
+      "id": "00000000-0009-0000-0000-000000000118",
+      "name": "SIM_SMART 30GB",
+      "description": "SIM DE DATOS SMART SYSTEMS CON PLAN DE MENSUAL DE 30GB",
+      "currency": "MXN",
+      "cost_base": 581.03,
+      "utility_fixed": 0,
+      "utility_factor": 1
+    },
+    {
+      "id": "00000000-0009-0000-0000-000000000119",
+      "name": "SIM_SMART 50GB",
+      "description": "SIM DE DATOS SMART SYSTEMS CON PLAN DE MENSUAL DE 50GB",
+      "currency": "MXN",
+      "cost_base": 701.72,
+      "utility_fixed": 0,
+      "utility_factor": 1
+    },
+    {
+      "id": "00000000-0009-0000-0000-000000000120",
+      "name": "SIM ALARMA",
+      "description": "SIM CON PLAN ANUAL DE MENSAJES Y ALERTAS ILITIMADAS",
+      "currency": "USD",
+      "cost_base": 39.8,
+      "utility_fixed": 0,
+      "utility_factor": 1.3
+    },
+    {
+      "id": "00000000-0009-0000-0000-000000000121",
+      "name": "PANEL ALARMA N1",
+      "description": "PANEL DE ALARMA INALAMBRICO, 1 CANAL SIM/5 ESCENARIOS/RESPALDO 12HRS.",
+      "currency": "USD",
+      "cost_base": 139.8,
+      "utility_fixed": 0,
+      "utility_factor": 1.35
+    },
+    {
+      "id": "00000000-0009-0000-0000-000000000122",
+      "name": "CONTACTO INAL",
+      "description": "CONTACTO MAGNETICO INALAMBRICO PARA INTERIOR EN PUERTAS Y VENTANAS.",
+      "currency": "USD",
+      "cost_base": 21.24,
+      "utility_fixed": 0,
+      "utility_factor": 1.35
+    },
+    {
+      "id": "00000000-0009-0000-0000-000000000123",
+      "name": "DETECT MOTION INAL",
+      "description": "DETECTOR DE MOVIMIENTO INALAMBRICO",
+      "currency": "USD",
+      "cost_base": 36.58,
+      "utility_fixed": 0,
+      "utility_factor": 1.35
+    },
+    {
+      "id": "00000000-0009-0000-0000-000000000124",
+      "name": "SIRENA MINI INAL",
+      "description": "SIRENA MINI INALAMBRICA. VOLUMEN 80 A 98 DB A 1 METRO DISTANCIA.",
+      "currency": "USD",
+      "cost_base": 37.2,
+      "utility_fixed": 0,
+      "utility_factor": 1.35
+    },
+    {
+      "id": "00000000-0009-0000-0000-000000000125",
+      "name": "RELAY INAL",
+      "description": "RELEVADOR INALAMBRICO.",
+      "currency": "USD",
+      "cost_base": 25.77,
+      "utility_fixed": 0,
+      "utility_factor": 1.35
+    },
+    {
+      "id": "00000000-0009-0000-0000-000000000126",
+      "name": "CONTROL INAL",
+      "description": "CONTROL REMOTO 4 BOTONES (ARMADO/DESARMADO/DESARMADO PARCIAL/PANICO)",
+      "currency": "USD",
+      "cost_base": 17.7,
+      "utility_fixed": 0,
+      "utility_factor": 1.35
+    },
+    {
+      "id": "00000000-0009-0000-0000-000000000127",
+      "name": "TROMPETA",
+      "description": "CORNETA CON RELEVADOR DE 24V SUPER POTENTE",
+      "currency": "MXN",
+      "cost_base": 263.85,
+      "utility_fixed": 0,
+      "utility_factor": 1.35
+    },
+    {
+      "id": "00000000-0009-0000-0000-000000000128",
+      "name": "ESTROBO",
+      "description": "ESTROBO DE LUZ LED PARPADEANTE",
+      "currency": "MXN",
+      "cost_base": 211.54,
+      "utility_fixed": 0,
+      "utility_factor": 1.35
+    },
+    {
+      "id": "00000000-0009-0000-0000-000000000129",
+      "name": "INSTALACION ALARMA",
+      "description": "SERVICIO DE INSTALACION DE ALARMA INALAMBRICA",
+      "currency": "MXN",
+      "cost_base": 0,
+      "utility_fixed": 490,
+      "utility_factor": 1
+    },
+    {
+      "id": "00000000-0009-0000-0000-000000000130",
+      "name": "BOLETERA T6",
+      "description": "BOLETERA 6 TARIFAS/SWTICH ENCENDIDO",
+      "currency": "MXN",
+      "cost_base": 2800.62,
+      "utility_fixed": 0,
+      "utility_factor": 1.33
+    },
+    {
+      "id": "00000000-0009-0000-0000-000000000131",
+      "name": "GABINETE X3",
+      "description": "GABINETE METALICO PARA RESGUARDO DE DVRMOVIL x3",
+      "currency": "MXN",
+      "cost_base": 1850,
+      "utility_fixed": 0,
+      "utility_factor": 1.3
+    },
+    {
+      "id": "00000000-0009-0000-0000-000000000132",
+      "name": "SIRENA INAL",
+      "description": "SIRENA INALAMBRICA VOLUMEN 85-113dB 30W A 1 METRO DE DISTANCIA.",
+      "currency": "USD",
+      "cost_base": 74.34,
+      "utility_fixed": 0,
+      "utility_factor": 1.35
+    },
+    {
+      "id": "00000000-0009-0000-0000-000000000133",
+      "name": "PLAN ANUAL 5GB",
+      "description": "PLAN DE DATOS SMART SYSTEMS ANUAL (5GB POR MES)",
+      "currency": "MXN",
+      "cost_base": 2648.28,
+      "utility_fixed": 0,
+      "utility_factor": 1.35
+    },
+    {
+      "id": "00000000-0009-0000-0000-000000000134",
+      "name": "PLAN ANUAL 10GB",
+      "description": "PLAN DE DATOS SMART SYSTEMS ANUAL (10GB POR MES)",
+      "currency": "MXN",
+      "cost_base": 3348,
+      "utility_fixed": 0,
+      "utility_factor": 1.35
+    },
+    {
+      "id": "00000000-0009-0000-0000-000000000135",
+      "name": "PANEL SMART",
+      "description": "PANEL DE ALARMA INALAMBRICO, 2 CANALES SIMS/32 ESCENARIOS/FV/RESPALDO 12HRS.",
+      "currency": "USD",
+      "cost_base": 213,
+      "utility_fixed": 0,
+      "utility_factor": 1.35
+    },
+    {
+      "id": "00000000-0009-0000-0000-000000000136",
+      "name": "DETEC MOTION ANTI",
+      "description": "DETECTOR DE MOVIMIENTO INALAMBRICO ANTIENMASCARAMIENTO",
+      "currency": "USD",
+      "cost_base": 128.85,
+      "utility_fixed": 0,
+      "utility_factor": 1.35
+    },
+    {
+      "id": "00000000-0009-0000-0000-000000000137",
+      "name": "PANEL SMART PLUS",
+      "description": "PANEL DE ALARMA INALAMBRICO, 2 CANALES SIMS/FV/32 ESCENARIOS/CAVIDAD PARA BATERIA",
+      "currency": "USD",
+      "cost_base": 196.8,
+      "utility_fixed": 0,
+      "utility_factor": 1.4
+    },
+    {
+      "id": "00000000-0009-0000-0000-000000000138",
+      "name": "PANICO INAL",
+      "description": "BOTON DE PANICO INALAMBRICO",
+      "currency": "USD",
+      "cost_base": 17.7,
+      "utility_fixed": 0,
+      "utility_factor": 1.35
+    },
+    {
+      "id": "00000000-0009-0000-0000-000000000139",
+      "name": "PIRCAM",
+      "description": "DETECTOR DE MOVIMIENTO INALAMBRICO ANTIENMASCARAMIENTO - FOTOVERIFICICACION",
+      "currency": "USD",
+      "cost_base": 193.39,
+      "utility_fixed": 0,
+      "utility_factor": 1.35
+    },
+    {
+      "id": "00000000-0009-0000-0000-000000000140",
+      "name": "BATERIA 12V 9AMP",
+      "description": "BATERIA SELLADA ACIDO-PLOMO, 12 Vcc 9 Ah",
+      "currency": "MXN",
+      "cost_base": 413.1,
+      "utility_fixed": 0,
+      "utility_factor": 1.3
+    },
+    {
+      "id": "00000000-0009-0000-0000-000000000141",
+      "name": "BATERIA LITIO",
+      "description": "BATERIA LITIO 12Vcc a 10amp",
+      "currency": "MXN",
+      "cost_base": 1102,
+      "utility_fixed": 0,
+      "utility_factor": 1.3
+    },
+    {
+      "id": "00000000-0009-0000-0000-000000000142",
+      "name": "DETECT MOTION INAL 1",
+      "description": "DETECTOR DE MOVIMIENTO MOTIONPROTECT, INALAMBRICO.",
+      "currency": "MXN",
+      "cost_base": 913.59,
+      "utility_fixed": 0,
+      "utility_factor": 1.35
+    },
+    {
+      "id": "00000000-0009-0000-0000-000000000143",
+      "name": "SIM_SMART 10GB",
+      "description": "SIM DE DATOS SMART SYSTEMS CON PLAN DE MENSUAL DE 80GB",
+      "currency": "MXN",
+      "cost_base": 1112.93,
+      "utility_fixed": 0,
+      "utility_factor": 1
+    },
+    {
+      "id": "00000000-0009-0000-0000-000000000144",
+      "name": "SIM_SMART 100GB",
+      "description": "SIM DE DATOS SMART SYSTEMS CON PLAN DE MENSUAL DE 100GB",
+      "currency": "MXN",
+      "cost_base": 1353.45,
+      "utility_fixed": 0,
+      "utility_factor": 1
+    },
+    {
+      "id": "00000000-0009-0000-0000-000000000145",
+      "name": "Trompeta",
+      "description": "Trompeta de Aire 12VC",
+      "currency": "MXN",
+      "cost_base": 400,
+      "utility_fixed": 0,
+      "utility_factor": 1
+    },
+    {
+      "id": "00000000-0009-0000-0000-000000000146",
+      "name": "TECLADO INAL",
+      "description": "TECLADO TACTIL INALAMBRICO CON SIRENA INCLUIDA Y LECTOR DESFIRE KEYPAD",
+      "currency": "USD",
+      "cost_base": 65.54,
+      "utility_fixed": 0,
+      "utility_factor": 1.3
+    },
+    {
+      "id": "00000000-0009-0000-0000-000000000147",
+      "name": "PANEL N1",
+      "description": "PANEL DE ALARMA INALAMBRICO",
+      "currency": "USD",
+      "cost_base": 126,
+      "utility_fixed": 0,
+      "utility_factor": 1.3
+    }
+  ],
+  "plantillas": [
+    {
+      "id": "00000000-000a-0000-0000-000000000001",
+      "nombre": "M1 TP (4)",
+      "requerimiento": "Equipamiento de Sistema de VideoGrabación de 4 Cámaras"
+    },
+    {
+      "id": "00000000-000a-0000-0000-000000000002",
+      "nombre": "M1 P7 TU C/FISH (5)",
+      "requerimiento": "Equipamiento de Sistema de VideoGrabación de 5 Cámaras y Pantalla V7"
+    },
+    {
+      "id": "00000000-000a-0000-0000-000000000003",
+      "nombre": "M1 CP4 TP (5) ok",
+      "requerimiento": "Equipamiento de Sistema de Videograbación de 5 Cámaras y Pantalla Touch"
+    },
+    {
+      "id": "00000000-000a-0000-0000-000000000004",
+      "nombre": "Dashcam",
+      "requerimiento": "Sistema de Videograbación de Cámaras Dashcam"
+    },
+    {
+      "id": "00000000-000a-0000-0000-000000000005",
+      "nombre": "Dashcam IA -Smart Cloud",
+      "requerimiento": "Dashcam IA - Smart Cloud"
+    },
+    {
+      "id": "00000000-000a-0000-0000-000000000006",
+      "nombre": "Dashcam IA Smart Cloud + 1",
+      "requerimiento": "Dashcam IA - Smart Cloud + 1 cámaras adicional."
+    },
+    {
+      "id": "00000000-000a-0000-0000-000000000007",
+      "nombre": "DASHCAM PLUS+R",
+      "requerimiento": "Sistema de VideoGrabación de Cámaras Dashcam con IA + reversa"
+    },
+    {
+      "id": "00000000-000a-0000-0000-000000000010",
+      "nombre": "M1 TP (3)",
+      "requerimiento": "Equipamiento de Sistema de VideoGrabación de 3 Cámaras."
+    },
+    {
+      "id": "00000000-000a-0000-0000-000000000011",
+      "nombre": "M1 P7 TP (4)",
+      "requerimiento": "Equipamiento de Sistema de VideoGrabación de 4 Cámaras y Pantalla V7."
+    },
+    {
+      "id": "00000000-000a-0000-0000-000000000012",
+      "nombre": "M1 V7 TP (5)",
+      "requerimiento": "Equipamiento de Sistema de Videograbación de 5 Cámaras y Pantalla."
+    },
+    {
+      "id": "00000000-000a-0000-0000-000000000013",
+      "nombre": "M1 P7 TP COS (5)",
+      "requerimiento": "Equipamiento de Sistema de VideoGrabación de 5 Cámaras y Pantalla V7 Con costado."
+    },
+    {
+      "id": "00000000-000a-0000-0000-000000000014",
+      "nombre": "M1 CP4 TP COS (5)",
+      "requerimiento": "Equipamiento de Sistema de VideoGrabación de 5 Cámaras y Pantalla CP4 Con costado."
+    },
+    {
+      "id": "00000000-000a-0000-0000-000000000015",
+      "nombre": "M1 TU (4)",
+      "requerimiento": "Equipamiento de Sistema de VideoGrabación de 4 Cámaras."
+    },
+    {
+      "id": "00000000-000a-0000-0000-000000000016",
+      "nombre": "M1 CP4 TU (5)",
+      "requerimiento": "Equipamiento de Sistema de VideoGrabación de 5 Cámaras y Pantalla CP4."
+    },
+    {
+      "id": "00000000-000a-0000-0000-000000000017",
+      "nombre": "M1 P7 TU (5)",
+      "requerimiento": "Equipamiento de Sistema de VideoGrabación de 5 Cámaras y Pantalla V7."
+    },
+    {
+      "id": "00000000-000a-0000-0000-000000000018",
+      "nombre": "M1 P7 GRUAS",
+      "requerimiento": "Equipamiento de Sistema de VideoGrabación de 5 Cámaras y Pantalla V7."
+    },
+    {
+      "id": "00000000-000a-0000-0000-000000000020",
+      "nombre": "Alarma Smart Plus",
+      "requerimiento": "Sistema de Alarma Inalámbrica"
+    },
+    {
+      "id": "00000000-000a-0000-0000-000000000023",
+      "nombre": "Alarma Smart",
+      "requerimiento": "Sistema de Alarma Inalámbrica"
+    },
+    {
+      "id": "00000000-000a-0000-0000-000000000028",
+      "nombre": "Dashcam IA - Ceiba",
+      "requerimiento": "Dashcam IA - Ceiba"
+    },
+    {
+      "id": "00000000-000a-0000-0000-000000000029",
+      "nombre": "Dashcam IA - Int/Ext - Smart Cloud",
+      "requerimiento": "Dashcam IA - 2 cámaras adicionales Int/Ext - Smart Cloud"
+    },
+    {
+      "id": "00000000-000a-0000-0000-000000000030",
+      "nombre": "Dashcam IA - Smart Cloud + Pantalla",
+      "requerimiento": "Dashcam IA - Smart Cloud + Pantalla"
+    },
+    {
+      "id": "00000000-000a-0000-0000-000000000031",
+      "nombre": "Dashcam IA - Ceiba + Pantalla",
+      "requerimiento": "Dashcam IA - Ceiba + Pantalla"
+    },
+    {
+      "id": "00000000-000a-0000-0000-000000000033",
+      "nombre": "Boletera T2 - V7",
+      "requerimiento": "Sistema de Cámaras - Boletera - Pantalla"
+    }
+  ],
+  "items": [
+    {
+      "id": "00000000-000b-0000-0000-000000000001",
+      "plantilla_id": "00000000-000a-0000-0000-000000000001",
+      "product_id": "00000000-0009-0000-0000-000000000026",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 10
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000002",
+      "plantilla_id": "00000000-000a-0000-0000-000000000001",
+      "product_id": "00000000-0009-0000-0000-000000000031",
+      "qty": 2,
+      "discount_percent": 0,
+      "sequence": 20
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000003",
+      "plantilla_id": "00000000-000a-0000-0000-000000000001",
+      "product_id": "00000000-0009-0000-0000-000000000036",
+      "qty": 3,
+      "discount_percent": 0,
+      "sequence": 30
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000004",
+      "plantilla_id": "00000000-000a-0000-0000-000000000001",
+      "product_id": "00000000-0009-0000-0000-000000000039",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 40
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000005",
+      "plantilla_id": "00000000-000a-0000-0000-000000000001",
+      "product_id": "00000000-0009-0000-0000-000000000051",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 50
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000006",
+      "plantilla_id": "00000000-000a-0000-0000-000000000001",
+      "product_id": "00000000-0009-0000-0000-000000000043",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 60
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000007",
+      "plantilla_id": "00000000-000a-0000-0000-000000000001",
+      "product_id": "00000000-0009-0000-0000-000000000045",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 70
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000008",
+      "plantilla_id": "00000000-000a-0000-0000-000000000001",
+      "product_id": "00000000-0009-0000-0000-000000000048",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 80
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000009",
+      "plantilla_id": "00000000-000a-0000-0000-000000000001",
+      "product_id": "00000000-0009-0000-0000-000000000080",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 90
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000010",
+      "plantilla_id": "00000000-000a-0000-0000-000000000001",
+      "product_id": "00000000-0009-0000-0000-000000000081",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 100
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000011",
+      "plantilla_id": "00000000-000a-0000-0000-000000000001",
+      "product_id": "00000000-0009-0000-0000-000000000021",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 110
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000012",
+      "plantilla_id": "00000000-000a-0000-0000-000000000001",
+      "product_id": "00000000-0009-0000-0000-000000000007",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 120
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000013",
+      "plantilla_id": "00000000-000a-0000-0000-000000000002",
+      "product_id": "00000000-0009-0000-0000-000000000026",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 130
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000014",
+      "plantilla_id": "00000000-000a-0000-0000-000000000002",
+      "product_id": "00000000-0009-0000-0000-000000000031",
+      "qty": 2,
+      "discount_percent": 0,
+      "sequence": 140
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000015",
+      "plantilla_id": "00000000-000a-0000-0000-000000000002",
+      "product_id": "00000000-0009-0000-0000-000000000036",
+      "qty": 2,
+      "discount_percent": 0,
+      "sequence": 150
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000016",
+      "plantilla_id": "00000000-000a-0000-0000-000000000002",
+      "product_id": "00000000-0009-0000-0000-000000000039",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 160
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000017",
+      "plantilla_id": "00000000-000a-0000-0000-000000000002",
+      "product_id": "00000000-0009-0000-0000-000000000040",
+      "qty": 2,
+      "discount_percent": 0,
+      "sequence": 170
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000018",
+      "plantilla_id": "00000000-000a-0000-0000-000000000002",
+      "product_id": "00000000-0009-0000-0000-000000000051",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 180
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000019",
+      "plantilla_id": "00000000-000a-0000-0000-000000000002",
+      "product_id": "00000000-0009-0000-0000-000000000045",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 190
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000020",
+      "plantilla_id": "00000000-000a-0000-0000-000000000002",
+      "product_id": "00000000-0009-0000-0000-000000000047",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 200
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000021",
+      "plantilla_id": "00000000-000a-0000-0000-000000000002",
+      "product_id": "00000000-0009-0000-0000-000000000048",
+      "qty": 2,
+      "discount_percent": 0,
+      "sequence": 210
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000022",
+      "plantilla_id": "00000000-000a-0000-0000-000000000002",
+      "product_id": "00000000-0009-0000-0000-000000000080",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 220
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000023",
+      "plantilla_id": "00000000-000a-0000-0000-000000000002",
+      "product_id": "00000000-0009-0000-0000-000000000067",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 230
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000024",
+      "plantilla_id": "00000000-000a-0000-0000-000000000003",
+      "product_id": "00000000-0009-0000-0000-000000000026",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 240
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000025",
+      "plantilla_id": "00000000-000a-0000-0000-000000000002",
+      "product_id": "00000000-0009-0000-0000-000000000056",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 250
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000026",
+      "plantilla_id": "00000000-000a-0000-0000-000000000002",
+      "product_id": "00000000-0009-0000-0000-000000000058",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 260
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000027",
+      "plantilla_id": "00000000-000a-0000-0000-000000000002",
+      "product_id": "00000000-0009-0000-0000-000000000112",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 270
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000028",
+      "plantilla_id": "00000000-000a-0000-0000-000000000002",
+      "product_id": "00000000-0009-0000-0000-000000000081",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 280
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000029",
+      "plantilla_id": "00000000-000a-0000-0000-000000000002",
+      "product_id": "00000000-0009-0000-0000-000000000021",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 290
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000030",
+      "plantilla_id": "00000000-000a-0000-0000-000000000002",
+      "product_id": "00000000-0009-0000-0000-000000000007",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 300
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000031",
+      "plantilla_id": "00000000-000a-0000-0000-000000000003",
+      "product_id": "00000000-0009-0000-0000-000000000031",
+      "qty": 2,
+      "discount_percent": 0,
+      "sequence": 310
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000032",
+      "plantilla_id": "00000000-000a-0000-0000-000000000003",
+      "product_id": "00000000-0009-0000-0000-000000000036",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 320
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000033",
+      "plantilla_id": "00000000-000a-0000-0000-000000000003",
+      "product_id": "00000000-0009-0000-0000-000000000039",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 330
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000034",
+      "plantilla_id": "00000000-000a-0000-0000-000000000003",
+      "product_id": "00000000-0009-0000-0000-000000000040",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 340
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000035",
+      "plantilla_id": "00000000-000a-0000-0000-000000000003",
+      "product_id": "00000000-0009-0000-0000-000000000041",
+      "qty": 2,
+      "discount_percent": 0,
+      "sequence": 350
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000036",
+      "plantilla_id": "00000000-000a-0000-0000-000000000003",
+      "product_id": "00000000-0009-0000-0000-000000000090",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 360
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000037",
+      "plantilla_id": "00000000-000a-0000-0000-000000000003",
+      "product_id": "00000000-0009-0000-0000-000000000047",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 370
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000038",
+      "plantilla_id": "00000000-000a-0000-0000-000000000003",
+      "product_id": "00000000-0009-0000-0000-000000000050",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 380
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000039",
+      "plantilla_id": "00000000-000a-0000-0000-000000000003",
+      "product_id": "00000000-0009-0000-0000-000000000045",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 390
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000040",
+      "plantilla_id": "00000000-000a-0000-0000-000000000003",
+      "product_id": "00000000-0009-0000-0000-000000000048",
+      "qty": 2,
+      "discount_percent": 0,
+      "sequence": 400
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000041",
+      "plantilla_id": "00000000-000a-0000-0000-000000000003",
+      "product_id": "00000000-0009-0000-0000-000000000080",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 410
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000042",
+      "plantilla_id": "00000000-000a-0000-0000-000000000003",
+      "product_id": "00000000-0009-0000-0000-000000000068",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 420
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000043",
+      "plantilla_id": "00000000-000a-0000-0000-000000000003",
+      "product_id": "00000000-0009-0000-0000-000000000064",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 430
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000044",
+      "plantilla_id": "00000000-000a-0000-0000-000000000003",
+      "product_id": "00000000-0009-0000-0000-000000000055",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 440
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000045",
+      "plantilla_id": "00000000-000a-0000-0000-000000000003",
+      "product_id": "00000000-0009-0000-0000-000000000108",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 450
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000046",
+      "plantilla_id": "00000000-000a-0000-0000-000000000020",
+      "product_id": "00000000-0009-0000-0000-000000000099",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 460
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000047",
+      "plantilla_id": "00000000-000a-0000-0000-000000000003",
+      "product_id": "00000000-0009-0000-0000-000000000058",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 470
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000048",
+      "plantilla_id": "00000000-000a-0000-0000-000000000003",
+      "product_id": "00000000-0009-0000-0000-000000000081",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 480
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000049",
+      "plantilla_id": "00000000-000a-0000-0000-000000000003",
+      "product_id": "00000000-0009-0000-0000-000000000021",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 490
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000050",
+      "plantilla_id": "00000000-000a-0000-0000-000000000003",
+      "product_id": "00000000-0009-0000-0000-000000000007",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 500
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000051",
+      "plantilla_id": "00000000-000a-0000-0000-000000000004",
+      "product_id": "00000000-0009-0000-0000-000000000023",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 510
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000052",
+      "plantilla_id": "00000000-000a-0000-0000-000000000004",
+      "product_id": "00000000-0009-0000-0000-000000000031",
+      "qty": 2,
+      "discount_percent": 0,
+      "sequence": 520
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000053",
+      "plantilla_id": "00000000-000a-0000-0000-000000000004",
+      "product_id": "00000000-0009-0000-0000-000000000081",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 530
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000054",
+      "plantilla_id": "00000000-000a-0000-0000-000000000004",
+      "product_id": "00000000-0009-0000-0000-000000000021",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 540
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000055",
+      "plantilla_id": "00000000-000a-0000-0000-000000000004",
+      "product_id": "00000000-0009-0000-0000-000000000006",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 550
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000056",
+      "plantilla_id": "00000000-000a-0000-0000-000000000005",
+      "product_id": "00000000-0009-0000-0000-000000000024",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 560
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000057",
+      "plantilla_id": "00000000-000a-0000-0000-000000000005",
+      "product_id": "00000000-0009-0000-0000-000000000031",
+      "qty": 2,
+      "discount_percent": 0,
+      "sequence": 570
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000058",
+      "plantilla_id": "00000000-000a-0000-0000-000000000005",
+      "product_id": "00000000-0009-0000-0000-000000000081",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 580
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000059",
+      "plantilla_id": "00000000-000a-0000-0000-000000000005",
+      "product_id": "00000000-0009-0000-0000-000000000022",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 590
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000060",
+      "plantilla_id": "00000000-000a-0000-0000-000000000005",
+      "product_id": "00000000-0009-0000-0000-000000000006",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 600
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000061",
+      "plantilla_id": "00000000-000a-0000-0000-000000000006",
+      "product_id": "00000000-0009-0000-0000-000000000024",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 610
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000062",
+      "plantilla_id": "00000000-000a-0000-0000-000000000006",
+      "product_id": "00000000-0009-0000-0000-000000000031",
+      "qty": 2,
+      "discount_percent": 0,
+      "sequence": 620
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000063",
+      "plantilla_id": "00000000-000a-0000-0000-000000000006",
+      "product_id": "00000000-0009-0000-0000-000000000036",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 630
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000064",
+      "plantilla_id": "00000000-000a-0000-0000-000000000006",
+      "product_id": "00000000-0009-0000-0000-000000000063",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 640
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000065",
+      "plantilla_id": "00000000-000a-0000-0000-000000000006",
+      "product_id": "00000000-0009-0000-0000-000000000045",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 650
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000066",
+      "plantilla_id": "00000000-000a-0000-0000-000000000006",
+      "product_id": "00000000-0009-0000-0000-000000000081",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 660
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000067",
+      "plantilla_id": "00000000-000a-0000-0000-000000000007",
+      "product_id": "00000000-0009-0000-0000-000000000024",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 670
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000068",
+      "plantilla_id": "00000000-000a-0000-0000-000000000007",
+      "product_id": "00000000-0009-0000-0000-000000000031",
+      "qty": 2,
+      "discount_percent": 0,
+      "sequence": 680
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000069",
+      "plantilla_id": "00000000-000a-0000-0000-000000000007",
+      "product_id": "00000000-0009-0000-0000-000000000040",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 690
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000070",
+      "plantilla_id": "00000000-000a-0000-0000-000000000007",
+      "product_id": "00000000-0009-0000-0000-000000000090",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 700
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000071",
+      "plantilla_id": "00000000-000a-0000-0000-000000000007",
+      "product_id": "00000000-0009-0000-0000-000000000063",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 710
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000072",
+      "plantilla_id": "00000000-000a-0000-0000-000000000007",
+      "product_id": "00000000-0009-0000-0000-000000000066",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 720
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000073",
+      "plantilla_id": "00000000-000a-0000-0000-000000000007",
+      "product_id": "00000000-0009-0000-0000-000000000047",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 730
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000074",
+      "plantilla_id": "00000000-000a-0000-0000-000000000007",
+      "product_id": "00000000-0009-0000-0000-000000000081",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 740
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000075",
+      "plantilla_id": "00000000-000a-0000-0000-000000000007",
+      "product_id": "00000000-0009-0000-0000-000000000022",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 750
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000076",
+      "plantilla_id": "00000000-000a-0000-0000-000000000007",
+      "product_id": "00000000-0009-0000-0000-000000000006",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 760
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000077",
+      "plantilla_id": "00000000-000a-0000-0000-000000000023",
+      "product_id": "00000000-0009-0000-0000-000000000126",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 770
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000078",
+      "plantilla_id": "00000000-000a-0000-0000-000000000020",
+      "product_id": "00000000-0009-0000-0000-000000000126",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 780
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000079",
+      "plantilla_id": "00000000-000a-0000-0000-000000000029",
+      "product_id": "00000000-0009-0000-0000-000000000024",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 790
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000080",
+      "plantilla_id": "00000000-000a-0000-0000-000000000029",
+      "product_id": "00000000-0009-0000-0000-000000000031",
+      "qty": 2,
+      "discount_percent": 0,
+      "sequence": 800
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000081",
+      "plantilla_id": "00000000-000a-0000-0000-000000000030",
+      "product_id": "00000000-0009-0000-0000-000000000024",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 810
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000082",
+      "plantilla_id": "00000000-000a-0000-0000-000000000029",
+      "product_id": "00000000-0009-0000-0000-000000000063",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 820
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000083",
+      "plantilla_id": "00000000-000a-0000-0000-000000000029",
+      "product_id": "00000000-0009-0000-0000-000000000039",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 830
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000084",
+      "plantilla_id": "00000000-000a-0000-0000-000000000029",
+      "product_id": "00000000-0009-0000-0000-000000000038",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 840
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000085",
+      "plantilla_id": "00000000-000a-0000-0000-000000000029",
+      "product_id": "00000000-0009-0000-0000-000000000050",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 850
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000086",
+      "plantilla_id": "00000000-000a-0000-0000-000000000029",
+      "product_id": "00000000-0009-0000-0000-000000000048",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 860
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000087",
+      "plantilla_id": "00000000-000a-0000-0000-000000000029",
+      "product_id": "00000000-0009-0000-0000-000000000081",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 870
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000088",
+      "plantilla_id": "00000000-000a-0000-0000-000000000029",
+      "product_id": "00000000-0009-0000-0000-000000000022",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 880
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000089",
+      "plantilla_id": "00000000-000a-0000-0000-000000000010",
+      "product_id": "00000000-0009-0000-0000-000000000026",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 890
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000090",
+      "plantilla_id": "00000000-000a-0000-0000-000000000010",
+      "product_id": "00000000-0009-0000-0000-000000000031",
+      "qty": 2,
+      "discount_percent": 0,
+      "sequence": 900
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000091",
+      "plantilla_id": "00000000-000a-0000-0000-000000000010",
+      "product_id": "00000000-0009-0000-0000-000000000036",
+      "qty": 2,
+      "discount_percent": 0,
+      "sequence": 910
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000092",
+      "plantilla_id": "00000000-000a-0000-0000-000000000010",
+      "product_id": "00000000-0009-0000-0000-000000000039",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 920
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000093",
+      "plantilla_id": "00000000-000a-0000-0000-000000000010",
+      "product_id": "00000000-0009-0000-0000-000000000050",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 930
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000094",
+      "plantilla_id": "00000000-000a-0000-0000-000000000010",
+      "product_id": "00000000-0009-0000-0000-000000000043",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 940
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000095",
+      "plantilla_id": "00000000-000a-0000-0000-000000000010",
+      "product_id": "00000000-0009-0000-0000-000000000045",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 950
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000096",
+      "plantilla_id": "00000000-000a-0000-0000-000000000010",
+      "product_id": "00000000-0009-0000-0000-000000000080",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 960
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000097",
+      "plantilla_id": "00000000-000a-0000-0000-000000000010",
+      "product_id": "00000000-0009-0000-0000-000000000081",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 970
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000098",
+      "plantilla_id": "00000000-000a-0000-0000-000000000010",
+      "product_id": "00000000-0009-0000-0000-000000000021",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 980
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000099",
+      "plantilla_id": "00000000-000a-0000-0000-000000000010",
+      "product_id": "00000000-0009-0000-0000-000000000007",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 990
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000100",
+      "plantilla_id": "00000000-000a-0000-0000-000000000010",
+      "product_id": "00000000-0009-0000-0000-000000000116",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 1000
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000101",
+      "plantilla_id": "00000000-000a-0000-0000-000000000001",
+      "product_id": "00000000-0009-0000-0000-000000000116",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 1010
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000102",
+      "plantilla_id": "00000000-000a-0000-0000-000000000011",
+      "product_id": "00000000-0009-0000-0000-000000000026",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 1020
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000103",
+      "plantilla_id": "00000000-000a-0000-0000-000000000011",
+      "product_id": "00000000-0009-0000-0000-000000000031",
+      "qty": 2,
+      "discount_percent": 0,
+      "sequence": 1030
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000104",
+      "plantilla_id": "00000000-000a-0000-0000-000000000011",
+      "product_id": "00000000-0009-0000-0000-000000000036",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 1040
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000105",
+      "plantilla_id": "00000000-000a-0000-0000-000000000011",
+      "product_id": "00000000-0009-0000-0000-000000000039",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 1050
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000106",
+      "plantilla_id": "00000000-000a-0000-0000-000000000011",
+      "product_id": "00000000-0009-0000-0000-000000000040",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 1060
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000107",
+      "plantilla_id": "00000000-000a-0000-0000-000000000011",
+      "product_id": "00000000-0009-0000-0000-000000000041",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 1070
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000108",
+      "plantilla_id": "00000000-000a-0000-0000-000000000011",
+      "product_id": "00000000-0009-0000-0000-000000000090",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 1080
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000109",
+      "plantilla_id": "00000000-000a-0000-0000-000000000011",
+      "product_id": "00000000-0009-0000-0000-000000000050",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 1090
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000110",
+      "plantilla_id": "00000000-000a-0000-0000-000000000011",
+      "product_id": "00000000-0009-0000-0000-000000000045",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 1100
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000111",
+      "plantilla_id": "00000000-000a-0000-0000-000000000011",
+      "product_id": "00000000-0009-0000-0000-000000000047",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 1110
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000112",
+      "plantilla_id": "00000000-000a-0000-0000-000000000011",
+      "product_id": "00000000-0009-0000-0000-000000000048",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 1120
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000113",
+      "plantilla_id": "00000000-000a-0000-0000-000000000011",
+      "product_id": "00000000-0009-0000-0000-000000000080",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 1130
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000114",
+      "plantilla_id": "00000000-000a-0000-0000-000000000011",
+      "product_id": "00000000-0009-0000-0000-000000000067",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 1140
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000115",
+      "plantilla_id": "00000000-000a-0000-0000-000000000003",
+      "product_id": "00000000-0009-0000-0000-000000000116",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 1150
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000116",
+      "plantilla_id": "00000000-000a-0000-0000-000000000011",
+      "product_id": "00000000-0009-0000-0000-000000000056",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 1160
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000117",
+      "plantilla_id": "00000000-000a-0000-0000-000000000011",
+      "product_id": "00000000-0009-0000-0000-000000000058",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 1170
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000118",
+      "plantilla_id": "00000000-000a-0000-0000-000000000011",
+      "product_id": "00000000-0009-0000-0000-000000000081",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 1180
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000119",
+      "plantilla_id": "00000000-000a-0000-0000-000000000011",
+      "product_id": "00000000-0009-0000-0000-000000000021",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 1190
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000120",
+      "plantilla_id": "00000000-000a-0000-0000-000000000011",
+      "product_id": "00000000-0009-0000-0000-000000000007",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 1200
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000121",
+      "plantilla_id": "00000000-000a-0000-0000-000000000011",
+      "product_id": "00000000-0009-0000-0000-000000000116",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 1210
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000122",
+      "plantilla_id": "00000000-000a-0000-0000-000000000012",
+      "product_id": "00000000-0009-0000-0000-000000000026",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 1220
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000123",
+      "plantilla_id": "00000000-000a-0000-0000-000000000012",
+      "product_id": "00000000-0009-0000-0000-000000000031",
+      "qty": 2,
+      "discount_percent": 0,
+      "sequence": 1230
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000124",
+      "plantilla_id": "00000000-000a-0000-0000-000000000012",
+      "product_id": "00000000-0009-0000-0000-000000000036",
+      "qty": 2,
+      "discount_percent": 0,
+      "sequence": 1240
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000125",
+      "plantilla_id": "00000000-000a-0000-0000-000000000012",
+      "product_id": "00000000-0009-0000-0000-000000000039",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 1250
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000126",
+      "plantilla_id": "00000000-000a-0000-0000-000000000012",
+      "product_id": "00000000-0009-0000-0000-000000000040",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 1260
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000127",
+      "plantilla_id": "00000000-000a-0000-0000-000000000012",
+      "product_id": "00000000-0009-0000-0000-000000000041",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 1270
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000128",
+      "plantilla_id": "00000000-000a-0000-0000-000000000012",
+      "product_id": "00000000-0009-0000-0000-000000000090",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 1280
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000129",
+      "plantilla_id": "00000000-000a-0000-0000-000000000012",
+      "product_id": "00000000-0009-0000-0000-000000000051",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 1290
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000130",
+      "plantilla_id": "00000000-000a-0000-0000-000000000012",
+      "product_id": "00000000-0009-0000-0000-000000000043",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 1300
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000131",
+      "plantilla_id": "00000000-000a-0000-0000-000000000012",
+      "product_id": "00000000-0009-0000-0000-000000000045",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 1310
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000132",
+      "plantilla_id": "00000000-000a-0000-0000-000000000012",
+      "product_id": "00000000-0009-0000-0000-000000000048",
+      "qty": 2,
+      "discount_percent": 0,
+      "sequence": 1320
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000133",
+      "plantilla_id": "00000000-000a-0000-0000-000000000012",
+      "product_id": "00000000-0009-0000-0000-000000000067",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 1330
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000134",
+      "plantilla_id": "00000000-000a-0000-0000-000000000012",
+      "product_id": "00000000-0009-0000-0000-000000000056",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 1340
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000135",
+      "plantilla_id": "00000000-000a-0000-0000-000000000012",
+      "product_id": "00000000-0009-0000-0000-000000000058",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 1350
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000136",
+      "plantilla_id": "00000000-000a-0000-0000-000000000012",
+      "product_id": "00000000-0009-0000-0000-000000000081",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 1360
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000137",
+      "plantilla_id": "00000000-000a-0000-0000-000000000012",
+      "product_id": "00000000-0009-0000-0000-000000000080",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 1370
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000138",
+      "plantilla_id": "00000000-000a-0000-0000-000000000012",
+      "product_id": "00000000-0009-0000-0000-000000000021",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 1380
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000139",
+      "plantilla_id": "00000000-000a-0000-0000-000000000012",
+      "product_id": "00000000-0009-0000-0000-000000000007",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 1390
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000140",
+      "plantilla_id": "00000000-000a-0000-0000-000000000012",
+      "product_id": "00000000-0009-0000-0000-000000000116",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 1400
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000141",
+      "plantilla_id": "00000000-000a-0000-0000-000000000013",
+      "product_id": "00000000-0009-0000-0000-000000000026",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 1410
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000142",
+      "plantilla_id": "00000000-000a-0000-0000-000000000013",
+      "product_id": "00000000-0009-0000-0000-000000000031",
+      "qty": 2,
+      "discount_percent": 0,
+      "sequence": 1420
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000143",
+      "plantilla_id": "00000000-000a-0000-0000-000000000013",
+      "product_id": "00000000-0009-0000-0000-000000000036",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 1430
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000144",
+      "plantilla_id": "00000000-000a-0000-0000-000000000013",
+      "product_id": "00000000-0009-0000-0000-000000000039",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 1440
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000145",
+      "plantilla_id": "00000000-000a-0000-0000-000000000013",
+      "product_id": "00000000-0009-0000-0000-000000000038",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 1450
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000146",
+      "plantilla_id": "00000000-000a-0000-0000-000000000013",
+      "product_id": "00000000-0009-0000-0000-000000000040",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 1460
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000147",
+      "plantilla_id": "00000000-000a-0000-0000-000000000013",
+      "product_id": "00000000-0009-0000-0000-000000000041",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 1470
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000148",
+      "plantilla_id": "00000000-000a-0000-0000-000000000013",
+      "product_id": "00000000-0009-0000-0000-000000000090",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 1480
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000149",
+      "plantilla_id": "00000000-000a-0000-0000-000000000013",
+      "product_id": "00000000-0009-0000-0000-000000000051",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 1490
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000150",
+      "plantilla_id": "00000000-000a-0000-0000-000000000013",
+      "product_id": "00000000-0009-0000-0000-000000000043",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 1500
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000151",
+      "plantilla_id": "00000000-000a-0000-0000-000000000013",
+      "product_id": "00000000-0009-0000-0000-000000000045",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 1510
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000152",
+      "plantilla_id": "00000000-000a-0000-0000-000000000013",
+      "product_id": "00000000-0009-0000-0000-000000000047",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 1520
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000153",
+      "plantilla_id": "00000000-000a-0000-0000-000000000013",
+      "product_id": "00000000-0009-0000-0000-000000000080",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 1530
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000154",
+      "plantilla_id": "00000000-000a-0000-0000-000000000013",
+      "product_id": "00000000-0009-0000-0000-000000000067",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 1540
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000155",
+      "plantilla_id": "00000000-000a-0000-0000-000000000013",
+      "product_id": "00000000-0009-0000-0000-000000000056",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 1550
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000156",
+      "plantilla_id": "00000000-000a-0000-0000-000000000013",
+      "product_id": "00000000-0009-0000-0000-000000000058",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 1560
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000157",
+      "plantilla_id": "00000000-000a-0000-0000-000000000013",
+      "product_id": "00000000-0009-0000-0000-000000000081",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 1570
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000158",
+      "plantilla_id": "00000000-000a-0000-0000-000000000013",
+      "product_id": "00000000-0009-0000-0000-000000000021",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 1580
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000159",
+      "plantilla_id": "00000000-000a-0000-0000-000000000013",
+      "product_id": "00000000-0009-0000-0000-000000000007",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 1590
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000160",
+      "plantilla_id": "00000000-000a-0000-0000-000000000013",
+      "product_id": "00000000-0009-0000-0000-000000000116",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 1600
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000161",
+      "plantilla_id": "00000000-000a-0000-0000-000000000014",
+      "product_id": "00000000-0009-0000-0000-000000000026",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 1610
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000162",
+      "plantilla_id": "00000000-000a-0000-0000-000000000014",
+      "product_id": "00000000-0009-0000-0000-000000000031",
+      "qty": 2,
+      "discount_percent": 0,
+      "sequence": 1620
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000163",
+      "plantilla_id": "00000000-000a-0000-0000-000000000014",
+      "product_id": "00000000-0009-0000-0000-000000000036",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 1630
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000164",
+      "plantilla_id": "00000000-000a-0000-0000-000000000014",
+      "product_id": "00000000-0009-0000-0000-000000000039",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 1640
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000165",
+      "plantilla_id": "00000000-000a-0000-0000-000000000014",
+      "product_id": "00000000-0009-0000-0000-000000000038",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 1650
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000166",
+      "plantilla_id": "00000000-000a-0000-0000-000000000014",
+      "product_id": "00000000-0009-0000-0000-000000000040",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 1660
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000167",
+      "plantilla_id": "00000000-000a-0000-0000-000000000014",
+      "product_id": "00000000-0009-0000-0000-000000000041",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 1670
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000168",
+      "plantilla_id": "00000000-000a-0000-0000-000000000029",
+      "product_id": "00000000-0009-0000-0000-000000000006",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 1680
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000169",
+      "plantilla_id": "00000000-000a-0000-0000-000000000014",
+      "product_id": "00000000-0009-0000-0000-000000000051",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 1690
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000170",
+      "plantilla_id": "00000000-000a-0000-0000-000000000014",
+      "product_id": "00000000-0009-0000-0000-000000000045",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 1700
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000171",
+      "plantilla_id": "00000000-000a-0000-0000-000000000014",
+      "product_id": "00000000-0009-0000-0000-000000000047",
+      "qty": 2,
+      "discount_percent": 0,
+      "sequence": 1710
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000172",
+      "plantilla_id": "00000000-000a-0000-0000-000000000014",
+      "product_id": "00000000-0009-0000-0000-000000000048",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 1720
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000173",
+      "plantilla_id": "00000000-000a-0000-0000-000000000014",
+      "product_id": "00000000-0009-0000-0000-000000000080",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 1730
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000174",
+      "plantilla_id": "00000000-000a-0000-0000-000000000014",
+      "product_id": "00000000-0009-0000-0000-000000000068",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 1740
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000175",
+      "plantilla_id": "00000000-000a-0000-0000-000000000014",
+      "product_id": "00000000-0009-0000-0000-000000000057",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 1750
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000176",
+      "plantilla_id": "00000000-000a-0000-0000-000000000014",
+      "product_id": "00000000-0009-0000-0000-000000000055",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 1760
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000177",
+      "plantilla_id": "00000000-000a-0000-0000-000000000014",
+      "product_id": "00000000-0009-0000-0000-000000000108",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 1770
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000178",
+      "plantilla_id": "00000000-000a-0000-0000-000000000014",
+      "product_id": "00000000-0009-0000-0000-000000000056",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 1780
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000179",
+      "plantilla_id": "00000000-000a-0000-0000-000000000014",
+      "product_id": "00000000-0009-0000-0000-000000000058",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 1790
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000180",
+      "plantilla_id": "00000000-000a-0000-0000-000000000014",
+      "product_id": "00000000-0009-0000-0000-000000000081",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 1800
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000181",
+      "plantilla_id": "00000000-000a-0000-0000-000000000014",
+      "product_id": "00000000-0009-0000-0000-000000000021",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 1810
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000182",
+      "plantilla_id": "00000000-000a-0000-0000-000000000014",
+      "product_id": "00000000-0009-0000-0000-000000000007",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 1820
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000183",
+      "plantilla_id": "00000000-000a-0000-0000-000000000014",
+      "product_id": "00000000-0009-0000-0000-000000000116",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 1830
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000184",
+      "plantilla_id": "00000000-000a-0000-0000-000000000015",
+      "product_id": "00000000-0009-0000-0000-000000000026",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 1840
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000185",
+      "plantilla_id": "00000000-000a-0000-0000-000000000015",
+      "product_id": "00000000-0009-0000-0000-000000000031",
+      "qty": 2,
+      "discount_percent": 0,
+      "sequence": 1850
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000186",
+      "plantilla_id": "00000000-000a-0000-0000-000000000015",
+      "product_id": "00000000-0009-0000-0000-000000000036",
+      "qty": 3,
+      "discount_percent": 0,
+      "sequence": 1860
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000187",
+      "plantilla_id": "00000000-000a-0000-0000-000000000015",
+      "product_id": "00000000-0009-0000-0000-000000000039",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 1870
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000188",
+      "plantilla_id": "00000000-000a-0000-0000-000000000015",
+      "product_id": "00000000-0009-0000-0000-000000000051",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 1880
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000189",
+      "plantilla_id": "00000000-000a-0000-0000-000000000015",
+      "product_id": "00000000-0009-0000-0000-000000000043",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 1890
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000190",
+      "plantilla_id": "00000000-000a-0000-0000-000000000015",
+      "product_id": "00000000-0009-0000-0000-000000000045",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 1900
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000191",
+      "plantilla_id": "00000000-000a-0000-0000-000000000015",
+      "product_id": "00000000-0009-0000-0000-000000000048",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 1910
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000192",
+      "plantilla_id": "00000000-000a-0000-0000-000000000015",
+      "product_id": "00000000-0009-0000-0000-000000000080",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 1920
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000193",
+      "plantilla_id": "00000000-000a-0000-0000-000000000015",
+      "product_id": "00000000-0009-0000-0000-000000000081",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 1930
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000194",
+      "plantilla_id": "00000000-000a-0000-0000-000000000015",
+      "product_id": "00000000-0009-0000-0000-000000000021",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 1940
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000195",
+      "plantilla_id": "00000000-000a-0000-0000-000000000015",
+      "product_id": "00000000-0009-0000-0000-000000000007",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 1950
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000196",
+      "plantilla_id": "00000000-000a-0000-0000-000000000015",
+      "product_id": "00000000-0009-0000-0000-000000000116",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 1960
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000197",
+      "plantilla_id": "00000000-000a-0000-0000-000000000016",
+      "product_id": "00000000-0009-0000-0000-000000000026",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 1970
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000198",
+      "plantilla_id": "00000000-000a-0000-0000-000000000016",
+      "product_id": "00000000-0009-0000-0000-000000000031",
+      "qty": 2,
+      "discount_percent": 0,
+      "sequence": 1980
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000199",
+      "plantilla_id": "00000000-000a-0000-0000-000000000016",
+      "product_id": "00000000-0009-0000-0000-000000000036",
+      "qty": 2,
+      "discount_percent": 0,
+      "sequence": 1990
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000200",
+      "plantilla_id": "00000000-000a-0000-0000-000000000016",
+      "product_id": "00000000-0009-0000-0000-000000000039",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 2000
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000201",
+      "plantilla_id": "00000000-000a-0000-0000-000000000016",
+      "product_id": "00000000-0009-0000-0000-000000000040",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 2010
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000202",
+      "plantilla_id": "00000000-000a-0000-0000-000000000016",
+      "product_id": "00000000-0009-0000-0000-000000000041",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 2020
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000203",
+      "plantilla_id": "00000000-000a-0000-0000-000000000016",
+      "product_id": "00000000-0009-0000-0000-000000000090",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 2030
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000204",
+      "plantilla_id": "00000000-000a-0000-0000-000000000016",
+      "product_id": "00000000-0009-0000-0000-000000000051",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 2040
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000205",
+      "plantilla_id": "00000000-000a-0000-0000-000000000016",
+      "product_id": "00000000-0009-0000-0000-000000000045",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 2050
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000206",
+      "plantilla_id": "00000000-000a-0000-0000-000000000016",
+      "product_id": "00000000-0009-0000-0000-000000000047",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 2060
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000207",
+      "plantilla_id": "00000000-000a-0000-0000-000000000016",
+      "product_id": "00000000-0009-0000-0000-000000000048",
+      "qty": 2,
+      "discount_percent": 0,
+      "sequence": 2070
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000208",
+      "plantilla_id": "00000000-000a-0000-0000-000000000016",
+      "product_id": "00000000-0009-0000-0000-000000000080",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 2080
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000209",
+      "plantilla_id": "00000000-000a-0000-0000-000000000016",
+      "product_id": "00000000-0009-0000-0000-000000000068",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 2090
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000210",
+      "plantilla_id": "00000000-000a-0000-0000-000000000016",
+      "product_id": "00000000-0009-0000-0000-000000000057",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 2100
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000211",
+      "plantilla_id": "00000000-000a-0000-0000-000000000016",
+      "product_id": "00000000-0009-0000-0000-000000000056",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 2110
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000212",
+      "plantilla_id": "00000000-000a-0000-0000-000000000016",
+      "product_id": "00000000-0009-0000-0000-000000000108",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 2120
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000213",
+      "plantilla_id": "00000000-000a-0000-0000-000000000016",
+      "product_id": "00000000-0009-0000-0000-000000000055",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 2130
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000214",
+      "plantilla_id": "00000000-000a-0000-0000-000000000016",
+      "product_id": "00000000-0009-0000-0000-000000000058",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 2140
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000215",
+      "plantilla_id": "00000000-000a-0000-0000-000000000016",
+      "product_id": "00000000-0009-0000-0000-000000000112",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 2150
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000216",
+      "plantilla_id": "00000000-000a-0000-0000-000000000016",
+      "product_id": "00000000-0009-0000-0000-000000000081",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 2160
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000217",
+      "plantilla_id": "00000000-000a-0000-0000-000000000016",
+      "product_id": "00000000-0009-0000-0000-000000000021",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 2170
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000218",
+      "plantilla_id": "00000000-000a-0000-0000-000000000016",
+      "product_id": "00000000-0009-0000-0000-000000000007",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 2180
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000219",
+      "plantilla_id": "00000000-000a-0000-0000-000000000016",
+      "product_id": "00000000-0009-0000-0000-000000000116",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 2190
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000220",
+      "plantilla_id": "00000000-000a-0000-0000-000000000017",
+      "product_id": "00000000-0009-0000-0000-000000000026",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 2200
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000221",
+      "plantilla_id": "00000000-000a-0000-0000-000000000017",
+      "product_id": "00000000-0009-0000-0000-000000000031",
+      "qty": 2,
+      "discount_percent": 0,
+      "sequence": 2210
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000222",
+      "plantilla_id": "00000000-000a-0000-0000-000000000017",
+      "product_id": "00000000-0009-0000-0000-000000000036",
+      "qty": 2,
+      "discount_percent": 0,
+      "sequence": 2220
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000223",
+      "plantilla_id": "00000000-000a-0000-0000-000000000017",
+      "product_id": "00000000-0009-0000-0000-000000000039",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 2230
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000224",
+      "plantilla_id": "00000000-000a-0000-0000-000000000017",
+      "product_id": "00000000-0009-0000-0000-000000000040",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 2240
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000225",
+      "plantilla_id": "00000000-000a-0000-0000-000000000017",
+      "product_id": "00000000-0009-0000-0000-000000000041",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 2250
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000226",
+      "plantilla_id": "00000000-000a-0000-0000-000000000017",
+      "product_id": "00000000-0009-0000-0000-000000000090",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 2260
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000227",
+      "plantilla_id": "00000000-000a-0000-0000-000000000017",
+      "product_id": "00000000-0009-0000-0000-000000000051",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 2270
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000228",
+      "plantilla_id": "00000000-000a-0000-0000-000000000017",
+      "product_id": "00000000-0009-0000-0000-000000000045",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 2280
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000229",
+      "plantilla_id": "00000000-000a-0000-0000-000000000017",
+      "product_id": "00000000-0009-0000-0000-000000000047",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 2290
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000230",
+      "plantilla_id": "00000000-000a-0000-0000-000000000017",
+      "product_id": "00000000-0009-0000-0000-000000000048",
+      "qty": 2,
+      "discount_percent": 0,
+      "sequence": 2300
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000231",
+      "plantilla_id": "00000000-000a-0000-0000-000000000017",
+      "product_id": "00000000-0009-0000-0000-000000000080",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 2310
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000232",
+      "plantilla_id": "00000000-000a-0000-0000-000000000017",
+      "product_id": "00000000-0009-0000-0000-000000000067",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 2320
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000233",
+      "plantilla_id": "00000000-000a-0000-0000-000000000017",
+      "product_id": "00000000-0009-0000-0000-000000000056",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 2330
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000234",
+      "plantilla_id": "00000000-000a-0000-0000-000000000017",
+      "product_id": "00000000-0009-0000-0000-000000000058",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 2340
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000235",
+      "plantilla_id": "00000000-000a-0000-0000-000000000017",
+      "product_id": "00000000-0009-0000-0000-000000000112",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 2350
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000236",
+      "plantilla_id": "00000000-000a-0000-0000-000000000017",
+      "product_id": "00000000-0009-0000-0000-000000000081",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 2360
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000237",
+      "plantilla_id": "00000000-000a-0000-0000-000000000017",
+      "product_id": "00000000-0009-0000-0000-000000000021",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 2370
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000238",
+      "plantilla_id": "00000000-000a-0000-0000-000000000017",
+      "product_id": "00000000-0009-0000-0000-000000000007",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 2380
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000239",
+      "plantilla_id": "00000000-000a-0000-0000-000000000017",
+      "product_id": "00000000-0009-0000-0000-000000000116",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 2390
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000240",
+      "plantilla_id": "00000000-000a-0000-0000-000000000018",
+      "product_id": "00000000-0009-0000-0000-000000000026",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 2400
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000241",
+      "plantilla_id": "00000000-000a-0000-0000-000000000018",
+      "product_id": "00000000-0009-0000-0000-000000000038",
+      "qty": 2,
+      "discount_percent": 0,
+      "sequence": 2410
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000242",
+      "plantilla_id": "00000000-000a-0000-0000-000000000018",
+      "product_id": "00000000-0009-0000-0000-000000000031",
+      "qty": 2,
+      "discount_percent": 0,
+      "sequence": 2420
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000243",
+      "plantilla_id": "00000000-000a-0000-0000-000000000018",
+      "product_id": "00000000-0009-0000-0000-000000000039",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 2430
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000244",
+      "plantilla_id": "00000000-000a-0000-0000-000000000018",
+      "product_id": "00000000-0009-0000-0000-000000000040",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 2440
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000245",
+      "plantilla_id": "00000000-000a-0000-0000-000000000018",
+      "product_id": "00000000-0009-0000-0000-000000000041",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 2450
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000246",
+      "plantilla_id": "00000000-000a-0000-0000-000000000018",
+      "product_id": "00000000-0009-0000-0000-000000000090",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 2460
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000247",
+      "plantilla_id": "00000000-000a-0000-0000-000000000018",
+      "product_id": "00000000-0009-0000-0000-000000000052",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 2470
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000248",
+      "plantilla_id": "00000000-000a-0000-0000-000000000018",
+      "product_id": "00000000-0009-0000-0000-000000000045",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 2480
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000249",
+      "plantilla_id": "00000000-000a-0000-0000-000000000018",
+      "product_id": "00000000-0009-0000-0000-000000000047",
+      "qty": 2,
+      "discount_percent": 0,
+      "sequence": 2490
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000250",
+      "plantilla_id": "00000000-000a-0000-0000-000000000018",
+      "product_id": "00000000-0009-0000-0000-000000000048",
+      "qty": 3,
+      "discount_percent": 0,
+      "sequence": 2500
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000251",
+      "plantilla_id": "00000000-000a-0000-0000-000000000018",
+      "product_id": "00000000-0009-0000-0000-000000000080",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 2510
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000252",
+      "plantilla_id": "00000000-000a-0000-0000-000000000018",
+      "product_id": "00000000-0009-0000-0000-000000000067",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 2520
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000253",
+      "plantilla_id": "00000000-000a-0000-0000-000000000018",
+      "product_id": "00000000-0009-0000-0000-000000000058",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 2530
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000254",
+      "plantilla_id": "00000000-000a-0000-0000-000000000018",
+      "product_id": "00000000-0009-0000-0000-000000000056",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 2540
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000255",
+      "plantilla_id": "00000000-000a-0000-0000-000000000018",
+      "product_id": "00000000-0009-0000-0000-000000000081",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 2550
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000256",
+      "plantilla_id": "00000000-000a-0000-0000-000000000018",
+      "product_id": "00000000-0009-0000-0000-000000000021",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 2560
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000257",
+      "plantilla_id": "00000000-000a-0000-0000-000000000018",
+      "product_id": "00000000-0009-0000-0000-000000000007",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 2570
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000258",
+      "plantilla_id": "00000000-000a-0000-0000-000000000018",
+      "product_id": "00000000-0009-0000-0000-000000000116",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 2580
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000259",
+      "plantilla_id": "00000000-000a-0000-0000-000000000020",
+      "product_id": "00000000-0009-0000-0000-000000000137",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 2590
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000260",
+      "plantilla_id": "00000000-000a-0000-0000-000000000020",
+      "product_id": "00000000-0009-0000-0000-000000000136",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 2600
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000261",
+      "plantilla_id": "00000000-000a-0000-0000-000000000020",
+      "product_id": "00000000-0009-0000-0000-000000000122",
+      "qty": 3,
+      "discount_percent": 0,
+      "sequence": 2610
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000262",
+      "plantilla_id": "00000000-000a-0000-0000-000000000020",
+      "product_id": "00000000-0009-0000-0000-000000000111",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 2620
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000263",
+      "plantilla_id": "00000000-000a-0000-0000-000000000020",
+      "product_id": "00000000-0009-0000-0000-000000000132",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 2630
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000264",
+      "plantilla_id": "00000000-000a-0000-0000-000000000020",
+      "product_id": "00000000-0009-0000-0000-000000000125",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 2640
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000265",
+      "plantilla_id": "00000000-000a-0000-0000-000000000020",
+      "product_id": "00000000-0009-0000-0000-000000000128",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 2650
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000266",
+      "plantilla_id": "00000000-000a-0000-0000-000000000020",
+      "product_id": "00000000-0009-0000-0000-000000000141",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 2660
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000267",
+      "plantilla_id": "00000000-000a-0000-0000-000000000020",
+      "product_id": "00000000-0009-0000-0000-000000000120",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 2670
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000268",
+      "plantilla_id": "00000000-000a-0000-0000-000000000023",
+      "product_id": "00000000-0009-0000-0000-000000000135",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 2680
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000269",
+      "plantilla_id": "00000000-000a-0000-0000-000000000023",
+      "product_id": "00000000-0009-0000-0000-000000000136",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 2690
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000270",
+      "plantilla_id": "00000000-000a-0000-0000-000000000023",
+      "product_id": "00000000-0009-0000-0000-000000000122",
+      "qty": 3,
+      "discount_percent": 0,
+      "sequence": 2700
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000271",
+      "plantilla_id": "00000000-000a-0000-0000-000000000023",
+      "product_id": "00000000-0009-0000-0000-000000000111",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 2710
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000272",
+      "plantilla_id": "00000000-000a-0000-0000-000000000023",
+      "product_id": "00000000-0009-0000-0000-000000000132",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 2720
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000273",
+      "plantilla_id": "00000000-000a-0000-0000-000000000023",
+      "product_id": "00000000-0009-0000-0000-000000000125",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 2730
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000274",
+      "plantilla_id": "00000000-000a-0000-0000-000000000023",
+      "product_id": "00000000-0009-0000-0000-000000000128",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 2740
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000275",
+      "plantilla_id": "00000000-000a-0000-0000-000000000023",
+      "product_id": "00000000-0009-0000-0000-000000000099",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 2750
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000276",
+      "plantilla_id": "00000000-000a-0000-0000-000000000023",
+      "product_id": "00000000-0009-0000-0000-000000000120",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 2760
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000277",
+      "plantilla_id": "00000000-000a-0000-0000-000000000023",
+      "product_id": "00000000-0009-0000-0000-000000000129",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 2770
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000278",
+      "plantilla_id": "00000000-000a-0000-0000-000000000020",
+      "product_id": "00000000-0009-0000-0000-000000000129",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 2780
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000279",
+      "plantilla_id": "00000000-000a-0000-0000-000000000006",
+      "product_id": "00000000-0009-0000-0000-000000000022",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 2790
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000280",
+      "plantilla_id": "00000000-000a-0000-0000-000000000006",
+      "product_id": "00000000-0009-0000-0000-000000000006",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 2800
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000281",
+      "plantilla_id": "00000000-000a-0000-0000-000000000028",
+      "product_id": "00000000-0009-0000-0000-000000000024",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 2810
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000282",
+      "plantilla_id": "00000000-000a-0000-0000-000000000028",
+      "product_id": "00000000-0009-0000-0000-000000000031",
+      "qty": 2,
+      "discount_percent": 0,
+      "sequence": 2820
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000283",
+      "plantilla_id": "00000000-000a-0000-0000-000000000028",
+      "product_id": "00000000-0009-0000-0000-000000000081",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 2830
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000284",
+      "plantilla_id": "00000000-000a-0000-0000-000000000028",
+      "product_id": "00000000-0009-0000-0000-000000000021",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 2840
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000285",
+      "plantilla_id": "00000000-000a-0000-0000-000000000028",
+      "product_id": "00000000-0009-0000-0000-000000000006",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 2850
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000286",
+      "plantilla_id": "00000000-000a-0000-0000-000000000030",
+      "product_id": "00000000-0009-0000-0000-000000000031",
+      "qty": 2,
+      "discount_percent": 0,
+      "sequence": 2860
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000287",
+      "plantilla_id": "00000000-000a-0000-0000-000000000030",
+      "product_id": "00000000-0009-0000-0000-000000000039",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 2870
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000288",
+      "plantilla_id": "00000000-000a-0000-0000-000000000030",
+      "product_id": "00000000-0009-0000-0000-000000000041",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 2880
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000289",
+      "plantilla_id": "00000000-000a-0000-0000-000000000030",
+      "product_id": "00000000-0009-0000-0000-000000000063",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 2890
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000290",
+      "plantilla_id": "00000000-000a-0000-0000-000000000030",
+      "product_id": "00000000-0009-0000-0000-000000000052",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 2900
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000291",
+      "plantilla_id": "00000000-000a-0000-0000-000000000030",
+      "product_id": "00000000-0009-0000-0000-000000000047",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 2910
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000292",
+      "plantilla_id": "00000000-000a-0000-0000-000000000030",
+      "product_id": "00000000-0009-0000-0000-000000000081",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 2920
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000293",
+      "plantilla_id": "00000000-000a-0000-0000-000000000030",
+      "product_id": "00000000-0009-0000-0000-000000000022",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 2930
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000294",
+      "plantilla_id": "00000000-000a-0000-0000-000000000030",
+      "product_id": "00000000-0009-0000-0000-000000000006",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 2940
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000295",
+      "plantilla_id": "00000000-000a-0000-0000-000000000031",
+      "product_id": "00000000-0009-0000-0000-000000000024",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 2950
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000296",
+      "plantilla_id": "00000000-000a-0000-0000-000000000031",
+      "product_id": "00000000-0009-0000-0000-000000000031",
+      "qty": 2,
+      "discount_percent": 0,
+      "sequence": 2960
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000297",
+      "plantilla_id": "00000000-000a-0000-0000-000000000031",
+      "product_id": "00000000-0009-0000-0000-000000000039",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 2970
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000298",
+      "plantilla_id": "00000000-000a-0000-0000-000000000031",
+      "product_id": "00000000-0009-0000-0000-000000000041",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 2980
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000299",
+      "plantilla_id": "00000000-000a-0000-0000-000000000031",
+      "product_id": "00000000-0009-0000-0000-000000000063",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 2990
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000300",
+      "plantilla_id": "00000000-000a-0000-0000-000000000031",
+      "product_id": "00000000-0009-0000-0000-000000000052",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 3000
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000301",
+      "plantilla_id": "00000000-000a-0000-0000-000000000031",
+      "product_id": "00000000-0009-0000-0000-000000000047",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 3010
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000302",
+      "plantilla_id": "00000000-000a-0000-0000-000000000031",
+      "product_id": "00000000-0009-0000-0000-000000000067",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 3020
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000303",
+      "plantilla_id": "00000000-000a-0000-0000-000000000031",
+      "product_id": "00000000-0009-0000-0000-000000000081",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 3030
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000304",
+      "plantilla_id": "00000000-000a-0000-0000-000000000031",
+      "product_id": "00000000-0009-0000-0000-000000000021",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 3040
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000305",
+      "plantilla_id": "00000000-000a-0000-0000-000000000031",
+      "product_id": "00000000-0009-0000-0000-000000000006",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 3050
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000306",
+      "plantilla_id": "00000000-000a-0000-0000-000000000030",
+      "product_id": "00000000-0009-0000-0000-000000000067",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 3060
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000307",
+      "plantilla_id": "00000000-000a-0000-0000-000000000033",
+      "product_id": "00000000-0009-0000-0000-000000000026",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 3070
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000308",
+      "plantilla_id": "00000000-000a-0000-0000-000000000033",
+      "product_id": "00000000-0009-0000-0000-000000000031",
+      "qty": 2,
+      "discount_percent": 0,
+      "sequence": 3080
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000309",
+      "plantilla_id": "00000000-000a-0000-0000-000000000033",
+      "product_id": "00000000-0009-0000-0000-000000000036",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 3090
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000310",
+      "plantilla_id": "00000000-000a-0000-0000-000000000033",
+      "product_id": "00000000-0009-0000-0000-000000000039",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 3100
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000311",
+      "plantilla_id": "00000000-000a-0000-0000-000000000033",
+      "product_id": "00000000-0009-0000-0000-000000000040",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 3110
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000312",
+      "plantilla_id": "00000000-000a-0000-0000-000000000033",
+      "product_id": "00000000-0009-0000-0000-000000000041",
+      "qty": 2,
+      "discount_percent": 0,
+      "sequence": 3120
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000313",
+      "plantilla_id": "00000000-000a-0000-0000-000000000033",
+      "product_id": "00000000-0009-0000-0000-000000000050",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 3130
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000314",
+      "plantilla_id": "00000000-000a-0000-0000-000000000033",
+      "product_id": "00000000-0009-0000-0000-000000000045",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 3140
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000315",
+      "plantilla_id": "00000000-000a-0000-0000-000000000033",
+      "product_id": "00000000-0009-0000-0000-000000000047",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 3150
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000316",
+      "plantilla_id": "00000000-000a-0000-0000-000000000033",
+      "product_id": "00000000-0009-0000-0000-000000000048",
+      "qty": 2,
+      "discount_percent": 0,
+      "sequence": 3160
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000317",
+      "plantilla_id": "00000000-000a-0000-0000-000000000033",
+      "product_id": "00000000-0009-0000-0000-000000000080",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 3170
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000318",
+      "plantilla_id": "00000000-000a-0000-0000-000000000033",
+      "product_id": "00000000-0009-0000-0000-000000000067",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 3180
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000319",
+      "plantilla_id": "00000000-000a-0000-0000-000000000033",
+      "product_id": "00000000-0009-0000-0000-000000000065",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 3190
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000320",
+      "plantilla_id": "00000000-000a-0000-0000-000000000033",
+      "product_id": "00000000-0009-0000-0000-000000000130",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 3200
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000321",
+      "plantilla_id": "00000000-000a-0000-0000-000000000033",
+      "product_id": "00000000-0009-0000-0000-000000000059",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 3210
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000322",
+      "plantilla_id": "00000000-000a-0000-0000-000000000033",
+      "product_id": "00000000-0009-0000-0000-000000000074",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 3220
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000323",
+      "plantilla_id": "00000000-000a-0000-0000-000000000033",
+      "product_id": "00000000-0009-0000-0000-000000000112",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 3230
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000324",
+      "plantilla_id": "00000000-000a-0000-0000-000000000033",
+      "product_id": "00000000-0009-0000-0000-000000000081",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 3240
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000325",
+      "plantilla_id": "00000000-000a-0000-0000-000000000033",
+      "product_id": "00000000-0009-0000-0000-000000000021",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 3250
+    },
+    {
+      "id": "00000000-000b-0000-0000-000000000326",
+      "plantilla_id": "00000000-000a-0000-0000-000000000033",
+      "product_id": "00000000-0009-0000-0000-000000000007",
+      "qty": 1,
+      "discount_percent": 0,
+      "sequence": 3260
+    }
+  ]
+}

@@ -1,0 +1,4527 @@
+{
+  "catalogo": [
+    {
+      "ID": 1,
+      "name": "VENTA MOSTRADOR",
+      "description": "FAVOR DE ESCRIBIR EL SERVICIO O PRODUCTO OFERTADO",
+      "cost_base": 0,
+      "currency": "MXN",
+      "utility_fixed": 0,
+      "utility_factor": 1,
+      "Tipo de producto": "Varios"
+    },
+    {
+      "ID": 2,
+      "name": "SERVICIO TALLER",
+      "description": "SERVICIO DE REVISION EN TALLER",
+      "cost_base": 0,
+      "currency": "MXN",
+      "utility_fixed": 390,
+      "utility_factor": 1,
+      "Tipo de producto": "Servicios"
+    },
+    {
+      "ID": 3,
+      "name": "SERVICIO SITIO",
+      "description": "SERVICIO DE REVISION EN SITIO",
+      "cost_base": 0,
+      "currency": "MXN",
+      "utility_fixed": 590,
+      "utility_factor": 1,
+      "Tipo de producto": "Servicios"
+    },
+    {
+      "ID": 4,
+      "name": "SERVICIO SITIO",
+      "description": "SERVICIO DE REVISION EN SITIO 2 A 5 UNIDADES",
+      "cost_base": 0,
+      "currency": "MXN",
+      "utility_fixed": 990,
+      "utility_factor": 1,
+      "Tipo de producto": "Servicios"
+    },
+    {
+      "ID": 5,
+      "name": "SERVICIO SITIO",
+      "description": "SERVICIO DE REVISION EN SITIO 6 A 10 UNIDADES",
+      "cost_base": 0,
+      "currency": "MXN",
+      "utility_fixed": 1390,
+      "utility_factor": 1,
+      "Tipo de producto": "Servicios"
+    },
+    {
+      "ID": 6,
+      "name": "INSTALACION DASH",
+      "description": "SERVICIO DE RE/INSTALACION MANO DE OBRA",
+      "cost_base": 0,
+      "currency": "MXN",
+      "utility_fixed": 790,
+      "utility_factor": 1,
+      "Tipo de producto": "Servicios"
+    },
+    {
+      "ID": 7,
+      "name": "INSTALACION M1N",
+      "description": "SERVICIO DE RE/INSTALACION MANO DE OBRA",
+      "cost_base": 0,
+      "currency": "MXN",
+      "utility_fixed": 990,
+      "utility_factor": 1,
+      "Tipo de producto": "Servicios"
+    },
+    {
+      "ID": 8,
+      "name": "INSTALACION X3",
+      "description": "SERVICIO DE RE/INSTALACION MANO DE OBRA",
+      "cost_base": 0,
+      "currency": "MXN",
+      "utility_fixed": 1490,
+      "utility_factor": 1,
+      "Tipo de producto": "Servicios"
+    },
+    {
+      "ID": 9,
+      "name": "POLIZA DASHCAM",
+      "description": "EXTENSION DE GARANTIA 1 AÑO EN (DASHCAM, ALMACENAMIENTO)",
+      "cost_base": 0,
+      "currency": "MXN",
+      "utility_fixed": 1190,
+      "utility_factor": 1,
+      "Tipo de producto": "Polizas"
+    },
+    {
+      "ID": 10,
+      "name": "POLIZA DASH IA T1",
+      "description": "EXTENSION DE GARANTIA 1 AÑO EN (DASHCAM IA, ALMACENAMIENTO)",
+      "cost_base": 0,
+      "currency": "MXN",
+      "utility_fixed": 1490,
+      "utility_factor": 1,
+      "Tipo de producto": "Polizas"
+    },
+    {
+      "ID": 11,
+      "name": "POLIZA DASH IA T2",
+      "description": "EXTENSION DE GARANTIA 1 AÑO EN (DASHCAM IA, ALMACENAMIENTO, CÁMARAS)",
+      "cost_base": 0,
+      "currency": "MXN",
+      "utility_fixed": 1690,
+      "utility_factor": 1,
+      "Tipo de producto": "Polizas"
+    },
+    {
+      "ID": 12,
+      "name": "POLIZA DASH IA T3",
+      "description": "EXTENSION DE GARANTIA 1 AÑO EN (DASHCAM IA, ALMACENAMIENTO, CÁMARAS, DSM)",
+      "cost_base": 0,
+      "currency": "MXN",
+      "utility_fixed": 1890,
+      "utility_factor": 1,
+      "Tipo de producto": "Polizas"
+    },
+    {
+      "ID": 13,
+      "name": "POLIZA DASH IA T4",
+      "description": "EXTENSION DE GARANTIA 1 AÑO EN (DASHCAM IA, ALMACENAMIENTO, CÁMARAS, PANTALLA)",
+      "cost_base": 0,
+      "currency": "MXN",
+      "utility_fixed": 2290,
+      "utility_factor": 1,
+      "Tipo de producto": "Polizas"
+    },
+    {
+      "ID": 14,
+      "name": "POLIZA M1N T1",
+      "description": "GARANTIA A 1 AÑO (DVR/CAMARAS/ALMACENAMIENTO)",
+      "cost_base": 0,
+      "currency": "MXN",
+      "utility_fixed": 1490,
+      "utility_factor": 1,
+      "Tipo de producto": "Polizas"
+    },
+    {
+      "ID": 15,
+      "name": "POLIZA M1N T2",
+      "description": "GARANTIA A 1 AÑO (DVR/CAMARAS/ALMACENAMIENTO/PANTALLA)",
+      "cost_base": 0,
+      "currency": "MXN",
+      "utility_fixed": 2490,
+      "utility_factor": 1,
+      "Tipo de producto": "Polizas"
+    },
+    {
+      "ID": 16,
+      "name": "POLIZA M1N T3",
+      "description": "GARANTIA A 1 AÑO (DVR/CAMARAS/ALMACENAMIENTO/BOTONERA/IMPRESORA)",
+      "cost_base": 0,
+      "currency": "MXN",
+      "utility_fixed": 3490,
+      "utility_factor": 1,
+      "Tipo de producto": "Polizas"
+    },
+    {
+      "ID": 17,
+      "name": "POLIZA M1N T4",
+      "description": "GARANTIA A 1 AÑO (DVR/CAMARAS/ALMACENAMIENTO/BOTONERA/IMPRESORA/PANTALLA)",
+      "cost_base": 0,
+      "currency": "MXN",
+      "utility_fixed": 3990,
+      "utility_factor": 1,
+      "Tipo de producto": "Polizas"
+    },
+    {
+      "ID": 18,
+      "name": "POLIZA M1N T5",
+      "description": "GARANTIA A 1 AÑO (DVR/CAMARAS/ALMACENAMIENTO/BOTONERA/IMPRESORA/PANTALLA)",
+      "cost_base": 0,
+      "currency": "MXN",
+      "utility_fixed": 5490,
+      "utility_factor": 1,
+      "Tipo de producto": "Polizas"
+    },
+    {
+      "ID": 19,
+      "name": "POLIZA X3 T1",
+      "description": "EXTENSION DE GARANTIA 1 AÑO EN (DVR/CAMARAS/ALMACENAMIENTO)",
+      "cost_base": 0,
+      "currency": "MXN",
+      "utility_fixed": 2290,
+      "utility_factor": 1,
+      "Tipo de producto": "Polizas"
+    },
+    {
+      "ID": 20,
+      "name": "POLIZA X3 T2",
+      "description": "EXTENSION DE GARANTIA 1 AÑO EN (DVR/CAMARAS/ALMACENAMIENTO/PANTALLA)",
+      "cost_base": 0,
+      "currency": "MXN",
+      "utility_fixed": 2790,
+      "utility_factor": 1,
+      "Tipo de producto": "Polizas"
+    },
+    {
+      "ID": 21,
+      "name": "HOSPEDAJE CEIBA",
+      "description": "PAGO ANUAL DE SERVICIO DE HOSPEDAJE EN PLATAFORMA (CEIBA)",
+      "cost_base": 0,
+      "currency": "MXN",
+      "utility_fixed": 1163.79,
+      "utility_factor": 1,
+      "Tipo de producto": "Suscripciones"
+    },
+    {
+      "ID": 22,
+      "name": "HOSPEDAJE SMART",
+      "description": "PAGO ANUAL DE SERVICIO DE HOSPEDAJE EN PLATAFORMA (CEIBA/SMART CLOUD)",
+      "cost_base": 660,
+      "currency": "MXN",
+      "utility_fixed": 0,
+      "utility_factor": 3,
+      "Tipo de producto": "Suscripciones"
+    },
+    {
+      "ID": 23,
+      "name": "DVR DASHCAM",
+      "description": "DASHCAM CON DOBLE CAMARA/GPS/4G/WIFI/SLOT MICROSD(2)",
+      "cost_base": 242.55,
+      "currency": "USD",
+      "utility_fixed": 0,
+      "utility_factor": 1.3,
+      "Tipo de producto": "Grabadores"
+    },
+    {
+      "ID": 24,
+      "name": "DVR DASHCAM AI",
+      "description": "DASHCAM CON DOBLE CAMARA/GPS/4G/WIFI/SLOT MICROSD(2)/INTELIGENCIA ARTIFICIAL",
+      "cost_base": 288.29,
+      "currency": "USD",
+      "utility_fixed": 0,
+      "utility_factor": 1.3,
+      "Tipo de producto": "Grabadores"
+    },
+    {
+      "ID": 25,
+      "name": "DVR M1N (5Ch)",
+      "description": "GRABADOR CON 4 CANALES AHD & 1 CANAL IP/GPS/4G/SLOT SD(2)",
+      "cost_base": 240,
+      "currency": "USD",
+      "utility_fixed": 0,
+      "utility_factor": 1.3,
+      "Tipo de producto": "Grabadores"
+    },
+    {
+      "ID": 26,
+      "name": "GRABADOR (6Ch)",
+      "description": "GRABADOR CON 4 CANALES AHD & 2 CANALES IP/GPS/4G/SLOT MICROSD(2)&SSD(1)",
+      "cost_base": 304.05,
+      "currency": "USD",
+      "utility_fixed": 0,
+      "utility_factor": 1.3,
+      "Tipo de producto": "Grabadores"
+    },
+    {
+      "ID": 27,
+      "name": "DVR X3 (8Ch)",
+      "description": "GRABADOR CON 4 CANALES AHD & 8 CANALES IP/GPS/4G/SLOT MICROSD(1)&SSD(1)",
+      "cost_base": 481.67,
+      "currency": "USD",
+      "utility_fixed": 0,
+      "utility_factor": 1.3,
+      "Tipo de producto": "Grabadores"
+    },
+    {
+      "ID": 28,
+      "name": "DVR 360° (4Ch)",
+      "description": "GRABADOR PARA VISTA 360°/GPS/WIFI/SLOT SD(2)",
+      "cost_base": 319.44,
+      "currency": "USD",
+      "utility_fixed": 0,
+      "utility_factor": 1.3,
+      "Tipo de producto": "Grabadores"
+    },
+    {
+      "ID": 29,
+      "name": "SD64GBWD",
+      "description": "MEMORIA WESTERN DIGITAL PURPLE ESPECIAL PARA VIDEO VIGILANCIA 24/7 64GB",
+      "cost_base": 7.37,
+      "currency": "USD",
+      "utility_fixed": 0,
+      "utility_factor": 1.3,
+      "Tipo de producto": "Almacenamiento"
+    },
+    {
+      "ID": 30,
+      "name": "SD128GBWD",
+      "description": "MEMORIA WESTERN DIGITAL PURPLE ESPECIAL PARA VIDEO VIGILANCIA 24/7 128GB",
+      "cost_base": 12.36,
+      "currency": "USD",
+      "utility_fixed": 0,
+      "utility_factor": 1.3,
+      "Tipo de producto": "Almacenamiento"
+    },
+    {
+      "ID": 31,
+      "name": "SD256GBWD",
+      "description": "MEMORIA WESTERN DIGITAL PURPLE ESPECIAL PARA VIDEO VIGILANCIA 24/7 256GB",
+      "cost_base": 37.21,
+      "currency": "USD",
+      "utility_fixed": 0,
+      "utility_factor": 1.3,
+      "Tipo de producto": "Almacenamiento"
+    },
+    {
+      "ID": 32,
+      "name": "SD512GBWD",
+      "description": "MEMORIA WESTERN DIGITAL PURPLE ESPECIAL PARA VIDEO VIGILANCIA 24/7 512GB",
+      "cost_base": 129,
+      "currency": "USD",
+      "utility_fixed": 0,
+      "utility_factor": 1.3,
+      "Tipo de producto": "Almacenamiento"
+    },
+    {
+      "ID": 33,
+      "name": "DISCO 480GB",
+      "description": "DISCO DE ESTADO SOLIDO DE 480GB 2.5\" WESTERN DIGITAL",
+      "cost_base": 27.8,
+      "currency": "USD",
+      "utility_fixed": 0,
+      "utility_factor": 1.3,
+      "Tipo de producto": "Almacenamiento"
+    },
+    {
+      "ID": 34,
+      "name": "DISCO 500GB",
+      "description": "DISCO DURO DE 500GB 2.5\" WESTERN DIGITAL BLACK",
+      "cost_base": 60.42,
+      "currency": "USD",
+      "utility_fixed": 0,
+      "utility_factor": 1.3,
+      "Tipo de producto": "Almacenamiento"
+    },
+    {
+      "ID": 35,
+      "name": "DISCO 2TB",
+      "description": "DISCO DURO DE 2TB 2.5\" WESTERN DIGITAL BLUE",
+      "cost_base": 82.2,
+      "currency": "USD",
+      "utility_fixed": 0,
+      "utility_factor": 1.3,
+      "Tipo de producto": "Almacenamiento"
+    },
+    {
+      "ID": 36,
+      "name": "CAM MINI2MP",
+      "description": "CAMARA MINI DOMO AHD PARA DVRMOVIL 2MP/AUDIO/IP66/5M IR/USO INTERIOR",
+      "cost_base": 34.65,
+      "currency": "USD",
+      "utility_fixed": 0,
+      "utility_factor": 1.3,
+      "Tipo de producto": "Cámaras"
+    },
+    {
+      "ID": 37,
+      "name": "CAM TURRENT",
+      "description": "CAMARA TURRENT AHD PARA DVRMOVIL 2MP/IP66/10M IR/USO EXTERIOR",
+      "cost_base": 49.37,
+      "currency": "USD",
+      "utility_fixed": 0,
+      "utility_factor": 1.3,
+      "Tipo de producto": "Cámaras"
+    },
+    {
+      "ID": 38,
+      "name": "ANTI",
+      "description": "CAMARA DOMO AHD ANTIVANDALICA PARA DVRMOVIL 2MP/IP66/10M IR/USO EXTERIOR",
+      "cost_base": 27.72,
+      "currency": "USD",
+      "utility_fixed": 0,
+      "utility_factor": 2,
+      "Tipo de producto": "Cámaras"
+    },
+    {
+      "ID": 39,
+      "name": "CAM IP",
+      "description": "CAMARA MINI DOMO IP PARA DVRMOVIL 2MP/AUDIO/IP66/5M IR/USO INTERIOR",
+      "cost_base": 43.49,
+      "currency": "USD",
+      "utility_fixed": 0,
+      "utility_factor": 1.3,
+      "Tipo de producto": "Cámaras"
+    },
+    {
+      "ID": 40,
+      "name": "CAM FISHEYE",
+      "description": "CAMARA FISHEYE AHD PARA DVRMOVIL 2MP/NO AUDIO/IP67/NO LEDS IR/USO EXTERIOR",
+      "cost_base": 55.18,
+      "currency": "USD",
+      "utility_fixed": 0,
+      "utility_factor": 1.3,
+      "Tipo de producto": "Cámaras"
+    },
+    {
+      "ID": 41,
+      "name": "CAM P CIEGO",
+      "description": "CAMARA PUNTO CIEGO AHD PARA DVRMOVIL 2 MP/NO AUDIO/IP67/LEDS IR/USO EXTERIOR",
+      "cost_base": 72.6,
+      "currency": "USD",
+      "utility_fixed": 0,
+      "utility_factor": 1.3,
+      "Tipo de producto": "Cámaras"
+    },
+    {
+      "ID": 42,
+      "name": "CAM DSM",
+      "description": "CAMARA IP DSM, IDENTIFICA EL STATUS DEL CONDUCTOR CON RECONOCIMIENTO FACIAL",
+      "cost_base": 123.42,
+      "currency": "USD",
+      "utility_fixed": 0,
+      "utility_factor": 1.3,
+      "Tipo de producto": "Cámaras"
+    },
+    {
+      "ID": 43,
+      "name": "CABLE 3MTS",
+      "description": "CABLE DIN DE AVIACION 4 PINES DE 3MTS",
+      "cost_base": 3.6,
+      "currency": "USD",
+      "utility_fixed": 0,
+      "utility_factor": 1.3,
+      "Tipo de producto": "Cableado aviación"
+    },
+    {
+      "ID": 44,
+      "name": "CABLE 5MTS",
+      "description": "CABLE DIN DE AVIACION 4 PINES DE 5MTS",
+      "cost_base": 4.97,
+      "currency": "USD",
+      "utility_fixed": 0,
+      "utility_factor": 1.3,
+      "Tipo de producto": "Cableado aviación"
+    },
+    {
+      "ID": 45,
+      "name": "CABLE 7MTS",
+      "description": "CABLE DIN DE AVIACION 4 PINES DE 7MTS",
+      "cost_base": 5.91,
+      "currency": "USD",
+      "utility_fixed": 0,
+      "utility_factor": 1.3,
+      "Tipo de producto": "Cableado aviación"
+    },
+    {
+      "ID": 46,
+      "name": "CABLE 10MTS",
+      "description": "CABLE DIN DE AVIACION 4 PINES DE 10MTS",
+      "cost_base": 7.99,
+      "currency": "USD",
+      "utility_fixed": 0,
+      "utility_factor": 1.3,
+      "Tipo de producto": "Cableado aviación"
+    },
+    {
+      "ID": 47,
+      "name": "CABLE 11MTS",
+      "description": "CABLE DIN DE AVIACION 4 PINES DE 11MTS",
+      "cost_base": 5.87,
+      "currency": "USD",
+      "utility_fixed": 0,
+      "utility_factor": 1.7,
+      "Tipo de producto": "Cableado aviación"
+    },
+    {
+      "ID": 48,
+      "name": "CABLE 15MTS",
+      "description": "CABLE DIN DE AVIACION 4 PINES DE 15MTS",
+      "cost_base": 15.03,
+      "currency": "USD",
+      "utility_fixed": 0,
+      "utility_factor": 1.3,
+      "Tipo de producto": "Cableado aviación"
+    },
+    {
+      "ID": 49,
+      "name": "CABLE 30MTS",
+      "description": "CABLE DIN DE AVIACION 4 PINES DE 30MTS",
+      "cost_base": 46.2,
+      "currency": "USD",
+      "utility_fixed": 0,
+      "utility_factor": 1.3,
+      "Tipo de producto": "Cableado aviación"
+    },
+    {
+      "ID": 50,
+      "name": "CABLE IP 3MTS",
+      "description": "CABLE DIN DE AVIACION 6 PINES DE 3MTS IP",
+      "cost_base": 6.36,
+      "currency": "USD",
+      "utility_fixed": 0,
+      "utility_factor": 1.3,
+      "Tipo de producto": "Cableado aviación"
+    },
+    {
+      "ID": 51,
+      "name": "CABLE IP 5MTS",
+      "description": "CABLE DIN DE AVIACION 6 PINES DE 5MTS IP",
+      "cost_base": 6.47,
+      "currency": "USD",
+      "utility_fixed": 0,
+      "utility_factor": 1.7,
+      "Tipo de producto": "Cableado aviación"
+    },
+    {
+      "ID": 52,
+      "name": "CABLE IP 7MTS",
+      "description": "CABLE DIN DE AVIACION 6 PINES DE 7MTS IP",
+      "cost_base": 8.57,
+      "currency": "USD",
+      "utility_fixed": 0,
+      "utility_factor": 1.3,
+      "Tipo de producto": "Cableado aviación"
+    },
+    {
+      "ID": 53,
+      "name": "CABLE IP 11MTS",
+      "description": "CABLE DIN DE AVIACION 6 PINES DE 11MTS IP",
+      "cost_base": 14.66,
+      "currency": "USD",
+      "utility_fixed": 0,
+      "utility_factor": 1.3,
+      "Tipo de producto": "Cableado aviación"
+    },
+    {
+      "ID": 54,
+      "name": "CABLE IP 15MTS",
+      "description": "CABLE DIN DE AVIACION 6 PINES DE 15MTS IP",
+      "cost_base": 13.5,
+      "currency": "USD",
+      "utility_fixed": 0,
+      "utility_factor": 1.7,
+      "Tipo de producto": "Cableado aviación"
+    },
+    {
+      "ID": 55,
+      "name": "CABLE  CP4 RADIO",
+      "description": "CABLE ARNES PARA CONEXIÓN DE RADIO INTERCOMUNICADOR PARA CP4",
+      "cost_base": 359,
+      "currency": "MXN",
+      "utility_fixed": 0,
+      "utility_factor": 1,
+      "Tipo de producto": "Cableado especializado CP4"
+    },
+    {
+      "ID": 56,
+      "name": "CABLE CP4 RWATCH",
+      "description": "CABLE DE SALIDA DE VIDEO/1 SALIDA DE VIDEO 4 PINES/CONECTOR PARA R-WATCH PARA CP4",
+      "cost_base": 9.9,
+      "currency": "USD",
+      "utility_fixed": 0,
+      "utility_factor": 1.3,
+      "Tipo de producto": "Cableado especializado CP4"
+    },
+    {
+      "ID": 57,
+      "name": "CABLE CP4 CONVERTER",
+      "description": "CABLE CONVERTIDOR AVIACION DE 4 PINES PARA CP4",
+      "cost_base": 5.81,
+      "currency": "USD",
+      "utility_fixed": 0,
+      "utility_factor": 1.3,
+      "Tipo de producto": "Cableado especializado CP4"
+    },
+    {
+      "ID": 58,
+      "name": "MODULO DE ALARMA",
+      "description": "MODULO DE ALARMA 8 ENTRADAS/2 SALIDAS ADAPTADOR 4 PINES",
+      "cost_base": 6.09,
+      "currency": "USD",
+      "utility_fixed": 0,
+      "utility_factor": 1.3,
+      "Tipo de producto": "Cableado especializado CP4"
+    },
+    {
+      "ID": 59,
+      "name": "CABLE ARNES BOLETERA",
+      "description": "CABLE ARNES PARA CONEXIÓN DE BOLETERA",
+      "cost_base": 515,
+      "currency": "MXN",
+      "utility_fixed": 0,
+      "utility_factor": 2,
+      "Tipo de producto": "Cableado especializado"
+    },
+    {
+      "ID": 60,
+      "name": "CABLE RS 4PUNTAS",
+      "description": "CABLE EXTENSION RS232/RS485, 4 PUNTAS",
+      "cost_base": 16.05,
+      "currency": "USD",
+      "utility_fixed": 0,
+      "utility_factor": 1.3,
+      "Tipo de producto": "Cableado especializado"
+    },
+    {
+      "ID": 61,
+      "name": "CABLE POWER M1N",
+      "description": "CABLE DE ALIMENTACION PARA DVRMOVIL M1N/X3",
+      "cost_base": 8.58,
+      "currency": "USD",
+      "utility_fixed": 0,
+      "utility_factor": 1.3,
+      "Tipo de producto": "Cableado especializado"
+    },
+    {
+      "ID": 62,
+      "name": "CABLE POWER DASH",
+      "description": "CABLE DE ALIMENTACION PARA DVRMOVIL DASHCAM",
+      "cost_base": 18,
+      "currency": "USD",
+      "utility_fixed": 0,
+      "utility_factor": 1.3,
+      "Tipo de producto": "Cableado especializado"
+    },
+    {
+      "ID": 63,
+      "name": "CABLE VIDEO DASH",
+      "description": "CABLE DE VIDEO PARA DASHCAM 2 INPUT (1 AHD/1 IP) / 1 OUTPUT (VIDEO DE 4 PINES)",
+      "cost_base": 14.52,
+      "currency": "USD",
+      "utility_fixed": 0,
+      "utility_factor": 1.3,
+      "Tipo de producto": "Cableado especializado"
+    },
+    {
+      "ID": 64,
+      "name": "CABLE EXPANSOR",
+      "description": "CABLE EXPANSOR CON ENTRADA DE VIDEO IPC2/R-WATCH/SALIDA DE VIDEO",
+      "cost_base": 21.45,
+      "currency": "USD",
+      "utility_fixed": 0,
+      "utility_factor": 1.3,
+      "Tipo de producto": "Cableado especializado"
+    },
+    {
+      "ID": 65,
+      "name": "CABLE MMV7",
+      "description": "CABLE CONVERTIDOR DE 4 PINES PARA PANTALLAS MMV7 (AUDIO/VIDEO/ALIMENTACION)",
+      "cost_base": 8.71,
+      "currency": "USD",
+      "utility_fixed": 0,
+      "utility_factor": 1.3,
+      "Tipo de producto": "Cableado especializado"
+    },
+    {
+      "ID": 66,
+      "name": "PANTALLA TFT 4",
+      "description": "PANTALLA 4 PULGADAS MONITOR TFT LED",
+      "cost_base": 307,
+      "currency": "MXN",
+      "utility_fixed": 0,
+      "utility_factor": 2.5,
+      "Tipo de producto": "Pantallas"
+    },
+    {
+      "ID": 67,
+      "name": "PANTALLA MMV7",
+      "description": "PANTALLA 7 PULGADAS MONITOR CONEXIÓN AVIACION COMPATIBLE CON M1N",
+      "cost_base": 112.2,
+      "currency": "USD",
+      "utility_fixed": 0,
+      "utility_factor": 1.3,
+      "Tipo de producto": "Pantallas"
+    },
+    {
+      "ID": 68,
+      "name": "PANTALLA CP4",
+      "description": "PANTALLA TOUCH 7 PULGADAS CON INTERCOMUNICADOR INTEGRADO",
+      "cost_base": 178.38,
+      "currency": "USD",
+      "utility_fixed": 0,
+      "utility_factor": 1.3,
+      "Tipo de producto": "Pantallas"
+    },
+    {
+      "ID": 69,
+      "name": "BOLETERA T1",
+      "description": "BOLETERA 1 TARIFA/SWTICH ENCENDIDO",
+      "cost_base": 2080,
+      "currency": "MXN",
+      "utility_fixed": 0,
+      "utility_factor": 1.33,
+      "Tipo de producto": "Boletera"
+    },
+    {
+      "ID": 70,
+      "name": "BOLETERA T2",
+      "description": "BOLETERA 2 TARIFAS/SWTICH ENCENDIDO",
+      "cost_base": 2224.16,
+      "currency": "MXN",
+      "utility_fixed": 0,
+      "utility_factor": 1.33,
+      "Tipo de producto": "Boletera"
+    },
+    {
+      "ID": 71,
+      "name": "BOLETERA T3",
+      "description": "BOLETERA 3 TARIFAS/SWTICH ENCENDIDO",
+      "cost_base": 2368.28,
+      "currency": "MXN",
+      "utility_fixed": 0,
+      "utility_factor": 1.33,
+      "Tipo de producto": "Boletera"
+    },
+    {
+      "ID": 72,
+      "name": "BOLETERA T4",
+      "description": "BOLETERA 4 TARIFAS/SWTICH ENCENDIDO",
+      "cost_base": 2512.39,
+      "currency": "MXN",
+      "utility_fixed": 0,
+      "utility_factor": 1.33,
+      "Tipo de producto": "Boletera"
+    },
+    {
+      "ID": 73,
+      "name": "BOLETERA T5",
+      "description": "BOLETERA 5 TARIFAS/SWTICH ENCENDIDO",
+      "cost_base": 2656.51,
+      "currency": "MXN",
+      "utility_fixed": 0,
+      "utility_factor": 1.33,
+      "Tipo de producto": "Boletera"
+    },
+    {
+      "ID": 74,
+      "name": "IMPRESORA 340",
+      "description": "IMPRESORA TERMICA MODELO 340",
+      "cost_base": 135.61,
+      "currency": "USD",
+      "utility_fixed": 0,
+      "utility_factor": 1.33,
+      "Tipo de producto": "Boletera"
+    },
+    {
+      "ID": 75,
+      "name": "SOPORTE Z",
+      "description": "SOPORTE PARA BOLETERA METALICO COLOR NEGRO DE TIPO \"Z\"",
+      "cost_base": 120,
+      "currency": "MXN",
+      "utility_fixed": 0,
+      "utility_factor": 1.33,
+      "Tipo de producto": "Boletera"
+    },
+    {
+      "ID": 76,
+      "name": "SOPORTE 0.2",
+      "description": "SOPORTE PARA BOLETERA METALICO COLOR NEGRO DE 20 Centímetros",
+      "cost_base": 130,
+      "currency": "MXN",
+      "utility_fixed": 0,
+      "utility_factor": 1.33,
+      "Tipo de producto": "Boletera"
+    },
+    {
+      "ID": 77,
+      "name": "SOPORTE 0.3",
+      "description": "SOPORTE PARA BOLETERA METALICO COLOR NEGRO DE 30 Centímetros",
+      "cost_base": 150,
+      "currency": "MXN",
+      "utility_fixed": 0,
+      "utility_factor": 1.33,
+      "Tipo de producto": "Boletera"
+    },
+    {
+      "ID": 78,
+      "name": "SOPORTE 0.5",
+      "description": "SOPORTE PARA BOLETERA METALICO COLOR NEGRO DE 50 Centímetros",
+      "cost_base": 180,
+      "currency": "MXN",
+      "utility_fixed": 0,
+      "utility_factor": 1.33,
+      "Tipo de producto": "Boletera"
+    },
+    {
+      "ID": 79,
+      "name": "SOPORTE 0.7",
+      "description": "SOPORTE PARA BOLETERA METALICO COLOR NEGRO DE 70 Centímetros",
+      "cost_base": 220,
+      "currency": "MXN",
+      "utility_fixed": 0,
+      "utility_factor": 1.33,
+      "Tipo de producto": "Boletera"
+    },
+    {
+      "ID": 80,
+      "name": "GABINETE CH",
+      "description": "GABINETE CHICO METALICO PARA RESGUARDO DE DVRMOVIL",
+      "cost_base": 1650,
+      "currency": "MXN",
+      "utility_fixed": 0,
+      "utility_factor": 1.3,
+      "Tipo de producto": "Accesorios"
+    },
+    {
+      "ID": 81,
+      "name": "PORTA FUSIBLE4",
+      "description": "CAJA DE FUSIBLES CON SOPORTE DE BLOQUEO E INDICADOR LED CON 4 BAHIAS",
+      "cost_base": 250,
+      "currency": "MXN",
+      "utility_fixed": 0,
+      "utility_factor": 1.3,
+      "Tipo de producto": "Accesorios"
+    },
+    {
+      "ID": 82,
+      "name": "CABEZAL_340",
+      "description": "CABEZAL PARA IMPRESORA MODELO 340 TERMICA",
+      "cost_base": 1300,
+      "currency": "MXN",
+      "utility_fixed": 0,
+      "utility_factor": 1.33,
+      "Tipo de producto": "Accesorios"
+    },
+    {
+      "ID": 83,
+      "name": "REGULADOR MINI",
+      "description": "REGULADOR PARA BOTONERA",
+      "cost_base": 0,
+      "currency": "MXN",
+      "utility_fixed": 0,
+      "utility_factor": 1,
+      "Tipo de producto": "Accesorios"
+    },
+    {
+      "ID": 84,
+      "name": "EASY_CHECK",
+      "description": "DISPOSITIVO PARA CONFIGURACION DE DVRS MOVILES EASY CHECK",
+      "cost_base": 35.69,
+      "currency": "USD",
+      "utility_fixed": 0,
+      "utility_factor": 1.4,
+      "Tipo de producto": "Accesorios"
+    },
+    {
+      "ID": 85,
+      "name": "ANTENA 4G",
+      "description": "ANTENA 4G PARA GRABADOR M1N",
+      "cost_base": 6.6,
+      "currency": "USD",
+      "utility_fixed": 0,
+      "utility_factor": 4,
+      "Tipo de producto": "Accesorios"
+    },
+    {
+      "ID": 86,
+      "name": "ANTENA GPS",
+      "description": "ANTENA GPS PARA GRABADOR M1N",
+      "cost_base": 35.21,
+      "currency": "USD",
+      "utility_fixed": 0,
+      "utility_factor": 1.4,
+      "Tipo de producto": "Accesorios"
+    },
+    {
+      "ID": 87,
+      "name": "DATAHUB",
+      "description": "DATAHUB, CAJA MUTICANAL/ENTRADAS Y SALIDAS DE ALARMA/COMPATIBLE CON DASHCAM",
+      "cost_base": 71.28,
+      "currency": "USD",
+      "utility_fixed": 0,
+      "utility_factor": 1.33,
+      "Tipo de producto": "Accesorios"
+    },
+    {
+      "ID": 88,
+      "name": "BOTON DE PANICO",
+      "description": "BOTON DE PANICO ROJO",
+      "cost_base": 8.15,
+      "currency": "USD",
+      "utility_fixed": 0,
+      "utility_factor": 3,
+      "Tipo de producto": "Accesorios"
+    },
+    {
+      "ID": 89,
+      "name": "DISPLAY DSM",
+      "description": "DISPLAY INTELIGENTE/ALERTA SOBRE EL ESTADO ANORMAL DE CONDUCCION",
+      "cost_base": 32.6,
+      "currency": "USD",
+      "utility_fixed": 0,
+      "utility_factor": 1.33,
+      "Tipo de producto": "Accesorios"
+    },
+    {
+      "ID": 90,
+      "name": "BRAKET FISHEYE",
+      "description": "BRAKET PARA CAMARA FISHEYE",
+      "cost_base": 8.71,
+      "currency": "USD",
+      "utility_fixed": 0,
+      "utility_factor": 1.33,
+      "Tipo de producto": "Accesorios"
+    },
+    {
+      "ID": 91,
+      "name": "BRAKET DASHCAM",
+      "description": "BRAKET PARA INSTALACION DE DASHCAM EN PARABRISAS",
+      "cost_base": 7.92,
+      "currency": "USD",
+      "utility_fixed": 0,
+      "utility_factor": 1.33,
+      "Tipo de producto": "Accesorios"
+    },
+    {
+      "ID": 92,
+      "name": "BRAKET M1N",
+      "description": "BRAKET PARA MONTAJE DE GRABADOR EN GABINETE M1N",
+      "cost_base": 0.01,
+      "currency": "MXN",
+      "utility_fixed": 0,
+      "utility_factor": 1,
+      "Tipo de producto": "Accesorios"
+    },
+    {
+      "ID": 93,
+      "name": "BRAKET BOTONERA",
+      "description": "BRAKET PARA MONTAJE DE IMPRESORA EN BOTONERA",
+      "cost_base": 0.01,
+      "currency": "MXN",
+      "utility_fixed": 0,
+      "utility_factor": 1,
+      "Tipo de producto": "Accesorios"
+    },
+    {
+      "ID": 94,
+      "name": "DIADEMA",
+      "description": "AUDIFONO Y MIC DE DIADEMA PLANTRONICS BLACKWIRE C3210 ALAMBRICA MONOAURAL USB",
+      "cost_base": 39.57,
+      "currency": "USD",
+      "utility_fixed": 0,
+      "utility_factor": 1.5,
+      "Tipo de producto": "Accesorios"
+    },
+    {
+      "ID": 95,
+      "name": "CHAPA SPYDER",
+      "description": "CHAPA PARA GABINETE METALICO SPYDER",
+      "cost_base": 40,
+      "currency": "MXN",
+      "utility_fixed": 0,
+      "utility_factor": 1.4,
+      "Tipo de producto": "Accesorios"
+    },
+    {
+      "ID": 96,
+      "name": "CHAPA M1N",
+      "description": "CHAPA PARA GABINETE METALICO M1N",
+      "cost_base": 73.28,
+      "currency": "MXN",
+      "utility_fixed": 0,
+      "utility_factor": 1,
+      "Tipo de producto": "Accesorios"
+    },
+    {
+      "ID": 97,
+      "name": "CHAPA M1N2.0",
+      "description": "CHAPA PARA GABINETE METALICO M1N2.0",
+      "cost_base": 73.28,
+      "currency": "MXN",
+      "utility_fixed": 0,
+      "utility_factor": 1,
+      "Tipo de producto": "Accesorios"
+    },
+    {
+      "ID": 98,
+      "name": "CONVERTIDOR 12/24",
+      "description": "CONVERTIDOR DE VOLTAJE DE 12VCD A 24VCD",
+      "cost_base": 270,
+      "currency": "MXN",
+      "utility_fixed": 0,
+      "utility_factor": 2,
+      "Tipo de producto": "Accesorios"
+    },
+    {
+      "ID": 99,
+      "name": "CONVERTIDOR 24/12",
+      "description": "CONVERTIDOR DE VOLTAJE DE 24VCD A 12VCD",
+      "cost_base": 232,
+      "currency": "MXN",
+      "utility_fixed": 0,
+      "utility_factor": 2,
+      "Tipo de producto": "Accesorios"
+    },
+    {
+      "ID": 100,
+      "name": "LECTOR SD",
+      "description": "LECTOR DE TARJETAS SD, USB 3.0",
+      "cost_base": 7.55,
+      "currency": "USD",
+      "utility_fixed": 0,
+      "utility_factor": 1.5,
+      "Tipo de producto": "Accesorios"
+    },
+    {
+      "ID": 101,
+      "name": "BOTON NEGRO",
+      "description": "BOTON PULSADOR NEGRO",
+      "cost_base": 3.42,
+      "currency": "USD",
+      "utility_fixed": 0,
+      "utility_factor": 1.33,
+      "Tipo de producto": "Actuadores"
+    },
+    {
+      "ID": 102,
+      "name": "BOTON ROJO",
+      "description": "BOTON PULSADOR ROJO",
+      "cost_base": 3.42,
+      "currency": "USD",
+      "utility_fixed": 0,
+      "utility_factor": 1.33,
+      "Tipo de producto": "Actuadores"
+    },
+    {
+      "ID": 103,
+      "name": "TAPON NGO",
+      "description": "TAPON NEGRO",
+      "cost_base": 1.64,
+      "currency": "USD",
+      "utility_fixed": 0,
+      "utility_factor": 1.33,
+      "Tipo de producto": "Actuadores"
+    },
+    {
+      "ID": 104,
+      "name": "SWITCH 45°",
+      "description": "ACTUADOR SWITCH 45°",
+      "cost_base": 8.1,
+      "currency": "USD",
+      "utility_fixed": 0,
+      "utility_factor": 1.33,
+      "Tipo de producto": "Actuadores"
+    },
+    {
+      "ID": 105,
+      "name": "SWITCH AUTO",
+      "description": "ACTUADOR SWITCH AUTORETORNO",
+      "cost_base": 8.1,
+      "currency": "USD",
+      "utility_fixed": 0,
+      "utility_factor": 1.33,
+      "Tipo de producto": "Actuadores"
+    },
+    {
+      "ID": 106,
+      "name": "CLIP SUJETADOR",
+      "description": "CLIP SUJETADOR",
+      "cost_base": 1.17,
+      "currency": "USD",
+      "utility_fixed": 0,
+      "utility_factor": 1.33,
+      "Tipo de producto": "Actuadores"
+    },
+    {
+      "ID": 107,
+      "name": "PASTILLA CONTACTO",
+      "description": "PASTILLA DE CONTACTO NORMALMENTE ABIERTO",
+      "cost_base": 2.44,
+      "currency": "USD",
+      "utility_fixed": 0,
+      "utility_factor": 1.33,
+      "Tipo de producto": "Actuadores"
+    },
+    {
+      "ID": 108,
+      "name": "KIT ON/OFF",
+      "description": "KIT ON/OFF (CLIP, PASTILLA CONTACTO, ACTUADOR SW 45°)",
+      "cost_base": 13,
+      "currency": "USD",
+      "utility_fixed": 0,
+      "utility_factor": 1.33,
+      "Tipo de producto": "Actuadores"
+    },
+    {
+      "ID": 109,
+      "name": "KIT AUTO",
+      "description": "SWITCH DE CORTE DE CAJA (CLIP, PASTILLA DE CONTACTO, ACTUADOR SW AUTORETORNO)",
+      "cost_base": 13,
+      "currency": "USD",
+      "utility_fixed": 0,
+      "utility_factor": 1.33,
+      "Tipo de producto": "Actuadores"
+    },
+    {
+      "ID": 110,
+      "name": "KIT PANICO",
+      "description": "KIT PULSADOR (CLIP, PASTILLA DE CONTACTO, PULSADOR ROJO)",
+      "cost_base": 8,
+      "currency": "USD",
+      "utility_fixed": 0,
+      "utility_factor": 1.33,
+      "Tipo de producto": "Actuadores"
+    },
+    {
+      "ID": 111,
+      "name": "CONTACTO 42",
+      "description": "CONTACTO MAGNETICO METALICO PARA PUERTA Y VENTANA.",
+      "cost_base": 5.58,
+      "currency": "USD",
+      "utility_fixed": 0,
+      "utility_factor": 2,
+      "Tipo de producto": "Varios"
+    },
+    {
+      "ID": 112,
+      "name": "CONTACTO 75",
+      "description": "CONTACTO MAGNETICO PARA PUERTA, VENTANA O CORTINA, 75MM GAP",
+      "cost_base": 9.35,
+      "currency": "USD",
+      "utility_fixed": 0,
+      "utility_factor": 1.5,
+      "Tipo de producto": "Varios"
+    },
+    {
+      "ID": 113,
+      "name": "SIM_AT&T",
+      "description": "SIM DE DATOS AT&T CON PLAN DE 2GB EN \"POOL DE DATOS\"",
+      "cost_base": 206.03,
+      "currency": "MXN",
+      "utility_fixed": 0,
+      "utility_factor": 1,
+      "Tipo de producto": "Planes de datos"
+    },
+    {
+      "ID": 114,
+      "name": "SIM_UNEFON",
+      "description": "SIM DE DATOS UNEFON",
+      "cost_base": 86.21,
+      "currency": "MXN",
+      "utility_fixed": 0,
+      "utility_factor": 1,
+      "Tipo de producto": "Planes de datos"
+    },
+    {
+      "ID": 115,
+      "name": "SIM_SMART 5GB",
+      "description": "SIM DE DATOS SMART SYSTEMS CON PLAN DE MENSUAL DE 5GB",
+      "cost_base": 220.69,
+      "currency": "MXN",
+      "utility_fixed": 0,
+      "utility_factor": 1,
+      "Tipo de producto": "Planes de datos"
+    },
+    {
+      "ID": 116,
+      "name": "SIM_SMART 10GB",
+      "description": "SIM DE DATOS SMART SYSTEMS CON PLAN DE MENSUAL DE 10GB",
+      "cost_base": 340.52,
+      "currency": "MXN",
+      "utility_fixed": 0,
+      "utility_factor": 1,
+      "Tipo de producto": "Planes de datos"
+    },
+    {
+      "ID": 117,
+      "name": "SIM_SMART 20GB",
+      "description": "SIM DE DATOS SMART SYSTEMS CON PLAN DE MENSUAL DE 20GB",
+      "cost_base": 461.21,
+      "currency": "MXN",
+      "utility_fixed": 0,
+      "utility_factor": 1,
+      "Tipo de producto": "Planes de datos"
+    },
+    {
+      "ID": 118,
+      "name": "SIM_SMART 30GB",
+      "description": "SIM DE DATOS SMART SYSTEMS CON PLAN DE MENSUAL DE 30GB",
+      "cost_base": 581.03,
+      "currency": "MXN",
+      "utility_fixed": 0,
+      "utility_factor": 1,
+      "Tipo de producto": "Planes de datos"
+    },
+    {
+      "ID": 119,
+      "name": "SIM_SMART 50GB",
+      "description": "SIM DE DATOS SMART SYSTEMS CON PLAN DE MENSUAL DE 50GB",
+      "cost_base": 701.72,
+      "currency": "MXN",
+      "utility_fixed": 0,
+      "utility_factor": 1,
+      "Tipo de producto": "Planes de datos"
+    },
+    {
+      "ID": 120,
+      "name": "SIM ALARMA",
+      "description": "SIM CON PLAN ANUAL DE MENSAJES Y ALERTAS ILITIMADAS",
+      "cost_base": 39.8,
+      "currency": "USD",
+      "utility_fixed": 0,
+      "utility_factor": 1.3,
+      "Tipo de producto": "Planes de datos"
+    },
+    {
+      "ID": 121,
+      "name": "PANEL ALARMA N1",
+      "description": "PANEL DE ALARMA INALAMBRICO, 1 CANAL SIM/5 ESCENARIOS/RESPALDO 12HRS.",
+      "cost_base": 139.8,
+      "currency": "USD",
+      "utility_fixed": 0,
+      "utility_factor": 1.35,
+      "Tipo de producto": "Alarma inalámbrica"
+    },
+    {
+      "ID": 122,
+      "name": "CONTACTO INAL",
+      "description": "CONTACTO MAGNETICO INALAMBRICO PARA INTERIOR EN PUERTAS Y VENTANAS.",
+      "cost_base": 21.24,
+      "currency": "USD",
+      "utility_fixed": 0,
+      "utility_factor": 1.35,
+      "Tipo de producto": "Alarma inalámbrica"
+    },
+    {
+      "ID": 123,
+      "name": "DETECT MOTION INAL",
+      "description": "DETECTOR DE MOVIMIENTO INALAMBRICO",
+      "cost_base": 36.58,
+      "currency": "USD",
+      "utility_fixed": 0,
+      "utility_factor": 1.35,
+      "Tipo de producto": "Alarma inalámbrica"
+    },
+    {
+      "ID": 124,
+      "name": "SIRENA MINI INAL",
+      "description": "SIRENA MINI INALAMBRICA. VOLUMEN 80 A 98 DB A 1 METRO DISTANCIA.",
+      "cost_base": 37.2,
+      "currency": "USD",
+      "utility_fixed": 0,
+      "utility_factor": 1.35,
+      "Tipo de producto": "Alarma inalámbrica"
+    },
+    {
+      "ID": 125,
+      "name": "RELAY INAL",
+      "description": "RELEVADOR INALAMBRICO.",
+      "cost_base": 25.77,
+      "currency": "USD",
+      "utility_fixed": 0,
+      "utility_factor": 1.35,
+      "Tipo de producto": "Alarma inalámbrica"
+    },
+    {
+      "ID": 126,
+      "name": "CONTROL INAL",
+      "description": "CONTROL REMOTO 4 BOTONES (ARMADO/DESARMADO/DESARMADO PARCIAL/PANICO)",
+      "cost_base": 17.7,
+      "currency": "USD",
+      "utility_fixed": 0,
+      "utility_factor": 1.35,
+      "Tipo de producto": "Alarma inalámbrica"
+    },
+    {
+      "ID": 127,
+      "name": "TROMPETA",
+      "description": "CORNETA CON RELEVADOR DE 24V SUPER POTENTE",
+      "cost_base": 263.85,
+      "currency": "MXN",
+      "utility_fixed": 0,
+      "utility_factor": 1.35,
+      "Tipo de producto": "Alarma inalámbrica"
+    },
+    {
+      "ID": 128,
+      "name": "ESTROBO",
+      "description": "ESTROBO DE LUZ LED PARPADEANTE",
+      "cost_base": 211.54,
+      "currency": "MXN",
+      "utility_fixed": 0,
+      "utility_factor": 1.35,
+      "Tipo de producto": "Alarma inalámbrica"
+    },
+    {
+      "ID": 129,
+      "name": "INSTALACION ALARMA",
+      "description": "SERVICIO DE INSTALACION DE ALARMA INALAMBRICA",
+      "cost_base": 0,
+      "currency": "MXN",
+      "utility_fixed": 490,
+      "utility_factor": 1,
+      "Tipo de producto": "Servicios"
+    },
+    {
+      "ID": 130,
+      "name": "BOLETERA T6",
+      "description": "BOLETERA 6 TARIFAS/SWTICH ENCENDIDO",
+      "cost_base": 2800.62,
+      "currency": "MXN",
+      "utility_fixed": 0,
+      "utility_factor": 1.33,
+      "Tipo de producto": "Boletera"
+    },
+    {
+      "ID": 131,
+      "name": "GABINETE X3",
+      "description": "GABINETE METALICO PARA RESGUARDO DE DVRMOVIL x3",
+      "cost_base": 1850,
+      "currency": "MXN",
+      "utility_fixed": 0,
+      "utility_factor": 1.3,
+      "Tipo de producto": "Accesorios"
+    },
+    {
+      "ID": 132,
+      "name": "SIRENA INAL",
+      "description": "SIRENA INALAMBRICA VOLUMEN 85-113dB 30W A 1 METRO DE DISTANCIA.",
+      "cost_base": 74.34,
+      "currency": "USD",
+      "utility_fixed": 0,
+      "utility_factor": 1.35,
+      "Tipo de producto": "Alarma inalámbrica"
+    },
+    {
+      "ID": 133,
+      "name": "PLAN ANUAL 5GB",
+      "description": "PLAN DE DATOS SMART SYSTEMS ANUAL (5GB POR MES)",
+      "cost_base": 2648.28,
+      "currency": "MXN",
+      "utility_fixed": 0,
+      "utility_factor": 1.35,
+      "Tipo de producto": "Planes de datos"
+    },
+    {
+      "ID": 134,
+      "name": "PLAN ANUAL 10GB",
+      "description": "PLAN DE DATOS SMART SYSTEMS ANUAL (10GB POR MES)",
+      "cost_base": 3348,
+      "currency": "MXN",
+      "utility_fixed": 0,
+      "utility_factor": 1.35,
+      "Tipo de producto": "Planes de datos"
+    },
+    {
+      "ID": 135,
+      "name": "PANEL SMART",
+      "description": "PANEL DE ALARMA INALAMBRICO, 2 CANALES SIMS/32 ESCENARIOS/FV/RESPALDO 12HRS.",
+      "cost_base": 213,
+      "currency": "USD",
+      "utility_fixed": 0,
+      "utility_factor": 1.35,
+      "Tipo de producto": "Alarma inalámbrica"
+    },
+    {
+      "ID": 136,
+      "name": "DETEC MOTION ANTI",
+      "description": "DETECTOR DE MOVIMIENTO INALAMBRICO ANTIENMASCARAMIENTO",
+      "cost_base": 128.85,
+      "currency": "USD",
+      "utility_fixed": 0,
+      "utility_factor": 1.35,
+      "Tipo de producto": "Alarma inalámbrica"
+    },
+    {
+      "ID": 137,
+      "name": "PANEL SMART PLUS",
+      "description": "PANEL DE ALARMA INALAMBRICO, 2 CANALES SIMS/FV/32 ESCENARIOS/CAVIDAD PARA BATERIA",
+      "cost_base": 196.8,
+      "currency": "USD",
+      "utility_fixed": 0,
+      "utility_factor": 1.4,
+      "Tipo de producto": "Alarma inalámbrica"
+    },
+    {
+      "ID": 138,
+      "name": "PANICO INAL",
+      "description": "BOTON DE PANICO INALAMBRICO",
+      "cost_base": 17.7,
+      "currency": "USD",
+      "utility_fixed": 0,
+      "utility_factor": 1.35,
+      "Tipo de producto": "Alarma inalámbrica"
+    },
+    {
+      "ID": 139,
+      "name": "PIRCAM",
+      "description": "DETECTOR DE MOVIMIENTO INALAMBRICO ANTIENMASCARAMIENTO - FOTOVERIFICICACION",
+      "cost_base": 193.39,
+      "currency": "USD",
+      "utility_fixed": 0,
+      "utility_factor": 1.35,
+      "Tipo de producto": "Alarma inalámbrica"
+    },
+    {
+      "ID": 140,
+      "name": "BATERIA 12V 9AMP",
+      "description": "BATERIA SELLADA ACIDO-PLOMO, 12 Vcc 9 Ah",
+      "cost_base": 413.1,
+      "currency": "MXN",
+      "utility_fixed": 0,
+      "utility_factor": 1.3,
+      "Tipo de producto": "Alarma inalámbrica"
+    },
+    {
+      "ID": 141,
+      "name": "BATERIA LITIO",
+      "description": "BATERIA LITIO 12Vcc a 10amp",
+      "cost_base": 1102,
+      "currency": "MXN",
+      "utility_fixed": 0,
+      "utility_factor": 1.3,
+      "Tipo de producto": "Alarma inalámbrica"
+    },
+    {
+      "ID": 142,
+      "name": "DETECT MOTION INAL 1",
+      "description": "DETECTOR DE MOVIMIENTO MOTIONPROTECT, INALAMBRICO.",
+      "cost_base": 913.59,
+      "currency": "MXN",
+      "utility_fixed": 0,
+      "utility_factor": 1.35,
+      "Tipo de producto": "Alarma inalámbrica"
+    },
+    {
+      "ID": 143,
+      "name": "SIM_SMART 10GB",
+      "description": "SIM DE DATOS SMART SYSTEMS CON PLAN DE MENSUAL DE 80GB",
+      "cost_base": 1112.93,
+      "currency": "MXN",
+      "utility_fixed": 0,
+      "utility_factor": 1,
+      "Tipo de producto": "Planes de datos"
+    },
+    {
+      "ID": 144,
+      "name": "SIM_SMART 100GB",
+      "description": "SIM DE DATOS SMART SYSTEMS CON PLAN DE MENSUAL DE 100GB",
+      "cost_base": 1353.45,
+      "currency": "MXN",
+      "utility_fixed": 0,
+      "utility_factor": 1,
+      "Tipo de producto": "Planes de datos"
+    },
+    {
+      "ID": 145,
+      "name": "Trompeta",
+      "description": "Trompeta de Aire 12VC",
+      "cost_base": 400,
+      "currency": "MXN",
+      "utility_fixed": 0,
+      "utility_factor": 1,
+      "Tipo de producto": "Alarma inalámbrica"
+    },
+    {
+      "ID": 146,
+      "name": "TECLADO INAL",
+      "description": "TECLADO TACTIL INALAMBRICO CON SIRENA INCLUIDA Y LECTOR DESFIRE KEYPAD",
+      "cost_base": 65.54,
+      "currency": "USD",
+      "utility_fixed": 0,
+      "utility_factor": 1.3,
+      "Tipo de producto": "Alarma inalámbrica"
+    },
+    {
+      "ID": 147,
+      "name": "PANEL N1",
+      "description": "PANEL DE ALARMA INALAMBRICO",
+      "cost_base": 126,
+      "currency": "USD",
+      "utility_fixed": 0,
+      "utility_factor": 1.3,
+      "Tipo de producto": "Alarma inalámbrica"
+    }
+  ],
+  "plantillaRows": [
+    {
+      "Plantilla ID": "1",
+      "Plantilla": "M1 TP (4)",
+      "Requerimiento": "Equipamiento de Sistema de VideoGrabación de 4 Cámaras"
+    },
+    {
+      "Plantilla ID": "2",
+      "Plantilla": "M1 P7 TU C/FISH (5)",
+      "Requerimiento": "Equipamiento de Sistema de VideoGrabación de 5 Cámaras y Pantalla V7"
+    },
+    {
+      "Plantilla ID": "3",
+      "Plantilla": "M1 CP4 TP (5) ok",
+      "Requerimiento": "Equipamiento de Sistema de Videograbación de 5 Cámaras y Pantalla Touch"
+    },
+    {
+      "Plantilla ID": "4",
+      "Plantilla": "Dashcam",
+      "Requerimiento": "Sistema de Videograbación de Cámaras Dashcam"
+    },
+    {
+      "Plantilla ID": "5",
+      "Plantilla": "Dashcam IA -Smart Cloud",
+      "Requerimiento": "Dashcam IA - Smart Cloud"
+    },
+    {
+      "Plantilla ID": "6",
+      "Plantilla": "Dashcam IA Smart Cloud + 1",
+      "Requerimiento": "Dashcam IA - Smart Cloud + 1 cámaras adicional."
+    },
+    {
+      "Plantilla ID": "7",
+      "Plantilla": "DASHCAM PLUS+R",
+      "Requerimiento": "Sistema de VideoGrabación de Cámaras Dashcam con IA + reversa"
+    },
+    {
+      "Plantilla ID": "10",
+      "Plantilla": "M1 TP (3)",
+      "Requerimiento": "Equipamiento de Sistema de VideoGrabación de 3 Cámaras."
+    },
+    {
+      "Plantilla ID": "11",
+      "Plantilla": "M1 P7 TP (4)",
+      "Requerimiento": "Equipamiento de Sistema de VideoGrabación de 4 Cámaras y Pantalla V7."
+    },
+    {
+      "Plantilla ID": "12",
+      "Plantilla": "M1 V7 TP (5)",
+      "Requerimiento": "Equipamiento de Sistema de Videograbación de 5 Cámaras y Pantalla."
+    },
+    {
+      "Plantilla ID": "13",
+      "Plantilla": "M1 P7 TP COS (5)",
+      "Requerimiento": "Equipamiento de Sistema de VideoGrabación de 5 Cámaras y Pantalla V7 Con costado."
+    },
+    {
+      "Plantilla ID": "14",
+      "Plantilla": "M1 CP4 TP COS (5)",
+      "Requerimiento": "Equipamiento de Sistema de VideoGrabación de 5 Cámaras y Pantalla CP4 Con costado."
+    },
+    {
+      "Plantilla ID": "15",
+      "Plantilla": "M1 TU (4)",
+      "Requerimiento": "Equipamiento de Sistema de VideoGrabación de 4 Cámaras."
+    },
+    {
+      "Plantilla ID": "16",
+      "Plantilla": "M1 CP4 TU (5)",
+      "Requerimiento": "Equipamiento de Sistema de VideoGrabación de 5 Cámaras y Pantalla CP4."
+    },
+    {
+      "Plantilla ID": "17",
+      "Plantilla": "M1 P7 TU (5)",
+      "Requerimiento": "Equipamiento de Sistema de VideoGrabación de 5 Cámaras y Pantalla V7."
+    },
+    {
+      "Plantilla ID": "18",
+      "Plantilla": "M1 P7 GRUAS",
+      "Requerimiento": "Equipamiento de Sistema de VideoGrabación de 5 Cámaras y Pantalla V7."
+    },
+    {
+      "Plantilla ID": "20",
+      "Plantilla": "Alarma Smart Plus",
+      "Requerimiento": "Sistema de Alarma Inalámbrica"
+    },
+    {
+      "Plantilla ID": "23",
+      "Plantilla": "Alarma Smart",
+      "Requerimiento": "Sistema de Alarma Inalámbrica"
+    },
+    {
+      "Plantilla ID": "28",
+      "Plantilla": "Dashcam IA - Ceiba",
+      "Requerimiento": "Dashcam IA - Ceiba"
+    },
+    {
+      "Plantilla ID": "29",
+      "Plantilla": "Dashcam IA - Int/Ext - Smart Cloud",
+      "Requerimiento": "Dashcam IA - 2 cámaras adicionales Int/Ext - Smart Cloud"
+    },
+    {
+      "Plantilla ID": "30",
+      "Plantilla": "Dashcam IA - Smart Cloud + Pantalla",
+      "Requerimiento": "Dashcam IA - Smart Cloud + Pantalla"
+    },
+    {
+      "Plantilla ID": "31",
+      "Plantilla": "Dashcam IA - Ceiba + Pantalla",
+      "Requerimiento": "Dashcam IA - Ceiba + Pantalla"
+    },
+    {
+      "Plantilla ID": "33",
+      "Plantilla": "Boletera T2 - V7",
+      "Requerimiento": "Sistema de Cámaras - Boletera - Pantalla"
+    }
+  ],
+  "elementos": [
+    {
+      "plantilla id": "1",
+      "producto id": "26",
+      "X": "DVR M1N2.0 (6Ch)",
+      "X_1": "GRABADOR CON 4 CANALES AHD & 2 CANALES IP/GPS/4G/SLOT MICROSD(2)&SSD(1)",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "1",
+      "producto id": "31",
+      "X": "SD256GBWD",
+      "X_1": "MEMORIA WESTERN DIGITAL PURPLE ESPECIAL PARA VIDEO VIGILANCIA 24/7 256GB",
+      "piezas": 2,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "1",
+      "producto id": "36",
+      "X": "CAM MINI2MP",
+      "X_1": "CAMARA MINI DOMO AHD PARA DVRMOVIL 2MP/AUDIO/IP66/5M IR/USO INTERIOR",
+      "piezas": 3,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "1",
+      "producto id": "39",
+      "X": "CAM IP",
+      "X_1": "CAMARA MINI DOMO IP PARA DVRMOVIL 2MP/AUDIO/IP66/5M IR/USO INTERIOR",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "1",
+      "producto id": "51",
+      "X": "CABLE IP 5MTS",
+      "X_1": "CABLE DIN DE AVIACION 6 PINES DE 5MTS IP",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "1",
+      "producto id": "43",
+      "X": "CABLE 3MTS",
+      "X_1": "CABLE DIN DE AVIACION 4 PINES DE 3MTS",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "1",
+      "producto id": "45",
+      "X": "CABLE 7MTS",
+      "X_1": "CABLE DIN DE AVIACION 4 PINES DE 7MTS",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "1",
+      "producto id": "48",
+      "X": "CABLE 15MTS",
+      "X_1": "CABLE DIN DE AVIACION 4 PINES DE 15MTS",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "1",
+      "producto id": "80",
+      "X": "GABINETE RESGUARDO",
+      "X_1": "GABINETE METALICO PARA RESGUARDO DE DVRMOVIL",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "1",
+      "producto id": "81",
+      "X": "PORTA FUSIBLE4",
+      "X_1": "CAJA DE FUSIBLES CON SOPORTE DE BLOQUEO E INDICADOR LED CON 4 BAHIAS",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "1",
+      "producto id": "21",
+      "X": "HOSPEDAJE CEIBA",
+      "X_1": "PAGO ANUAL DE SERVICIO DE HOSPEDAJE EN PLATAFORMA (CEIBA)",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "1",
+      "producto id": "7",
+      "X": "INSTALACION M1N",
+      "X_1": "SERVICIO DE RE/INSTALACION MANO DE OBRA",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "2",
+      "producto id": "26",
+      "X": "DVR M1N2.0 (6Ch)",
+      "X_1": "GRABADOR CON 4 CANALES AHD & 2 CANALES IP/GPS/4G/SLOT MICROSD(2)&SSD(1)",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "2",
+      "producto id": "31",
+      "X": "SD256GBWD",
+      "X_1": "MEMORIA WESTERN DIGITAL PURPLE ESPECIAL PARA VIDEO VIGILANCIA 24/7 256GB",
+      "piezas": 2,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "2",
+      "producto id": "36",
+      "X": "CAM MINI2MP",
+      "X_1": "CAMARA MINI DOMO AHD PARA DVRMOVIL 2MP/AUDIO/IP66/5M IR/USO INTERIOR",
+      "piezas": 2,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "2",
+      "producto id": "39",
+      "X": "CAM IP",
+      "X_1": "CAMARA MINI DOMO IP PARA DVRMOVIL 2MP/AUDIO/IP66/5M IR/USO INTERIOR",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "2",
+      "producto id": "40",
+      "X": "CAM FISHEYE",
+      "X_1": "CAMARA FISHEYE AHD PARA DVRMOVIL 2MP/NO AUDIO/IP67/NO LEDS IR/USO EXTERIOR",
+      "piezas": 2,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "2",
+      "producto id": "51",
+      "X": "CABLE IP 5MTS",
+      "X_1": "CABLE DIN DE AVIACION 6 PINES DE 5MTS IP",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "2",
+      "producto id": "45",
+      "X": "CABLE 7MTS",
+      "X_1": "CABLE DIN DE AVIACION 4 PINES DE 7MTS",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "2",
+      "producto id": "47",
+      "X": "CABLE 11MTS",
+      "X_1": "CABLE DIN DE AVIACION 4 PINES DE 11MTS",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "2",
+      "producto id": "48",
+      "X": "CABLE 15MTS",
+      "X_1": "CABLE DIN DE AVIACION 4 PINES DE 15MTS",
+      "piezas": 2,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "2",
+      "producto id": "80",
+      "X": "GABINETE RESGUARDO",
+      "X_1": "GABINETE METALICO PARA RESGUARDO DE DVRMOVIL",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "2",
+      "producto id": "67",
+      "X": "PANTALLA MMV7",
+      "X_1": "PANTALLA 7 PULGADAS MONITOR CONEXIÓN AVIACION COMPATIBLE CON M1N",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "3",
+      "producto id": "26",
+      "X": "DVR M1N2.0 (6Ch)",
+      "X_1": "GRABADOR CON 4 CANALES AHD & 2 CANALES IP/GPS/4G/SLOT MICROSD(2)&SSD(1)",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "2",
+      "producto id": "56",
+      "X": "CABLE CP4 RWATCH",
+      "X_1": "CABLE DE SALIDA DE VIDEO/1 SALIDA DE VIDEO 4 PINES/CONECTOR PARA R-WATCH PARA CP4",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "2",
+      "producto id": "58",
+      "X": "CABLE CP4 ALARMA",
+      "X_1": "MODULO DE ALARMA 8 ENTRADAS/2 SALIDAS ADAPTADOR 4 PINES",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "2",
+      "producto id": "112",
+      "X": "CONTACTO 75",
+      "X_1": "CONTACTO MAGNETICO PARA PUERTA, VENTANA O CORTINA, 75MM GAP",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "2",
+      "producto id": "81",
+      "X": "PORTA FUSIBLE4",
+      "X_1": "CAJA DE FUSIBLES CON SOPORTE DE BLOQUEO E INDICADOR LED CON 4 BAHIAS",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "2",
+      "producto id": "21",
+      "X": "HOSPEDAJE CEIBA",
+      "X_1": "PAGO ANUAL DE SERVICIO DE HOSPEDAJE EN PLATAFORMA (CEIBA)",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "2",
+      "producto id": "7",
+      "X": "INSTALACION M1N",
+      "X_1": "SERVICIO DE RE/INSTALACION MANO DE OBRA",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "3",
+      "producto id": "31",
+      "X": "SD256GBWD",
+      "X_1": "MEMORIA WESTERN DIGITAL PURPLE ESPECIAL PARA VIDEO VIGILANCIA 24/7 256GB",
+      "piezas": 2,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "3",
+      "producto id": "36",
+      "X": "CAM MINI2MP",
+      "X_1": "CAMARA MINI DOMO AHD PARA DVRMOVIL 2MP/AUDIO/IP66/5M IR/USO INTERIOR",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "3",
+      "producto id": "39",
+      "X": "CAM IP",
+      "X_1": "CAMARA MINI DOMO IP PARA DVRMOVIL 2MP/AUDIO/IP66/5M IR/USO INTERIOR",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "3",
+      "producto id": "40",
+      "X": "CAM FISHEYE",
+      "X_1": "CAMARA FISHEYE AHD PARA DVRMOVIL 2MP/NO AUDIO/IP67/NO LEDS IR/USO EXTERIOR",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "3",
+      "producto id": "41",
+      "X": "CAM P CIEGO",
+      "X_1": "CAMARA PUNTO CIEGO AHD PARA DVRMOVIL 2 MP/NO AUDIO/IP67/LEDS IR/USO EXTERIOR",
+      "piezas": 2,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "3",
+      "producto id": "90",
+      "X": "BRAKET FISHEYE",
+      "X_1": "BRAKET PARA CAMARA FISHEYE",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "3",
+      "producto id": "47",
+      "X": "CABLE 11MTS",
+      "X_1": "CABLE DIN DE AVIACION 4 PINES DE 11MTS",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "3",
+      "producto id": "50",
+      "X": "CABLE IP 3MTS",
+      "X_1": "CABLE DIN DE AVIACION 6 PINES DE 3MTS IP",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "3",
+      "producto id": "45",
+      "X": "CABLE 7MTS",
+      "X_1": "CABLE DIN DE AVIACION 4 PINES DE 7MTS",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "3",
+      "producto id": "48",
+      "X": "CABLE 15MTS",
+      "X_1": "CABLE DIN DE AVIACION 4 PINES DE 15MTS",
+      "piezas": 2,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "3",
+      "producto id": "80",
+      "X": "GABINETE RESGUARDO",
+      "X_1": "GABINETE METALICO PARA RESGUARDO DE DVRMOVIL",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "3",
+      "producto id": "68",
+      "X": "PANTALLA CP4",
+      "X_1": "PANTALLA TOUCH 7 PULGADAS CON INTERCOMUNICADOR INTEGRADO",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "3",
+      "producto id": "64",
+      "X": "CABLE EXPANSOR",
+      "X_1": "CABLE EXPANSOR CON ENTRADA DE VIDEO IPC2/R-WATCH/SALIDA DE VIDEO",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "3",
+      "producto id": "55",
+      "X": "CABLE  CP4 RADIO",
+      "X_1": "CABLE ARNES PARA CONEXIÓN DE RADIO INTERCOMUNICADOR PARA CP4",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "3",
+      "producto id": "108",
+      "X": "KIT ON/OFF",
+      "X_1": "KIT ON/OFF (CLIP, PASTILLA CONTACTO, ACTUADOR SW 45°)",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "20",
+      "producto id": "99",
+      "X": "CONVERTIDOR 24/12",
+      "X_1": "CONVERTIDOR DE VOLTAJE DE 24VCD A 12VCD",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "3",
+      "producto id": "58",
+      "X": "CABLE CP4 ALARMA",
+      "X_1": "MODULO DE ALARMA 8 ENTRADAS/2 SALIDAS ADAPTADOR 4 PINES",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "3",
+      "producto id": "81",
+      "X": "PORTA FUSIBLE4",
+      "X_1": "CAJA DE FUSIBLES CON SOPORTE DE BLOQUEO E INDICADOR LED CON 4 BAHIAS",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "3",
+      "producto id": "21",
+      "X": "HOSPEDAJE CEIBA",
+      "X_1": "PAGO ANUAL DE SERVICIO DE HOSPEDAJE EN PLATAFORMA (CEIBA)",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "3",
+      "producto id": "7",
+      "X": "INSTALACION M1N",
+      "X_1": "SERVICIO DE RE/INSTALACION MANO DE OBRA",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "4",
+      "producto id": "23",
+      "X": "DVR DASHCAM",
+      "X_1": "DASHCAM CON DOBLE CAMARA/GPS/4G/WIFI/SLOT MICROSD(2)",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "4",
+      "producto id": "31",
+      "X": "SD256GBWD",
+      "X_1": "MEMORIA WESTERN DIGITAL PURPLE ESPECIAL PARA VIDEO VIGILANCIA 24/7 256GB",
+      "piezas": 2,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "4",
+      "producto id": "81",
+      "X": "PORTA FUSIBLE4",
+      "X_1": "CAJA DE FUSIBLES CON SOPORTE DE BLOQUEO E INDICADOR LED CON 4 BAHIAS",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "4",
+      "producto id": "21",
+      "X": "HOSPEDAJE CEIBA",
+      "X_1": "PAGO ANUAL DE SERVICIO DE HOSPEDAJE EN PLATAFORMA (CEIBA)",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "4",
+      "producto id": "6",
+      "X": "INSTALACION DASH",
+      "X_1": "SERVICIO DE RE/INSTALACION MANO DE OBRA",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "5",
+      "producto id": "24",
+      "X": "DVR DASHCAM AI",
+      "X_1": "DASHCAM CON DOBLE CAMARA/GPS/4G/WIFI/SLOT MICROSD(2)/INTELIGENCIA ARTIFICIAL",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "5",
+      "producto id": "31",
+      "X": "SD256GBWD",
+      "X_1": "MEMORIA WESTERN DIGITAL PURPLE ESPECIAL PARA VIDEO VIGILANCIA 24/7 256GB",
+      "piezas": 2,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "5",
+      "producto id": "81",
+      "X": "PORTA FUSIBLE4",
+      "X_1": "CAJA DE FUSIBLES CON SOPORTE DE BLOQUEO E INDICADOR LED CON 4 BAHIAS",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "5",
+      "producto id": "22",
+      "X": "HOSPEDAJE SMART",
+      "X_1": "PAGO ANUAL DE SERVICIO DE HOSPEDAJE EN PLATAFORMA (CEIBA/SMART CLOUD)",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "5",
+      "producto id": "6",
+      "X": "INSTALACION DASH",
+      "X_1": "SERVICIO DE RE/INSTALACION MANO DE OBRA",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "6",
+      "producto id": "24",
+      "X": "DVR DASHCAM AI",
+      "X_1": "DASHCAM CON DOBLE CAMARA/GPS/4G/WIFI/SLOT MICROSD(2)/INTELIGENCIA ARTIFICIAL",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "6",
+      "producto id": "31",
+      "X": "SD256GBWD",
+      "X_1": "MEMORIA WESTERN DIGITAL PURPLE ESPECIAL PARA VIDEO VIGILANCIA 24/7 256GB",
+      "piezas": 2,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "6",
+      "producto id": "36",
+      "X": "CAM MINI2MP",
+      "X_1": "CAMARA MINI DOMO AHD PARA DVRMOVIL 2MP/AUDIO/IP66/5M IR/USO INTERIOR",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "6",
+      "producto id": "63",
+      "X": "CABLE VIDEO DASH",
+      "X_1": "CABLE DE VIDEO PARA DASHCAM 2 INPUT (1 AHD/1 IP) / 1 OUTPUT (VIDEO DE 4 PINES)",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "6",
+      "producto id": "45",
+      "X": "CABLE 7MTS",
+      "X_1": "CABLE DIN DE AVIACION 4 PINES DE 7MTS",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "6",
+      "producto id": "81",
+      "X": "PORTA FUSIBLE4",
+      "X_1": "CAJA DE FUSIBLES CON SOPORTE DE BLOQUEO E INDICADOR LED CON 4 BAHIAS",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "7",
+      "producto id": "24",
+      "X": "DVR DASHCAM AI",
+      "X_1": "DASHCAM CON DOBLE CAMARA/GPS/4G/WIFI/SLOT MICROSD(2)/INTELIGENCIA ARTIFICIAL",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "7",
+      "producto id": "31",
+      "X": "SD256GBWD",
+      "X_1": "MEMORIA WESTERN DIGITAL PURPLE ESPECIAL PARA VIDEO VIGILANCIA 24/7 256GB",
+      "piezas": 2,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "7",
+      "producto id": "40",
+      "X": "CAM FISHEYE",
+      "X_1": "CAMARA FISHEYE AHD PARA DVRMOVIL 2MP/NO AUDIO/IP67/NO LEDS IR/USO EXTERIOR",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "7",
+      "producto id": "90",
+      "X": "BRAKET FISHEYE",
+      "X_1": "BRAKET PARA CAMARA FISHEYE",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "7",
+      "producto id": "63",
+      "X": "CABLE VIDEO DASH",
+      "X_1": "CABLE DE VIDEO PARA DASHCAM 2 INPUT (1 AHD/1 IP) / 1 OUTPUT (VIDEO DE 4 PINES)",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "7",
+      "producto id": "66",
+      "X": "PANTALLA TFT 4",
+      "X_1": "PANTALLA 4 PULGADAS MONITOR TFT LED",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "7",
+      "producto id": "47",
+      "X": "CABLE 11MTS",
+      "X_1": "CABLE DIN DE AVIACION 4 PINES DE 11MTS",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "7",
+      "producto id": "81",
+      "X": "PORTA FUSIBLE4",
+      "X_1": "CAJA DE FUSIBLES CON SOPORTE DE BLOQUEO E INDICADOR LED CON 4 BAHIAS",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "7",
+      "producto id": "22",
+      "X": "HOSPEDAJE SMART",
+      "X_1": "PAGO ANUAL DE SERVICIO DE HOSPEDAJE EN PLATAFORMA (CEIBA/SMART CLOUD)",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "7",
+      "producto id": "6",
+      "X": "INSTALACION DASH",
+      "X_1": "SERVICIO DE RE/INSTALACION MANO DE OBRA",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "23",
+      "producto id": "126",
+      "X": "CONTROL INAL",
+      "X_1": "CONTROL REMOTO 4 BOTONES (ARMADO/DESARMADO/DESARMADO PARCIAL/PANICO)",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "20",
+      "producto id": "126",
+      "X": "CONTROL INAL",
+      "X_1": "CONTROL REMOTO 4 BOTONES (ARMADO/DESARMADO/DESARMADO PARCIAL/PANICO)",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "29",
+      "producto id": "24",
+      "X": "DVR DASHCAM AI",
+      "X_1": "DASHCAM CON DOBLE CAMARA/GPS/4G/WIFI/SLOT MICROSD(2)/INTELIGENCIA ARTIFICIAL",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "29",
+      "producto id": "31",
+      "X": "SD256GBWD",
+      "X_1": "MEMORIA WESTERN DIGITAL PURPLE ESPECIAL PARA VIDEO VIGILANCIA 24/7 256GB",
+      "piezas": 2,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "30",
+      "producto id": "24",
+      "X": "DVR DASHCAM AI",
+      "X_1": "DASHCAM CON DOBLE CAMARA/GPS/4G/WIFI/SLOT MICROSD(2)/INTELIGENCIA ARTIFICIAL",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "29",
+      "producto id": "63",
+      "X": "CABLE VIDEO DASH",
+      "X_1": "CABLE DE VIDEO PARA DASHCAM 2 INPUT (1 AHD/1 IP) / 1 OUTPUT (VIDEO DE 4 PINES)",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "29",
+      "producto id": "39",
+      "X": "CAM IP",
+      "X_1": "CAMARA MINI DOMO IP PARA DVRMOVIL 2MP/AUDIO/IP66/5M IR/USO INTERIOR",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "29",
+      "producto id": "38",
+      "X": "CAM ANTI",
+      "X_1": "CAMARA DOMO AHD ANTIVANDALICA PARA DVRMOVIL 2MP/IP66/10M IR/USO EXTERIOR",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "29",
+      "producto id": "50",
+      "X": "CABLE IP 3MTS",
+      "X_1": "CABLE DIN DE AVIACION 6 PINES DE 3MTS IP",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "29",
+      "producto id": "48",
+      "X": "CABLE 15MTS",
+      "X_1": "CABLE DIN DE AVIACION 4 PINES DE 15MTS",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "29",
+      "producto id": "81",
+      "X": "PORTA FUSIBLE4",
+      "X_1": "CAJA DE FUSIBLES CON SOPORTE DE BLOQUEO E INDICADOR LED CON 4 BAHIAS",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "29",
+      "producto id": "22",
+      "X": "HOSPEDAJE SMART",
+      "X_1": "PAGO ANUAL DE SERVICIO DE HOSPEDAJE EN PLATAFORMA (CEIBA/SMART CLOUD)",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "10",
+      "producto id": "26",
+      "X": "DVR M1N2.0 (6Ch)",
+      "X_1": "GRABADOR CON 4 CANALES AHD & 2 CANALES IP/GPS/4G/SLOT MICROSD(2)&SSD(1)",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "10",
+      "producto id": "31",
+      "X": "SD256GBWD",
+      "X_1": "MEMORIA WESTERN DIGITAL PURPLE ESPECIAL PARA VIDEO VIGILANCIA 24/7 256GB",
+      "piezas": 2,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "10",
+      "producto id": "36",
+      "X": "CAM MINI2MP",
+      "X_1": "CAMARA MINI DOMO AHD PARA DVRMOVIL 2MP/AUDIO/IP66/5M IR/USO INTERIOR",
+      "piezas": 2,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "10",
+      "producto id": "39",
+      "X": "CAM IP",
+      "X_1": "CAMARA MINI DOMO IP PARA DVRMOVIL 2MP/AUDIO/IP66/5M IR/USO INTERIOR",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "10",
+      "producto id": "50",
+      "X": "CABLE IP 3MTS",
+      "X_1": "CABLE DIN DE AVIACION 6 PINES DE 3MTS IP",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "10",
+      "producto id": "43",
+      "X": "CABLE 3MTS",
+      "X_1": "CABLE DIN DE AVIACION 4 PINES DE 3MTS",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "10",
+      "producto id": "45",
+      "X": "CABLE 7MTS",
+      "X_1": "CABLE DIN DE AVIACION 4 PINES DE 7MTS",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "10",
+      "producto id": "80",
+      "X": "GABINETE RESGUARDO",
+      "X_1": "GABINETE METALICO PARA RESGUARDO DE DVRMOVIL",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "10",
+      "producto id": "81",
+      "X": "PORTA FUSIBLE4",
+      "X_1": "CAJA DE FUSIBLES CON SOPORTE DE BLOQUEO E INDICADOR LED CON 4 BAHIAS",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "10",
+      "producto id": "21",
+      "X": "HOSPEDAJE CEIBA",
+      "X_1": "PAGO ANUAL DE SERVICIO DE HOSPEDAJE EN PLATAFORMA (CEIBA)",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "10",
+      "producto id": "7",
+      "X": "INSTALACION M1N",
+      "X_1": "SERVICIO DE RE/INSTALACION MANO DE OBRA",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "10",
+      "producto id": "116",
+      "X": "SIM_SMART 10GB",
+      "X_1": "SIM DE DATOS SMART SYSTEMS CON PLAN DE MENSUAL DE 10GB",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "1",
+      "producto id": "116",
+      "X": "SIM_SMART 10GB",
+      "X_1": "SIM DE DATOS SMART SYSTEMS CON PLAN DE MENSUAL DE 10GB",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "11",
+      "producto id": "26",
+      "X": "DVR M1N2.0 (6Ch)",
+      "X_1": "GRABADOR CON 4 CANALES AHD & 2 CANALES IP/GPS/4G/SLOT MICROSD(2)&SSD(1)",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "11",
+      "producto id": "31",
+      "X": "SD256GBWD",
+      "X_1": "MEMORIA WESTERN DIGITAL PURPLE ESPECIAL PARA VIDEO VIGILANCIA 24/7 256GB",
+      "piezas": 2,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "11",
+      "producto id": "36",
+      "X": "CAM MINI2MP",
+      "X_1": "CAMARA MINI DOMO AHD PARA DVRMOVIL 2MP/AUDIO/IP66/5M IR/USO INTERIOR",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "11",
+      "producto id": "39",
+      "X": "CAM IP",
+      "X_1": "CAMARA MINI DOMO IP PARA DVRMOVIL 2MP/AUDIO/IP66/5M IR/USO INTERIOR",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "11",
+      "producto id": "40",
+      "X": "CAM FISHEYE",
+      "X_1": "CAMARA FISHEYE AHD PARA DVRMOVIL 2MP/NO AUDIO/IP67/NO LEDS IR/USO EXTERIOR",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "11",
+      "producto id": "41",
+      "X": "CAM P CIEGO",
+      "X_1": "CAMARA PUNTO CIEGO AHD PARA DVRMOVIL 2 MP/NO AUDIO/IP67/LEDS IR/USO EXTERIOR",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "11",
+      "producto id": "90",
+      "X": "BRAKET FISHEYE",
+      "X_1": "BRAKET PARA CAMARA FISHEYE",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "11",
+      "producto id": "50",
+      "X": "CABLE IP 3MTS",
+      "X_1": "CABLE DIN DE AVIACION 6 PINES DE 3MTS IP",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "11",
+      "producto id": "45",
+      "X": "CABLE 7MTS",
+      "X_1": "CABLE DIN DE AVIACION 4 PINES DE 7MTS",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "11",
+      "producto id": "47",
+      "X": "CABLE 11MTS",
+      "X_1": "CABLE DIN DE AVIACION 4 PINES DE 11MTS",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "11",
+      "producto id": "48",
+      "X": "CABLE 15MTS",
+      "X_1": "CABLE DIN DE AVIACION 4 PINES DE 15MTS",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "11",
+      "producto id": "80",
+      "X": "GABINETE RESGUARDO",
+      "X_1": "GABINETE METALICO PARA RESGUARDO DE DVRMOVIL",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "11",
+      "producto id": "67",
+      "X": "PANTALLA MMV7",
+      "X_1": "PANTALLA 7 PULGADAS MONITOR CONEXIÓN AVIACION COMPATIBLE CON M1N",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "3",
+      "producto id": "116",
+      "X": "SIM_SMART 10GB",
+      "X_1": "SIM DE DATOS SMART SYSTEMS CON PLAN DE MENSUAL DE 10GB",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "11",
+      "producto id": "56",
+      "X": "CABLE CP4 RWATCH",
+      "X_1": "CABLE DE SALIDA DE VIDEO/1 SALIDA DE VIDEO 4 PINES/CONECTOR PARA R-WATCH PARA CP4",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "11",
+      "producto id": "58",
+      "X": "CABLE CP4 ALARMA",
+      "X_1": "MODULO DE ALARMA 8 ENTRADAS/2 SALIDAS ADAPTADOR 4 PINES",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "11",
+      "producto id": "81",
+      "X": "PORTA FUSIBLE4",
+      "X_1": "CAJA DE FUSIBLES CON SOPORTE DE BLOQUEO E INDICADOR LED CON 4 BAHIAS",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "11",
+      "producto id": "21",
+      "X": "HOSPEDAJE CEIBA",
+      "X_1": "PAGO ANUAL DE SERVICIO DE HOSPEDAJE EN PLATAFORMA (CEIBA)",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "11",
+      "producto id": "7",
+      "X": "INSTALACION M1N",
+      "X_1": "SERVICIO DE RE/INSTALACION MANO DE OBRA",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "11",
+      "producto id": "116",
+      "X": "SIM_SMART 10GB",
+      "X_1": "SIM DE DATOS SMART SYSTEMS CON PLAN DE MENSUAL DE 10GB",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "12",
+      "producto id": "26",
+      "X": "DVR M1N2.0 (6Ch)",
+      "X_1": "GRABADOR CON 4 CANALES AHD & 2 CANALES IP/GPS/4G/SLOT MICROSD(2)&SSD(1)",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "12",
+      "producto id": "31",
+      "X": "SD256GBWD",
+      "X_1": "MEMORIA WESTERN DIGITAL PURPLE ESPECIAL PARA VIDEO VIGILANCIA 24/7 256GB",
+      "piezas": 2,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "12",
+      "producto id": "36",
+      "X": "CAM MINI2MP",
+      "X_1": "CAMARA MINI DOMO AHD PARA DVRMOVIL 2MP/AUDIO/IP66/5M IR/USO INTERIOR",
+      "piezas": 2,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "12",
+      "producto id": "39",
+      "X": "CAM IP",
+      "X_1": "CAMARA MINI DOMO IP PARA DVRMOVIL 2MP/AUDIO/IP66/5M IR/USO INTERIOR",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "12",
+      "producto id": "40",
+      "X": "CAM FISHEYE",
+      "X_1": "CAMARA FISHEYE AHD PARA DVRMOVIL 2MP/NO AUDIO/IP67/NO LEDS IR/USO EXTERIOR",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "12",
+      "producto id": "41",
+      "X": "CAM P CIEGO",
+      "X_1": "CAMARA PUNTO CIEGO AHD PARA DVRMOVIL 2 MP/NO AUDIO/IP67/LEDS IR/USO EXTERIOR",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "12",
+      "producto id": "90",
+      "X": "BRAKET FISHEYE",
+      "X_1": "BRAKET PARA CAMARA FISHEYE",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "12",
+      "producto id": "51",
+      "X": "CABLE IP 5MTS",
+      "X_1": "CABLE DIN DE AVIACION 6 PINES DE 5MTS IP",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "12",
+      "producto id": "43",
+      "X": "CABLE 3MTS",
+      "X_1": "CABLE DIN DE AVIACION 4 PINES DE 3MTS",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "12",
+      "producto id": "45",
+      "X": "CABLE 7MTS",
+      "X_1": "CABLE DIN DE AVIACION 4 PINES DE 7MTS",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "12",
+      "producto id": "48",
+      "X": "CABLE 15MTS",
+      "X_1": "CABLE DIN DE AVIACION 4 PINES DE 15MTS",
+      "piezas": 2,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "12",
+      "producto id": "67",
+      "X": "PANTALLA MMV7",
+      "X_1": "PANTALLA 7 PULGADAS MONITOR CONEXIÓN AVIACION COMPATIBLE CON M1N",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "12",
+      "producto id": "56",
+      "X": "CABLE CP4 RWATCH",
+      "X_1": "CABLE DE SALIDA DE VIDEO/1 SALIDA DE VIDEO 4 PINES/CONECTOR PARA R-WATCH PARA CP4",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "12",
+      "producto id": "58",
+      "X": "CABLE CP4 ALARMA",
+      "X_1": "MODULO DE ALARMA 8 ENTRADAS/2 SALIDAS ADAPTADOR 4 PINES",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "12",
+      "producto id": "81",
+      "X": "PORTA FUSIBLE4",
+      "X_1": "CAJA DE FUSIBLES CON SOPORTE DE BLOQUEO E INDICADOR LED CON 4 BAHIAS",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "12",
+      "producto id": "80",
+      "X": "GABINETE RESGUARDO",
+      "X_1": "GABINETE METALICO PARA RESGUARDO DE DVRMOVIL",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "12",
+      "producto id": "21",
+      "X": "HOSPEDAJE CEIBA",
+      "X_1": "PAGO ANUAL DE SERVICIO DE HOSPEDAJE EN PLATAFORMA (CEIBA)",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "12",
+      "producto id": "7",
+      "X": "INSTALACION M1N",
+      "X_1": "SERVICIO DE RE/INSTALACION MANO DE OBRA",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "12",
+      "producto id": "116",
+      "X": "SIM_SMART 10GB",
+      "X_1": "SIM DE DATOS SMART SYSTEMS CON PLAN DE MENSUAL DE 10GB",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "13",
+      "producto id": "26",
+      "X": "DVR M1N2.0 (6Ch)",
+      "X_1": "GRABADOR CON 4 CANALES AHD & 2 CANALES IP/GPS/4G/SLOT MICROSD(2)&SSD(1)",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "13",
+      "producto id": "31",
+      "X": "SD256GBWD",
+      "X_1": "MEMORIA WESTERN DIGITAL PURPLE ESPECIAL PARA VIDEO VIGILANCIA 24/7 256GB",
+      "piezas": 2,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "13",
+      "producto id": "36",
+      "X": "CAM MINI2MP",
+      "X_1": "CAMARA MINI DOMO AHD PARA DVRMOVIL 2MP/AUDIO/IP66/5M IR/USO INTERIOR",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "13",
+      "producto id": "39",
+      "X": "CAM IP",
+      "X_1": "CAMARA MINI DOMO IP PARA DVRMOVIL 2MP/AUDIO/IP66/5M IR/USO INTERIOR",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "13",
+      "producto id": "38",
+      "X": "CAM ANTI",
+      "X_1": "CAMARA DOMO AHD ANTIVANDALICA PARA DVRMOVIL 2MP/IP66/10M IR/USO EXTERIOR",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "13",
+      "producto id": "40",
+      "X": "CAM FISHEYE",
+      "X_1": "CAMARA FISHEYE AHD PARA DVRMOVIL 2MP/NO AUDIO/IP67/NO LEDS IR/USO EXTERIOR",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "13",
+      "producto id": "41",
+      "X": "CAM P CIEGO",
+      "X_1": "CAMARA PUNTO CIEGO AHD PARA DVRMOVIL 2 MP/NO AUDIO/IP67/LEDS IR/USO EXTERIOR",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "13",
+      "producto id": "90",
+      "X": "BRAKET FISHEYE",
+      "X_1": "BRAKET PARA CAMARA FISHEYE",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "13",
+      "producto id": "51",
+      "X": "CABLE IP 5MTS",
+      "X_1": "CABLE DIN DE AVIACION 6 PINES DE 5MTS IP",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "13",
+      "producto id": "43",
+      "X": "CABLE 3MTS",
+      "X_1": "CABLE DIN DE AVIACION 4 PINES DE 3MTS",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "13",
+      "producto id": "45",
+      "X": "CABLE 7MTS",
+      "X_1": "CABLE DIN DE AVIACION 4 PINES DE 7MTS",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "13",
+      "producto id": "47",
+      "X": "CABLE 11MTS",
+      "X_1": "CABLE DIN DE AVIACION 4 PINES DE 11MTS",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "13",
+      "producto id": "80",
+      "X": "GABINETE RESGUARDO",
+      "X_1": "GABINETE METALICO PARA RESGUARDO DE DVRMOVIL",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "13",
+      "producto id": "67",
+      "X": "PANTALLA MMV7",
+      "X_1": "PANTALLA 7 PULGADAS MONITOR CONEXIÓN AVIACION COMPATIBLE CON M1N",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "13",
+      "producto id": "56",
+      "X": "CABLE CP4 RWATCH",
+      "X_1": "CABLE DE SALIDA DE VIDEO/1 SALIDA DE VIDEO 4 PINES/CONECTOR PARA R-WATCH PARA CP4",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "13",
+      "producto id": "58",
+      "X": "CABLE CP4 ALARMA",
+      "X_1": "MODULO DE ALARMA 8 ENTRADAS/2 SALIDAS ADAPTADOR 4 PINES",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "13",
+      "producto id": "81",
+      "X": "PORTA FUSIBLE4",
+      "X_1": "CAJA DE FUSIBLES CON SOPORTE DE BLOQUEO E INDICADOR LED CON 4 BAHIAS",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "13",
+      "producto id": "21",
+      "X": "HOSPEDAJE CEIBA",
+      "X_1": "PAGO ANUAL DE SERVICIO DE HOSPEDAJE EN PLATAFORMA (CEIBA)",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "13",
+      "producto id": "7",
+      "X": "INSTALACION M1N",
+      "X_1": "SERVICIO DE RE/INSTALACION MANO DE OBRA",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "13",
+      "producto id": "116",
+      "X": "SIM_SMART 10GB",
+      "X_1": "SIM DE DATOS SMART SYSTEMS CON PLAN DE MENSUAL DE 10GB",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "14",
+      "producto id": "26",
+      "X": "DVR M1N2.0 (6Ch)",
+      "X_1": "GRABADOR CON 4 CANALES AHD & 2 CANALES IP/GPS/4G/SLOT MICROSD(2)&SSD(1)",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "14",
+      "producto id": "31",
+      "X": "SD256GBWD",
+      "X_1": "MEMORIA WESTERN DIGITAL PURPLE ESPECIAL PARA VIDEO VIGILANCIA 24/7 256GB",
+      "piezas": 2,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "14",
+      "producto id": "36",
+      "X": "CAM MINI2MP",
+      "X_1": "CAMARA MINI DOMO AHD PARA DVRMOVIL 2MP/AUDIO/IP66/5M IR/USO INTERIOR",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "14",
+      "producto id": "39",
+      "X": "CAM IP",
+      "X_1": "CAMARA MINI DOMO IP PARA DVRMOVIL 2MP/AUDIO/IP66/5M IR/USO INTERIOR",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "14",
+      "producto id": "38",
+      "X": "CAM ANTI",
+      "X_1": "CAMARA DOMO AHD ANTIVANDALICA PARA DVRMOVIL 2MP/IP66/10M IR/USO EXTERIOR",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "14",
+      "producto id": "40",
+      "X": "CAM FISHEYE",
+      "X_1": "CAMARA FISHEYE AHD PARA DVRMOVIL 2MP/NO AUDIO/IP67/NO LEDS IR/USO EXTERIOR",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "14",
+      "producto id": "41",
+      "X": "CAM P CIEGO",
+      "X_1": "CAMARA PUNTO CIEGO AHD PARA DVRMOVIL 2 MP/NO AUDIO/IP67/LEDS IR/USO EXTERIOR",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "29",
+      "producto id": "6",
+      "X": "INSTALACION DASH",
+      "X_1": "SERVICIO DE RE/INSTALACION MANO DE OBRA",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "14",
+      "producto id": "51",
+      "X": "CABLE IP 5MTS",
+      "X_1": "CABLE DIN DE AVIACION 6 PINES DE 5MTS IP",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "14",
+      "producto id": "45",
+      "X": "CABLE 7MTS",
+      "X_1": "CABLE DIN DE AVIACION 4 PINES DE 7MTS",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "14",
+      "producto id": "47",
+      "X": "CABLE 11MTS",
+      "X_1": "CABLE DIN DE AVIACION 4 PINES DE 11MTS",
+      "piezas": 2,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "14",
+      "producto id": "48",
+      "X": "CABLE 15MTS",
+      "X_1": "CABLE DIN DE AVIACION 4 PINES DE 15MTS",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "14",
+      "producto id": "80",
+      "X": "GABINETE RESGUARDO",
+      "X_1": "GABINETE METALICO PARA RESGUARDO DE DVRMOVIL",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "14",
+      "producto id": "68",
+      "X": "PANTALLA CP4",
+      "X_1": "PANTALLA TOUCH 7 PULGADAS CON INTERCOMUNICADOR INTEGRADO",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "14",
+      "producto id": "57",
+      "X": "CABLE CP4 CONVERTER",
+      "X_1": "CABLE CONVERTIDOR AVIACION DE 4 PINES PARA CP4",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "14",
+      "producto id": "55",
+      "X": "CABLE  CP4 RADIO",
+      "X_1": "CABLE ARNES PARA CONEXIÓN DE RADIO INTERCOMUNICADOR PARA CP4",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "14",
+      "producto id": "108",
+      "X": "KIT ON/OFF",
+      "X_1": "KIT ON/OFF (CLIP, PASTILLA CONTACTO, ACTUADOR SW 45°)",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "14",
+      "producto id": "56",
+      "X": "CABLE CP4 RWATCH",
+      "X_1": "CABLE DE SALIDA DE VIDEO/1 SALIDA DE VIDEO 4 PINES/CONECTOR PARA R-WATCH PARA CP4",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "14",
+      "producto id": "58",
+      "X": "CABLE CP4 ALARMA",
+      "X_1": "MODULO DE ALARMA 8 ENTRADAS/2 SALIDAS ADAPTADOR 4 PINES",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "14",
+      "producto id": "81",
+      "X": "PORTA FUSIBLE4",
+      "X_1": "CAJA DE FUSIBLES CON SOPORTE DE BLOQUEO E INDICADOR LED CON 4 BAHIAS",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "14",
+      "producto id": "21",
+      "X": "HOSPEDAJE CEIBA",
+      "X_1": "PAGO ANUAL DE SERVICIO DE HOSPEDAJE EN PLATAFORMA (CEIBA)",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "14",
+      "producto id": "7",
+      "X": "INSTALACION M1N",
+      "X_1": "SERVICIO DE RE/INSTALACION MANO DE OBRA",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "14",
+      "producto id": "116",
+      "X": "SIM_SMART 10GB",
+      "X_1": "SIM DE DATOS SMART SYSTEMS CON PLAN DE MENSUAL DE 10GB",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "15",
+      "producto id": "26",
+      "X": "DVR M1N2.0 (6Ch)",
+      "X_1": "GRABADOR CON 4 CANALES AHD & 2 CANALES IP/GPS/4G/SLOT MICROSD(2)&SSD(1)",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "15",
+      "producto id": "31",
+      "X": "SD256GBWD",
+      "X_1": "MEMORIA WESTERN DIGITAL PURPLE ESPECIAL PARA VIDEO VIGILANCIA 24/7 256GB",
+      "piezas": 2,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "15",
+      "producto id": "36",
+      "X": "CAM MINI2MP",
+      "X_1": "CAMARA MINI DOMO AHD PARA DVRMOVIL 2MP/AUDIO/IP66/5M IR/USO INTERIOR",
+      "piezas": 3,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "15",
+      "producto id": "39",
+      "X": "CAM IP",
+      "X_1": "CAMARA MINI DOMO IP PARA DVRMOVIL 2MP/AUDIO/IP66/5M IR/USO INTERIOR",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "15",
+      "producto id": "51",
+      "X": "CABLE IP 5MTS",
+      "X_1": "CABLE DIN DE AVIACION 6 PINES DE 5MTS IP",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "15",
+      "producto id": "43",
+      "X": "CABLE 3MTS",
+      "X_1": "CABLE DIN DE AVIACION 4 PINES DE 3MTS",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "15",
+      "producto id": "45",
+      "X": "CABLE 7MTS",
+      "X_1": "CABLE DIN DE AVIACION 4 PINES DE 7MTS",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "15",
+      "producto id": "48",
+      "X": "CABLE 15MTS",
+      "X_1": "CABLE DIN DE AVIACION 4 PINES DE 15MTS",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "15",
+      "producto id": "80",
+      "X": "GABINETE RESGUARDO",
+      "X_1": "GABINETE METALICO PARA RESGUARDO DE DVRMOVIL",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "15",
+      "producto id": "81",
+      "X": "PORTA FUSIBLE4",
+      "X_1": "CAJA DE FUSIBLES CON SOPORTE DE BLOQUEO E INDICADOR LED CON 4 BAHIAS",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "15",
+      "producto id": "21",
+      "X": "HOSPEDAJE CEIBA",
+      "X_1": "PAGO ANUAL DE SERVICIO DE HOSPEDAJE EN PLATAFORMA (CEIBA)",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "15",
+      "producto id": "7",
+      "X": "INSTALACION M1N",
+      "X_1": "SERVICIO DE RE/INSTALACION MANO DE OBRA",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "15",
+      "producto id": "116",
+      "X": "SIM_SMART 10GB",
+      "X_1": "SIM DE DATOS SMART SYSTEMS CON PLAN DE MENSUAL DE 10GB",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "16",
+      "producto id": "26",
+      "X": "DVR M1N2.0 (6Ch)",
+      "X_1": "GRABADOR CON 4 CANALES AHD & 2 CANALES IP/GPS/4G/SLOT MICROSD(2)&SSD(1)",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "16",
+      "producto id": "31",
+      "X": "SD256GBWD",
+      "X_1": "MEMORIA WESTERN DIGITAL PURPLE ESPECIAL PARA VIDEO VIGILANCIA 24/7 256GB",
+      "piezas": 2,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "16",
+      "producto id": "36",
+      "X": "CAM MINI2MP",
+      "X_1": "CAMARA MINI DOMO AHD PARA DVRMOVIL 2MP/AUDIO/IP66/5M IR/USO INTERIOR",
+      "piezas": 2,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "16",
+      "producto id": "39",
+      "X": "CAM IP",
+      "X_1": "CAMARA MINI DOMO IP PARA DVRMOVIL 2MP/AUDIO/IP66/5M IR/USO INTERIOR",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "16",
+      "producto id": "40",
+      "X": "CAM FISHEYE",
+      "X_1": "CAMARA FISHEYE AHD PARA DVRMOVIL 2MP/NO AUDIO/IP67/NO LEDS IR/USO EXTERIOR",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "16",
+      "producto id": "41",
+      "X": "CAM P CIEGO",
+      "X_1": "CAMARA PUNTO CIEGO AHD PARA DVRMOVIL 2 MP/NO AUDIO/IP67/LEDS IR/USO EXTERIOR",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "16",
+      "producto id": "90",
+      "X": "BRAKET FISHEYE",
+      "X_1": "BRAKET PARA CAMARA FISHEYE",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "16",
+      "producto id": "51",
+      "X": "CABLE IP 5MTS",
+      "X_1": "CABLE DIN DE AVIACION 6 PINES DE 5MTS IP",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "16",
+      "producto id": "45",
+      "X": "CABLE 7MTS",
+      "X_1": "CABLE DIN DE AVIACION 4 PINES DE 7MTS",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "16",
+      "producto id": "47",
+      "X": "CABLE 11MTS",
+      "X_1": "CABLE DIN DE AVIACION 4 PINES DE 11MTS",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "16",
+      "producto id": "48",
+      "X": "CABLE 15MTS",
+      "X_1": "CABLE DIN DE AVIACION 4 PINES DE 15MTS",
+      "piezas": 2,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "16",
+      "producto id": "80",
+      "X": "GABINETE RESGUARDO",
+      "X_1": "GABINETE METALICO PARA RESGUARDO DE DVRMOVIL",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "16",
+      "producto id": "68",
+      "X": "PANTALLA CP4",
+      "X_1": "PANTALLA TOUCH 7 PULGADAS CON INTERCOMUNICADOR INTEGRADO",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "16",
+      "producto id": "57",
+      "X": "CABLE CP4 CONVERTER",
+      "X_1": "CABLE CONVERTIDOR AVIACION DE 4 PINES PARA CP4",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "16",
+      "producto id": "56",
+      "X": "CABLE CP4 RWATCH",
+      "X_1": "CABLE DE SALIDA DE VIDEO/1 SALIDA DE VIDEO 4 PINES/CONECTOR PARA R-WATCH PARA CP4",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "16",
+      "producto id": "108",
+      "X": "KIT ON/OFF",
+      "X_1": "KIT ON/OFF (CLIP, PASTILLA CONTACTO, ACTUADOR SW 45°)",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "16",
+      "producto id": "55",
+      "X": "CABLE  CP4 RADIO",
+      "X_1": "CABLE ARNES PARA CONEXIÓN DE RADIO INTERCOMUNICADOR PARA CP4",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "16",
+      "producto id": "58",
+      "X": "CABLE CP4 ALARMA",
+      "X_1": "MODULO DE ALARMA 8 ENTRADAS/2 SALIDAS ADAPTADOR 4 PINES",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "16",
+      "producto id": "112",
+      "X": "CONTACTO 75",
+      "X_1": "CONTACTO MAGNETICO PARA PUERTA, VENTANA O CORTINA, 75MM GAP",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "16",
+      "producto id": "81",
+      "X": "PORTA FUSIBLE4",
+      "X_1": "CAJA DE FUSIBLES CON SOPORTE DE BLOQUEO E INDICADOR LED CON 4 BAHIAS",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "16",
+      "producto id": "21",
+      "X": "HOSPEDAJE CEIBA",
+      "X_1": "PAGO ANUAL DE SERVICIO DE HOSPEDAJE EN PLATAFORMA (CEIBA)",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "16",
+      "producto id": "7",
+      "X": "INSTALACION M1N",
+      "X_1": "SERVICIO DE RE/INSTALACION MANO DE OBRA",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "16",
+      "producto id": "116",
+      "X": "SIM_SMART 10GB",
+      "X_1": "SIM DE DATOS SMART SYSTEMS CON PLAN DE MENSUAL DE 10GB",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "17",
+      "producto id": "26",
+      "X": "DVR M1N2.0 (6Ch)",
+      "X_1": "GRABADOR CON 4 CANALES AHD & 2 CANALES IP/GPS/4G/SLOT MICROSD(2)&SSD(1)",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "17",
+      "producto id": "31",
+      "X": "SD256GBWD",
+      "X_1": "MEMORIA WESTERN DIGITAL PURPLE ESPECIAL PARA VIDEO VIGILANCIA 24/7 256GB",
+      "piezas": 2,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "17",
+      "producto id": "36",
+      "X": "CAM MINI2MP",
+      "X_1": "CAMARA MINI DOMO AHD PARA DVRMOVIL 2MP/AUDIO/IP66/5M IR/USO INTERIOR",
+      "piezas": 2,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "17",
+      "producto id": "39",
+      "X": "CAM IP",
+      "X_1": "CAMARA MINI DOMO IP PARA DVRMOVIL 2MP/AUDIO/IP66/5M IR/USO INTERIOR",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "17",
+      "producto id": "40",
+      "X": "CAM FISHEYE",
+      "X_1": "CAMARA FISHEYE AHD PARA DVRMOVIL 2MP/NO AUDIO/IP67/NO LEDS IR/USO EXTERIOR",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "17",
+      "producto id": "41",
+      "X": "CAM P CIEGO",
+      "X_1": "CAMARA PUNTO CIEGO AHD PARA DVRMOVIL 2 MP/NO AUDIO/IP67/LEDS IR/USO EXTERIOR",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "17",
+      "producto id": "90",
+      "X": "BRAKET FISHEYE",
+      "X_1": "BRAKET PARA CAMARA FISHEYE",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "17",
+      "producto id": "51",
+      "X": "CABLE IP 5MTS",
+      "X_1": "CABLE DIN DE AVIACION 6 PINES DE 5MTS IP",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "17",
+      "producto id": "45",
+      "X": "CABLE 7MTS",
+      "X_1": "CABLE DIN DE AVIACION 4 PINES DE 7MTS",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "17",
+      "producto id": "47",
+      "X": "CABLE 11MTS",
+      "X_1": "CABLE DIN DE AVIACION 4 PINES DE 11MTS",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "17",
+      "producto id": "48",
+      "X": "CABLE 15MTS",
+      "X_1": "CABLE DIN DE AVIACION 4 PINES DE 15MTS",
+      "piezas": 2,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "17",
+      "producto id": "80",
+      "X": "GABINETE RESGUARDO",
+      "X_1": "GABINETE METALICO PARA RESGUARDO DE DVRMOVIL",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "17",
+      "producto id": "67",
+      "X": "PANTALLA MMV7",
+      "X_1": "PANTALLA 7 PULGADAS MONITOR CONEXIÓN AVIACION COMPATIBLE CON M1N",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "17",
+      "producto id": "56",
+      "X": "CABLE CP4 RWATCH",
+      "X_1": "CABLE DE SALIDA DE VIDEO/1 SALIDA DE VIDEO 4 PINES/CONECTOR PARA R-WATCH PARA CP4",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "17",
+      "producto id": "58",
+      "X": "CABLE CP4 ALARMA",
+      "X_1": "MODULO DE ALARMA 8 ENTRADAS/2 SALIDAS ADAPTADOR 4 PINES",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "17",
+      "producto id": "112",
+      "X": "CONTACTO 75",
+      "X_1": "CONTACTO MAGNETICO PARA PUERTA, VENTANA O CORTINA, 75MM GAP",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "17",
+      "producto id": "81",
+      "X": "PORTA FUSIBLE4",
+      "X_1": "CAJA DE FUSIBLES CON SOPORTE DE BLOQUEO E INDICADOR LED CON 4 BAHIAS",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "17",
+      "producto id": "21",
+      "X": "HOSPEDAJE CEIBA",
+      "X_1": "PAGO ANUAL DE SERVICIO DE HOSPEDAJE EN PLATAFORMA (CEIBA)",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "17",
+      "producto id": "7",
+      "X": "INSTALACION M1N",
+      "X_1": "SERVICIO DE RE/INSTALACION MANO DE OBRA",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "17",
+      "producto id": "116",
+      "X": "SIM_SMART 10GB",
+      "X_1": "SIM DE DATOS SMART SYSTEMS CON PLAN DE MENSUAL DE 10GB",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "18",
+      "producto id": "26",
+      "X": "DVR M1N2.0 (6Ch)",
+      "X_1": "GRABADOR CON 4 CANALES AHD & 2 CANALES IP/GPS/4G/SLOT MICROSD(2)&SSD(1)",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "18",
+      "producto id": "38",
+      "X": "CAM ANTI",
+      "X_1": "CAMARA DOMO AHD ANTIVANDALICA PARA DVRMOVIL 2MP/IP66/10M IR/USO EXTERIOR",
+      "piezas": 2,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "18",
+      "producto id": "31",
+      "X": "SD256GBWD",
+      "X_1": "MEMORIA WESTERN DIGITAL PURPLE ESPECIAL PARA VIDEO VIGILANCIA 24/7 256GB",
+      "piezas": 2,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "18",
+      "producto id": "39",
+      "X": "CAM IP",
+      "X_1": "CAMARA MINI DOMO IP PARA DVRMOVIL 2MP/AUDIO/IP66/5M IR/USO INTERIOR",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "18",
+      "producto id": "40",
+      "X": "CAM FISHEYE",
+      "X_1": "CAMARA FISHEYE AHD PARA DVRMOVIL 2MP/NO AUDIO/IP67/NO LEDS IR/USO EXTERIOR",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "18",
+      "producto id": "41",
+      "X": "CAM P CIEGO",
+      "X_1": "CAMARA PUNTO CIEGO AHD PARA DVRMOVIL 2 MP/NO AUDIO/IP67/LEDS IR/USO EXTERIOR",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "18",
+      "producto id": "90",
+      "X": "BRAKET FISHEYE",
+      "X_1": "BRAKET PARA CAMARA FISHEYE",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "18",
+      "producto id": "52",
+      "X": "CABLE IP 7MTS",
+      "X_1": "CABLE DIN DE AVIACION 6 PINES DE 7MTS IP",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "18",
+      "producto id": "45",
+      "X": "CABLE 7MTS",
+      "X_1": "CABLE DIN DE AVIACION 4 PINES DE 7MTS",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "18",
+      "producto id": "47",
+      "X": "CABLE 11MTS",
+      "X_1": "CABLE DIN DE AVIACION 4 PINES DE 11MTS",
+      "piezas": 2,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "18",
+      "producto id": "48",
+      "X": "CABLE 15MTS",
+      "X_1": "CABLE DIN DE AVIACION 4 PINES DE 15MTS",
+      "piezas": 3,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "18",
+      "producto id": "80",
+      "X": "GABINETE RESGUARDO",
+      "X_1": "GABINETE METALICO PARA RESGUARDO DE DVRMOVIL",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "18",
+      "producto id": "67",
+      "X": "PANTALLA MMV7",
+      "X_1": "PANTALLA 7 PULGADAS MONITOR CONEXIÓN AVIACION COMPATIBLE CON M1N",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "18",
+      "producto id": "58",
+      "X": "CABLE CP4 ALARMA",
+      "X_1": "MODULO DE ALARMA 8 ENTRADAS/2 SALIDAS ADAPTADOR 4 PINES",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "18",
+      "producto id": "56",
+      "X": "CABLE CP4 RWATCH",
+      "X_1": "CABLE DE SALIDA DE VIDEO/1 SALIDA DE VIDEO 4 PINES/CONECTOR PARA R-WATCH PARA CP4",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "18",
+      "producto id": "81",
+      "X": "PORTA FUSIBLE4",
+      "X_1": "CAJA DE FUSIBLES CON SOPORTE DE BLOQUEO E INDICADOR LED CON 4 BAHIAS",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "18",
+      "producto id": "21",
+      "X": "HOSPEDAJE CEIBA",
+      "X_1": "PAGO ANUAL DE SERVICIO DE HOSPEDAJE EN PLATAFORMA (CEIBA)",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "18",
+      "producto id": "7",
+      "X": "INSTALACION M1N",
+      "X_1": "SERVICIO DE RE/INSTALACION MANO DE OBRA",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "18",
+      "producto id": "116",
+      "X": "SIM_SMART 10GB",
+      "X_1": "SIM DE DATOS SMART SYSTEMS CON PLAN DE MENSUAL DE 10GB",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "20",
+      "producto id": "137",
+      "X": "PANEL SMART PLUS",
+      "X_1": "PANEL DE ALARMA INALAMBRICO, 2 CANALES SIMS/FV/32 ESCENARIOS/CAVIDAD PARA BATERIA",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "20",
+      "producto id": "136",
+      "X": "DETEC MOTION ANTI",
+      "X_1": "DETECTOR DE MOVIMIENTO INALAMBRICO ANTIENMASCARAMIENTO",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "20",
+      "producto id": "122",
+      "X": "CONTACTO INAL",
+      "X_1": "CONTACTO MAGNETICO INALAMBRICO, PARA INTERIOR EN PUERTAS Y VENTANAS.",
+      "piezas": 3,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "20",
+      "producto id": "111",
+      "X": "CONTACTO 42",
+      "X_1": "CONTACTO MAGNETICO PARA PUERTA, VENTANA O CORTINA, 42MM GAP",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "20",
+      "producto id": "132",
+      "X": "SIRENA INAL",
+      "X_1": "SIRENA INALAMBRICA VOLUMEN 85-113dB 30W A 1 METRO DE DISTANCIA.",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "20",
+      "producto id": "125",
+      "X": "RELAY INAL",
+      "X_1": "RELEVADOR 12V 5 A - 24V 13A, INALAMBRICO",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "20",
+      "producto id": "128",
+      "X": "ESTROBO",
+      "X_1": "ESTROBO DE LUZ LED PARPADEANTE",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "20",
+      "producto id": "141",
+      "X": "BATERIA LITIO",
+      "X_1": "BATERIA LITIO 12Vcc a 10amp",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "20",
+      "producto id": "120",
+      "X": "SIM ALARMA",
+      "X_1": "SIM CON PLAN ANUAL DE MENSAJES Y ALERTAS ILITIMADAS",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "23",
+      "producto id": "135",
+      "X": "PANEL SMART",
+      "X_1": "PANEL DE ALARMA INALAMBRICO, 2 CANALES SIMS/32 ESCENARIOS/FV/RESPALDO 12HRS.",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "23",
+      "producto id": "136",
+      "X": "DETEC MOTION ANTI",
+      "X_1": "DETECTOR DE MOVIMIENTO INALAMBRICO ANTIENMASCARAMIENTO",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "23",
+      "producto id": "122",
+      "X": "CONTACTO INAL",
+      "X_1": "CONTACTO MAGNETICO INALAMBRICO PARA INTERIOR EN PUERTAS Y VENTANAS.",
+      "piezas": 3,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "23",
+      "producto id": "111",
+      "X": "CONTACTO 42",
+      "X_1": "CONTACTO MAGNETICO METALICO PARA PUERTA Y VENTANA.",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "23",
+      "producto id": "132",
+      "X": "SIRENA INAL",
+      "X_1": "SIRENA INALAMBRICA VOLUMEN 85-113dB 30W A 1 METRO DE DISTANCIA.",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "23",
+      "producto id": "125",
+      "X": "RELAY INAL",
+      "X_1": "RELEVADOR INALAMBRICO 12V 5 A - 24V 13A.",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "23",
+      "producto id": "128",
+      "X": "ESTROBO",
+      "X_1": "ESTROBO DE LUZ LED PARPADEANTE",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "23",
+      "producto id": "99",
+      "X": "CONVERTIDOR 24/12",
+      "X_1": "CONVERTIDOR DE VOLTAJE DE 24VCD A 12VCD",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "23",
+      "producto id": "120",
+      "X": "SIM ALARMA",
+      "X_1": "SIM CON PLAN ANUAL DE MENSAJES Y ALERTAS ILITIMADAS",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "23",
+      "producto id": "129",
+      "X": "INSTALACION ALARMA",
+      "X_1": "SERVICIO DE INSTALACION DE ALARMA INALAMBRICA",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "20",
+      "producto id": "129",
+      "X": "INSTALACION ALARMA",
+      "X_1": "SERVICIO DE INSTALACION DE ALARMA INALAMBRICA",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "6",
+      "producto id": "22",
+      "X": "HOSPEDAJE SMART",
+      "X_1": "PAGO ANUAL DE SERVICIO DE HOSPEDAJE EN PLATAFORMA (CEIBA/SMART CLOUD)",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "6",
+      "producto id": "6",
+      "X": "INSTALACION DASH",
+      "X_1": "SERVICIO DE RE/INSTALACION MANO DE OBRA",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "28",
+      "producto id": "24",
+      "X": "DVR DASHCAM AI",
+      "X_1": "DASHCAM CON DOBLE CAMARA/GPS/4G/WIFI/SLOT MICROSD(2)/INTELIGENCIA ARTIFICIAL",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "28",
+      "producto id": "31",
+      "X": "SD256GBWD",
+      "X_1": "MEMORIA WESTERN DIGITAL PURPLE ESPECIAL PARA VIDEO VIGILANCIA 24/7 256GB",
+      "piezas": 2,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "28",
+      "producto id": "81",
+      "X": "PORTA FUSIBLE4",
+      "X_1": "CAJA DE FUSIBLES CON SOPORTE DE BLOQUEO E INDICADOR LED CON 4 BAHIAS",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "28",
+      "producto id": "21",
+      "X": "HOSPEDAJE CEIBA",
+      "X_1": "PAGO ANUAL DE SERVICIO DE HOSPEDAJE EN PLATAFORMA (CEIBA)",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "28",
+      "producto id": "6",
+      "X": "INSTALACION DASH",
+      "X_1": "SERVICIO DE RE/INSTALACION MANO DE OBRA",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "30",
+      "producto id": "31",
+      "X": "SD256GBWD",
+      "X_1": "MEMORIA WESTERN DIGITAL PURPLE ESPECIAL PARA VIDEO VIGILANCIA 24/7 256GB",
+      "piezas": 2,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "30",
+      "producto id": "39",
+      "X": "CAM IP",
+      "X_1": "CAMARA MINI DOMO IP PARA DVRMOVIL 2MP/AUDIO/IP66/5M IR/USO INTERIOR",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "30",
+      "producto id": "41",
+      "X": "CAM P CIEGO",
+      "X_1": "CAMARA PUNTO CIEGO AHD PARA DVRMOVIL 2 MP/NO AUDIO/IP67/LEDS IR/USO EXTERIOR",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "30",
+      "producto id": "63",
+      "X": "CABLE VIDEO DASH",
+      "X_1": "CABLE DE VIDEO PARA DASHCAM 2 INPUT (1 AHD/1 IP) / 1 OUTPUT (VIDEO DE 4 PINES)",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "30",
+      "producto id": "52",
+      "X": "CABLE IP 7MTS",
+      "X_1": "CABLE DIN DE AVIACION 6 PINES DE 7MTS IP",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "30",
+      "producto id": "47",
+      "X": "CABLE 11MTS",
+      "X_1": "CABLE DIN DE AVIACION 4 PINES DE 11MTS",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "30",
+      "producto id": "81",
+      "X": "PORTA FUSIBLE4",
+      "X_1": "CAJA DE FUSIBLES CON SOPORTE DE BLOQUEO E INDICADOR LED CON 4 BAHIAS",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "30",
+      "producto id": "22",
+      "X": "HOSPEDAJE SMART",
+      "X_1": "PAGO ANUAL DE SERVICIO DE HOSPEDAJE EN PLATAFORMA (CEIBA/SMART CLOUD)",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "30",
+      "producto id": "6",
+      "X": "INSTALACION DASH",
+      "X_1": "SERVICIO DE RE/INSTALACION MANO DE OBRA",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "31",
+      "producto id": "24",
+      "X": "DVR DASHCAM AI",
+      "X_1": "DASHCAM CON DOBLE CAMARA/GPS/4G/WIFI/SLOT MICROSD(2)/INTELIGENCIA ARTIFICIAL",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "31",
+      "producto id": "31",
+      "X": "SD256GBWD",
+      "X_1": "MEMORIA WESTERN DIGITAL PURPLE ESPECIAL PARA VIDEO VIGILANCIA 24/7 256GB",
+      "piezas": 2,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "31",
+      "producto id": "39",
+      "X": "CAM IP",
+      "X_1": "CAMARA MINI DOMO IP PARA DVRMOVIL 2MP/AUDIO/IP66/5M IR/USO INTERIOR",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "31",
+      "producto id": "41",
+      "X": "CAM P CIEGO",
+      "X_1": "CAMARA PUNTO CIEGO AHD PARA DVRMOVIL 2 MP/NO AUDIO/IP67/LEDS IR/USO EXTERIOR",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "31",
+      "producto id": "63",
+      "X": "CABLE VIDEO DASH",
+      "X_1": "CABLE DE VIDEO PARA DASHCAM 2 INPUT (1 AHD/1 IP) / 1 OUTPUT (VIDEO DE 4 PINES)",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "31",
+      "producto id": "52",
+      "X": "CABLE IP 7MTS",
+      "X_1": "CABLE DIN DE AVIACION 6 PINES DE 7MTS IP",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "31",
+      "producto id": "47",
+      "X": "CABLE 11MTS",
+      "X_1": "CABLE DIN DE AVIACION 4 PINES DE 11MTS",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "31",
+      "producto id": "67",
+      "X": "PANTALLA MMV7",
+      "X_1": "PANTALLA 7 PULGADAS MONITOR CONEXIÓN AVIACION COMPATIBLE CON M1N",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "31",
+      "producto id": "81",
+      "X": "PORTA FUSIBLE4",
+      "X_1": "CAJA DE FUSIBLES CON SOPORTE DE BLOQUEO E INDICADOR LED CON 4 BAHIAS",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "31",
+      "producto id": "21",
+      "X": "HOSPEDAJE CEIBA",
+      "X_1": "PAGO ANUAL DE SERVICIO DE HOSPEDAJE EN PLATAFORMA (CEIBA)",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "31",
+      "producto id": "6",
+      "X": "INSTALACION DASH",
+      "X_1": "SERVICIO DE RE/INSTALACION MANO DE OBRA",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "30",
+      "producto id": "67",
+      "X": "PANTALLA MMV7",
+      "X_1": "PANTALLA 7 PULGADAS MONITOR CONEXIÓN AVIACION COMPATIBLE CON M1N",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "33",
+      "producto id": "26",
+      "X": "DVR M1N2.0 (6Ch)",
+      "X_1": "GRABADOR CON 4 CANALES AHD & 2 CANALES IP/GPS/4G/SLOT MICROSD(2)&SSD(1)",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "33",
+      "producto id": "31",
+      "X": "SD256GBWD",
+      "X_1": "MEMORIA WESTERN DIGITAL PURPLE ESPECIAL PARA VIDEO VIGILANCIA 24/7 256GB",
+      "piezas": 2,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "33",
+      "producto id": "36",
+      "X": "CAM MINI2MP",
+      "X_1": "CAMARA MINI DOMO AHD PARA DVRMOVIL 2MP/AUDIO/IP66/5M IR/USO INTERIOR",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "33",
+      "producto id": "39",
+      "X": "CAM IP",
+      "X_1": "CAMARA MINI DOMO IP PARA DVRMOVIL 2MP/AUDIO/IP66/5M IR/USO INTERIOR",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "33",
+      "producto id": "40",
+      "X": "CAM FISHEYE",
+      "X_1": "CAMARA FISHEYE AHD PARA DVRMOVIL 2MP/NO AUDIO/IP67/NO LEDS IR/USO EXTERIOR",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "33",
+      "producto id": "41",
+      "X": "CAM P CIEGO",
+      "X_1": "CAMARA PUNTO CIEGO AHD PARA DVRMOVIL 2 MP/NO AUDIO/IP67/LEDS IR/USO EXTERIOR",
+      "piezas": 2,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "33",
+      "producto id": "50",
+      "X": "CABLE IP 3MTS",
+      "X_1": "CABLE DIN DE AVIACION 6 PINES DE 3MTS IP",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "33",
+      "producto id": "45",
+      "X": "CABLE 7MTS",
+      "X_1": "CABLE DIN DE AVIACION 4 PINES DE 7MTS",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "33",
+      "producto id": "47",
+      "X": "CABLE 11MTS",
+      "X_1": "CABLE DIN DE AVIACION 4 PINES DE 11MTS",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "33",
+      "producto id": "48",
+      "X": "CABLE 15MTS",
+      "X_1": "CABLE DIN DE AVIACION 4 PINES DE 15MTS",
+      "piezas": 2,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "33",
+      "producto id": "80",
+      "X": "GABINETE M1N",
+      "X_1": "GABINETE METALICO PARA RESGUARDO DE DVRMOVIL M1N",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "33",
+      "producto id": "67",
+      "X": "PANTALLA MMV7",
+      "X_1": "PANTALLA 7 PULGADAS MONITOR CONEXIÓN AVIACION COMPATIBLE CON M1N",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "33",
+      "producto id": "65",
+      "X": "CABLE MMV7",
+      "X_1": "CABLE CONVERTIDOR DE 4 PINES PARA PANTALLAS MMV7 (AUDIO/VIDEO/ALIMENTACION)",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "33",
+      "producto id": "130",
+      "X": "BOLETERA T6",
+      "X_1": "BOLETERA 6 TARIFAS/SWTICH ENCENDIDO",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "33",
+      "producto id": "59",
+      "X": "CABLE ARNES BOLETERA",
+      "X_1": "CABLE ARNES PARA CONEXIÓN DE BOLETERA",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "33",
+      "producto id": "74",
+      "X": "IMPRESORA 340",
+      "X_1": "IMPRESORA TERMICA MODELO 340",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "33",
+      "producto id": "112",
+      "X": "CONTACTO 75",
+      "X_1": "CONTACTO MAGNETICO PARA PUERTA, VENTANA O CORTINA, 75MM GAP",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "33",
+      "producto id": "81",
+      "X": "PORTA FUSIBLE4",
+      "X_1": "CAJA DE FUSIBLES CON SOPORTE DE BLOQUEO E INDICADOR LED CON 4 BAHIAS",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "33",
+      "producto id": "21",
+      "X": "HOSPEDAJE CEIBA",
+      "X_1": "PAGO ANUAL DE SERVICIO DE HOSPEDAJE EN PLATAFORMA (CEIBA)",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    },
+    {
+      "plantilla id": "33",
+      "producto id": "7",
+      "X": "INSTALACION M1N",
+      "X_1": "SERVICIO DE RE/INSTALACION MANO DE OBRA",
+      "piezas": 1,
+      "descuento": 0,
+      "display_type": "product"
+    }
+  ]
+}

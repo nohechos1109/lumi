@@ -1,0 +1,51 @@
+services:
+  app:
+    build: .
+    container_name: cotizador_app
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      # Next.js se conecta internamente al host "db" que definimos abajo
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_NAME=cotizador
+      - DB_USER=admin
+      - DB_PASSWORD=admin
+      - SESSION_SECRET=tu_secreto_super_seguro_de_al_menos_32_caracteres_app_cotizador_2026
+      - SESSION_COOKIE_NAME=cotizador_session
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    image: postgres:15-alpine
+    container_name: cotizador_db
+    restart: always
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: cotizador
+    ports:
+      # Exponemos el puerto de la BD por si necesitas conectarte desde tu Windows (ej. DBeaver/PgAdmin)
+      - "5432:5432"
+    volumes:
+      - cotizador_pg_data:/var/lib/postgresql/data
+      - ./db:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U admin -d cotizador"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  adminer:
+    image: adminer
+    container_name: cotizador_adminer
+    restart: always
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+
+volumes:
+  cotizador_pg_data:

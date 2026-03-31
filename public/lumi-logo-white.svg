@@ -1,0 +1,36 @@
+<svg width="200" height="52" viewBox="0 0 200 52" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Crescent moon -->
+  <circle cx="22" cy="26" r="18" fill="url(#moonGoldW)"/>
+  <circle cx="30" cy="20" r="14" fill="#1B3461"/>
+  
+  <!-- Small stars -->
+  <circle cx="14" cy="10" r="1.2" fill="#EAB308" opacity="0.9"/>
+  <circle cx="8" cy="22" r="0.8" fill="#FDE047" opacity="0.7"/>
+  <circle cx="38" cy="8" r="1" fill="#FDE047" opacity="0.6"/>
+  
+  <!-- LUMI text -->
+  <text x="48" y="34" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif" font-weight="900" font-size="28" fill="#FFFFFF" letter-spacing="0.08em">LUMI</text>
+  
+  <!-- QUOTES text -->
+  <text x="136" y="34" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif" font-weight="500" font-size="14" fill="url(#textGoldW)" letter-spacing="0.12em">QUOTES</text>
+  
+  <!-- Decorative line -->
+  <line x1="48" y1="40" x2="196" y2="40" stroke="url(#lineGradW)" stroke-width="0.5" opacity="0.4"/>
+  
+  <defs>
+    <linearGradient id="moonGoldW" x1="4" y1="8" x2="40" y2="44" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FDE047"/>
+      <stop offset="0.5" stop-color="#EAB308"/>
+      <stop offset="1" stop-color="#CA8A04"/>
+    </linearGradient>
+    <linearGradient id="textGoldW" x1="136" y1="20" x2="200" y2="38" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FDE047"/>
+      <stop offset="1" stop-color="#D4AF37"/>
+    </linearGradient>
+    <linearGradient id="lineGradW" x1="48" y1="40" x2="196" y2="40" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFFFFF" stop-opacity="0.3"/>
+      <stop offset="0.5" stop-color="#D4AF37" stop-opacity="0.6"/>
+      <stop offset="1" stop-color="#D4AF37" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+</svg>
