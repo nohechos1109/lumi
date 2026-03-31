@@ -10,7 +10,7 @@ export const sessionOptions: SessionOptions = {
   cookieName: process.env.SESSION_COOKIE_NAME ?? 'cotizador_session',
   password: process.env.SESSION_SECRET as string,
   cookieOptions: {
-    secure: process.env.HTTPS === 'true',
+    secure: process.env.NODE_ENV === 'production',
     httpOnly: true,
     sameSite: 'lax',
     maxAge: 60 * 60 * 8, // 8 hours
