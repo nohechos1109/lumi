@@ -1,0 +1,19 @@
+<svg width="240" height="60" viewBox="0 0 240 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M12 15L24 5L36 15V45L24 55L12 45V15Z" fill="url(#purpleGrad)"/>
+  <path d="M24 15L36 25V45L24 35V15Z" fill="url(#goldGrad)"/>
+  <path d="M12 25L24 35L36 25L24 15L12 25Z" fill="#FDE047"/>
+  
+  <text x="50" y="42" font-family="system-ui, -apple-system, sans-serif" font-weight="900" font-size="32" fill="#FFFFFF" letter-spacing="0.05em">LUMI</text>
+  <text x="140" y="42" font-family="system-ui, -apple-system, sans-serif" font-weight="600" font-size="20" fill="#D4AF37" letter-spacing="0.05em">QUOTES</text>
+  
+  <defs>
+    <linearGradient id="purpleGrad" x1="12" y1="5" x2="36" y2="55" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#7E22CE"/>
+      <stop offset="1" stop-color="#4C1D95"/>
+    </linearGradient>
+    <linearGradient id="goldGrad" x1="24" y1="15" x2="36" y2="45" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FDE047"/>
+      <stop offset="1" stop-color="#EAB308"/>
+    </linearGradient>
+  </defs>
+</svg>

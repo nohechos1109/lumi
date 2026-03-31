@@ -1,0 +1,18 @@
+services:
+
+  db:
+    image: postgres
+    restart: always
+    shm_size: 128mb
+    environment:
+      POSTGRES_PASSWORD: admin
+      POSTGRES_USER: admin
+      POSTGRES_DB: cotizador
+    ports:
+      - 3306:8080
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 3305:8080

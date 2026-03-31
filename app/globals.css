@@ -1,26 +1,181 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-background: var(--c-base);
+  --color-foreground: var(--c-ink);
+  --font-sans: var(--font-dm-sans);
+  --font-mono: var(--font-fira-code);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+:root {
+  /* ── Surface ─────────────────────────────── */
+  --c-base:    #ECF0F6;
+  --c-panel:   #FFFFFF;
+  --c-card:    #FFFFFF;
+  --c-hover:   #F0F4F9;
+  --c-rim:     #D8E1EC;
+  --c-rim-hi:  #B8C8DA;
+
+  /* ── Brand navy ─────────────────────────── */
+  --c-navy:    #1B3461;
+  --c-navy-bg: rgba(27, 52, 97, 0.07);
+  --c-navy-bd: rgba(27, 52, 97, 0.18);
+
+  /* ── Accents ─────────────────────────────── */
+  --c-gold:    #C47F08;
+  --c-gold-bg: rgba(196, 127, 8, 0.09);
+  --c-gold-bd: rgba(196, 127, 8, 0.24);
+  --c-amber:   #C47F08;
+  --c-mint:    #0B9962;
+  --c-mint-bg: rgba(11, 153, 98, 0.09);
+  --c-rose:    #D12C3C;
+  --c-rose-bg: rgba(209, 44, 60, 0.08);
+  --c-sky:     #1C5AD6;
+  --c-sky-bg:  rgba(28, 90, 214, 0.09);
+  --c-sky-bd:  rgba(28, 90, 214, 0.22);
+
+  /* ── Text ────────────────────────────────── */
+  --c-ink:     #0C1524;
+  --c-dim:     #445566;
+  --c-ghost:   #8899AA;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--c-base);
+  color: var(--c-ink);
 }
+
+/* ── Heading font ──────────────────────────── */
+.font-heading {
+  font-family: var(--font-barlow-condensed), sans-serif;
+}
+
+/* ── Status badges ─────────────────────────── */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.2rem 0.65rem;
+  border-radius: 9999px;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.badge-draft     { background: var(--c-gold-bg); color: var(--c-gold); border: 1px solid var(--c-gold-bd); }
+.badge-sent      { background: var(--c-sky-bg);  color: var(--c-sky);  border: 1px solid var(--c-sky-bd);  }
+.badge-confirmed { background: var(--c-mint-bg); color: var(--c-mint); border: 1px solid rgba(11,153,98,0.25); }
+.badge-cancelled { background: rgba(136,153,170,0.10); color: var(--c-ghost); border: 1px solid var(--c-rim-hi); }
+.badge-expired   { background: rgba(136,153,170,0.07); color: var(--c-ghost); border: 1px solid var(--c-rim); }
+
+/* ── Form inputs — light theme ─────────────── */
+input[type="text"],
+input[type="password"],
+input[type="number"],
+input[type="date"],
+input[type="email"],
+select,
+textarea {
+  background: var(--c-panel);
+  color: var(--c-ink);
+  border: 1px solid var(--c-rim);
+  border-radius: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.875rem;
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+  font-family: inherit;
+}
+input[type="text"]:focus,
+input[type="password"]:focus,
+input[type="number"]:focus,
+input[type="date"]:focus,
+input[type="email"]:focus,
+select:focus,
+textarea:focus {
+  border-color: var(--c-navy);
+  box-shadow: 0 0 0 3px rgba(27, 52, 97, 0.10);
+}
+input::placeholder,
+textarea::placeholder {
+  color: var(--c-ghost);
+}
+select option {
+  background: var(--c-panel);
+  color: var(--c-ink);
+}
+
+/* ── Remove number spinners ────────────────── */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+/* ── Table row hover ───────────────────────── */
+.tr-hover:hover {
+  background: var(--c-hover);
+}
+
+/* ── Scrollbar ─────────────────────────────── */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--c-rim-hi); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--c-ghost); }
+
+/* ── Hover utilities (Block D) ─────────────── */
+.btn-delete {
+  color: var(--c-ghost);
+  transition: color 0.15s;
+}
+.btn-delete:hover { color: var(--c-rose); }
+
+.btn-edit {
+  color: var(--c-sky);
+  transition: opacity 0.15s;
+}
+.btn-edit:hover { opacity: 0.7; }
+
+.btn-dashed {
+  border-color: var(--c-rim-hi);
+  color: var(--c-ghost);
+  transition: color 0.15s, border-color 0.15s;
+}
+.btn-dashed:hover { color: var(--c-dim); border-color: var(--c-ghost); }
+
+.btn-dashed-amber {
+  border-color: var(--c-amber);
+  color: var(--c-amber);
+  transition: opacity 0.15s;
+}
+.btn-dashed-amber:hover { opacity: 0.7; }
+
+.dropdown-item {
+  transition: background 0.1s;
+}
+.dropdown-item:hover { background: var(--c-hover) !important; }
+
+.btn-logout {
+  color: var(--c-ghost);
+  background: transparent;
+  transition: color 0.15s, background 0.15s;
+}
+.btn-logout:hover { color: var(--c-rose); background: var(--c-rose-bg); }
+
+.card-link {
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.card-link:hover {
+  border-color: var(--c-navy-bd) !important;
+  box-shadow: 0 3px 10px rgba(27,52,97,0.10) !important;
+}
+
+/* ── Toast animation ───────────────────────── */
+@keyframes toast-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.toast-item { animation: toast-in 0.18s ease-out; }

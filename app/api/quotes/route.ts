@@ -1,0 +1,42 @@
+import { NextRequest, NextResponse } from 'next/server'
+import { getSession, unauthorized } from '@/lib/auth-guard'
+import { listQuotesByUser, listAllQuotes, createQuote } from '@/lib/queries/quotes'
+import { getSettings } from '@/lib/queries/settings'
+
+export async function GET() {
+  const session = await getSession()
+  if (!session) return unauthorized()
+
+  const quotes = session.role === 'sales'
+    ? await listQuotesByUser(session.userId)
+    : await listAllQuotes()
+
+  return NextResponse.json(quotes)
+}
+
+export async function POST(req: NextRequest) {
+  const session = await getSession()
+  if (!session) return unauthorized()
+
+  const body = await req.json()
+  const settings = await getSettings()
+
+  try {
+    const quote = await createQuote({
+      customer_id: body.customer_id,
+      payment_term_id: body.payment_term_id,
+      quotation_date: body.quotation_date ?? new Date().toISOString(),
+      expiration_date: body.expiration_date,
+      fx_mxn_per_usd_snapshot: Number(settings?.fx_mxn_per_usd ?? 17.85),
+      description: body.description,
+      unit_count: body.unit_count ? Number(body.unit_count) : 1,
+      terms: body.terms,
+      user_id: session.userId,
+    })
+
+    return NextResponse.json(quote, { status: 201 })
+  } catch (error) {
+    console.error('POST /api/quotes ERROR:', error)
+    return NextResponse.json({ error: String(error) }, { status: 500 })
+  }
+}
