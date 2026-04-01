@@ -34,14 +34,24 @@ const styles = StyleSheet.create({
   colPrice: { width: '15%', textAlign: 'right' },
   colTotal: { width: '15%', textAlign: 'right' },
 
-  totalsArea: { marginTop: 25, flexDirection: 'row', justifyContent: 'flex-end' },
-  totalsBox: { width: 220 },
-  totalEntry: { flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 3, borderBottom: '1 solid #F3F4F6' },
+  totalsArea: { marginTop: 25, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start' },
+  notesBox: { width: '55%', paddingTop: 5 },
+  noteItem: { flexDirection: 'row', marginBottom: 4 },
+  noteBullet: { width: 8, fontSize: 10, color: '#1B3461' },
+  noteText: { flex: 1, fontSize: 7, color: '#4B5563', lineHeight: 1.3 },
+  
+  totalsBox: { width: 220, backgroundColor: '#F3F7FA', padding: 10, borderRadius: 4, border: '1 solid #D1E1EF' },
+  totalEntry: { flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 3, borderBottom: '1 solid #D1E1EF' },
   grandTotal: { flexDirection: 'row', justifyContent: 'space-between', padding: '8 0', marginTop: 5 },
   grandTotalText: { fontSize: 12, fontWeight: 'bold', color: '#1B3461' },
 
-  fleetHighlight: { marginTop: 15, backgroundColor: '#F3F7FA', padding: 10, borderRadius: 6, border: '1 solid #D1E1EF' },
-  terms: { marginTop: 40, paddingTop: 10, borderTop: '1 solid #E5E7EB' },
+  fleetHighlight: { marginTop: 10, backgroundColor: 'white', padding: 8, borderRadius: 4, border: '1 solid #D1E1EF' },
+  terms: { marginTop: 30, paddingTop: 10, borderTop: '1 solid #E5E7EB' },
+  
+  contactSection: { marginTop: 20, alignItems: 'center' },
+  website: { fontSize: 13, color: '#1B3461', fontWeight: 'bold', marginBottom: 4 },
+  address: { fontSize: 8, color: '#4B5563' },
+  
   footerText: { fontSize: 7, color: '#9CA3AF', textAlign: 'center', marginTop: 10 }
 })
 
@@ -82,8 +92,8 @@ export default function QuotePDF({ quote, lines, images }: { quote: Quote; lines
           <Svg viewBox="0 0 595 110">
             {/* Dark Navy Swoosh */}
             <Path d="M 0 0 L 595 0 L 595 60 C 450 100 150 40 0 90 Z" fill="#1B3461" />
-            {/* Gold Accent Line */}
-            <Path d="M 0 90 C 150 40 450 100 595 60 L 595 65 C 450 105 150 45 0 95 Z" fill="#FBBF24" />
+            {/* Sky Blue Accent Line */}
+            <Path d="M 0 90 C 150 40 450 100 595 60 L 595 65 C 450 105 150 45 0 95 Z" fill="#0EA5E9" />
           </Svg>
         </View>
 
@@ -148,10 +158,10 @@ export default function QuotePDF({ quote, lines, images }: { quote: Quote; lines
               return (
                 <View key={line.id} style={styles.tableRow}>
                   <Text style={styles.colSku}></Text>
-                  <Text style={[styles.colDesc, { color: '#EAB308', fontWeight: 'bold' }]}>DESCUENTO GLOBAL ({line.discount_percent}%)</Text>
+                  <Text style={[styles.colDesc, { color: '#0EA5E9', fontWeight: 'bold' }]}>DESCUENTO GLOBAL ({line.discount_percent}%)</Text>
                   <Text style={styles.colQty}></Text>
                   <Text style={styles.colPrice}></Text>
-                  <Text style={[styles.colTotal, { color: '#EAB308', fontWeight: 'bold' }]}>
+                  <Text style={[styles.colTotal, { color: '#0EA5E9', fontWeight: 'bold' }]}>
                     -${Math.abs(Number(line.subtotal)).toLocaleString('es-MX', { minimumFractionDigits: 2 })}
                   </Text>
                 </View>
@@ -172,34 +182,63 @@ export default function QuotePDF({ quote, lines, images }: { quote: Quote; lines
           })}
         </View>
 
-        {/* Totals Section */}
+        {/* Notes and Totals Section */}
         <View style={styles.totalsArea}>
+          <View style={styles.notesBox}>
+            <View style={styles.noteItem}>
+              <Text style={styles.noteBullet}>•</Text>
+              <Text style={styles.noteText}>
+                El acceso a las <Text style={{ fontWeight: 'bold' }}>cámaras</Text> requiere un plan de datos con su proveedor de su preferencia (AT&T, Telcel, Movistar, Unefón, Smart).
+              </Text>
+            </View>
+            <View style={styles.noteItem}>
+              <Text style={styles.noteBullet}>•</Text>
+              <Text style={styles.noteText}>
+                Las medidas de los cables pueden variar según la carrocería y el modelo de cada unidad.
+              </Text>
+            </View>
+            <View style={styles.noteItem}>
+              <Text style={styles.noteBullet}>•</Text>
+              <Text style={styles.noteText}>
+                Precios Sujetos a Cambio y Exhibidos en Moneda Nacional (Pesos)
+              </Text>
+            </View>
+          </View>
+
           <View style={styles.totalsBox}>
             <View style={styles.totalEntry}>
-              <Text style={styles.label}>SUBTOTAL (1 UD)</Text>
-              <Text style={styles.value}>${Number(quote.amount_untaxed).toLocaleString('es-MX', { minimumFractionDigits: 2 })}</Text>
+              <Text style={styles.label}>Subtotal:</Text>
+              <Text style={styles.value}>${Number(quote.amount_untaxed).toLocaleString('es-MX', { minimumFractionDigits: 2 })} MXN</Text>
             </View>
             <View style={styles.totalEntry}>
-              <Text style={styles.label}>IVA (16%)</Text>
-              <Text style={styles.value}>${Number(quote.amount_tax).toLocaleString('es-MX', { minimumFractionDigits: 2 })}</Text>
+              <Text style={styles.label}>Iva:</Text>
+              <Text style={styles.value}>${Number(quote.amount_tax).toLocaleString('es-MX', { minimumFractionDigits: 2 })} MXN</Text>
             </View>
             <View style={styles.grandTotal}>
-              <Text style={[styles.grandTotalText, { fontSize: 10 }]}>TOTAL UNITARIO</Text>
-              <Text style={styles.grandTotalText}>${Number(quote.amount_total).toLocaleString('es-MX', { minimumFractionDigits: 2 })}</Text>
+              <Text style={[styles.grandTotalText, { fontSize: 10 }]}>Total:</Text>
+              <Text style={styles.grandTotalText}>${Number(quote.amount_total).toLocaleString('es-MX', { minimumFractionDigits: 2 })} MXN</Text>
             </View>
 
             {isFleet && (
               <View style={styles.fleetHighlight}>
                 <Text style={{ fontSize: 7, color: '#1B3461', fontWeight: 'bold', marginBottom: 4 }}>RESUMEN DE FLOTA ({quote.unit_count} UNIDADES)</Text>
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                  <Text style={{ fontSize: 9, fontWeight: 'bold', color: '#1B3461' }}>TOTAL FLOTA</Text>
-                  <Text style={{ fontSize: 11, fontWeight: 'bold', color: '#1B3461' }}>
-                    ${(Number(quote.amount_total) * quote.unit_count).toLocaleString('es-MX', { minimumFractionDigits: 2 })}
+                  <Text style={{ fontSize: 8, fontWeight: 'bold', color: '#1B3461' }}>TOTAL FLOTA</Text>
+                  <Text style={{ fontSize: 10, fontWeight: 'bold', color: '#1B3461' }}>
+                    ${(Number(quote.amount_total) * quote.unit_count).toLocaleString('es-MX', { minimumFractionDigits: 2 })} MXN
                   </Text>
                 </View>
               </View>
             )}
           </View>
+        </View>
+
+        {/* Contact info below totals */}
+        <View style={styles.contactSection}>
+          <Text style={styles.website}>www.smart-systems.com.mx</Text>
+          <Text style={styles.address}>
+            Domicilio: Central 31, Ciudad Aztlán, Tonalá, Jalisco. Teléfono (33) 1316-6715.
+          </Text>
         </View>
 
         {/* Terms and Conditions */}
@@ -214,7 +253,7 @@ export default function QuotePDF({ quote, lines, images }: { quote: Quote; lines
         <View style={styles.footerContainer} fixed>
           <Svg viewBox="0 0 595 50">
             <Path d="M 0 50 L 595 50 L 595 10 C 450 40 150 0 0 30 Z" fill="#1B3461" />
-            <Path d="M 0 30 C 150 0 450 40 595 10 L 595 5 C 450 35 150 -5 0 25 Z" fill="#FBBF24" />
+            <Path d="M 0 30 C 150 0 450 40 595 10 L 595 5 C 450 35 150 -5 0 25 Z" fill="#0EA5E9" />
           </Svg>
           <View style={{ position: 'absolute', bottom: 10, left: 0, right: 0 }}>
              <Text style={[styles.footerText, { color: 'white' }]}>LUMI • Soluciones de Movilidad Inteligente</Text>
