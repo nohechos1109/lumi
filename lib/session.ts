@@ -12,6 +12,8 @@ export const sessionOptions: SessionOptions = {
   cookieOptions: {
     sameSite: 'lax',
     secure: process.env.NODE_ENV === 'production',
+    path: '/',
+    httpOnly: true,
     maxAge: 60 * 60 * 8, // 8 hours
   },
 }

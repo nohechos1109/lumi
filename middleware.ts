@@ -18,8 +18,12 @@ export async function middleware(req: NextRequest) {
   }
 
   const session = await getIronSession<SessionData>(await cookies(), sessionOptions)
+  console.log(`[AUTH] Middleware check for path ${path}. Session userId: ${session.userId || 'NONE'}`)
 
   if (!session.userId) {
+    if (path !== '/login') {
+      console.log(`[AUTH] No session, redirecting to /login from ${path}`)
+    }
     return NextResponse.redirect(new URL('/login', req.url))
   }
 

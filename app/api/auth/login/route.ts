@@ -23,10 +23,12 @@ export async function POST(req: NextRequest) {
   }
 
   const session = await getIronSession<SessionData>(await cookies(), sessionOptions)
+  console.log(`[AUTH] Login attempt for user: ${username}`)
   session.userId = user.id
   session.role = user.role
   session.username = user.username
   await session.save()
+  console.log(`[AUTH] Session saved for ${username}, userId: ${user.id}`)
 
   return NextResponse.json({ role: user.role })
 }
