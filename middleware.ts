@@ -1,24 +1,40 @@
-import { NextResponse } from 'next/server'
-import type { NextRequest } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
+import { getIronSession } from 'iron-session'
+import { cookies } from 'next/headers'
+import { sessionOptions, SessionData } from '@/lib/session'
 
-// Middleware function to handle pass-through of static assets and potential auth logic.
-// By defining this, we take explicit control over what Next.js intercepts.
-export function middleware(request: NextRequest) {
-  // If the request reaches here, it's not excluded by the matcher.
-  // We just allow it to continue for now.
+const PUBLIC_PATHS = ['/login', '/api/auth/login', '/logosmart.png', '/lumi-logo.svg', '/lumi-logo-white.svg']
+
+export async function middleware(req: NextRequest) {
+  const path = req.nextUrl.pathname
+
+  if (PUBLIC_PATHS.some(p => path === p)) {
+    return NextResponse.next()
+  }
+
+  // Skip API routes that are not auth — they check session themselves
+  if (path.startsWith('/api/')) {
+    return NextResponse.next()
+  }
+
+  const session = await getIronSession<SessionData>(await cookies(), sessionOptions)
+
+  if (!session.userId) {
+    return NextResponse.redirect(new URL('/login', req.url))
+  }
+
+  // Role-based route guards
+  if (path.startsWith('/admin') && session.role !== 'admin') {
+    return NextResponse.redirect(new URL('/quotes', req.url))
+  }
+
+  if (path.startsWith('/manager') && session.role === 'sales') {
+    return NextResponse.redirect(new URL('/quotes', req.url))
+  }
+
   return NextResponse.next()
 }
 
 export const config = {
-  matcher: [
-    /*
-     * Match all request paths except for the ones that should be static:
-     * - api (API routes)
-     * - _next/static (Next.js static assets)
-     * - _next/image (Next.js image optimization)
-     * - favicon.ico (system files)
-     * - and most importantly, any file ending with common image extensions
-     */
-    '/((?!api|_next/static|_next/image|favicon.ico|.*\\.png$|.*\\.svg$|.*\\.jpg$|.*\\.jpeg$|.*\\.gif$|.*\\.webp$|.*\\.ico$).*)',
-  ],
+  matcher: ['/((?!api|_next/static|_next/image|favicon.ico|.*\\.png$|.*\\.svg$|.*\\.jpg$|.*\\.jpeg$).*)'],
 }
