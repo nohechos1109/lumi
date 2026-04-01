@@ -5,7 +5,7 @@ import { sessionOptions, SessionData } from '@/lib/session'
 
 const PUBLIC_PATHS = ['/login', '/api/auth/login', '/logosmart.png', '/lumi-logo.svg', '/lumi-logo-white.svg']
 
-export async function middleware(req: NextRequest) {
+export async function proxy(req: NextRequest) {
   const path = req.nextUrl.pathname
 
   if (PUBLIC_PATHS.some(p => path === p)) {
