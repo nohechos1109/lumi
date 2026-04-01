@@ -62,6 +62,8 @@ export async function createLine(data: CreateLineInput): Promise<QuoteLine> {
   const qty = data.qty ?? 1
   const discount = data.discount_percent ?? 0
   const subtotal = Number(effective) * qty * (1 - discount / 100)
+  const costPerUnit = (data.cost_base_snapshot ?? 0) * (data.fx_snapshot ?? 1)
+  const marginAmount = subtotal - (costPerUnit * qty)
 
   const { rows } = await pool.query(
     `INSERT INTO quote_lines
@@ -69,14 +71,14 @@ export async function createLine(data: CreateLineInput): Promise<QuoteLine> {
         currency_snapshot, cost_base_snapshot, utility_fixed_snapshot, utility_factor_snapshot,
         fx_snapshot, unit_price_mxn_suggested, unit_price_mxn_manual, unit_price_mxn_effective,
         subtotal, tax_amount, total, margin_amount)
-     VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,0,$16,0)
+     VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,0,$16,$17)
      RETURNING *`,
     [data.quote_id, sequence, data.display_type, data.product_id ?? null, data.name,
      qty, discount,
      data.currency_snapshot ?? null, data.cost_base_snapshot ?? 0,
      data.utility_fixed_snapshot ?? 0, data.utility_factor_snapshot ?? 1,
      data.fx_snapshot ?? 1, data.unit_price_mxn_suggested ?? 0,
-     data.unit_price_mxn_manual ?? null, effective, subtotal]
+     data.unit_price_mxn_manual ?? null, effective, subtotal, marginAmount]
   )
   return rows[0]
 }

@@ -114,11 +114,12 @@ export async function deleteQuote(id: string): Promise<void> {
 }
 
 export async function updateQuoteTotals(id: string): Promise<void> {
-  // 0. Enforce 16% IVA on all products by default
+  // 0. Enforce 16% IVA and margin calculation on all products
   await pool.query(`
     UPDATE quote_lines
     SET tax_amount = subtotal * 0.16,
-        total = subtotal * 1.16
+        total = subtotal * 1.16,
+        margin_amount = subtotal - (cost_base_snapshot * fx_snapshot * COALESCE(qty, 0))
     WHERE quote_id = $1 AND display_type = 'product'
   `, [id])
 
@@ -150,7 +151,13 @@ export async function updateQuoteTotals(id: string): Promise<void> {
       amount_untaxed = COALESCE((SELECT SUM(subtotal) FROM quote_lines WHERE quote_id = q.id AND display_type IN ('product', 'discount')), 0),
       amount_tax     = COALESCE((SELECT SUM(tax_amount) FROM quote_lines WHERE quote_id = q.id AND display_type IN ('product', 'discount')), 0),
       amount_total   = COALESCE((SELECT SUM(total) FROM quote_lines WHERE quote_id = q.id AND display_type IN ('product', 'discount')), 0),
-      margin_amount  = COALESCE((SELECT SUM(margin_amount) FROM quote_lines WHERE quote_id = q.id AND display_type IN ('product', 'discount')), 0)
+      margin_amount  = COALESCE((SELECT SUM(margin_amount) FROM quote_lines WHERE quote_id = q.id AND display_type IN ('product', 'discount')), 0),
+      margin_percent = CASE 
+        WHEN COALESCE((SELECT SUM(subtotal) FROM quote_lines WHERE quote_id = q.id AND display_type IN ('product', 'discount')), 0) > 0 
+        THEN (COALESCE((SELECT SUM(margin_amount) FROM quote_lines WHERE quote_id = q.id AND display_type IN ('product', 'discount')), 0) / 
+              COALESCE((SELECT SUM(subtotal) FROM quote_lines WHERE quote_id = q.id AND display_type IN ('product', 'discount')), 0)) * 100
+        ELSE 0 
+      END
     WHERE q.id = $1
   `, [id])
 }
