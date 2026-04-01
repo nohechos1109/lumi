@@ -222,8 +222,7 @@ export default function QuotePDF({ quote, lines, images }: { quote: Quote; lines
                 />
               </Svg>
               <View>
-                <Text style={styles.warrantyText}>1 AÑO</Text>
-                <Text style={[styles.warrantyText, { fontSize: 6, fontWeight: 'normal' }]}>DE GARANTÍA EN EQUIPOS</Text>
+                <Text style={[styles.warrantyText, { fontSize: 9 }]}>GARANTIZADO</Text>
               </View>
             </View>
           </View>
