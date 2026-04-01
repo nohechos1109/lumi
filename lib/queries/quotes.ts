@@ -79,9 +79,19 @@ export interface CreateQuoteInput {
 
 export async function createQuote(data: CreateQuoteInput): Promise<Quote> {
   // Generate quote number: COT-YYYYMMDD-XXXX
-  const date = new Date().toISOString().slice(0,10).replace(/-/g,'')
-  const { rows: [{ count }] } = await pool.query('SELECT COUNT(*) FROM quotes')
-  const number = `COT-${date}-${String(Number(count) + 1).padStart(4,'0')}`
+  const dateStr = new Date().toISOString().slice(0,10).replace(/-/g,'')
+  const { rows: lastQuotes } = await pool.query(
+    "SELECT number FROM quotes WHERE number LIKE $1 ORDER BY number DESC LIMIT 1",
+    [`COT-${dateStr}-%`]
+  )
+  
+  let nextSeq = 1
+  if (lastQuotes.length > 0) {
+    const lastNumber = lastQuotes[0].number
+    const parts = lastNumber.split('-')
+    nextSeq = parseInt(parts[parts.length - 1], 10) + 1
+  }
+  const number = `COT-${dateStr}-${String(nextSeq).padStart(4,'0')}`
 
   const { rows } = await pool.query(
     `INSERT INTO quotes
