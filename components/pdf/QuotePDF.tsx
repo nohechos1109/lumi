@@ -1,4 +1,5 @@
-import { Document, Page, Text, View, StyleSheet, Image, Svg, Path, Rect } from '@react-pdf/renderer'
+import { Document, Page, Text, View, StyleSheet, Image, Svg, Path, Rect, Circle } from '@react-pdf/renderer'
+
 
 const styles = StyleSheet.create({
   page: { padding: '40 40 60 40', fontFamily: 'Helvetica', fontSize: 9, color: '#262626' },
@@ -28,8 +29,7 @@ const styles = StyleSheet.create({
   itemText: { fontSize: 8.5 },
   skuText: { fontSize: 7, color: '#9CA3AF', marginTop: 1 },
 
-  colSku: { width: '15%' },
-  colDesc: { width: '45%' },
+  colDesc: { width: '60%' },
   colQty: { width: '10%', textAlign: 'right' },
   colPrice: { width: '15%', textAlign: 'right' },
   colTotal: { width: '15%', textAlign: 'right' },
@@ -39,6 +39,9 @@ const styles = StyleSheet.create({
   noteItem: { flexDirection: 'row', marginBottom: 4 },
   noteBullet: { width: 8, fontSize: 10, color: '#1B3461' },
   noteText: { flex: 1, fontSize: 7, color: '#4B5563', lineHeight: 1.3 },
+  
+  warrantyBadgeContainer: { marginTop: 15, flexDirection: 'row', alignItems: 'center', backgroundColor: '#F0F9FF', padding: 8, borderRadius: 6, border: '1 dashed #0EA5E9', width: 160 },
+  warrantyText: { marginLeft: 8, fontSize: 8, fontWeight: 'bold', color: '#1B3461' },
   
   totalsBox: { width: 220, backgroundColor: '#F3F7FA', padding: 10, borderRadius: 4, border: '1 solid #D1E1EF' },
   totalEntry: { flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 3, borderBottom: '1 solid #D1E1EF' },
@@ -132,7 +135,6 @@ export default function QuotePDF({ quote, lines, images }: { quote: Quote; lines
         {/* Items Table */}
         <View style={styles.table}>
           <View style={styles.tableHeader} fixed>
-            <Text style={[styles.tableHeaderText, styles.colSku]}>CÓDIGO</Text>
             <Text style={[styles.tableHeaderText, styles.colDesc]}>DESCRIPCIÓN</Text>
             <Text style={[styles.tableHeaderText, styles.colQty]}>CANT.</Text>
             <Text style={[styles.tableHeaderText, styles.colPrice]}>PRECIO UNIT.</Text>
@@ -157,7 +159,6 @@ export default function QuotePDF({ quote, lines, images }: { quote: Quote; lines
             if (line.display_type === 'discount') {
               return (
                 <View key={line.id} style={styles.tableRow}>
-                  <Text style={styles.colSku}></Text>
                   <Text style={[styles.colDesc, { color: '#0EA5E9', fontWeight: 'bold' }]}>DESCUENTO GLOBAL ({line.discount_percent}%)</Text>
                   <Text style={styles.colQty}></Text>
                   <Text style={styles.colPrice}></Text>
@@ -170,7 +171,6 @@ export default function QuotePDF({ quote, lines, images }: { quote: Quote; lines
 
             return (
               <View key={line.id} style={styles.tableRow}>
-                <Text style={[styles.itemText, styles.colSku]}>{line.sku || 'N/A'}</Text>
                 <View style={styles.colDesc}>
                   <Text style={styles.itemText}>{line.name}</Text>
                 </View>
@@ -202,6 +202,29 @@ export default function QuotePDF({ quote, lines, images }: { quote: Quote; lines
               <Text style={styles.noteText}>
                 Precios Sujetos a Cambio y Exhibidos en Moneda Nacional (Pesos)
               </Text>
+            </View>
+
+            {/* Warranty Badge */}
+            <View style={styles.warrantyBadgeContainer}>
+              <Svg viewBox="0 0 100 100" style={{ width: 35, height: 35 }}>
+                <Path 
+                  d="M50 2 L54.5 12.5 L65.5 10 L66.5 21.5 L77.5 22.5 L75 33.5 L84 41 L78 51 L84 61 L75 68.5 L77.5 79.5 L66.5 80.5 L65.5 92 L54.5 89.5 L50 100 L45.5 89.5 L34.5 92 L33.5 80.5 L22.5 79.5 L25 68.5 L16 61 L22 51 L16 41 L25 33.5 L22.5 22.5 L33.5 21.5 L34.5 10 L45.5 12.5 Z" 
+                  fill="#1B3461" 
+                />
+                <Circle cx="50" cy="50" r="38" fill="#0EA5E9" />
+                <Path 
+                  d="M32 52 L45 65 L68 40" 
+                  stroke="white" 
+                  strokeWidth="8" 
+                  strokeLinecap="round" 
+                  strokeLinejoin="round" 
+                  fill="none" 
+                />
+              </Svg>
+              <View>
+                <Text style={styles.warrantyText}>1 AÑO</Text>
+                <Text style={[styles.warrantyText, { fontSize: 6, fontWeight: 'normal' }]}>DE GARANTÍA EN EQUIPOS</Text>
+              </View>
             </View>
           </View>
 
@@ -236,9 +259,6 @@ export default function QuotePDF({ quote, lines, images }: { quote: Quote; lines
         {/* Contact info below totals */}
         <View style={styles.contactSection}>
           <Text style={styles.website}>www.smart-systems.com.mx</Text>
-          <Text style={styles.address}>
-            Domicilio: Central 31, Ciudad Aztlán, Tonalá, Jalisco. Teléfono (33) 1316-6715.
-          </Text>
         </View>
 
         {/* Terms and Conditions */}
@@ -256,7 +276,7 @@ export default function QuotePDF({ quote, lines, images }: { quote: Quote; lines
             <Path d="M 0 30 C 150 0 450 40 595 10 L 595 5 C 450 35 150 -5 0 25 Z" fill="#0EA5E9" />
           </Svg>
           <View style={{ position: 'absolute', bottom: 10, left: 0, right: 0 }}>
-             <Text style={[styles.footerText, { color: 'white' }]}>LUMI • Soluciones de Movilidad Inteligente</Text>
+             <Text style={[styles.footerText, { color: 'white' }]}>Domicilio: Central 31, Ciudad Aztlán, Tonalá, Jalisco. Teléfono (33) 1316-6715.</Text>
           </View>
         </View>
         
