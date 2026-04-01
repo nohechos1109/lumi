@@ -21,12 +21,14 @@ export interface QuoteLine {
   tax_amount: string
   total: string
   margin_amount: string
+  sku?: string
 }
 
 export async function listLines(quoteId: string): Promise<QuoteLine[]> {
   const { rows } = await pool.query(
-    `SELECT ql.*
+    `SELECT ql.*, p.sku as sku
      FROM quote_lines ql
+     LEFT JOIN products p ON p.id = ql.product_id
      WHERE ql.quote_id = $1
      ORDER BY ql.sequence`,
     [quoteId]

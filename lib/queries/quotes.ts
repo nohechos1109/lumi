@@ -8,6 +8,7 @@ export interface Quote {
   state: QuoteState
   customer_id: string
   customer_name?: string
+  executive_name?: string
   payment_term_id: string | null
   payment_term_name?: string
   quotation_date: string
@@ -27,10 +28,11 @@ export interface Quote {
 
 export async function listQuotesByUser(userId: string): Promise<Quote[]> {
   const { rows } = await pool.query(
-    `SELECT q.*, c.name as customer_name, pt.name as payment_term_name
+    `SELECT q.*, c.name as customer_name, pt.name as payment_term_name, u.username as executive_name
      FROM quotes q
      LEFT JOIN customers c ON c.id = q.customer_id
      LEFT JOIN payment_terms pt ON pt.id = q.payment_term_id
+     LEFT JOIN users u ON u.id = q.user_id
      WHERE q.user_id = $1
      ORDER BY q.quotation_date DESC`,
     [userId]
@@ -40,10 +42,11 @@ export async function listQuotesByUser(userId: string): Promise<Quote[]> {
 
 export async function listAllQuotes(): Promise<Quote[]> {
   const { rows } = await pool.query(
-    `SELECT q.*, c.name as customer_name, pt.name as payment_term_name
+    `SELECT q.*, c.name as customer_name, pt.name as payment_term_name, u.username as executive_name
      FROM quotes q
      LEFT JOIN customers c ON c.id = q.customer_id
      LEFT JOIN payment_terms pt ON pt.id = q.payment_term_id
+     LEFT JOIN users u ON u.id = q.user_id
      ORDER BY q.quotation_date DESC`
   )
   return rows
@@ -51,10 +54,11 @@ export async function listAllQuotes(): Promise<Quote[]> {
 
 export async function getQuote(id: string): Promise<Quote | null> {
   const { rows } = await pool.query(
-    `SELECT q.*, c.name as customer_name, pt.name as payment_term_name
+    `SELECT q.*, c.name as customer_name, pt.name as payment_term_name, u.username as executive_name
      FROM quotes q
      LEFT JOIN customers c ON c.id = q.customer_id
      LEFT JOIN payment_terms pt ON pt.id = q.payment_term_id
+     LEFT JOIN users u ON u.id = q.user_id
      WHERE q.id = $1`,
     [id]
   )

@@ -5,6 +5,7 @@ import { listLines } from '@/lib/queries/quote_lines'
 import { renderToBuffer } from '@react-pdf/renderer'
 import QuotePDF from '@/components/pdf/QuotePDF'
 import { createElement } from 'react'
+import path from 'path'
 
 export async function GET(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const session = await getSession()
@@ -16,7 +17,12 @@ export async function GET(_req: NextRequest, { params }: { params: Promise<{ id:
   if (session.role === 'sales' && quote.user_id !== session.userId) return forbidden()
 
   const lines = await listLines(id)
-  const element = createElement(QuotePDF, { quote, lines: lines as any[] }) as any;
+  
+  const images = {
+    logo: path.join(process.cwd(), 'public', 'logosmart.png')
+  }
+
+  const element = createElement(QuotePDF, { quote, lines: lines as any[], images }) as any;
   const buffer = await renderToBuffer(element)
 
   return new NextResponse(buffer as any, {
