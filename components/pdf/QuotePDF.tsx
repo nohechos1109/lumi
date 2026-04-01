@@ -236,9 +236,6 @@ export default function QuotePDF({ quote, lines, images }: { quote: Quote; lines
         {/* Contact info below totals */}
         <View style={styles.contactSection}>
           <Text style={styles.website}>www.smart-systems.com.mx</Text>
-          <Text style={styles.address}>
-            Domicilio: Central 31, Ciudad Aztlán, Tonalá, Jalisco. Teléfono (33) 1316-6715.
-          </Text>
         </View>
 
         {/* Terms and Conditions */}
@@ -256,7 +253,7 @@ export default function QuotePDF({ quote, lines, images }: { quote: Quote; lines
             <Path d="M 0 30 C 150 0 450 40 595 10 L 595 5 C 450 35 150 -5 0 25 Z" fill="#0EA5E9" />
           </Svg>
           <View style={{ position: 'absolute', bottom: 10, left: 0, right: 0 }}>
-             <Text style={[styles.footerText, { color: 'white' }]}>LUMI • Soluciones de Movilidad Inteligente</Text>
+             <Text style={[styles.footerText, { color: 'white' }]}>Domicilio: Central 31, Ciudad Aztlán, Tonalá, Jalisco. Teléfono (33) 1316-6715.</Text>
           </View>
         </View>
         
