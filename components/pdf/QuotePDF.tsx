@@ -28,8 +28,7 @@ const styles = StyleSheet.create({
   itemText: { fontSize: 8.5 },
   skuText: { fontSize: 7, color: '#9CA3AF', marginTop: 1 },
 
-  colSku: { width: '15%' },
-  colDesc: { width: '45%' },
+  colDesc: { width: '60%' },
   colQty: { width: '10%', textAlign: 'right' },
   colPrice: { width: '15%', textAlign: 'right' },
   colTotal: { width: '15%', textAlign: 'right' },
@@ -132,7 +131,6 @@ export default function QuotePDF({ quote, lines, images }: { quote: Quote; lines
         {/* Items Table */}
         <View style={styles.table}>
           <View style={styles.tableHeader} fixed>
-            <Text style={[styles.tableHeaderText, styles.colSku]}>CÓDIGO</Text>
             <Text style={[styles.tableHeaderText, styles.colDesc]}>DESCRIPCIÓN</Text>
             <Text style={[styles.tableHeaderText, styles.colQty]}>CANT.</Text>
             <Text style={[styles.tableHeaderText, styles.colPrice]}>PRECIO UNIT.</Text>
@@ -157,7 +155,6 @@ export default function QuotePDF({ quote, lines, images }: { quote: Quote; lines
             if (line.display_type === 'discount') {
               return (
                 <View key={line.id} style={styles.tableRow}>
-                  <Text style={styles.colSku}></Text>
                   <Text style={[styles.colDesc, { color: '#0EA5E9', fontWeight: 'bold' }]}>DESCUENTO GLOBAL ({line.discount_percent}%)</Text>
                   <Text style={styles.colQty}></Text>
                   <Text style={styles.colPrice}></Text>
@@ -170,7 +167,6 @@ export default function QuotePDF({ quote, lines, images }: { quote: Quote; lines
 
             return (
               <View key={line.id} style={styles.tableRow}>
-                <Text style={[styles.itemText, styles.colSku]}>{line.sku || 'N/A'}</Text>
                 <View style={styles.colDesc}>
                   <Text style={styles.itemText}>{line.name}</Text>
                 </View>
