@@ -12,7 +12,6 @@ interface Project {
   executive_name?: string
   date: string
   status: string
-  total_amount?: string
   quote_count?: number
 }
 
@@ -75,7 +74,6 @@ export default function ProjectsTable({ projects, role }: { projects: Project[],
                 )}
                 <th className="text-left px-5 py-4 text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--c-ghost)', letterSpacing: '0.1em' }}>Fecha</th>
                 <th className="text-left px-5 py-4 text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--c-ghost)', letterSpacing: '0.1em' }}>Estado</th>
-                <th className="text-right px-5 py-4 text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--c-ghost)', letterSpacing: '0.1em' }}>Total Acum.</th>
                 <th className="px-5 py-4 w-28"></th>
               </tr>
             </thead>
@@ -108,9 +106,6 @@ export default function ProjectsTable({ projects, role }: { projects: Project[],
                     </td>
                     <td className="px-5 py-4">
                       <span className={s.cls}>{s.label}</span>
-                    </td>
-                    <td className="px-5 py-4 text-right font-mono font-medium" style={{ color: 'var(--c-ink)' }}>
-                      ${Number(p.total_amount).toLocaleString('es-MX', { minimumFractionDigits: 2 })}
                     </td>
                     <td className="px-5 py-4 text-right">
                       <div className="flex items-center justify-end gap-2">

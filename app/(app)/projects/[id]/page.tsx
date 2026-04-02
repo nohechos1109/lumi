@@ -72,18 +72,6 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
         <QuotesTable quotes={quotes} role={session.role} />
       </div>
 
-      {/* Summary Stats */}
-      <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div 
-          className="p-5 rounded-xl flex flex-col justify-center"
-          style={{ background: 'var(--c-card)', border: '1px solid var(--c-rim)' }}
-        >
-          <span className="text-xs font-bold uppercase tracking-wider mb-1" style={{ color: 'var(--c-ghost)' }}>Total Acumulado del Proyecto</span>
-          <span className="text-3xl font-mono font-bold" style={{ color: 'var(--c-navy)' }}>
-            ${Number(project.total_amount).toLocaleString('es-MX', { minimumFractionDigits: 2 })}
-          </span>
-        </div>
-      </div>
     </div>
   )
 }

@@ -1,8 +1,14 @@
 import { NextResponse } from 'next/server'
 import pool from '@/lib/db'
 
-export async function GET() {
+export async function POST(req: Request) {
   try {
+    const { secret } = await req.json();
+
+    if (secret !== process.env.MIGRATION_SECRET) {
+      return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
+    }
+
     // 0. Ensure pgcrypto for UUIDs
     await pool.query(`CREATE EXTENSION IF NOT EXISTS pgcrypto;`);
 

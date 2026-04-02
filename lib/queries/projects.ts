@@ -13,14 +13,12 @@ export interface Project {
   user_id: string | null;
   executive_name?: string;
   created_at: string;
-  total_amount?: string; // Calculated sum of quotes
   quote_count?: number;  // Number of associated quotes
 }
 
 export async function listProjectsByUser(userId: string): Promise<Project[]> {
   const { rows } = await pool.query(
     `SELECT p.*, c.name as customer_name, u.username as executive_name,
-            COALESCE((SELECT SUM(amount_total) FROM quotes q WHERE q.project_id = p.id), 0) as total_amount,
             COALESCE((SELECT COUNT(*) FROM quotes q WHERE q.project_id = p.id), 0)::int as quote_count
      FROM projects p
      LEFT JOIN customers c ON c.id = p.customer_id
@@ -35,7 +33,6 @@ export async function listProjectsByUser(userId: string): Promise<Project[]> {
 export async function listAllProjects(): Promise<Project[]> {
   const { rows } = await pool.query(
     `SELECT p.*, c.name as customer_name, u.username as executive_name,
-            COALESCE((SELECT SUM(amount_total) FROM quotes q WHERE q.project_id = p.id), 0) as total_amount,
             COALESCE((SELECT COUNT(*) FROM quotes q WHERE q.project_id = p.id), 0)::int as quote_count
      FROM projects p
      LEFT JOIN customers c ON c.id = p.customer_id
@@ -47,8 +44,7 @@ export async function listAllProjects(): Promise<Project[]> {
 
 export async function getProject(id: string): Promise<Project | null> {
   const { rows } = await pool.query(
-    `SELECT p.*, c.name as customer_name, u.username as executive_name,
-            COALESCE((SELECT SUM(amount_total) FROM quotes q WHERE q.project_id = p.id), 0) as total_amount
+    `SELECT p.*, c.name as customer_name, u.username as executive_name
      FROM projects p
      LEFT JOIN customers c ON c.id = p.customer_id
      LEFT JOIN users u ON u.id = p.user_id
