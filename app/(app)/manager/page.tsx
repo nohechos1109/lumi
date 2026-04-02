@@ -59,6 +59,7 @@ export default async function ManagerPage() {
             <tr style={{ borderBottom: '1px solid var(--c-rim)' }}>
               <th className="text-left px-5 py-4 text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--c-ghost)' }}>Número</th>
               <th className="text-left px-5 py-4 text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--c-ghost)' }}>Cliente</th>
+              <th className="text-left px-5 py-4 text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--c-ghost)' }}>Vendedor</th>
               <th className="text-left px-5 py-4 text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--c-ghost)' }}>Fecha</th>
               <th className="text-left px-5 py-4 text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--c-ghost)' }}>Estado</th>
               <th className="text-right px-5 py-4 text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--c-ghost)' }}>Total</th>
@@ -79,6 +80,9 @@ export default async function ManagerPage() {
                     {q.number}
                   </td>
                   <td className="px-5 py-4" style={{ color: 'var(--c-ink)' }}>{q.customer_name}</td>
+                  <td className="px-5 py-4 text-xs font-medium" style={{ color: 'var(--c-dim)' }}>
+                    {q.executive_name || '—'}
+                  </td>
                   <td className="px-5 py-4 font-mono text-xs" style={{ color: 'var(--c-dim)' }}>
                     {new Date(q.quotation_date).toLocaleDateString('es-MX')}
                   </td>
