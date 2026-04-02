@@ -10,6 +10,7 @@ interface Quote {
   number: string
   state: string
   customer_name?: string
+  executive_name?: string
   quotation_date: string
   amount_total: string
 }
@@ -62,6 +63,7 @@ export default function QuotesTable({ quotes }: { quotes: Quote[] }) {
               <tr style={{ borderBottom: '1px solid var(--c-rim)' }}>
                 <th className="text-left px-5 py-4 text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--c-ghost)', letterSpacing: '0.1em' }}>Número</th>
                 <th className="text-left px-5 py-4 text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--c-ghost)', letterSpacing: '0.1em' }}>Cliente</th>
+                <th className="text-left px-5 py-4 text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--c-ghost)', letterSpacing: '0.1em' }}>Vendedor</th>
                 <th className="text-left px-5 py-4 text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--c-ghost)', letterSpacing: '0.1em' }}>Fecha</th>
                 <th className="text-left px-5 py-4 text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--c-ghost)', letterSpacing: '0.1em' }}>Estado</th>
                 <th className="text-right px-5 py-4 text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--c-ghost)', letterSpacing: '0.1em' }}>Total</th>
@@ -82,6 +84,9 @@ export default function QuotesTable({ quotes }: { quotes: Quote[] }) {
                     </td>
                     <td className="px-5 py-4" style={{ color: 'var(--c-ink)' }}>
                       {q.customer_name}
+                    </td>
+                    <td className="px-5 py-4 text-xs font-medium" style={{ color: 'var(--c-dim)' }}>
+                      {q.executive_name || '—'}
                     </td>
                     <td className="px-5 py-4 font-mono text-xs" style={{ color: 'var(--c-dim)' }}>
                       {new Date(q.quotation_date).toLocaleDateString('es-MX')}

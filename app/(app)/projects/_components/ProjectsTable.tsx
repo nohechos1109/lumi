@@ -9,6 +9,7 @@ interface Project {
   id: string
   name: string
   customer_name?: string
+  executive_name?: string
   date: string
   status: string
   total_amount?: string
@@ -67,6 +68,7 @@ export default function ProjectsTable({ projects }: { projects: Project[] }) {
               <tr style={{ borderBottom: '1px solid var(--c-rim)' }}>
                 <th className="text-left px-5 py-4 text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--c-ghost)', letterSpacing: '0.1em' }}>Proyecto</th>
                 <th className="text-left px-5 py-4 text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--c-ghost)', letterSpacing: '0.1em' }}>Cliente</th>
+                <th className="text-left px-5 py-4 text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--c-ghost)', letterSpacing: '0.1em' }}>Vendedor</th>
                 <th className="text-left px-5 py-4 text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--c-ghost)', letterSpacing: '0.1em' }}>Fecha</th>
                 <th className="text-left px-5 py-4 text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--c-ghost)', letterSpacing: '0.1em' }}>Estado</th>
                 <th className="text-right px-5 py-4 text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--c-ghost)', letterSpacing: '0.1em' }}>Total Acum.</th>
@@ -90,6 +92,9 @@ export default function ProjectsTable({ projects }: { projects: Project[] }) {
                     </td>
                     <td className="px-5 py-4" style={{ color: 'var(--c-ink)' }}>
                       {p.customer_name}
+                    </td>
+                    <td className="px-5 py-4 text-xs font-medium" style={{ color: 'var(--c-dim)' }}>
+                      {p.executive_name || '—'}
                     </td>
                     <td className="px-5 py-4 font-mono text-xs" style={{ color: 'var(--c-dim)' }}>
                       {new Date(p.date).toLocaleDateString('es-MX')}

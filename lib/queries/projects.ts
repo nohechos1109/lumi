@@ -11,6 +11,7 @@ export interface Project {
   status: ProjectStatus;
   description: string | null;
   user_id: string | null;
+  executive_name?: string;
   created_at: string;
   total_amount?: string; // Calculated sum of quotes
   quote_count?: number;  // Number of associated quotes
@@ -18,11 +19,12 @@ export interface Project {
 
 export async function listProjectsByUser(userId: string): Promise<Project[]> {
   const { rows } = await pool.query(
-    `SELECT p.*, c.name as customer_name,
+    `SELECT p.*, c.name as customer_name, u.username as executive_name,
             COALESCE((SELECT SUM(amount_total) FROM quotes q WHERE q.project_id = p.id), 0) as total_amount,
             COALESCE((SELECT COUNT(*) FROM quotes q WHERE q.project_id = p.id), 0)::int as quote_count
      FROM projects p
      LEFT JOIN customers c ON c.id = p.customer_id
+     LEFT JOIN users u ON u.id = p.user_id
      WHERE p.user_id = $1
      ORDER BY p.date DESC, p.created_at DESC`,
     [userId]
@@ -32,11 +34,12 @@ export async function listProjectsByUser(userId: string): Promise<Project[]> {
 
 export async function listAllProjects(): Promise<Project[]> {
   const { rows } = await pool.query(
-    `SELECT p.*, c.name as customer_name,
+    `SELECT p.*, c.name as customer_name, u.username as executive_name,
             COALESCE((SELECT SUM(amount_total) FROM quotes q WHERE q.project_id = p.id), 0) as total_amount,
             COALESCE((SELECT COUNT(*) FROM quotes q WHERE q.project_id = p.id), 0)::int as quote_count
      FROM projects p
      LEFT JOIN customers c ON c.id = p.customer_id
+     LEFT JOIN users u ON u.id = p.user_id
      ORDER BY p.date DESC, p.created_at DESC`
   );
   return rows;
@@ -44,10 +47,11 @@ export async function listAllProjects(): Promise<Project[]> {
 
 export async function getProject(id: string): Promise<Project | null> {
   const { rows } = await pool.query(
-    `SELECT p.*, c.name as customer_name,
+    `SELECT p.*, c.name as customer_name, u.username as executive_name,
             COALESCE((SELECT SUM(amount_total) FROM quotes q WHERE q.project_id = p.id), 0) as total_amount
      FROM projects p
      LEFT JOIN customers c ON c.id = p.customer_id
+     LEFT JOIN users u ON u.id = p.user_id
      WHERE p.id = $1`,
     [id]
   );
