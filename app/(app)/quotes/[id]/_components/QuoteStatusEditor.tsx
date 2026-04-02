@@ -25,8 +25,8 @@ export default function QuoteStatusEditor({ quoteId, currentStatus, role }: Prop
 
   // Determine allowed statuses based on role (mirroring API logic)
   const allowedTransitions: Record<string, QuoteState[]> = {
-    sales:   ['draft', 'sent', 'confirmed', 'cancelled', 'expired'],
-    manager: ['draft', 'sent', 'confirmed', 'cancelled', 'expired'],
+    sales:   ['sent', 'cancelled'],
+    manager: ['confirmed', 'cancelled'],
     admin:   ['draft', 'sent', 'confirmed', 'cancelled', 'expired'],
   }
 
@@ -69,11 +69,10 @@ export default function QuoteStatusEditor({ quoteId, currentStatus, role }: Prop
           textAlign: 'center'
         }}
       >
-        {QUOTE_STATUSES.map((s) => (
+        {QUOTE_STATUSES.filter(s => isAllowed(s.value)).map((s) => (
           <option 
             key={s.value} 
             value={s.value}
-            disabled={!isAllowed(s.value)}
           >
             {s.label.toUpperCase()}
           </option>

@@ -3,8 +3,8 @@ import { getSession, unauthorized, forbidden } from '@/lib/auth-guard'
 import { getQuote, updateQuoteState, QuoteState } from '@/lib/queries/quotes'
 
 const VALID_TRANSITIONS: Record<string, QuoteState[]> = {
-  sales:   ['draft', 'sent', 'confirmed', 'cancelled', 'expired'],
-  manager: ['draft', 'sent', 'confirmed', 'cancelled', 'expired'],
+  sales:   ['sent', 'cancelled'],
+  manager: ['confirmed', 'cancelled'],
   admin:   ['draft', 'sent', 'confirmed', 'cancelled', 'expired'],
 }
 
