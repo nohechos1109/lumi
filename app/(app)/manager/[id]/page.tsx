@@ -14,14 +14,15 @@ export default async function ManagerQuotePage({ params }: { params: Promise<{ i
     <div>
       <div className="flex items-start justify-between mb-7">
         <div>
+        <div className="mb-4">
           <Link
             href="/manager"
-            className="text-xs font-mono mb-3 block transition-colors"
+            className="inline-flex items-center text-xs font-bold uppercase tracking-widest transition-colors hover:opacity-75"
             style={{ color: 'var(--c-ghost)' }}
-            onMouseEnter={undefined}
           >
-            ← Volver
+            ← Volver a Equipo
           </Link>
+        </div>
           <h1
             className="font-heading text-3xl font-bold uppercase"
             style={{ color: 'var(--c-ink)', letterSpacing: '0.1em' }}

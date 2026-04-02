@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, FormEvent } from 'react'
+import Link from 'next/link'
 
 export default function AdminSettingsPage() {
   const [fx, setFx] = useState('')
@@ -23,6 +24,16 @@ export default function AdminSettingsPage() {
 
   return (
     <div className="max-w-sm">
+      <div className="mb-6">
+        <Link 
+          href="/admin"
+          className="inline-flex items-center text-xs font-bold uppercase tracking-widest transition-colors hover:opacity-75"
+          style={{ color: 'var(--c-ghost)' }}
+        >
+          ← Volver al Dashboard Admin
+        </Link>
+      </div>
+
       <div className="mb-8">
         <h1
           className="font-heading text-3xl font-bold uppercase"

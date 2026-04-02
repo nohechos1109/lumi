@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import Link from 'next/link'
 import ConfirmModal from '@/components/ui/ConfirmModal'
 
 interface User { id: string; username: string; role: string }
@@ -43,6 +44,16 @@ export default function AdminUsersPage() {
 
   return (
     <div>
+      <div className="mb-6">
+        <Link 
+          href="/admin"
+          className="inline-flex items-center text-xs font-bold uppercase tracking-widest transition-colors hover:opacity-75"
+          style={{ color: 'var(--c-ghost)' }}
+        >
+          ← Volver al Dashboard Admin
+        </Link>
+      </div>
+
       <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between mb-8">
         <div>
           <h1

@@ -20,6 +20,17 @@ export default async function QuotePage({ params }: { params: Promise<{ id: stri
 
   return (
     <div>
+      {/* Back navigation */}
+      <div className="mb-5 flex items-center gap-3">
+        <Link 
+          href={quote.project_id ? `/projects/${quote.project_id}` : '/quotes'}
+          className="text-xs font-bold uppercase tracking-widest transition-colors hover:opacity-75"
+          style={{ color: 'var(--c-ghost)' }}
+        >
+          ← {quote.project_id ? 'Volver al Proyecto' : 'Volver a Mis Cotizaciones'}
+        </Link>
+      </div>
+
       {/* Header */}
       <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between mb-7">
         <div className="flex-1">

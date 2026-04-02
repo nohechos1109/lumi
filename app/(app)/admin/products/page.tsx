@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import Link from 'next/link'
 import ConfirmModal from '@/components/ui/ConfirmModal'
 import ProductFormModal from './_components/ProductFormModal'
 import ProductGrid from './_components/ProductGrid'
@@ -68,6 +69,16 @@ export default function AdminProductsPage() {
 
   return (
     <div className="pb-10">
+      <div className="mb-6">
+        <Link 
+          href="/admin"
+          className="inline-flex items-center text-xs font-bold uppercase tracking-widest transition-colors hover:opacity-75"
+          style={{ color: 'var(--c-ghost)' }}
+        >
+          ← Volver al Dashboard Admin
+        </Link>
+      </div>
+
       {/* Header section */}
       <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between mb-8">
         <div>

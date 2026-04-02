@@ -20,6 +20,17 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
 
   return (
     <div>
+      {/* Back link */}
+      <div className="mb-6">
+        <Link 
+          href="/projects"
+          className="inline-flex items-center text-xs font-bold uppercase tracking-widest transition-colors hover:opacity-75"
+          style={{ color: 'var(--c-ghost)' }}
+        >
+          ← Volver a Proyectos
+        </Link>
+      </div>
+
       {/* Header */}
       <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between mb-8">
         <div>
