@@ -118,14 +118,16 @@ function NewQuoteForm() {
               <label className={labelCls} style={{ ...labelStyle, marginBottom: 0 }}>
                 Cliente *
               </label>
-              <button
-                type="button"
-                className="text-xs font-medium transition-colors"
-                style={{ color: 'var(--c-navy)' }}
-                onClick={() => { setIsNewCustomer(v => !v); setNewCustomerName('') }}
-              >
-                {isNewCustomer ? '← Seleccionar existente' : '+ Crear nuevo'}
-              </button>
+              {!initialCustomerId && (
+                <button
+                  type="button"
+                  className="text-xs font-medium transition-colors"
+                  style={{ color: 'var(--c-navy)' }}
+                  onClick={() => { setIsNewCustomer(v => !v); setNewCustomerName('') }}
+                >
+                  {isNewCustomer ? '← Seleccionar existente' : '+ Crear nuevo'}
+                </button>
+              )}
             </div>
 
             {isNewCustomer ? (
@@ -142,14 +144,18 @@ function NewQuoteForm() {
               <select
                 name="customer_id"
                 required={!isNewCustomer}
-                className="w-full"
-                defaultValue={initialCustomerId}
+                className="w-full disabled:bg-slate-50 disabled:text-slate-500"
+                value={initialCustomerId || undefined}
+                disabled={!!initialCustomerId}
               >
                 <option value="">Seleccionar...</option>
                 {customers.map(c => (
                   <option key={c.id} value={c.id}>{c.name}</option>
                 ))}
               </select>
+            )}
+            {initialCustomerId && (
+              <input type="hidden" name="customer_id" value={initialCustomerId} />
             )}
           </div>
 
