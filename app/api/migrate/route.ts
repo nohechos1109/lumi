@@ -1,13 +1,41 @@
-import { NextResponse } from 'next/server';
-import pool from '@/lib/db';
+import { NextResponse } from 'next/server'
+import pool from '@/lib/db'
 
 export async function GET() {
   try {
-    await pool.query('ALTER TABLE quotes ADD COLUMN IF NOT EXISTS description text;');
-    const res2 = await pool.query('ALTER TABLE quotes ADD COLUMN IF NOT EXISTS unit_count int NOT NULL DEFAULT 1 CHECK (unit_count >= 1);');
-    
-    return NextResponse.json({ success: true, message: 'Migración exitosa: columnas añadidas' });
+    // 0. Ensure pgcrypto for UUIDs
+    await pool.query(`CREATE EXTENSION IF NOT EXISTS pgcrypto;`);
+
+    // 1. Create projects table if not exists
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS projects (
+          id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+          name TEXT NOT NULL,
+          customer_id UUID REFERENCES customers(id),
+          date DATE NOT NULL DEFAULT CURRENT_DATE,
+          status TEXT NOT NULL DEFAULT 'draft',
+          description TEXT,
+          user_id UUID REFERENCES users(id),
+          created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+      );
+    `);
+
+    // 2. Add project_id to quotes if not exists
+    await pool.query(`
+      DO $$ 
+      BEGIN 
+          IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='quotes' AND column_name='project_id') THEN
+              ALTER TABLE quotes ADD COLUMN project_id UUID REFERENCES projects(id);
+          END IF;
+      END $$;
+    `);
+
+    return NextResponse.json({ 
+      success: true, 
+      message: 'Tablas de proyectos y columnas creadas correctamente en la base de datos de Docker.' 
+    });
   } catch (error: any) {
+    console.error('Migration error:', error);
     return NextResponse.json({ success: false, error: error.message }, { status: 500 });
   }
 }
