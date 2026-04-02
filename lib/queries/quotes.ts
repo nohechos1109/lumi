@@ -24,6 +24,7 @@ export interface Quote {
   margin_percent: string
   version: number
   user_id: string | null
+  project_id: string | null
 }
 
 export async function listQuotesByUser(userId: string): Promise<Quote[]> {
@@ -52,6 +53,20 @@ export async function listAllQuotes(): Promise<Quote[]> {
   return rows
 }
 
+export async function listQuotesByProject(projectId: string): Promise<Quote[]> {
+  const { rows } = await pool.query(
+    `SELECT q.*, c.name as customer_name, pt.name as payment_term_name, u.username as executive_name
+     FROM quotes q
+     LEFT JOIN customers c ON c.id = q.customer_id
+     LEFT JOIN payment_terms pt ON pt.id = q.payment_term_id
+     LEFT JOIN users u ON u.id = q.user_id
+     WHERE q.project_id = $1
+     ORDER BY q.quotation_date DESC`,
+    [projectId]
+  )
+  return rows
+}
+
 export async function getQuote(id: string): Promise<Quote | null> {
   const { rows } = await pool.query(
     `SELECT q.*, c.name as customer_name, pt.name as payment_term_name, u.username as executive_name
@@ -75,6 +90,7 @@ export interface CreateQuoteInput {
   unit_count?: number
   terms?: string
   user_id: string
+  project_id?: string
 }
 
 export async function createQuote(data: CreateQuoteInput): Promise<Quote> {
@@ -96,13 +112,13 @@ export async function createQuote(data: CreateQuoteInput): Promise<Quote> {
   const { rows } = await pool.query(
     `INSERT INTO quotes
        (number, state, customer_id, payment_term_id, quotation_date, expiration_date,
-        fx_mxn_per_usd_snapshot, description, unit_count, terms, user_id)
-     VALUES ($1,'draft',$2,$3,$4,$5,$6,$7,$8,$9,$10)
+        fx_mxn_per_usd_snapshot, description, unit_count, terms, user_id, project_id)
+     VALUES ($1,'draft',$2,$3,$4,$5,$6,$7,$8,$9,$10,$11)
      RETURNING *`,
     [number, data.customer_id, data.payment_term_id ?? null, data.quotation_date,
      data.expiration_date ?? null, data.fx_mxn_per_usd_snapshot,
      data.description ?? null, data.unit_count ?? 1,
-     data.terms ?? null, data.user_id]
+     data.terms ?? null, data.user_id, data.project_id ?? null]
   )
   return rows[0]
 }

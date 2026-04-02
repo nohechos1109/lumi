@@ -1,7 +1,7 @@
 'use client'
 
-import { useState, useEffect, FormEvent } from 'react'
-import { useRouter } from 'next/navigation'
+import { useState, useEffect, FormEvent, Suspense } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
 
 interface Customer { id: string; name: string }
 
@@ -9,11 +9,23 @@ const labelCls = 'block text-xs font-semibold mb-1.5'
 const labelStyle = { color: 'var(--c-dim)' }
 
 export default function NewQuotePage() {
+  return (
+    <Suspense fallback={<div>Cargando...</div>}>
+      <NewQuoteForm />
+    </Suspense>
+  )
+}
+
+function NewQuoteForm() {
   const router = useRouter()
+  const searchParams = useSearchParams()
   const [customers, setCustomers] = useState<Customer[]>([])
   const [loading, setLoading] = useState(false)
   const [isNewCustomer, setIsNewCustomer] = useState(false)
   const [newCustomerName, setNewCustomerName] = useState('')
+  
+  const initialCustomerId = searchParams.get('customer_id') || ''
+  const initialProjectId = searchParams.get('project_id') || ''
 
   useEffect(() => {
     fetch('/api/customers').then(r => r.json()).then(setCustomers)
@@ -48,6 +60,7 @@ export default function NewQuotePage() {
         payment_term_id: form.get('payment_term_id') || null,
         quotation_date: new Date().toISOString(),
         expiration_date: form.get('expiration_date') || null,
+        project_id: initialProjectId || null,
       }),
     })
 
@@ -130,6 +143,7 @@ export default function NewQuotePage() {
                 name="customer_id"
                 required={!isNewCustomer}
                 className="w-full"
+                defaultValue={initialCustomerId}
               >
                 <option value="">Seleccionar...</option>
                 {customers.map(c => (

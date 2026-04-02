@@ -12,13 +12,15 @@ export default async function AppLayout({ children }: { children: React.ReactNod
 
   const navItems = {
     sales: [
-      { href: '/quotes', label: 'Mis Cotizaciones' },
+      { href: '/projects', label: 'Proyectos' },
+      { href: '/quotes',   label: 'Mis Cotizaciones' },
     ],
     manager: [
       { href: '/manager', label: 'EQUIPO' },
     ],
     admin: [
       { href: '/admin',          label: 'Dashboard' },
+      { href: '/projects',       label: 'Proyectos' },
       { href: '/admin/users',    label: 'Usuarios' },
       { href: '/admin/products', label: 'Productos' },
       { href: '/admin/customers',label: 'Clientes' },

@@ -59,7 +59,20 @@ CREATE TABLE quotes (
     amount_total            numeric(14,2) NOT NULL DEFAULT 0,
     margin_amount           numeric(14,2) NOT NULL DEFAULT 0,
     margin_percent          numeric(6,2)  NOT NULL DEFAULT 0,
-    version                 int           NOT NULL DEFAULT 1
+    version                 int           NOT NULL DEFAULT 1,
+    project_id              uuid REFERENCES projects(id)
+);
+
+-- PROJECTS
+CREATE TABLE projects (
+    id            uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+    name          text NOT NULL,
+    customer_id   uuid NOT NULL REFERENCES customers(id),
+    date          date NOT NULL DEFAULT CURRENT_DATE,
+    status        text NOT NULL CHECK (status IN ('draft', 'process', 'approved', 'demo', 'follow_up', 'closed', 'deleted')),
+    description   text,
+    user_id       uuid REFERENCES users(id),
+    created_at    timestamptz NOT NULL DEFAULT now()
 );
 
 -- QUOTE_LINES

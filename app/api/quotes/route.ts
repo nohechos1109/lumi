@@ -32,6 +32,7 @@ export async function POST(req: NextRequest) {
       unit_count: body.unit_count ? Number(body.unit_count) : 1,
       terms: body.terms,
       user_id: session.userId,
+      project_id: body.project_id,
     })
 
     return NextResponse.json(quote, { status: 201 })
