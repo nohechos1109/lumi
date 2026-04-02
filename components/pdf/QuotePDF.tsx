@@ -29,9 +29,10 @@ const styles = StyleSheet.create({
   itemText: { fontSize: 8.5 },
   skuText: { fontSize: 7, color: '#9CA3AF', marginTop: 1 },
 
-  colDesc: { width: '60%' },
+  colDesc: { width: '50%' },
   colQty: { width: '10%', textAlign: 'right' },
   colPrice: { width: '15%', textAlign: 'right' },
+  colDisc: { width: '10%', textAlign: 'right' },
   colTotal: { width: '15%', textAlign: 'right' },
 
   totalsArea: { marginTop: 25, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start' },
@@ -138,6 +139,7 @@ export default function QuotePDF({ quote, lines, images }: { quote: Quote; lines
             <Text style={[styles.tableHeaderText, styles.colDesc]}>DESCRIPCIÓN</Text>
             <Text style={[styles.tableHeaderText, styles.colQty]}>CANT.</Text>
             <Text style={[styles.tableHeaderText, styles.colPrice]}>PRECIO UNIT.</Text>
+            <Text style={[styles.tableHeaderText, styles.colDisc]}>DESC.</Text>
             <Text style={[styles.tableHeaderText, styles.colTotal]}>SUBTOTAL</Text>
           </View>
 
@@ -162,6 +164,7 @@ export default function QuotePDF({ quote, lines, images }: { quote: Quote; lines
                   <Text style={[styles.colDesc, { color: '#0EA5E9', fontWeight: 'bold' }]}>DESCUENTO GLOBAL ({line.discount_percent}%)</Text>
                   <Text style={styles.colQty}></Text>
                   <Text style={styles.colPrice}></Text>
+                  <Text style={styles.colDisc}></Text>
                   <Text style={[styles.colTotal, { color: '#0EA5E9', fontWeight: 'bold' }]}>
                     -${Math.abs(Number(line.subtotal)).toLocaleString('es-MX', { minimumFractionDigits: 2 })}
                   </Text>
@@ -176,6 +179,7 @@ export default function QuotePDF({ quote, lines, images }: { quote: Quote; lines
                 </View>
                 <Text style={[styles.itemText, styles.colQty]}>{Math.floor(Number(line.qty))}</Text>
                 <Text style={[styles.itemText, styles.colPrice]}>${Number(line.unit_price_mxn_effective).toLocaleString('es-MX', { minimumFractionDigits: 2 })}</Text>
+                <Text style={[styles.itemText, styles.colDisc]}>{Number(line.discount_percent) > 0 ? `${line.discount_percent}%` : '-'}</Text>
                 <Text style={[styles.itemText, styles.colTotal]}>${Number(line.subtotal).toLocaleString('es-MX', { minimumFractionDigits: 2 })}</Text>
               </View>
             )
