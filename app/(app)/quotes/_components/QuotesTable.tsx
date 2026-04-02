@@ -13,6 +13,8 @@ interface Quote {
   executive_name?: string
   quotation_date: string
   amount_total: string
+  description: string | null
+  payment_term_name?: string
 }
 
 const STATE_LABELS: Record<string, { label: string; cls: string }> = {
@@ -23,7 +25,19 @@ const STATE_LABELS: Record<string, { label: string; cls: string }> = {
   expired:   { label: 'Expirada',   cls: 'badge badge-expired' },
 }
 
-export default function QuotesTable({ quotes, role }: { quotes: Quote[], role: string }) {
+export default function QuotesTable({ 
+  quotes, 
+  role, 
+  hideCustomer = false, 
+  hideDate = false, 
+  showDescription = false 
+}: { 
+  quotes: Quote[]
+  role: string
+  hideCustomer?: boolean
+  hideDate?: boolean
+  showDescription?: boolean
+}) {
   const router = useRouter()
   const [deleteId, setDeleteId] = useState<string | null>(null)
 
@@ -64,11 +78,18 @@ export default function QuotesTable({ quotes, role }: { quotes: Quote[], role: s
             <thead>
               <tr style={{ borderBottom: '1px solid var(--c-rim)' }}>
                 <th className="text-left px-5 py-4 text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--c-ghost)', letterSpacing: '0.1em' }}>Número</th>
-                <th className="text-left px-5 py-4 text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--c-ghost)', letterSpacing: '0.1em' }}>Cliente</th>
+                {!hideCustomer && (
+                  <th className="text-left px-5 py-4 text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--c-ghost)', letterSpacing: '0.1em' }}>Cliente</th>
+                )}
+                {showDescription && (
+                  <th className="text-left px-5 py-4 text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--c-ghost)', letterSpacing: '0.1em' }}>Descripción</th>
+                )}
                 {!isSales && (
                   <th className="text-left px-5 py-4 text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--c-ghost)', letterSpacing: '0.1em' }}>Vendedor</th>
                 )}
-                <th className="text-left px-5 py-4 text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--c-ghost)', letterSpacing: '0.1em' }}>Fecha</th>
+                {!hideDate && (
+                  <th className="text-left px-5 py-4 text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--c-ghost)', letterSpacing: '0.1em' }}>Fecha</th>
+                )}
                 <th className="text-left px-5 py-4 text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--c-ghost)', letterSpacing: '0.1em' }}>Estado</th>
                 <th className="text-right px-5 py-4 text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--c-ghost)', letterSpacing: '0.1em' }}>Total</th>
                 <th className="px-5 py-4 w-28"></th>
@@ -87,17 +108,26 @@ export default function QuotesTable({ quotes, role }: { quotes: Quote[], role: s
                     <td className="px-5 py-4 font-mono text-xs" style={{ color: 'var(--c-dim)', letterSpacing: '0.08em' }}>
                       {q.number}
                     </td>
-                    <td className="px-5 py-4" style={{ color: 'var(--c-ink)' }}>
-                      {q.customer_name}
-                    </td>
+                    {!hideCustomer && (
+                      <td className="px-5 py-4" style={{ color: 'var(--c-ink)' }}>
+                        {q.customer_name}
+                      </td>
+                    )}
+                    {showDescription && (
+                      <td className="px-5 py-4 text-xs" style={{ color: 'var(--c-ink)' }}>
+                        <span className="line-clamp-1 opacity-70 italic">{q.description || '—'}</span>
+                      </td>
+                    )}
                     {!isSales && (
                       <td className="px-5 py-4 text-xs font-medium" style={{ color: 'var(--c-dim)' }}>
                         {q.executive_name || '—'}
                       </td>
                     )}
-                    <td className="px-5 py-4 font-mono text-xs" style={{ color: 'var(--c-dim)' }}>
-                      {new Date(q.quotation_date).toLocaleDateString('es-MX')}
-                    </td>
+                    {!hideDate && (
+                      <td className="px-5 py-4 font-mono text-xs" style={{ color: 'var(--c-dim)' }}>
+                        {new Date(q.quotation_date).toLocaleDateString('es-MX')}
+                      </td>
+                    )}
                     <td className="px-5 py-4">
                       <span className={s.cls}>{s.label}</span>
                     </td>

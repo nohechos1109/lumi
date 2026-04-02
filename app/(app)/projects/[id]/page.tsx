@@ -69,7 +69,13 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
           </span>
         </div>
         
-        <QuotesTable quotes={quotes} role={session.role} />
+        <QuotesTable 
+          quotes={quotes} 
+          role={session.role} 
+          hideCustomer={true} 
+          hideDate={true} 
+          showDescription={true} 
+        />
       </div>
 
     </div>

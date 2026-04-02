@@ -16,13 +16,12 @@ interface Project {
 }
 
 const PROJECT_STATUS_LABELS: Record<string, { label: string; cls: string }> = {
-  draft:       { label: 'Borrador',   cls: 'badge badge-draft' },
-  process:     { label: 'Proceso',    cls: 'badge badge-process' },
-  approved:    { label: 'Aprobado',   cls: 'badge badge-confirmed' },
-  demo:        { label: 'Demo',       cls: 'badge badge-demo' },
-  follow_up:   { label: 'Seguimiento', cls: 'badge badge-sent' },
-  closed:      { label: 'Cerrado',    cls: 'badge badge-cancelled' },
-  deleted:     { label: 'Borrado',    cls: 'badge badge-expired' },
+  follow_up: { label: 'Seguimiento', cls: 'badge badge-sent' },
+  demo:      { label: 'Demo',        cls: 'badge badge-demo' },
+  approved:  { label: 'Aprobado',    cls: 'badge badge-confirmed' },
+  process:   { label: 'En Proceso',  cls: 'badge badge-process' },
+  cancelled: { label: 'Cancelado',   cls: 'badge badge-cancelled' },
+  finished:  { label: 'Terminado',   cls: 'badge badge-hold' },
 }
 
 export default function ProjectsTable({ projects, role }: { projects: Project[], role: string }) {

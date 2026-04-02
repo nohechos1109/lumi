@@ -10,13 +10,12 @@ interface Props {
 }
 
 const PROJECT_STATUSES = [
-  { value: 'draft',     label: 'Borrador' },
-  { value: 'process',   label: 'Proceso' },
-  { value: 'approved',  label: 'Aprobado' },
-  { value: 'demo',      label: 'Demo' },
   { value: 'follow_up', label: 'Seguimiento' },
-  { value: 'closed',    label: 'Cerrado' },
-  { value: 'deleted',   label: 'Borrado' },
+  { value: 'demo',      label: 'Demo' },
+  { value: 'approved',  label: 'Aprobado' },
+  { value: 'process',   label: 'En Proceso' },
+  { value: 'cancelled', label: 'Cancelado' },
+  { value: 'finished',  label: 'Terminado' },
 ]
 
 export default function ProjectStatusEditor({ projectId, currentStatus }: Props) {

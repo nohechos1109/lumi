@@ -44,7 +44,7 @@ export default function NewProjectPage() {
       body: JSON.stringify({
         name: form.get('name'),
         customer_id: customerId,
-        status: 'draft',
+        status: 'follow_up',
         date: new Date().toISOString().split('T')[0],
         description: form.get('description'),
       }),

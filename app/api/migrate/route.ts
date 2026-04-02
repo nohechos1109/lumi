@@ -36,9 +36,16 @@ export async function POST(req: Request) {
       END $$;
     `);
 
+    // 3. Migrate existing projects
+    await pool.query(`
+      UPDATE projects SET status = 'process' WHERE status = 'draft';
+      UPDATE projects SET status = 'cancelled' WHERE status = 'closed';
+      ALTER TABLE projects ALTER COLUMN status SET DEFAULT 'follow_up';
+    `);
+
     return NextResponse.json({ 
       success: true, 
-      message: 'Tablas de proyectos y columnas creadas correctamente en la base de datos de Docker.' 
+      message: 'Tablas de proyectos, columnas y estados actualizados correctamente.' 
     });
   } catch (error: any) {
     console.error('Migration error:', error);
