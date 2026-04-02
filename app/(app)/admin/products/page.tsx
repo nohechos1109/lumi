@@ -106,22 +106,22 @@ export default function AdminProductsPage() {
       </div>
 
       {/* Controls Bar */}
-      <div className="flex flex-col md:flex-row gap-4 mb-8 p-4 rounded-2xl shadow-sm" style={{ border: '1px solid var(--c-rim)', background: 'var(--c-card)' }}>
+      <div className="flex flex-col md:flex-row gap-4 mb-8 p-4 rounded-xl shadow-sm" style={{ border: '1px solid var(--c-rim)', background: 'var(--c-card)', backgroundClip: 'padding-box' }}>
         <div className="flex-1 relative">
           <input
             type="text"
             placeholder="Buscar por nombre o SKU..."
-            className="w-full pl-11 pr-4 py-3 rounded-xl outline-none focus:ring-2 focus:ring-[var(--c-sky)] transition-all"
+            className="w-full pl-12 pr-4 h-11 rounded-lg outline-none focus:ring-2 focus:ring-[var(--c-sky)] transition-all text-sm font-medium"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             style={{ 
-              background: 'var(--c-base)', 
+              background: 'var(--c-panel)', 
               border: '1px solid var(--c-rim)',
               color: 'var(--c-ink)'
             }}
           />
-          <div className="absolute left-4 top-1/2 -translate-y-1/2" style={{ color: 'var(--c-ghost)' }}>
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <div className="absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none opacity-40" style={{ color: 'var(--c-ghost)' }}>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
               <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
             </svg>
           </div>

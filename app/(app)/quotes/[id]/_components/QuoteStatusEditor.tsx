@@ -52,52 +52,62 @@ export default function QuoteStatusEditor({ quoteId, currentStatus, role }: Prop
     }
   }
 
-  if (currentStatus !== 'draft') {
-    const s = QUOTE_STATUSES.find(x => x.value === currentStatus) || { label: currentStatus, value: currentStatus }
-    const badgeColors: Record<string, { bg: string; text: string }> = {
-      sent:      { bg: 'var(--c-sky-bg)',  text: 'var(--c-sky)' },
-      confirmed: { bg: 'var(--c-mint-bg)', text: 'var(--c-mint)' },
-      cancelled: { bg: 'var(--c-rose-bg)', text: 'var(--c-rose)' },
-      expired:   { bg: 'var(--c-base)',     text: 'var(--c-ghost)' },
-    }
-    const colors = badgeColors[currentStatus] || { bg: 'var(--c-base)', text: 'var(--c-dim)' }
-
-    return (
-      <div className="flex items-center gap-2">
-        <span className="text-[10px] uppercase font-bold tracking-wider" style={{ color: 'var(--c-ghost)' }}>
-          Estatus:
-        </span>
-        <span 
-          className="text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider"
-          style={{ background: colors.bg, color: colors.text, border: `1px solid ${colors.text}40` }}
-        >
-          {s.label}
-        </span>
-      </div>
-    )
+  const badgeColors: Record<string, { bg: string; text: string }> = {
+    sent:      { bg: 'var(--c-sky-bg)',  text: 'var(--c-sky)' },
+    confirmed: { bg: 'var(--c-mint-bg)', text: 'var(--c-mint)' },
+    cancelled: { bg: 'var(--c-rose-bg)', text: 'var(--c-rose)' },
+    expired:   { bg: 'var(--c-base)',     text: 'var(--c-ghost)' },
   }
+
+  const showBadge = currentStatus !== 'draft'
+  const canSend = currentStatus === 'draft' && allowed.includes('sent')
+  const canCancel = (currentStatus === 'draft' || currentStatus === 'sent' || currentStatus === 'confirmed') && allowed.includes('cancelled')
 
   return (
     <div className="flex items-center gap-3">
-      <button
-        disabled={loading}
-        onClick={() => handleChange('sent')}
-        className="flex items-center gap-2 px-4 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider transition-all hover:opacity-85 shadow-sm active:scale-95 disabled:opacity-50"
-        style={{ background: 'var(--c-navy)', color: '#FFFFFF' }}
-      >
-        {loading ? '...' : 'Enviar'}
-      </button>
-      <button
-        disabled={loading}
-        onClick={() => {
-          if (confirm('¿Seguro que deseas cancelar esta cotización?')) handleChange('cancelled')
-        }}
-        className="flex items-center gap-2 px-4 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider transition-all hover:bg-red-50 active:scale-95 disabled:opacity-50"
-        style={{ color: 'var(--c-rose)', border: '1px solid var(--c-rose-bg)', background: 'transparent' }}
-      >
-        Cancelar
-      </button>
-      {loading && <span className="animate-spin text-xs">⏳</span>}
+      {showBadge && (
+        <div className="flex items-center gap-2 mr-2">
+          <span className="text-[10px] uppercase font-bold tracking-wider" style={{ color: 'var(--c-ghost)' }}>
+            Estatus:
+          </span>
+          <span 
+            className="text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider"
+            style={{ 
+              background: badgeColors[currentStatus]?.bg || 'var(--c-base)', 
+              color: badgeColors[currentStatus]?.text || 'var(--c-dim)', 
+              border: `1px solid ${badgeColors[currentStatus]?.text || 'var(--c-dim)'}40` 
+            }}
+          >
+            {QUOTE_STATUSES.find(x => x.value === currentStatus)?.label || currentStatus}
+          </span>
+        </div>
+      )}
+
+      {canSend && (
+        <button
+          disabled={loading}
+          onClick={() => handleChange('sent')}
+          className="flex items-center gap-2 px-4 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider transition-all hover:opacity-85 shadow-sm active:scale-95 disabled:opacity-50"
+          style={{ background: 'var(--c-navy)', color: '#FFFFFF' }}
+        >
+          {loading ? '...' : 'Enviar'}
+        </button>
+      )}
+
+      {canCancel && (
+        <button
+          disabled={loading}
+          onClick={() => {
+            if (confirm('¿Seguro que deseas cancelar esta cotización?')) handleChange('cancelled')
+          }}
+          className="flex items-center gap-2 px-4 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider transition-all hover:bg-rose-50 active:scale-95 disabled:opacity-50"
+          style={{ color: 'var(--c-rose)', border: '1px solid var(--c-rose-bg)', background: 'transparent' }}
+        >
+          {loading ? '...' : 'Cancelar'}
+        </button>
+      )}
+
+      {loading && !canSend && !canCancel && <span className="animate-spin text-xs">⏳</span>}
     </div>
   )
 }
