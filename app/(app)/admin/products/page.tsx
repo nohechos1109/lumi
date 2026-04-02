@@ -143,7 +143,7 @@ export default function AdminProductsPage() {
 
       <div className="rounded-2xl overflow-hidden" style={{ border: '1px solid var(--c-rim)', background: 'var(--c-card)' }}>
         <div className="overflow-x-auto">
-        <table className="w-full text-sm min-w-[700px]">
+        <table className="w-full text-sm min-w-[900px]">
           <thead>
             <tr style={{ borderBottom: '1px solid var(--c-rim)' }}>
               <th className="text-left px-5 py-4 text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--c-ghost)' }}>Nombre</th>
@@ -153,7 +153,7 @@ export default function AdminProductsPage() {
               <th className="text-right px-5 py-4 text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--c-ghost)' }}>Costo</th>
               <th className="text-right px-5 py-4 text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--c-ghost)' }}>Util. Fija</th>
               <th className="text-right px-5 py-4 text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--c-ghost)' }}>Factor</th>
-              <th className="px-5 py-4 w-24"></th>
+              <th className="px-5 py-4 w-40"></th>
             </tr>
           </thead>
           <tbody>
@@ -165,7 +165,7 @@ export default function AdminProductsPage() {
                   className={isEditing ? '' : 'tr-hover'}
                   style={{
                     ...cellStyle,
-                    background: isEditing ? 'var(--c-hover)' : undefined,
+                    background: isEditing ? 'var(--c-navy-bg)' : undefined,
                   }}
                 >
                   <td className="px-5 py-3.5" style={{ color: 'var(--c-ink)' }}>
@@ -194,14 +194,20 @@ export default function AdminProductsPage() {
                     {isEditing ? editInput('utility_factor', { type: 'number', step: '0.01', w: '5rem' }) : Number(p.utility_factor).toFixed(2)}
                   </td>
                   <td className="px-5 py-3.5 text-right">
-                    <div className="flex gap-3 justify-end">
+                    <div className="flex gap-3 justify-end items-center">
                       {isEditing ? (
                         <>
-                          <button onClick={saveEdit} className="text-xs font-semibold transition-colors" style={{ color: 'var(--c-mint)' }}>
+                          <button
+                            onClick={saveEdit}
+                            className="text-[10px] font-bold uppercase tracking-wider px-2 py-1.5 rounded bg-mint text-navy hover:opacity-80 transition-all"
+                          >
                             Guardar
                           </button>
-                          <button onClick={() => setEditingId(null)} className="text-xs transition-colors" style={{ color: 'var(--c-ghost)' }}>
-                            Cancelar
+                          <button
+                            onClick={() => setEditingId(null)}
+                            className="text-[10px] font-bold uppercase tracking-wider px-2 py-1.5 rounded border border-rim text-ghost hover:bg-rim transition-all"
+                          >
+                            X
                           </button>
                         </>
                       ) : (
