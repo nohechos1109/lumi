@@ -40,7 +40,8 @@ export default function ProductGrid({ products, onEdit, onDelete }: ProductGridP
       {products.map((p) => (
         <div
           key={p.id}
-          className="group relative flex flex-col p-6 rounded-2xl transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 overflow-hidden"
+          onClick={() => onEdit(p)}
+          className="group relative flex flex-col p-6 rounded-2xl transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 overflow-hidden cursor-pointer"
           style={{
             background: 'var(--c-card)',
             border: '1px solid var(--c-rim)',
@@ -90,15 +91,9 @@ export default function ProductGrid({ products, onEdit, onDelete }: ProductGridP
               </div>
             </div>
 
-            <div className="flex items-center gap-2 pt-4 border-t border-dashed" style={{ borderColor: 'var(--c-rim)' }}>
+            <div className="flex items-center justify-end gap-2 pt-4 border-t border-dashed" style={{ borderColor: 'var(--c-rim)' }}>
               <button
-                onClick={() => onEdit(p)}
-                className="flex-1 text-xs font-bold uppercase tracking-widest py-2.5 rounded-xl transition-all hover:bg-[var(--c-sky-bg)] active:scale-95 text-[var(--c-sky)] border border-[var(--c-sky-bd)]"
-              >
-                Editar
-              </button>
-              <button
-                onClick={() => onDelete(p.id)}
+                onClick={(e) => { e.stopPropagation(); onDelete(p.id) }}
                 className="px-3 py-2.5 rounded-xl text-[var(--c-rose)] hover:bg-[rgba(209,44,60,0.08)] transition-colors active:scale-95"
                 title="Eliminar"
               >

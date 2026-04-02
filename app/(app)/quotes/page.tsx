@@ -23,19 +23,9 @@ export default async function QuotesPage() {
             {quotes.length} {quotes.length === 1 ? 'registro' : 'registros'}
           </p>
         </div>
-        <Link
-          href="/quotes/new"
-          className="text-sm px-5 py-2.5 rounded-lg font-semibold transition-opacity hover:opacity-85"
-          style={{
-            background: 'var(--c-navy)',
-            color: '#FFFFFF',
-          }}
-        >
-          + Nueva Cotización
-        </Link>
       </div>
 
-      <QuotesTable quotes={quotes} />
+      <QuotesTable quotes={quotes} role={session.role} />
     </div>
   )
 }

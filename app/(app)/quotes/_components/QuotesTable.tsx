@@ -23,9 +23,11 @@ const STATE_LABELS: Record<string, { label: string; cls: string }> = {
   expired:   { label: 'Expirada',   cls: 'badge badge-expired' },
 }
 
-export default function QuotesTable({ quotes }: { quotes: Quote[] }) {
+export default function QuotesTable({ quotes, role }: { quotes: Quote[], role: string }) {
   const router = useRouter()
   const [deleteId, setDeleteId] = useState<string | null>(null)
+
+  const isSales = role === 'sales'
 
   async function handleDelete(id: string) {
     await fetch(`/api/quotes/${id}`, { method: 'DELETE' })
@@ -63,7 +65,9 @@ export default function QuotesTable({ quotes }: { quotes: Quote[] }) {
               <tr style={{ borderBottom: '1px solid var(--c-rim)' }}>
                 <th className="text-left px-5 py-4 text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--c-ghost)', letterSpacing: '0.1em' }}>Número</th>
                 <th className="text-left px-5 py-4 text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--c-ghost)', letterSpacing: '0.1em' }}>Cliente</th>
-                <th className="text-left px-5 py-4 text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--c-ghost)', letterSpacing: '0.1em' }}>Vendedor</th>
+                {!isSales && (
+                  <th className="text-left px-5 py-4 text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--c-ghost)', letterSpacing: '0.1em' }}>Vendedor</th>
+                )}
                 <th className="text-left px-5 py-4 text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--c-ghost)', letterSpacing: '0.1em' }}>Fecha</th>
                 <th className="text-left px-5 py-4 text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--c-ghost)', letterSpacing: '0.1em' }}>Estado</th>
                 <th className="text-right px-5 py-4 text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--c-ghost)', letterSpacing: '0.1em' }}>Total</th>
@@ -76,7 +80,8 @@ export default function QuotesTable({ quotes }: { quotes: Quote[] }) {
                 return (
                   <tr
                     key={q.id}
-                    className="tr-hover transition-colors"
+                    onClick={() => router.push(`/quotes/${q.id}`)}
+                    className="tr-hover transition-colors cursor-pointer"
                     style={{ borderTop: '1px solid var(--c-rim)' }}
                   >
                     <td className="px-5 py-4 font-mono text-xs" style={{ color: 'var(--c-dim)', letterSpacing: '0.08em' }}>
@@ -85,9 +90,11 @@ export default function QuotesTable({ quotes }: { quotes: Quote[] }) {
                     <td className="px-5 py-4" style={{ color: 'var(--c-ink)' }}>
                       {q.customer_name}
                     </td>
-                    <td className="px-5 py-4 text-xs font-medium" style={{ color: 'var(--c-dim)' }}>
-                      {q.executive_name || '—'}
-                    </td>
+                    {!isSales && (
+                      <td className="px-5 py-4 text-xs font-medium" style={{ color: 'var(--c-dim)' }}>
+                        {q.executive_name || '—'}
+                      </td>
+                    )}
                     <td className="px-5 py-4 font-mono text-xs" style={{ color: 'var(--c-dim)' }}>
                       {new Date(q.quotation_date).toLocaleDateString('es-MX')}
                     </td>
@@ -101,22 +108,11 @@ export default function QuotesTable({ quotes }: { quotes: Quote[] }) {
                       <div className="flex items-center justify-end gap-2">
                         <button
                           aria-label="Eliminar cotización"
-                          onClick={() => setDeleteId(q.id)}
+                          onClick={(e) => { e.stopPropagation(); setDeleteId(q.id) }}
                           className="btn-delete text-xs"
                         >
                           ✕
                         </button>
-                        <Link
-                          href={`/quotes/${q.id}`}
-                          className="text-xs font-semibold px-3 py-1.5 rounded-lg transition-all hover:opacity-80 whitespace-nowrap"
-                          style={{
-                            color: 'var(--c-navy)',
-                            background: 'var(--c-navy-bg)',
-                            border: '1px solid var(--c-navy-bd)',
-                          }}
-                        >
-                          Ver →
-                        </Link>
                       </div>
                     </td>
                   </tr>

@@ -37,7 +37,7 @@ export default async function ProjectsPage() {
         </Link>
       </div>
 
-      <ProjectsTable projects={projects} />
+      <ProjectsTable projects={projects} role={session.role} />
     </div>
   )
 }

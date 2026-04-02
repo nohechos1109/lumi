@@ -128,7 +128,8 @@ export default function AdminCustomersPage() {
             {customers.map(c => (
               <tr
                 key={c.id}
-                className={editingId === c.id ? '' : 'tr-hover'}
+                onClick={() => { if (editingId !== c.id) startEdit(c) }}
+                className={editingId === c.id ? '' : 'tr-hover cursor-pointer'}
                 style={{
                   borderTop: '1px solid var(--c-rim)',
                   background: editingId === c.id ? 'var(--c-hover)' : undefined,
@@ -151,14 +152,14 @@ export default function AdminCustomersPage() {
                     {editingId === c.id ? (
                       <>
                         <button
-                          onClick={saveEdit}
+                          onClick={(e) => { e.stopPropagation(); saveEdit() }}
                           className="text-xs font-semibold"
                           style={{ color: 'var(--c-mint)' }}
                         >
                           Guardar
                         </button>
                         <button
-                          onClick={() => setEditingId(null)}
+                          onClick={(e) => { e.stopPropagation(); setEditingId(null) }}
                           className="text-xs"
                           style={{ color: 'var(--c-ghost)' }}
                         >
@@ -167,10 +168,7 @@ export default function AdminCustomersPage() {
                       </>
                     ) : (
                       <>
-                        <button onClick={() => startEdit(c)} className="btn-edit text-xs">
-                          Editar
-                        </button>
-                        <button onClick={() => setDeleteId(c.id)} className="btn-delete text-xs">
+                        <button onClick={(e) => { e.stopPropagation(); setDeleteId(c.id) }} className="btn-delete text-xs">
                           Eliminar
                         </button>
                       </>
