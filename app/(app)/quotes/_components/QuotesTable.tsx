@@ -58,7 +58,7 @@ export default function QuotesTable({ quotes }: { quotes: Quote[] }) {
         style={{ border: '1px solid var(--c-rim)', background: 'var(--c-card)', boxShadow: '0 1px 4px rgba(27,52,97,0.06)' }}
       >
         <div className="overflow-x-auto">
-          <table className="w-full text-sm min-w-[560px]">
+          <table className="w-full text-sm min-w-[800px]">
             <thead>
               <tr style={{ borderBottom: '1px solid var(--c-rim)' }}>
                 <th className="text-left px-5 py-4 text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--c-ghost)', letterSpacing: '0.1em' }}>Número</th>
