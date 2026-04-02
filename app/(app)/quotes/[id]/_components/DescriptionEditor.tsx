@@ -7,9 +7,10 @@ import { toast } from '@/lib/toast'
 interface Props {
   quoteId: string
   description: string | null
+  isLocked?: boolean
 }
 
-export default function DescriptionEditor({ quoteId, description }: Props) {
+export default function DescriptionEditor({ quoteId, description, isLocked }: Props) {
   const router = useRouter()
   const [editing, setEditing] = useState(false)
   const [value, setValue] = useState(description ?? '')
@@ -58,8 +59,9 @@ export default function DescriptionEditor({ quoteId, description }: Props) {
 
   return (
     <button
+      disabled={isLocked}
       onClick={() => { setValue(description ?? ''); setEditing(true) }}
-      className="group flex items-center gap-2 mt-3 text-left max-w-xl"
+      className={`group flex items-center gap-2 mt-3 text-left max-w-xl ${isLocked ? 'cursor-default' : ''}`}
     >
       {description ? (
         <span
@@ -71,14 +73,16 @@ export default function DescriptionEditor({ quoteId, description }: Props) {
           }}
         >
           {description}
-          <span
-            className="ml-2 opacity-0 group-hover:opacity-60 transition-opacity"
-            style={{ color: 'var(--c-navy)' }}
-          >
-            ✎
-          </span>
+          {!isLocked && (
+            <span
+              className="ml-2 opacity-0 group-hover:opacity-60 transition-opacity"
+              style={{ color: 'var(--c-navy)' }}
+            >
+              ✎
+            </span>
+          )}
         </span>
-      ) : (
+      ) : !isLocked ? (
         <span
           className="text-sm px-4 py-2 rounded-lg border border-dashed transition-colors"
           style={{
@@ -88,7 +92,7 @@ export default function DescriptionEditor({ quoteId, description }: Props) {
         >
           + Agregar descripción
         </span>
-      )}
+      ) : null}
     </button>
   )
 }

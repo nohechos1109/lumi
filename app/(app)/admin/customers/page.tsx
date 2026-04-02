@@ -13,6 +13,7 @@ export default function AdminCustomersPage() {
   const [editingId, setEditingId] = useState<string | null>(null)
   const [editName, setEditName] = useState('')
   const [deleteId, setDeleteId] = useState<string | null>(null)
+  const [searchQuery, setSearchQuery] = useState('')
 
   async function load() {
     const r = await fetch('/api/admin/customers')
@@ -20,6 +21,10 @@ export default function AdminCustomersPage() {
   }
 
   useEffect(() => { load() }, [])
+
+  const filteredCustomers = customers.filter(c => 
+    c.name.toLowerCase().includes(searchQuery.toLowerCase())
+  )
 
   async function handleAdd(e: React.FormEvent) {
     e.preventDefault()
@@ -122,6 +127,32 @@ export default function AdminCustomersPage() {
         </form>
       )}
 
+      {/* Controls Bar */}
+      <div className="flex flex-col md:flex-row gap-4 mb-6 p-4 rounded-xl shadow-sm" style={{ border: '1px solid var(--c-rim)', background: 'var(--c-card)' }}>
+        <div className="flex-1 relative">
+          <input
+            type="text"
+            placeholder="Buscar por nombre de cliente..."
+            className="w-full pl-11 pr-4 py-2.5 rounded-lg outline-none focus:ring-2 focus:ring-[var(--c-sky)] transition-all text-sm"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            style={{ 
+              background: 'var(--c-base)', 
+              border: '1px solid var(--c-rim)',
+              color: 'var(--c-ink)'
+            }}
+          />
+          <div className="absolute left-4 top-1/2 -translate-y-1/2" style={{ color: 'var(--c-ghost)' }}>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+            </svg>
+          </div>
+        </div>
+        <div className="flex items-center px-2 text-xs font-mono uppercase tracking-tighter" style={{ color: 'var(--c-ghost)' }}>
+          {filteredCustomers.length} resultados
+        </div>
+      </div>
+
       <div
         className="rounded-2xl overflow-hidden"
         style={{ border: '1px solid var(--c-rim)', background: 'var(--c-card)' }}
@@ -136,7 +167,7 @@ export default function AdminCustomersPage() {
             </tr>
           </thead>
           <tbody>
-            {customers.map(c => (
+            {filteredCustomers.map(c => (
               <tr
                 key={c.id}
                 onClick={() => { if (editingId !== c.id) startEdit(c) }}

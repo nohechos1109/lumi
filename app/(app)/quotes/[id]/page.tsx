@@ -62,7 +62,7 @@ export default async function QuotePage({ params }: { params: Promise<{ id: stri
               </>
             )}
           </div>
-          <DescriptionEditor quoteId={id} description={quote.description} />
+          <DescriptionEditor quoteId={id} description={quote.description} isLocked={quote.state !== 'draft'} />
         </div>
         <QuoteActions quoteId={id} currentState={quote.state} role={session.role} />
       </div>
@@ -76,7 +76,7 @@ export default async function QuotePage({ params }: { params: Promise<{ id: stri
           <p className="text-xs font-semibold mb-2" style={{ color: 'var(--c-ghost)' }}>
             Vehículos
           </p>
-          <UnitCountEditor quoteId={id} unitCount={quote.unit_count} />
+          <UnitCountEditor quoteId={id} unitCount={quote.unit_count} isLocked={quote.state !== 'draft'} />
         </div>
 
         <div
@@ -121,7 +121,13 @@ export default async function QuotePage({ params }: { params: Promise<{ id: stri
         </div>
       </div>
 
-      <LineEditor quoteId={id} fxSnapshot={Number(quote.fx_mxn_per_usd_snapshot)} unitCount={quote.unit_count} role={session.role} />
+      <LineEditor 
+        quoteId={id} 
+        fxSnapshot={Number(quote.fx_mxn_per_usd_snapshot)} 
+        unitCount={quote.unit_count} 
+        role={session.role} 
+        isLocked={quote.state !== 'draft'} 
+      />
     </div>
   )
 }

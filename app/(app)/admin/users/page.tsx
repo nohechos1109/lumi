@@ -17,6 +17,8 @@ export default function AdminUsersPage() {
   const [form, setForm] = useState({ username: '', role: 'sales', password: '' })
   const [adding, setAdding] = useState(false)
   const [deleteId, setDeleteId] = useState<string | null>(null)
+  const [searchQuery, setSearchQuery] = useState('')
+  const [roleFilter, setRoleFilter] = useState('')
 
   async function load() {
     const r = await fetch('/api/admin/users')
@@ -24,6 +26,12 @@ export default function AdminUsersPage() {
   }
 
   useEffect(() => { load() }, [])
+
+  const filteredUsers = users.filter(u => {
+    const matchesSearch = u.username.toLowerCase().includes(searchQuery.toLowerCase())
+    const matchesRole = roleFilter === '' || u.role === roleFilter
+    return matchesSearch && matchesRole
+  })
 
   async function handleAdd(e: React.FormEvent) {
     e.preventDefault()
@@ -128,6 +136,50 @@ export default function AdminUsersPage() {
         </form>
       )}
 
+      {/* Controls Bar */}
+      <div className="flex flex-col md:flex-row gap-4 mb-6 p-4 rounded-xl shadow-sm" style={{ border: '1px solid var(--c-rim)', background: 'var(--c-card)' }}>
+        <div className="flex-1 relative">
+          <input
+            type="text"
+            placeholder="Buscar por nombre de usuario..."
+            className="w-full pl-11 pr-4 py-2.5 rounded-lg outline-none focus:ring-2 focus:ring-[var(--c-sky)] transition-all text-sm"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            style={{ 
+              background: 'var(--c-base)', 
+              border: '1px solid var(--c-rim)',
+              color: 'var(--c-ink)'
+            }}
+          />
+          <div className="absolute left-4 top-1/2 -translate-y-1/2" style={{ color: 'var(--c-ghost)' }}>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+            </svg>
+          </div>
+        </div>
+        
+        <div className="relative min-w-[180px]">
+          <select
+            className="w-full appearance-none px-4 py-2.5 pr-10 rounded-lg outline-none focus:ring-2 focus:ring-[var(--c-sky)] transition-all cursor-pointer text-sm"
+            value={roleFilter}
+            onChange={(e) => setRoleFilter(e.target.value)}
+            style={{ 
+              background: 'var(--c-base)', 
+              border: '1px solid var(--c-rim)',
+              color: 'var(--c-ink)'
+            }}
+          >
+            <option value="">Todos los roles</option>
+            <option value="admin">Admin</option>
+            <option value="manager">Manager</option>
+            <option value="sales">Sales</option>
+          </select>
+          <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: 'var(--c-ghost)' }}>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+          </div>
+        </div>
+      </div>
+
       <div
         className="rounded-2xl overflow-hidden"
         style={{ border: '1px solid var(--c-rim)', background: 'var(--c-card)' }}
@@ -141,7 +193,7 @@ export default function AdminUsersPage() {
             </tr>
           </thead>
           <tbody>
-            {users.map(u => (
+            {filteredUsers.map(u => (
               <tr
                 key={u.id}
                 className="tr-hover transition-colors"

@@ -27,6 +27,10 @@ const PROJECT_STATUS_LABELS: Record<string, { label: string; cls: string }> = {
 export default function ProjectsTable({ projects, role }: { projects: Project[], role: string }) {
   const router = useRouter()
   const [deleteId, setDeleteId] = useState<string | null>(null)
+  
+  // Filtering state
+  const [searchQuery, setSearchQuery] = useState('')
+  const [statusFilter, setStatusFilter] = useState('')
 
   const isSales = role === 'sales'
 
@@ -37,6 +41,16 @@ export default function ProjectsTable({ projects, role }: { projects: Project[],
       router.refresh()
     }
   }
+
+  const filteredProjects = projects.filter(p => {
+    const matchesSearch = 
+      p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (p.customer_name?.toLowerCase().includes(searchQuery.toLowerCase()) ?? false)
+    
+    const matchesStatus = statusFilter === '' || p.status === statusFilter
+
+    return matchesSearch && matchesStatus
+  })
 
   if (projects.length === 0) {
     return (
@@ -58,14 +72,58 @@ export default function ProjectsTable({ projects, role }: { projects: Project[],
 
   return (
     <>
+      {/* Controls Bar */}
+      <div className="flex flex-col md:flex-row gap-4 mb-6 p-4 rounded-xl shadow-sm" style={{ border: '1px solid var(--c-rim)', background: 'var(--c-card)' }}>
+        <div className="flex-1 relative">
+          <input
+            type="text"
+            placeholder="Buscar por nombre o cliente..."
+            className="w-full pl-11 pr-4 py-2.5 rounded-lg outline-none focus:ring-2 focus:ring-[var(--c-sky)] transition-all text-sm"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            style={{ 
+              background: 'var(--c-base)', 
+              border: '1px solid var(--c-rim)',
+              color: 'var(--c-ink)'
+            }}
+          />
+          <div className="absolute left-4 top-1/2 -translate-y-1/2" style={{ color: 'var(--c-ghost)' }}>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+            </svg>
+          </div>
+        </div>
+        
+        <div className="relative min-w-[200px]">
+          <select
+            className="w-full appearance-none px-4 py-2.5 pr-10 rounded-lg outline-none focus:ring-2 focus:ring-[var(--c-sky)] transition-all cursor-pointer text-sm"
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value)}
+            style={{ 
+              background: 'var(--c-base)', 
+              border: '1px solid var(--c-rim)',
+              color: 'var(--c-ink)'
+            }}
+          >
+            <option value="">Todos los estados</option>
+            {Object.entries(PROJECT_STATUS_LABELS).map(([key, { label }]) => (
+              <option key={key} value={key}>{label}</option>
+            ))}
+          </select>
+          <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: 'var(--c-ghost)' }}>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+          </div>
+        </div>
+      </div>
+
       <div
-        className="rounded-xl overflow-hidden"
+        className="rounded-xl overflow-hidden shadow-sm"
         style={{ border: '1px solid var(--c-rim)', background: 'var(--c-card)', boxShadow: '0 1px 4px rgba(27,52,97,0.06)' }}
       >
         <div className="overflow-x-auto">
           <table className="w-full text-sm min-w-[600px]">
             <thead>
-              <tr style={{ borderBottom: '1px solid var(--c-rim)' }}>
+              <tr style={{ borderBottom: '1px solid var(--c-rim)', background: 'var(--c-panel)' }}>
                 <th className="text-left px-5 py-4 text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--c-ghost)', letterSpacing: '0.1em' }}>Proyecto</th>
                 <th className="text-left px-5 py-4 text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--c-ghost)', letterSpacing: '0.1em' }}>Cliente</th>
                 {!isSales && (
@@ -76,23 +134,22 @@ export default function ProjectsTable({ projects, role }: { projects: Project[],
                 <th className="px-5 py-4 w-28"></th>
               </tr>
             </thead>
-            <tbody>
-              {projects.map(p => {
+            <tbody className="divide-y divide-[var(--c-rim)]">
+              {filteredProjects.map(p => {
                 const s = PROJECT_STATUS_LABELS[p.status] ?? { label: p.status, cls: 'badge badge-expired' }
                 return (
                   <tr
                     key={p.id}
                     onClick={() => router.push(`/projects/${p.id}`)}
                     className="tr-hover transition-colors cursor-pointer"
-                    style={{ borderTop: '1px solid var(--c-rim)' }}
                   >
-                    <td className="px-5 py-4 font-semibold" style={{ color: 'var(--c-navy)' }}>
+                    <td className="px-5 py-4 font-bold" style={{ color: 'var(--c-navy)' }}>
                       <div className="flex flex-col">
                         <span>{p.name}</span>
                         <span className="text-[10px] font-normal opacity-60 uppercase">{p.quote_count} {p.quote_count === 1 ? 'cotización' : 'cotizaciones'}</span>
                       </div>
                     </td>
-                    <td className="px-5 py-4" style={{ color: 'var(--c-ink)' }}>
+                    <td className="px-5 py-4 font-semibold" style={{ color: 'var(--c-ink)' }}>
                       {p.customer_name}
                     </td>
                     {!isSales && (
@@ -120,6 +177,13 @@ export default function ProjectsTable({ projects, role }: { projects: Project[],
                   </tr>
                 )
               })}
+              {filteredProjects.length === 0 && (
+                <tr>
+                  <td colSpan={10} className="px-5 py-12 text-center">
+                    <p className="text-[var(--c-ghost)] font-mono text-sm uppercase tracking-widest">No se encontraron proyectos</p>
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>

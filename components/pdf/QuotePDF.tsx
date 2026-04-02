@@ -82,14 +82,43 @@ interface Quote {
   terms: string | null; 
   description: string | null; 
   unit_count: number; 
+  state: string;
 }
 
 export default function QuotePDF({ quote, lines, images }: { quote: Quote; lines: Line[]; images: { logo: string } }) {
   const isFleet = quote.unit_count > 1
 
+  const watermarkText = quote.state === 'draft' ? 'VISTA PREVIA' : quote.state === 'cancelled' ? 'CANCELADA' : null
+
   return (
     <Document>
       <Page size="A4" style={styles.page}>
+        
+        {/* Watermark Layer */}
+        {watermarkText && (
+          <View 
+            style={{ 
+              position: 'absolute', 
+              top: 0, left: 0, right: 0, bottom: 0, 
+              justifyContent: 'center', alignItems: 'center',
+              zIndex: -1,
+            }}
+            fixed
+          >
+            <Text 
+              style={{ 
+                fontSize: 60, 
+                fontWeight: 'bold', 
+                color: '#E5E7EB', 
+                opacity: 0.4,
+                transform: 'rotate(-45deg)',
+                letterSpacing: 4
+              }}
+            >
+              {watermarkText}
+            </Text>
+          </View>
+        )}
         
         {/* SVG Header Background */}
         <View style={styles.headerContainer} fixed>

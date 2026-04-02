@@ -21,6 +21,7 @@ interface Props {
   fxSnapshot: number
   unitCount: number
   role?: string
+  isLocked?: boolean
 }
 
 const inputCls = 'text-right rounded-lg px-2 py-1.5 text-sm font-mono outline-none transition-colors'
@@ -30,7 +31,7 @@ const inputStyle = {
   color: 'var(--c-ink)',
 }
 
-export default function LineEditor({ quoteId, fxSnapshot, unitCount, role }: Props) {
+export default function LineEditor({ quoteId, fxSnapshot, unitCount, role, isLocked }: Props) {
   const router = useRouter()
   const [lines, setLines] = useState<QuoteLine[]>([])
   const [totals, setTotals] = useState({ untaxed: 0, tax: 0, total: 0, margin: 0, marginPct: 0 })
@@ -213,53 +214,57 @@ export default function LineEditor({ quoteId, fxSnapshot, unitCount, role }: Pro
   return (
     <div>
       {/* Search + add controls */}
-      <div className={`mb-3 transition-opacity ${busy ? 'opacity-50 pointer-events-none' : ''}`}>
-        <ProductSearch onSelect={addProductLine} />
-      </div>
+      {!isLocked && (
+        <div className={`mb-3 transition-opacity ${busy ? 'opacity-50 pointer-events-none' : ''}`}>
+          <ProductSearch onSelect={addProductLine} />
+        </div>
+      )}
 
       {/* Block A: action buttons + saving indicator */}
-      <div className="flex items-center gap-2 mb-4 flex-wrap">
-        {/* Block D: replaced onMouseEnter/Leave with CSS classes */}
-        <button
-          onClick={() => setTextPrompt('section')}
-          type="button"
-          disabled={busy}
-          className="btn-dashed text-xs px-3 py-1.5 rounded-lg border border-dashed disabled:opacity-40"
-        >
-          + Sección
-        </button>
-        <button
-          onClick={() => setTextPrompt('note')}
-          type="button"
-          disabled={busy}
-          className="btn-dashed text-xs px-3 py-1.5 rounded-lg border border-dashed disabled:opacity-40"
-        >
-          + Nota
-        </button>
-        <button
-          onClick={() => setDiscountPrompt(true)}
-          type="button"
-          disabled={busy}
-          className="btn-dashed-amber text-xs px-3 py-1.5 rounded-lg border border-dashed disabled:opacity-40"
-        >
-          − Descuento Global
-        </button>
-        <button
-          onClick={() => setPlantillaPrompt(true)}
-          type="button"
-          disabled={busy}
-          className="btn-dashed text-xs px-3 py-1.5 rounded-lg border border-dashed disabled:opacity-40 ml-auto"
-        >
-          ⚡ Plantillas
-        </button>
+      {!isLocked && (
+        <div className="flex items-center gap-2 mb-4 flex-wrap">
+          {/* Block D: replaced onMouseEnter/Leave with CSS classes */}
+          <button
+            onClick={() => setTextPrompt('section')}
+            type="button"
+            disabled={busy}
+            className="btn-dashed text-xs px-3 py-1.5 rounded-lg border border-dashed disabled:opacity-40"
+          >
+            + Sección
+          </button>
+          <button
+            onClick={() => setTextPrompt('note')}
+            type="button"
+            disabled={busy}
+            className="btn-dashed text-xs px-3 py-1.5 rounded-lg border border-dashed disabled:opacity-40"
+          >
+            + Nota
+          </button>
+          <button
+            onClick={() => setDiscountPrompt(true)}
+            type="button"
+            disabled={busy}
+            className="btn-dashed-amber text-xs px-3 py-1.5 rounded-lg border border-dashed disabled:opacity-40"
+          >
+            − Descuento Global
+          </button>
+          <button
+            onClick={() => setPlantillaPrompt(true)}
+            type="button"
+            disabled={busy}
+            className="btn-dashed text-xs px-3 py-1.5 rounded-lg border border-dashed disabled:opacity-40 ml-auto"
+          >
+            ⚡ Plantillas
+          </button>
 
-        {/* Block A: saving indicator */}
-        {(busy || saving) && (
-          <span className="text-xs ml-1" style={{ color: 'var(--c-ghost)' }}>
-            Guardando...
-          </span>
-        )}
-      </div>
+          {/* Block A: saving indicator */}
+          {(busy || saving) && (
+            <span className="text-xs ml-1" style={{ color: 'var(--c-ghost)' }}>
+              Guardando...
+            </span>
+          )}
+        </div>
+      )}
 
       {/* Block C: empty state */}
       {lines.length === 0 ? (
@@ -291,7 +296,7 @@ export default function LineEditor({ quoteId, fxSnapshot, unitCount, role }: Pro
                   {role !== 'sales' && (
                     <th className="text-right px-4 py-3.5 text-xs font-bold uppercase tracking-widest w-24" style={{ color: 'var(--c-ghost)' }}>Margen</th>
                   )}
-                  <th className="w-10 px-2 py-3.5"></th>
+                  {!isLocked && <th className="w-10 px-2 py-3.5"></th>}
                 </tr>
               </thead>
               <tbody>
@@ -300,56 +305,71 @@ export default function LineEditor({ quoteId, fxSnapshot, unitCount, role }: Pro
 
                   if (line.display_type === 'section') {
                     return (
-                      <tr key={line.id} draggable onDragStart={() => handleDragStart(index)} onDragEnter={() => handleDragEnter(index)} onDragEnd={handleDragEnd} onDragOver={e => e.preventDefault()}
-                        className="cursor-grab active:cursor-grabbing" style={{ ...rowStyle, background: 'var(--c-panel)' }}>
-                        <td className="px-2 py-2.5 text-center text-xs" style={{ color: 'var(--c-ghost)' }}>⠿</td>
+                      <tr key={line.id} draggable={!isLocked} onDragStart={() => handleDragStart(index)} onDragEnter={() => handleDragEnter(index)} onDragEnd={handleDragEnd} onDragOver={e => e.preventDefault()}
+                        className={isLocked ? '' : 'cursor-grab active:cursor-grabbing'} style={{ ...rowStyle, background: 'var(--c-panel)' }}>
+                        <td className="px-2 py-2.5 text-center text-xs" style={{ color: 'var(--c-ghost)' }}>
+                          {isLocked ? '' : '⠿'}
+                        </td>
                         <td colSpan={role !== 'sales' ? 6 : 5} className="px-4 py-2.5 text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--c-gold)', letterSpacing: '0.1em' }}>
                           {line.name}
                         </td>
-                        {/* Block D: replaced onMouseEnter/Leave with .btn-delete class */}
-                        <td className="px-2 py-2.5 text-right">
-                          <button aria-label="Eliminar sección" onClick={() => setDeleteConfirmLine(line)} className="btn-delete text-xs">✕</button>
-                        </td>
+                        {!isLocked && (
+                          <td className="px-2 py-2.5 text-right">
+                            <button aria-label="Eliminar sección" onClick={() => setDeleteConfirmLine(line)} className="btn-delete text-xs">✕</button>
+                          </td>
+                        )}
                       </tr>
                     )
                   }
 
                   if (line.display_type === 'note') {
                     return (
-                      <tr key={line.id} draggable onDragStart={() => handleDragStart(index)} onDragEnter={() => handleDragEnter(index)} onDragEnd={handleDragEnd} onDragOver={e => e.preventDefault()}
-                        className="cursor-grab active:cursor-grabbing" style={rowStyle}>
-                        <td className="px-2 py-2.5 text-center text-xs" style={{ color: 'var(--c-ghost)' }}>⠿</td>
-                        <td colSpan={role !== 'sales' ? 6 : 5} className="px-4 py-2.5 text-xs italic" style={{ color: 'var(--c-ghost)' }}>{line.name}</td>
-                        <td className="px-2 py-2.5 text-right">
-                          <button aria-label="Eliminar nota" onClick={() => setDeleteConfirmLine(line)} className="btn-delete text-xs">✕</button>
+                      <tr key={line.id} draggable={!isLocked} onDragStart={() => handleDragStart(index)} onDragEnter={() => handleDragEnter(index)} onDragEnd={handleDragEnd} onDragOver={e => e.preventDefault()}
+                        className={isLocked ? '' : 'cursor-grab active:cursor-grabbing'} style={rowStyle}>
+                        <td className="px-2 py-2.5 text-center text-xs" style={{ color: 'var(--c-ghost)' }}>
+                          {isLocked ? '' : '⠿'}
                         </td>
+                        <td colSpan={role !== 'sales' ? 6 : 5} className="px-4 py-2.5 text-xs italic" style={{ color: 'var(--c-ghost)' }}>{line.name}</td>
+                        {!isLocked && (
+                          <td className="px-2 py-2.5 text-right">
+                            <button aria-label="Eliminar nota" onClick={() => setDeleteConfirmLine(line)} className="btn-delete text-xs">✕</button>
+                          </td>
+                        )}
                       </tr>
                     )
                   }
 
                   if (line.display_type === 'discount') {
                     return (
-                      <tr key={line.id} draggable onDragStart={() => handleDragStart(index)} onDragEnter={() => handleDragEnter(index)} onDragEnd={handleDragEnd} onDragOver={e => e.preventDefault()}
-                        className="cursor-grab active:cursor-grabbing" style={{ ...rowStyle, background: 'var(--c-panel)' }}>
-                        <td className="px-2 py-3.5 text-center text-xs" style={{ color: 'var(--c-ghost)' }}>⠿</td>
+                      <tr key={line.id} draggable={!isLocked} onDragStart={() => handleDragStart(index)} onDragEnter={() => handleDragEnter(index)} onDragEnd={handleDragEnd} onDragOver={e => e.preventDefault()}
+                        className={isLocked ? '' : 'cursor-grab active:cursor-grabbing'} style={{ ...rowStyle, background: 'var(--c-panel)' }}>
+                        <td className="px-2 py-3.5 text-center text-xs" style={{ color: 'var(--c-ghost)' }}>
+                          {isLocked ? '' : '⠿'}
+                        </td>
                         <td className="px-4 py-3.5 text-sm font-medium" style={{ color: 'var(--c-amber)' }}>{line.name}</td>
                         <td className="px-4 py-3.5"></td>
                         <td className="px-4 py-3.5"></td>
                         <td className="px-4 py-3.5 text-right font-mono text-xs">
-                          <input type="number" step="0.01" min="0" max="100"
-                            defaultValue={line.discount_percent}
-                            onBlur={e => { const val = Number(e.target.value); if (val !== Number(line.discount_percent)) updateField(line.id, 'discount_percent', val) }}
-                            className="w-full text-right outline-none rounded transition-all px-1 py-1"
-                            style={{ background: 'var(--c-card)', color: 'var(--c-amber)', border: '1px solid var(--c-rim)' }}
-                          />
+                          {isLocked ? (
+                            <span style={{ color: 'var(--c-amber)' }}>{line.discount_percent}%</span>
+                          ) : (
+                            <input type="number" step="0.01" min="0" max="100"
+                              defaultValue={line.discount_percent}
+                              onBlur={e => { const val = Number(e.target.value); if (val !== Number(line.discount_percent)) updateField(line.id, 'discount_percent', val) }}
+                              className="w-full text-right outline-none rounded transition-all px-1 py-1"
+                              style={{ background: 'var(--c-card)', color: 'var(--c-amber)', border: '1px solid var(--c-rim)' }}
+                            />
+                          )}
                         </td>
                         <td className="px-4 py-3.5 text-right font-mono text-xs font-medium" style={{ color: 'var(--c-amber)' }}>
                           {Number(line.subtotal) < 0 ? '-' : ''}${Math.abs(Number(line.subtotal)).toLocaleString('es-MX', { minimumFractionDigits: 2 })}
                         </td>
                         {role !== 'sales' && <td className="px-4 py-3.5"></td>}
-                        <td className="px-2 py-3.5 text-right">
-                          <button aria-label="Eliminar descuento" onClick={() => setDeleteConfirmLine(line)} className="btn-delete text-xs">✕</button>
-                        </td>
+                        {!isLocked && (
+                          <td className="px-2 py-3.5 text-right">
+                            <button aria-label="Eliminar descuento" onClick={() => setDeleteConfirmLine(line)} className="btn-delete text-xs">✕</button>
+                          </td>
+                        )}
                       </tr>
                     )
                   }
@@ -359,49 +379,63 @@ export default function LineEditor({ quoteId, fxSnapshot, unitCount, role }: Pro
                   const marginPct = sub > 0 ? (margin / sub) * 100 : 0
 
                   return (
-                    <tr key={line.id} draggable onDragStart={() => handleDragStart(index)} onDragEnter={() => handleDragEnter(index)} onDragEnd={handleDragEnd} onDragOver={e => e.preventDefault()}
-                      className="tr-hover cursor-grab active:cursor-grabbing transition-colors" style={rowStyle}>
-                      <td className="px-2 py-3 text-center text-xs" style={{ color: 'var(--c-ghost)' }}>⠿</td>
+                    <tr key={line.id} draggable={!isLocked} onDragStart={() => handleDragStart(index)} onDragEnter={() => handleDragEnter(index)} onDragEnd={handleDragEnd} onDragOver={e => e.preventDefault()}
+                      className={isLocked ? '' : 'tr-hover cursor-grab active:cursor-grabbing transition-colors'} style={rowStyle}>
+                      <td className="px-2 py-3 text-center text-xs" style={{ color: 'var(--c-ghost)' }}>
+                        {isLocked ? '' : '⠿'}
+                      </td>
                       <td className="px-4 py-3" style={{ color: 'var(--c-ink)' }}>{line.name}</td>
                       <td className="px-4 py-3 text-right">
-                        <input type="number" min="1" step="1"
-                          defaultValue={Math.floor(Number(line.qty ?? 1))}
-                          className={`w-16 ${inputCls}`} style={inputStyle}
-                          onFocus={e => (e.target.style.borderColor = 'var(--c-navy)')}
-                          onBlur={e => {
-                            e.target.style.borderColor = 'var(--c-rim)'
-                            const v = Math.floor(Math.max(1, Number(e.target.value) || 1))
-                            e.target.value = String(v)
-                            if (String(v) !== String(Math.floor(Number(line.qty ?? 1)))) updateField(line.id, 'qty', v)
-                          }}
-                          onKeyDown={e => { if (e.key === 'Enter') (e.target as HTMLInputElement).blur() }}
-                        />
+                        {isLocked ? (
+                          <span className="font-mono text-xs" style={{ color: 'var(--c-dim)' }}>{Math.floor(Number(line.qty ?? 1))}</span>
+                        ) : (
+                          <input type="number" min="1" step="1"
+                            defaultValue={Math.floor(Number(line.qty ?? 1))}
+                            className={`w-16 ${inputCls}`} style={inputStyle}
+                            onFocus={e => (e.target.style.borderColor = 'var(--c-navy)')}
+                            onBlur={e => {
+                              e.target.style.borderColor = 'var(--c-rim)'
+                              const v = Math.floor(Math.max(1, Number(e.target.value) || 1))
+                              e.target.value = String(v)
+                              if (String(v) !== String(Math.floor(Number(line.qty ?? 1)))) updateField(line.id, 'qty', v)
+                            }}
+                            onKeyDown={e => { if (e.key === 'Enter') (e.target as HTMLInputElement).blur() }}
+                          />
+                        )}
                       </td>
                       <td className="px-4 py-3 text-right">
-                        <input type="number" min="0" step="0.01"
-                          defaultValue={Number(line.unit_price_mxn_effective).toFixed(2)}
-                          className={`w-24 ${inputCls}`} style={inputStyle}
-                          onFocus={e => (e.target.style.borderColor = 'var(--c-navy)')}
-                          onBlur={e => {
-                            e.target.style.borderColor = 'var(--c-rim)'
-                            const v = Number(e.target.value)
-                            if (v >= 0) updateField(line.id, 'unit_price_mxn_manual', v)
-                          }}
-                          onKeyDown={e => { if (e.key === 'Enter') (e.target as HTMLInputElement).blur() }}
-                        />
+                        {isLocked ? (
+                          <span className="font-mono text-xs" style={{ color: 'var(--c-dim)' }}>${Number(line.unit_price_mxn_effective).toLocaleString('es-MX', { minimumFractionDigits: 2 })}</span>
+                        ) : (
+                          <input type="number" min="0" step="0.01"
+                            defaultValue={Number(line.unit_price_mxn_effective).toFixed(2)}
+                            className={`w-24 ${inputCls}`} style={inputStyle}
+                            onFocus={e => (e.target.style.borderColor = 'var(--c-navy)')}
+                            onBlur={e => {
+                              e.target.style.borderColor = 'var(--c-rim)'
+                              const v = Number(e.target.value)
+                              if (v >= 0) updateField(line.id, 'unit_price_mxn_manual', v)
+                            }}
+                            onKeyDown={e => { if (e.key === 'Enter') (e.target as HTMLInputElement).blur() }}
+                          />
+                        )}
                       </td>
                       <td className="px-4 py-3 text-right">
-                        <input type="number" min="0" max="100" step="1"
-                          defaultValue={Number(line.discount_percent).toFixed(0)}
-                          className={`w-16 ${inputCls}`} style={inputStyle}
-                          onFocus={e => (e.target.style.borderColor = 'var(--c-navy)')}
-                          onBlur={e => {
-                            e.target.style.borderColor = 'var(--c-rim)'
-                            const v = Number(e.target.value)
-                            if (v >= 0 && v <= 100) updateField(line.id, 'discount_percent', v)
-                          }}
-                          onKeyDown={e => { if (e.key === 'Enter') (e.target as HTMLInputElement).blur() }}
-                        />
+                        {isLocked ? (
+                          <span className="font-mono text-xs" style={{ color: 'var(--c-dim)' }}>{Number(line.discount_percent).toFixed(0)}%</span>
+                        ) : (
+                          <input type="number" min="0" max="100" step="1"
+                            defaultValue={Number(line.discount_percent).toFixed(0)}
+                            className={`w-16 ${inputCls}`} style={inputStyle}
+                            onFocus={e => (e.target.style.borderColor = 'var(--c-navy)')}
+                            onBlur={e => {
+                              e.target.style.borderColor = 'var(--c-rim)'
+                              const v = Number(e.target.value)
+                              if (v >= 0 && v <= 100) updateField(line.id, 'discount_percent', v)
+                            }}
+                            onKeyDown={e => { if (e.key === 'Enter') (e.target as HTMLInputElement).blur() }}
+                          />
+                        )}
                       </td>
                       <td className="px-4 py-3 text-right font-mono font-medium" style={{ color: 'var(--c-ink)' }}>
                         ${sub.toLocaleString('es-MX', { minimumFractionDigits: 2 })}
@@ -414,9 +448,11 @@ export default function LineEditor({ quoteId, fxSnapshot, unitCount, role }: Pro
                           </span>
                         </td>
                       )}
-                      <td className="px-2 py-3 text-right">
-                        <button aria-label="Eliminar línea" onClick={() => setDeleteConfirmLine(line)} className="btn-delete text-xs">✕</button>
-                      </td>
+                      {!isLocked && (
+                        <td className="px-2 py-3 text-right">
+                          <button aria-label="Eliminar línea" onClick={() => setDeleteConfirmLine(line)} className="btn-delete text-xs">✕</button>
+                        </td>
+                      )}
                     </tr>
                   )
                 })}

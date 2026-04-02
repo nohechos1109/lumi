@@ -7,9 +7,10 @@ import { toast } from '@/lib/toast'
 interface Props {
   quoteId: string
   unitCount: number
+  isLocked?: boolean
 }
 
-export default function UnitCountEditor({ quoteId, unitCount }: Props) {
+export default function UnitCountEditor({ quoteId, unitCount, isLocked }: Props) {
   const router = useRouter()
   const [editing, setEditing] = useState(false)
   const [value, setValue] = useState(unitCount)
@@ -61,10 +62,11 @@ export default function UnitCountEditor({ quoteId, unitCount }: Props) {
 
   return (
     <button
-      title="Haz clic para editar"
+      title={isLocked ? undefined : 'Haz clic para editar'}
+      disabled={isLocked || saving}
       onClick={() => { setValue(unitCount); setEditing(true) }}
-      className="group flex items-baseline gap-1.5"
-      style={{ cursor: 'pointer', opacity: saving ? 0.5 : 1 }}
+      className={`group flex items-baseline gap-1.5 ${isLocked ? 'cursor-default' : ''}`}
+      style={{ opacity: saving ? 0.5 : 1 }}
     >
       <span
         className="font-heading text-2xl font-bold transition-colors"
@@ -73,12 +75,14 @@ export default function UnitCountEditor({ quoteId, unitCount }: Props) {
         {unitCount}
       </span>
       <span className="text-sm font-sans" style={{ color: 'var(--c-dim)' }}>uds</span>
-      <span
-        className="text-xs opacity-0 group-hover:opacity-60 transition-opacity ml-0.5"
-        style={{ color: 'var(--c-navy)' }}
-      >
-        ✎
-      </span>
+      {!isLocked && (
+        <span
+          className="text-xs opacity-0 group-hover:opacity-60 transition-opacity ml-0.5"
+          style={{ color: 'var(--c-navy)' }}
+        >
+          ✎
+        </span>
+      )}
     </button>
   )
 }
