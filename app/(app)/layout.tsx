@@ -16,7 +16,9 @@ export default async function AppLayout({ children }: { children: React.ReactNod
       { href: '/quotes',   label: 'Mis Cotizaciones' },
     ],
     manager: [
-      { href: '/manager', label: 'EQUIPO' },
+      { href: '/projects', label: 'Proyectos' },
+      { href: '/quotes',   label: 'Cotizaciones' },
+      { href: '/manager',  label: 'Equipo' },
     ],
     admin: [
       { href: '/admin',          label: 'Dashboard' },
