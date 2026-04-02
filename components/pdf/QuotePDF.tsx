@@ -107,12 +107,12 @@ export default function QuotePDF({ quote, lines, images }: { quote: Quote; lines
           >
             <Text 
               style={{ 
-                fontSize: 60, 
+                fontSize: 80, 
                 fontWeight: 'bold', 
-                color: '#E5E7EB', 
-                opacity: 0.4,
+                color: '#FF0000', 
+                opacity: 0.15,
                 transform: 'rotate(-45deg)',
-                letterSpacing: 4
+                letterSpacing: 8
               }}
             >
               {watermarkText}

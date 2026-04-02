@@ -44,6 +44,8 @@ export default function QuotesTable({
   // Filtering state
   const [searchQuery, setSearchQuery] = useState('')
   const [statusFilter, setStatusFilter] = useState('')
+  const [executiveFilter, setExecutiveFilter] = useState('')
+  const [dateFilter, setDateFilter] = useState('')
 
   const isSales = role === 'sales'
 
@@ -53,14 +55,30 @@ export default function QuotesTable({
     router.refresh()
   }
 
+  // Pre-calculate unique values for filters
+  const executives = Array.from(new Set(quotes.map(q => q.executive_name).filter(Boolean))).sort()
+  const dates = Array.from(new Set(quotes.map(q => {
+    const d = new Date(q.quotation_date)
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`
+  }))).sort().reverse()
+
   const filteredQuotes = quotes.filter(q => {
     const matchesSearch = 
       q.number.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (q.customer_name?.toLowerCase().includes(searchQuery.toLowerCase()) ?? false)
+      (q.customer_name?.toLowerCase().includes(searchQuery.toLowerCase()) ?? false) ||
+      (q.description?.toLowerCase().includes(searchQuery.toLowerCase()) ?? false)
     
     const matchesStatus = statusFilter === '' || q.state === statusFilter
+    const matchesExecutive = executiveFilter === '' || q.executive_name === executiveFilter
+    
+    let matchesDate = true
+    if (dateFilter) {
+      const qDate = new Date(q.quotation_date)
+      const filterDate = `${qDate.getFullYear()}-${String(qDate.getMonth() + 1).padStart(2, '0')}`
+      matchesDate = filterDate === dateFilter
+    }
 
-    return matchesSearch && matchesStatus
+    return matchesSearch && matchesStatus && matchesExecutive && matchesDate
   })
 
   if (quotes.length === 0) {
@@ -84,11 +102,11 @@ export default function QuotesTable({
   return (
     <>
       {/* Controls Bar */}
-      <div className="flex flex-col md:flex-row gap-4 mb-6 p-4 rounded-xl shadow-sm" style={{ border: '1px solid var(--c-rim)', background: 'var(--c-card)' }}>
-        <div className="flex-1 relative">
+      <div className="flex flex-col gap-4 mb-6 p-4 rounded-xl shadow-sm" style={{ border: '1px solid var(--c-rim)', background: 'var(--c-card)' }}>
+        <div className="relative">
           <input
             type="text"
-            placeholder="Buscar por número o cliente..."
+            placeholder="Buscar por número, cliente o descripción..."
             className="w-full pl-11 pr-4 py-2.5 rounded-lg outline-none focus:ring-2 focus:ring-[var(--c-sky)] transition-all text-sm"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
@@ -105,24 +123,72 @@ export default function QuotesTable({
           </div>
         </div>
         
-        <div className="relative min-w-[200px]">
-          <select
-            className="w-full appearance-none px-4 py-2.5 pr-10 rounded-lg outline-none focus:ring-2 focus:ring-[var(--c-sky)] transition-all cursor-pointer text-sm"
-            value={statusFilter}
-            onChange={(e) => setStatusFilter(e.target.value)}
-            style={{ 
-              background: 'var(--c-base)', 
-              border: '1px solid var(--c-rim)',
-              color: 'var(--c-ink)'
-            }}
-          >
-            <option value="">Todos los estados</option>
-            {Object.entries(STATE_LABELS).map(([key, { label }]) => (
-              <option key={key} value={key}>{label}</option>
-            ))}
-          </select>
-          <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: 'var(--c-ghost)' }}>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+        <div className="flex flex-wrap gap-4">
+          <div className="flex-1 min-w-[150px] relative">
+            <select
+              className="w-full appearance-none px-4 py-2.5 pr-10 rounded-lg outline-none focus:ring-2 focus:ring-[var(--c-sky)] transition-all cursor-pointer text-sm"
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value)}
+              style={{ 
+                background: 'var(--c-base)', 
+                border: '1px solid var(--c-rim)',
+                color: 'var(--c-ink)'
+              }}
+            >
+              <option value="">Estado: Todos</option>
+              {Object.entries(STATE_LABELS).map(([key, { label }]) => (
+                <option key={key} value={key}>{label}</option>
+              ))}
+            </select>
+            <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: 'var(--c-ghost)' }}>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+            </div>
+          </div>
+
+          {!isSales && executives.length > 0 && (
+            <div className="flex-1 min-w-[150px] relative">
+              <select
+                className="w-full appearance-none px-4 py-2.5 pr-10 rounded-lg outline-none focus:ring-2 focus:ring-[var(--c-sky)] transition-all cursor-pointer text-sm"
+                value={executiveFilter}
+                onChange={(e) => setExecutiveFilter(e.target.value)}
+                style={{ 
+                  background: 'var(--c-base)', 
+                  border: '1px solid var(--c-rim)',
+                  color: 'var(--c-ink)'
+                }}
+              >
+                <option value="">Vendedor: Todos</option>
+                {executives.map(e => (
+                  <option key={e} value={e!}>{e}</option>
+                ))}
+              </select>
+              <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: 'var(--c-ghost)' }}>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+              </div>
+            </div>
+          )}
+
+          <div className="flex-1 min-w-[150px] relative">
+            <select
+              className="w-full appearance-none px-4 py-2.5 pr-10 rounded-lg outline-none focus:ring-2 focus:ring-[var(--c-sky)] transition-all cursor-pointer text-sm"
+              value={dateFilter}
+              onChange={(e) => setDateFilter(e.target.value)}
+              style={{ 
+                background: 'var(--c-base)', 
+                border: '1px solid var(--c-rim)',
+                color: 'var(--c-ink)'
+              }}
+            >
+              <option value="">Fecha: Todas</option>
+              {dates.map(d => {
+                const [y, m] = d.split('-')
+                const dateLabel = new Date(parseInt(y), parseInt(m) - 1).toLocaleString('es-MX', { month: 'long', year: 'numeric' })
+                return <option key={d} value={d}>{dateLabel}</option>
+              })}
+            </select>
+            <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: 'var(--c-ghost)' }}>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+            </div>
           </div>
         </div>
       </div>
