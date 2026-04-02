@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import { cookies } from 'next/headers'
 import { getIronSession } from 'iron-session'
 import { notFound } from 'next/navigation'
@@ -7,6 +8,7 @@ import LineEditor from './_components/LineEditor'
 import QuoteActions from './_components/QuoteActions'
 import UnitCountEditor from './_components/UnitCountEditor'
 import DescriptionEditor from './_components/DescriptionEditor'
+import QuoteStatusEditor from './_components/QuoteStatusEditor'
 
 export default async function QuotePage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
@@ -20,20 +22,35 @@ export default async function QuotePage({ params }: { params: Promise<{ id: stri
     <div>
       {/* Header */}
       <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between mb-7">
-        <div>
-          <div className="flex items-center gap-3 mb-1">
+        <div className="flex-1">
+          <div className="flex items-center gap-4 mb-1">
             <h1
               className="font-heading text-3xl font-bold"
               style={{ color: 'var(--c-ink)', letterSpacing: '0.04em' }}
             >
               {quote.number}
             </h1>
+            <QuoteStatusEditor quoteId={id} currentStatus={quote.state} role={session.role} />
           </div>
-          <p className="text-sm" style={{ color: 'var(--c-dim)' }}>
-            <span className="font-medium">{quote.customer_name}</span>
-            <span style={{ color: 'var(--c-rim-hi)', margin: '0 0.6rem' }}>|</span>
-            {new Date(quote.quotation_date).toLocaleDateString('es-MX')}
-          </p>
+          
+          <div className="flex flex-wrap items-center gap-x-2 text-sm" style={{ color: 'var(--c-dim)' }}>
+            <span className="font-medium text-slate-700">{quote.customer_name}</span>
+            <span style={{ color: 'var(--c-rim-hi)' }}>|</span>
+            <span>{new Date(quote.quotation_date).toLocaleDateString('es-MX')}</span>
+            
+            {quote.project_id && (
+              <>
+                <span style={{ color: 'var(--c-rim-hi)' }}>|</span>
+                <Link 
+                  href={`/projects/${quote.project_id}`}
+                  className="px-2 py-0.5 rounded bg-slate-100 hover:bg-slate-200 transition-colors font-medium"
+                  style={{ color: 'var(--c-navy)' }}
+                >
+                  📁 {quote.project_name}
+                </Link>
+              </>
+            )}
+          </div>
           <DescriptionEditor quoteId={id} description={quote.description} />
         </div>
         <QuoteActions quoteId={id} currentState={quote.state} role={session.role} />
