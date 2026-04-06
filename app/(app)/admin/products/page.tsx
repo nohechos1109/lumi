@@ -18,7 +18,8 @@ interface Product {
   utility_factor: string;
   codigo_sat: string | null;
   codigo_proveedor: string | null;
-  image_url: string | null
+  image_url: string | null;
+  category: string | null;
 }
 
 export default function AdminProductsPage() {
@@ -30,6 +31,7 @@ export default function AdminProductsPage() {
   // Filtering state
   const [searchQuery, setSearchQuery] = useState('')
   const [currencyFilter, setCurrencyFilter] = useState('')
+  const [categoryFilter, setCategoryFilter] = useState('')
   const [viewMode, setViewMode] = useState<'list' | 'grid'>('list')
 
   async function load() {
@@ -39,14 +41,17 @@ export default function AdminProductsPage() {
 
   useEffect(() => { load() }, [])
 
+  const categories = [...new Set(products.map(p => p.category).filter(Boolean))] as string[]
+
   const filteredProducts = products.filter(p => {
-    const matchesSearch = 
+    const matchesSearch =
       p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       (p.sku?.toLowerCase().includes(searchQuery.toLowerCase()) ?? false)
-    
-    const matchesCurrency = currencyFilter === '' || p.currency === currencyFilter
 
-    return matchesSearch && matchesCurrency
+    const matchesCurrency = currencyFilter === '' || p.currency === currencyFilter
+    const matchesCategory = categoryFilter === '' || p.category === categoryFilter
+
+    return matchesSearch && matchesCurrency && matchesCategory
   })
 
   async function handleSave(data: Partial<Product>) {
@@ -177,6 +182,23 @@ export default function AdminProductsPage() {
             </div>
           </div>
 
+          <div className="relative">
+            <select
+              className="appearance-none pl-3.5 pr-7 h-8 rounded-full outline-none cursor-pointer text-xs font-semibold transition-all"
+              value={categoryFilter}
+              onChange={(e) => setCategoryFilter(e.target.value)}
+              style={{ background: categoryFilter ? 'var(--c-navy-bg)' : 'var(--c-card)', border: categoryFilter ? '1.5px solid var(--c-navy-bd)' : '1px solid var(--c-rim)', color: categoryFilter ? 'var(--c-navy)' : 'var(--c-dim)', boxShadow: categoryFilter ? 'none' : '0 1px 3px rgba(27,52,97,0.05)' }}
+            >
+              <option value="">Categoría</option>
+              {categories.sort().map(c => (
+                <option key={c} value={c}>{c}</option>
+              ))}
+            </select>
+            <div className="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: categoryFilter ? 'var(--c-navy)' : 'var(--c-ghost)', opacity: 0.6 }}>
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+            </div>
+          </div>
+
           <div className="flex p-0.5 rounded-full ml-2" style={{ border: '1px solid var(--c-rim)', background: 'var(--c-card)' }}>
             <button
               onClick={() => setViewMode('list')}
@@ -212,6 +234,7 @@ export default function AdminProductsPage() {
                 <th className="w-16 px-4 py-5"></th>
                 <th className="text-left px-6 py-5 text-[10px] font-bold uppercase tracking-[0.2em]" style={{ color: 'var(--c-ghost)' }}>Nombre del Producto</th>
                 <th className="text-left px-6 py-5 text-[10px] font-bold uppercase tracking-[0.2em]" style={{ color: 'var(--c-ghost)' }}>SKU</th>
+                <th className="text-left px-6 py-5 text-[10px] font-bold uppercase tracking-[0.2em]" style={{ color: 'var(--c-ghost)' }}>Categoría</th>
                 <th className="text-left px-6 py-5 text-[10px] font-bold uppercase tracking-[0.2em]" style={{ color: 'var(--c-ghost)' }}>Moneda</th>
                 <th className="text-right px-6 py-5 text-[10px] font-bold uppercase tracking-[0.2em]" style={{ color: 'var(--c-ghost)' }}>Costo Base</th>
                 <th className="text-right px-6 py-5 text-[10px] font-bold uppercase tracking-[0.2em]" style={{ color: 'var(--c-ghost)' }}>Util. Fija</th>
@@ -241,6 +264,11 @@ export default function AdminProductsPage() {
                     </td>
                     <td className="px-6 py-4.5 font-mono text-[11px]" style={{ color: 'var(--c-dim)' }}>
                       {p.sku ?? '—'}
+                    </td>
+                    <td className="px-6 py-4.5">
+                      <span className="inline-block px-2 py-0.5 rounded-full text-[10px] font-semibold" style={{ background: 'var(--c-navy-bg)', color: 'var(--c-navy)', border: '1px solid var(--c-navy-bd)' }}>
+                        {p.category ?? 'Varios'}
+                      </span>
                     </td>
                     <td className="px-6 py-4.5">
                       <span className={`badge ${p.currency === 'USD' ? 'badge-sent' : 'badge-process'} text-[10px]`}>
@@ -276,7 +304,7 @@ export default function AdminProductsPage() {
               ))}
               {filteredProducts.length === 0 && (
                 <tr>
-                  <td colSpan={10} className="px-6 py-20 text-center">
+                  <td colSpan={11} className="px-6 py-20 text-center">
                     <p className="text-[var(--c-ghost)] font-mono text-sm uppercase tracking-widest">No se encontraron productos</p>
                   </td>
                 </tr>

@@ -5,7 +5,7 @@ import { toast } from '@/lib/toast'
 
 interface Product {
   id: string; sku: string | null; name: string; description: string | null; currency: string
-  cost_base: string; utility_fixed: string; utility_factor: string
+  cost_base: string; utility_fixed: string; utility_factor: string; category: string | null
 }
 
 interface Props {
@@ -18,6 +18,7 @@ export default function ProductSearch({ onSelect }: Props) {
   const [all, setAll] = useState<Product[]>([])
   const [showCatalog, setShowCatalog] = useState(false)
   const [loadingSearch, setLoadingSearch] = useState(false)
+  const [categoryFilter, setCategoryFilter] = useState('')
   const ref = useRef<HTMLDivElement>(null)
 
   // Block A: error handling on initial load
@@ -59,7 +60,9 @@ export default function ProductSearch({ onSelect }: Props) {
     return () => document.removeEventListener('mousedown', onClickOutside)
   }, [])
 
-  const displayed = query ? results : showCatalog ? all : []
+  const categories = [...new Set(all.map(p => p.category).filter(Boolean))] as string[]
+  const preFiltered = query ? results : showCatalog ? all : []
+  const displayed = categoryFilter ? preFiltered.filter(p => p.category === categoryFilter) : preFiltered
   const showDropdown = showCatalog || query.length > 0
 
   return (
@@ -91,13 +94,38 @@ export default function ProductSearch({ onSelect }: Props) {
       {/* Block C: show dropdown with content or empty state */}
       {showDropdown && (
         <div
-          className="absolute z-20 top-full mt-1.5 w-full rounded-xl max-h-64 overflow-y-auto"
+          className="absolute z-20 top-full mt-1.5 w-full rounded-xl max-h-72 overflow-hidden flex flex-col"
           style={{
             background: 'var(--c-card)',
             border: '1px solid var(--c-rim-hi)',
             boxShadow: '0 16px 40px rgba(0,0,0,0.18)',
           }}
         >
+          {/* Category filter inside dropdown */}
+          <div className="px-3 py-2 flex items-center gap-2 shrink-0" style={{ borderBottom: '1px solid var(--c-rim)' }}>
+            <select
+              className="appearance-none text-xs font-semibold px-2.5 py-1 rounded-lg outline-none cursor-pointer"
+              value={categoryFilter}
+              onChange={(e) => setCategoryFilter(e.target.value)}
+              style={{ background: 'var(--c-panel)', border: '1px solid var(--c-rim)', color: categoryFilter ? 'var(--c-navy)' : 'var(--c-dim)' }}
+            >
+              <option value="">Todas las categorías</option>
+              {categories.sort().map(c => (
+                <option key={c} value={c}>{c}</option>
+              ))}
+            </select>
+            {categoryFilter && (
+              <button
+                type="button"
+                onClick={() => setCategoryFilter('')}
+                className="text-[10px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded transition-colors"
+                style={{ color: 'var(--c-ghost)' }}
+              >
+                Limpiar
+              </button>
+            )}
+          </div>
+          <div className="overflow-y-auto flex-1">
           {loadingSearch ? (
             <div className="px-4 py-3 text-sm" style={{ color: 'var(--c-ghost)' }}>
               Buscando...
@@ -116,6 +144,12 @@ export default function ProductSearch({ onSelect }: Props) {
                   {p.sku ?? 'Sin SKU'}
                   <span style={{ margin: '0 0.4rem', color: 'var(--c-rim-hi)' }}>·</span>
                   {p.currency}
+                  {p.category && (
+                    <>
+                      <span style={{ margin: '0 0.4rem', color: 'var(--c-rim-hi)' }}>·</span>
+                      {p.category}
+                    </>
+                  )}
                 </p>
               </button>
             ))
@@ -125,6 +159,7 @@ export default function ProductSearch({ onSelect }: Props) {
               {query ? `Sin resultados para "${query}"` : 'Sin productos en el catálogo'}
             </div>
           )}
+          </div>
         </div>
       )}
     </div>

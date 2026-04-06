@@ -3,6 +3,12 @@
 import { useState, useEffect, useRef } from 'react'
 import Image from 'next/image'
 
+const PRODUCT_CATEGORIES = [
+  'Varios', 'Servicios', 'Polizas', 'Suscripciones', 'Grabadores', 'Almacenamiento',
+  'Camaras', 'Cableado aviacion', 'Cableado especializado CP4', 'Cableado especializado',
+  'Pantallas', 'Boletera', 'Accesorios', 'Actuadores', 'Planes de datos', 'Alarma inalambrica',
+] as const
+
 interface Product {
   id: string
   sku: string | null
@@ -15,6 +21,7 @@ interface Product {
   codigo_sat: string | null
   codigo_proveedor: string | null
   image_url: string | null
+  category: string | null
 }
 
 interface Props {
@@ -37,6 +44,7 @@ export default function ProductFormModal({ product, onClose, onSave }: Props) {
     codigo_sat: product?.codigo_sat ?? '',
     codigo_proveedor: product?.codigo_proveedor ?? '',
     image_url: product?.image_url ?? '',
+    category: product?.category ?? 'Varios',
   })
   const [busy, setBusy] = useState(false)
   const [uploading, setUploading] = useState(false)
@@ -226,6 +234,20 @@ export default function ProductFormModal({ product, onClose, onSave }: Props) {
             >
               <option value="MXN">MXN (Peso Mexicano)</option>
               <option value="USD">USD (Dólar Americano)</option>
+            </select>
+          </div>
+
+          <div className="md:col-span-2">
+            <label className={labelCls} style={labelStyle}>Categoría</label>
+            <select
+              value={form.category}
+              onChange={e => setForm(f => ({ ...f, category: e.target.value }))}
+              className="w-full rounded-xl px-4 py-2.5 outline-none transition-all appearance-none cursor-pointer"
+              style={inputBase}
+            >
+              {PRODUCT_CATEGORIES.map(c => (
+                <option key={c} value={c}>{c}</option>
+              ))}
             </select>
           </div>
 

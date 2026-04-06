@@ -12,18 +12,19 @@ export interface Product {
   codigo_sat: string | null
   codigo_proveedor: string | null
   image_url: string | null
+  category: string | null
 }
 
 export async function listProducts(): Promise<Product[]> {
   const { rows } = await pool.query(
-    'SELECT id, sku, name, description, currency, cost_base, utility_fixed, utility_factor, codigo_sat, codigo_proveedor, image_url FROM products ORDER BY name'
+    'SELECT id, sku, name, description, currency, cost_base, utility_fixed, utility_factor, codigo_sat, codigo_proveedor, image_url, category FROM products ORDER BY name'
   )
   return rows
 }
 
 export async function searchProducts(q: string): Promise<Product[]> {
   const { rows } = await pool.query(
-    `SELECT id, sku, name, description, currency, cost_base, utility_fixed, utility_factor, codigo_sat, codigo_proveedor, image_url
+    `SELECT id, sku, name, description, currency, cost_base, utility_fixed, utility_factor, codigo_sat, codigo_proveedor, image_url, category
      FROM products
      WHERE name ILIKE $1 OR sku ILIKE $1 OR description ILIKE $1
      ORDER BY name LIMIT 20`,
@@ -34,9 +35,9 @@ export async function searchProducts(q: string): Promise<Product[]> {
 
 export async function createProduct(data: Omit<Product, 'id'>): Promise<Product> {
   const { rows } = await pool.query(
-    `INSERT INTO products (sku, name, description, currency, cost_base, utility_fixed, utility_factor, codigo_sat, codigo_proveedor, image_url)
-     VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10) RETURNING *`,
-    [data.sku || null, data.name, data.description || null, data.currency, data.cost_base, data.utility_fixed, data.utility_factor, data.codigo_sat || null, data.codigo_proveedor || null, data.image_url || null]
+    `INSERT INTO products (sku, name, description, currency, cost_base, utility_fixed, utility_factor, codigo_sat, codigo_proveedor, image_url, category)
+     VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11) RETURNING *`,
+    [data.sku || null, data.name, data.description || null, data.currency, data.cost_base, data.utility_fixed, data.utility_factor, data.codigo_sat || null, data.codigo_proveedor || null, data.image_url || null, data.category || null]
   )
   return rows[0]
 }
@@ -45,13 +46,20 @@ export async function updateProduct(id: string, data: Partial<Omit<Product, 'id'
   const fields: string[] = []
   const values: unknown[] = []
   let i = 1
-  const allowed = ['sku','name','description','currency','cost_base','utility_fixed','utility_factor','codigo_sat','codigo_proveedor','image_url'] as const
+  const allowed = ['sku','name','description','currency','cost_base','utility_fixed','utility_factor','codigo_sat','codigo_proveedor','image_url','category'] as const
   for (const key of allowed) {
     if (data[key] !== undefined) { fields.push(`${key} = $${i++}`); values.push(data[key]) }
   }
   if (!fields.length) return
   values.push(id)
   await pool.query(`UPDATE products SET ${fields.join(', ')} WHERE id = $${i}`, values)
+}
+
+export async function listCategories(): Promise<string[]> {
+  const { rows } = await pool.query(
+    'SELECT DISTINCT category FROM products WHERE category IS NOT NULL ORDER BY category'
+  )
+  return rows.map((r: { category: string }) => r.category)
 }
 
 export async function deleteProduct(id: string): Promise<void> {

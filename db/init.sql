@@ -40,7 +40,8 @@ CREATE TABLE products (
     utility_fixed    numeric(14,4) NOT NULL DEFAULT 0,
     utility_factor   numeric(14,6) NOT NULL DEFAULT 1 CHECK (utility_factor >= 0),
     codigo_sat       text,
-    codigo_proveedor text
+    codigo_proveedor text,
+    category         text
 );
 
 -- QUOTES

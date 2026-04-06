@@ -14,6 +14,7 @@ interface Product {
   codigo_sat: string | null
   codigo_proveedor: string | null
   image_url: string | null
+  category: string | null
 }
 
 interface ProductGridProps {
@@ -74,17 +75,24 @@ export default function ProductGrid({ products, onEdit, onDelete }: ProductGridP
 
             {/* Top badges floating on image */}
             <div className="absolute top-3 left-3 right-3 flex items-center justify-between z-10">
-              <span className={`
-                inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold tracking-wider backdrop-blur-sm
-                ${p.currency === 'USD'
-                  ? 'bg-[rgba(28,90,214,0.7)] text-white'
-                  : 'bg-[rgba(11,153,98,0.7)] text-white'}
-              `}>
-                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                  <line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
-                </svg>
-                {p.currency}
-              </span>
+              <div className="flex items-center gap-1.5">
+                <span className={`
+                  inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold tracking-wider backdrop-blur-sm
+                  ${p.currency === 'USD'
+                    ? 'bg-[rgba(28,90,214,0.7)] text-white'
+                    : 'bg-[rgba(11,153,98,0.7)] text-white'}
+                `}>
+                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+                  </svg>
+                  {p.currency}
+                </span>
+                {p.category && (
+                  <span className="px-2 py-0.5 rounded text-[9px] font-semibold tracking-wider backdrop-blur-sm bg-white/20 text-white">
+                    {p.category}
+                  </span>
+                )}
+              </div>
               <span className="font-mono text-[9px] font-medium tracking-widest text-white/70 backdrop-blur-sm bg-black/20 px-2 py-0.5 rounded">
                 {p.sku || 'SIN SKU'}
               </span>

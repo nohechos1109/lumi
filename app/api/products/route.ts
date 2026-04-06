@@ -7,6 +7,10 @@ export async function GET(req: NextRequest) {
   if (!session) return unauthorized()
 
   const q = req.nextUrl.searchParams.get('q')
-  const products = q ? await searchProducts(q) : await listProducts()
+  const category = req.nextUrl.searchParams.get('category')
+  let products = q ? await searchProducts(q) : await listProducts()
+  if (category) {
+    products = products.filter(p => p.category === category)
+  }
   return NextResponse.json(products)
 }
