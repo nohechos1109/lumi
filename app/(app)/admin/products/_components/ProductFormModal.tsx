@@ -28,9 +28,10 @@ interface Props {
   product?: Partial<Product> | null
   onClose: () => void
   onSave: (data: Partial<Product>) => Promise<void>
+  onDelete?: () => void
 }
 
-export default function ProductFormModal({ product, onClose, onSave }: Props) {
+export default function ProductFormModal({ product, onClose, onSave, onDelete }: Props) {
   const isEdit = !!product?.id
   const fileRef = useRef<HTMLInputElement>(null)
   const [form, setForm] = useState({
@@ -324,24 +325,39 @@ export default function ProductFormModal({ product, onClose, onSave }: Props) {
             </div>
           </div>
 
-          <div className="md:col-span-2 flex justify-end gap-3 pt-4" style={{ borderTop: '1px solid var(--c-rim)' }}>
-            <button
-              type="button"
-              onClick={onClose}
-              disabled={busy}
-              className="px-6 py-2.5 rounded-xl text-sm font-semibold transition-all hover:opacity-80"
-              style={{ color: 'var(--c-dim)', background: 'transparent', border: '1px solid var(--c-rim)' }}
-            >
-              Cancelar
-            </button>
-            <button
-              type="submit"
-              disabled={busy || uploading}
-              className="px-8 py-2.5 rounded-xl text-sm font-bold uppercase tracking-widest transition-all hover:opacity-90 disabled:opacity-50"
-              style={{ background: 'var(--c-navy)', color: '#fff' }}
-            >
-              {busy ? 'Guardando...' : 'Guardar'}
-            </button>
+          <div className="md:col-span-2 flex items-center pt-4" style={{ borderTop: '1px solid var(--c-rim)' }}>
+            {isEdit && onDelete && (
+              <button
+                type="button"
+                onClick={onDelete}
+                className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all hover:bg-[var(--c-rose-bg)]"
+                style={{ color: 'var(--c-rose)' }}
+              >
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                </svg>
+                Eliminar
+              </button>
+            )}
+            <div className="flex gap-3 ml-auto">
+              <button
+                type="button"
+                onClick={onClose}
+                disabled={busy}
+                className="px-6 py-2.5 rounded-xl text-sm font-semibold transition-all hover:opacity-80"
+                style={{ color: 'var(--c-dim)', background: 'transparent', border: '1px solid var(--c-rim)' }}
+              >
+                Cancelar
+              </button>
+              <button
+                type="submit"
+                disabled={busy || uploading}
+                className="px-8 py-2.5 rounded-xl text-sm font-bold uppercase tracking-widest transition-all hover:opacity-90 disabled:opacity-50"
+                style={{ background: 'var(--c-navy)', color: '#fff' }}
+              >
+                {busy ? 'Guardando...' : 'Guardar'}
+              </button>
+            </div>
           </div>
         </form>
       </div>
