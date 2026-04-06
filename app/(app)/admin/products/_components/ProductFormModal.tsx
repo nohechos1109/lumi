@@ -181,7 +181,7 @@ export default function ProductFormModal({ product, onClose, onSave }: Props) {
               type="submit"
               disabled={busy}
               className="px-8 py-2.5 rounded-xl text-sm font-bold uppercase tracking-widest transition-all hover:opacity-90 disabled:opacity-50"
-              style={{ background: 'var(--c-gold)', color: '#090B10' }}
+              style={{ background: 'var(--c-navy)', color: '#fff' }}
             >
               {busy ? 'Guardando...' : 'Guardar'}
             </button>

@@ -86,8 +86,8 @@ export default function AdminCustomersPage() {
           onClick={() => setAdding(v => !v)}
           className="text-sm px-5 py-2.5 rounded-xl font-bold uppercase tracking-wider transition-opacity hover:opacity-85"
           style={{
-            background: adding ? 'var(--c-rim-hi)' : 'var(--c-gold)',
-            color: adding ? 'var(--c-dim)' : '#090B10',
+            background: adding ? 'var(--c-rim-hi)' : 'var(--c-navy)',
+            color: adding ? 'var(--c-dim)' : '#fff',
             letterSpacing: '0.08em',
           }}
         >
@@ -120,7 +120,7 @@ export default function AdminCustomersPage() {
           <button
             type="submit"
             className="px-5 py-2 rounded-xl text-sm font-bold uppercase tracking-wider"
-            style={{ background: 'var(--c-gold)', color: '#090B10' }}
+            style={{ background: 'var(--c-navy)', color: '#fff' }}
           >
             Guardar
           </button>

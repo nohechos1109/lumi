@@ -93,8 +93,8 @@ export default function AdminProductsPage() {
           onClick={() => { setProductToEdit(null); setShowModal(true) }}
           className="group flex items-center justify-center gap-2 text-sm px-6 py-3 rounded-2xl font-bold uppercase tracking-wider transition-all hover:shadow-lg active:scale-95"
           style={{
-            background: 'var(--c-gold)',
-            color: '#090B10',
+            background: 'var(--c-navy)',
+            color: '#fff',
             letterSpacing: '0.08em',
           }}
         >

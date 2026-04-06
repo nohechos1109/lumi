@@ -78,8 +78,8 @@ export default function AdminSettingsPage() {
             type="submit"
             className="w-full py-2.5 rounded-xl text-sm font-bold uppercase tracking-wider transition-all"
             style={{
-              background: saved ? 'var(--c-mint-bg)' : 'var(--c-gold)',
-              color: saved ? 'var(--c-mint)' : '#090B10',
+              background: saved ? 'var(--c-mint-bg)' : 'var(--c-navy)',
+              color: saved ? 'var(--c-mint)' : '#fff',
               border: saved ? '1px solid rgba(30,201,122,0.28)' : 'none',
               letterSpacing: '0.1em',
             }}

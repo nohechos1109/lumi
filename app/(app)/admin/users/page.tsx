@@ -78,8 +78,8 @@ export default function AdminUsersPage() {
           onClick={() => setAdding(true)}
           className="text-sm px-5 py-2.5 rounded-xl font-bold uppercase tracking-wider transition-opacity hover:opacity-85"
           style={{
-            background: 'var(--c-gold)',
-            color: '#090B10',
+            background: 'var(--c-navy)',
+            color: '#fff',
             letterSpacing: '0.08em',
           }}
         >
@@ -166,7 +166,7 @@ export default function AdminUsersPage() {
               <button
                 type="submit"
                 className="flex-1 px-4 py-2.5 rounded-xl text-sm font-bold uppercase tracking-wider transition-opacity hover:opacity-90"
-                style={{ background: 'var(--c-gold)', color: '#090B10', letterSpacing: '0.08em' }}
+                style={{ background: 'var(--c-navy)', color: '#fff', letterSpacing: '0.08em' }}
               >
                 Guardar
               </button>
