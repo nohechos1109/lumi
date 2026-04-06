@@ -1,6 +1,7 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
+import Image from 'next/image'
 
 interface Product {
   id: string
@@ -13,6 +14,7 @@ interface Product {
   utility_factor: string
   codigo_sat: string | null
   codigo_proveedor: string | null
+  image_url: string | null
 }
 
 interface Props {
@@ -23,6 +25,7 @@ interface Props {
 
 export default function ProductFormModal({ product, onClose, onSave }: Props) {
   const isEdit = !!product?.id
+  const fileRef = useRef<HTMLInputElement>(null)
   const [form, setForm] = useState({
     name: product?.name ?? '',
     sku: product?.sku ?? '',
@@ -33,8 +36,11 @@ export default function ProductFormModal({ product, onClose, onSave }: Props) {
     utility_factor: product?.utility_factor ?? '1',
     codigo_sat: product?.codigo_sat ?? '',
     codigo_proveedor: product?.codigo_proveedor ?? '',
+    image_url: product?.image_url ?? '',
   })
   const [busy, setBusy] = useState(false)
+  const [uploading, setUploading] = useState(false)
+  const [dragOver, setDragOver] = useState(false)
 
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
@@ -43,6 +49,36 @@ export default function ProductFormModal({ product, onClose, onSave }: Props) {
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
   }, [onClose])
+
+  async function uploadFile(file: File) {
+    setUploading(true)
+    try {
+      const fd = new FormData()
+      fd.append('file', file)
+      const res = await fetch('/api/admin/products/upload', { method: 'POST', body: fd })
+      if (!res.ok) {
+        const err = await res.json()
+        alert(err.error ?? 'Error al subir imagen')
+        return
+      }
+      const { url } = await res.json()
+      setForm(f => ({ ...f, image_url: url }))
+    } finally {
+      setUploading(false)
+    }
+  }
+
+  function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0]
+    if (file) uploadFile(file)
+  }
+
+  function handleDrop(e: React.DragEvent) {
+    e.preventDefault()
+    setDragOver(false)
+    const file = e.dataTransfer.files?.[0]
+    if (file) uploadFile(file)
+  }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -84,6 +120,79 @@ export default function ProductFormModal({ product, onClose, onSave }: Props) {
         </div>
 
         <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-5">
+          {/* Image upload */}
+          <div className="md:col-span-2">
+            <label className={labelCls} style={labelStyle}>Imagen del Producto</label>
+            <div
+              className={`relative flex flex-col items-center justify-center rounded-xl transition-all cursor-pointer ${
+                dragOver ? 'ring-2 ring-sky-500/40' : ''
+              }`}
+              style={{
+                background: 'var(--c-panel)',
+                border: dragOver ? '2px dashed var(--c-sky)' : '2px dashed var(--c-rim)',
+                minHeight: form.image_url ? 'auto' : '120px',
+              }}
+              onClick={() => fileRef.current?.click()}
+              onDragOver={e => { e.preventDefault(); setDragOver(true) }}
+              onDragLeave={() => setDragOver(false)}
+              onDrop={handleDrop}
+            >
+              <input
+                ref={fileRef}
+                type="file"
+                accept="image/jpeg,image/png,image/webp"
+                className="hidden"
+                onChange={handleFileChange}
+              />
+
+              {uploading ? (
+                <div className="flex flex-col items-center gap-2 py-6">
+                  <div className="w-6 h-6 border-2 border-t-transparent rounded-full animate-spin" style={{ borderColor: 'var(--c-sky)', borderTopColor: 'transparent' }} />
+                  <span className="text-xs font-semibold uppercase tracking-wider" style={{ color: 'var(--c-dim)' }}>Subiendo...</span>
+                </div>
+              ) : form.image_url ? (
+                <div className="relative w-full p-3">
+                  <div className="relative w-full h-40 rounded-lg overflow-hidden">
+                    <Image
+                      src={form.image_url}
+                      alt="Preview"
+                      fill
+                      className="object-contain"
+                      sizes="(max-width: 672px) 100vw, 672px"
+                    />
+                  </div>
+                  <div className="flex items-center justify-center gap-3 mt-2">
+                    <span className="text-[10px] uppercase tracking-wider" style={{ color: 'var(--c-ghost)' }}>
+                      Click o arrastra para cambiar
+                    </span>
+                    <button
+                      type="button"
+                      onClick={e => { e.stopPropagation(); setForm(f => ({ ...f, image_url: '' })) }}
+                      className="text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded hover:bg-[rgba(209,44,60,0.08)] transition-colors"
+                      style={{ color: 'var(--c-rose)' }}
+                    >
+                      Quitar
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <div className="flex flex-col items-center gap-2 py-6">
+                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ color: 'var(--c-ghost)' }}>
+                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                    <circle cx="8.5" cy="8.5" r="1.5"/>
+                    <polyline points="21 15 16 10 5 21"/>
+                  </svg>
+                  <span className="text-xs font-semibold" style={{ color: 'var(--c-dim)' }}>
+                    Arrastra una imagen o haz click para seleccionar
+                  </span>
+                  <span className="text-[10px]" style={{ color: 'var(--c-ghost)' }}>
+                    JPG, PNG o WebP (máx. 5 MB)
+                  </span>
+                </div>
+              )}
+            </div>
+          </div>
+
           <div className="md:col-span-2">
             <label className={labelCls} style={labelStyle}>Nombre del Producto</label>
             <input
@@ -205,7 +314,7 @@ export default function ProductFormModal({ product, onClose, onSave }: Props) {
             </button>
             <button
               type="submit"
-              disabled={busy}
+              disabled={busy || uploading}
               className="px-8 py-2.5 rounded-xl text-sm font-bold uppercase tracking-widest transition-all hover:opacity-90 disabled:opacity-50"
               style={{ background: 'var(--c-navy)', color: '#fff' }}
             >

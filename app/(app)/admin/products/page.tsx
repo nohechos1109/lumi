@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import Image from 'next/image'
 import Link from 'next/link'
 import ConfirmModal from '@/components/ui/ConfirmModal'
 import ProductFormModal from './_components/ProductFormModal'
@@ -16,7 +17,8 @@ interface Product {
   utility_fixed: string;
   utility_factor: string;
   codigo_sat: string | null;
-  codigo_proveedor: string | null
+  codigo_proveedor: string | null;
+  image_url: string | null
 }
 
 export default function AdminProductsPage() {
@@ -207,6 +209,7 @@ export default function AdminProductsPage() {
           <table className="w-full text-sm min-w-[1200px]">
             <thead>
               <tr style={{ background: 'var(--c-panel)', borderBottom: '1px solid var(--c-rim)' }}>
+                <th className="w-16 px-4 py-5"></th>
                 <th className="text-left px-6 py-5 text-[10px] font-bold uppercase tracking-[0.2em]" style={{ color: 'var(--c-ghost)' }}>Nombre del Producto</th>
                 <th className="text-left px-6 py-5 text-[10px] font-bold uppercase tracking-[0.2em]" style={{ color: 'var(--c-ghost)' }}>SKU</th>
                 <th className="text-left px-6 py-5 text-[10px] font-bold uppercase tracking-[0.2em]" style={{ color: 'var(--c-ghost)' }}>Moneda</th>
@@ -221,6 +224,17 @@ export default function AdminProductsPage() {
             <tbody className="divide-y divide-[var(--c-rim)]">
               {filteredProducts.map(p => (
                   <tr key={p.id} className="tr-hover group">
+                    <td className="px-4 py-3">
+                      <div className="w-10 h-10 rounded-lg overflow-hidden flex items-center justify-center" style={{ background: 'var(--c-panel)' }}>
+                        {p.image_url ? (
+                          <Image src={p.image_url} alt={p.name} width={40} height={40} className="object-cover w-full h-full" />
+                        ) : (
+                          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ color: 'var(--c-ghost)', opacity: 0.4 }}>
+                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/>
+                          </svg>
+                        )}
+                      </div>
+                    </td>
                     <td className="px-6 py-4.5">
                       <div className="font-bold text-[var(--c-ink)]">{p.name}</div>
                       {p.description && <div className="text-[10px] leading-tight mt-0.5 truncate max-w-[200px]" style={{ color: 'var(--c-ghost)' }}>{p.description}</div>}
@@ -262,7 +276,7 @@ export default function AdminProductsPage() {
               ))}
               {filteredProducts.length === 0 && (
                 <tr>
-                  <td colSpan={9} className="px-6 py-20 text-center">
+                  <td colSpan={10} className="px-6 py-20 text-center">
                     <p className="text-[var(--c-ghost)] font-mono text-sm uppercase tracking-widest">No se encontraron productos</p>
                   </td>
                 </tr>

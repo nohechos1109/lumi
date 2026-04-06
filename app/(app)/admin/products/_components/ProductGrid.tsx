@@ -1,5 +1,7 @@
 'use client'
 
+import Image from 'next/image'
+
 interface Product {
   id: string
   sku: string | null
@@ -11,6 +13,7 @@ interface Product {
   utility_factor: string
   codigo_sat: string | null
   codigo_proveedor: string | null
+  image_url: string | null
 }
 
 interface ProductGridProps {
@@ -43,16 +46,37 @@ export default function ProductGrid({ products, onEdit, onDelete }: ProductGridP
         <div
           key={p.id}
           onClick={() => onEdit(p)}
-          className="group relative flex flex-col p-6 rounded-2xl transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 overflow-hidden cursor-pointer"
+          className="group relative flex flex-col rounded-2xl transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 overflow-hidden cursor-pointer"
           style={{
             background: 'var(--c-card)',
             border: '1px solid var(--c-rim)',
           }}
         >
+          {/* Product image */}
+          <div className="relative w-full h-40 overflow-hidden" style={{ background: 'var(--c-panel)' }}>
+            {p.image_url ? (
+              <Image
+                src={p.image_url}
+                alt={p.name}
+                fill
+                className="object-cover group-hover:scale-105 transition-transform duration-300"
+                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+              />
+            ) : (
+              <div className="flex items-center justify-center w-full h-full" style={{ color: 'var(--c-ghost)', opacity: 0.4 }}>
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                  <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                  <circle cx="8.5" cy="8.5" r="1.5"/>
+                  <polyline points="21 15 16 10 5 21"/>
+                </svg>
+              </div>
+            )}
+          </div>
+
           {/* Accent decoration */}
           <div className="absolute top-0 right-0 w-24 h-24 -mr-8 -mt-8 rounded-full opacity-0 group-hover:opacity-10 transition-opacity" style={{ background: 'var(--c-sky)' }}></div>
-          
-          <div className="relative h-full flex flex-col">
+
+          <div className="relative h-full flex flex-col p-6">
             <div className="flex items-start justify-between mb-3">
               <span className={`badge ${p.currency === 'USD' ? 'badge-sent' : 'badge-process'} text-[10px] px-2 py-0.5`}>
                 {p.currency}
