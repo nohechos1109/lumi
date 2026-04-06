@@ -31,8 +31,18 @@ export async function POST(req: NextRequest) {
     )
   }
 
-  const buffer = Buffer.from(await file.arrayBuffer())
-  const result = await uploadImage(buffer, 'cotizador/products')
+  console.log('[CLOUDINARY DEBUG]', {
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME ?? 'MISSING',
+    api_key: process.env.CLOUDINARY_API_KEY ? 'SET' : 'MISSING',
+    api_secret: process.env.CLOUDINARY_API_SECRET ? 'SET' : 'MISSING',
+  })
 
-  return NextResponse.json({ url: result.url })
+  try {
+    const buffer = Buffer.from(await file.arrayBuffer())
+    const result = await uploadImage(buffer, 'cotizador/products')
+    return NextResponse.json({ url: result.url })
+  } catch (err) {
+    console.error('[CLOUDINARY ERROR]', err)
+    return NextResponse.json({ error: String(err) }, { status: 500 })
+  }
 }
