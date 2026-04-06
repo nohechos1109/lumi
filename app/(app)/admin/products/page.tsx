@@ -246,7 +246,7 @@ export default function AdminProductsPage() {
             </thead>
             <tbody className="divide-y divide-[var(--c-rim)]">
               {filteredProducts.map(p => (
-                  <tr key={p.id} className="tr-hover group">
+                  <tr key={p.id} className="tr-hover group cursor-pointer" onClick={() => { setProductToEdit(p); setShowModal(true) }}>
                     <td className="px-4 py-3">
                       <div className="w-10 h-10 rounded-lg overflow-hidden flex items-center justify-center" style={{ background: 'var(--c-panel)' }}>
                         {p.image_url ? (
@@ -290,15 +290,10 @@ export default function AdminProductsPage() {
                     <td className="px-6 py-4.5 font-mono text-[11px]" style={{ color: 'var(--c-dim)' }}>
                       {p.codigo_proveedor ?? '—'}
                     </td>
-                    <td className="px-6 py-4.5 text-right opacity-0 group-hover:opacity-100 transition-opacity">
-                      <div className="flex gap-2 justify-end">
-                        <button onClick={() => { setProductToEdit(p); setShowModal(true) }} className="btn-edit text-[11px] font-bold uppercase tracking-wider px-2 py-1 rounded hover:bg-[var(--c-sky-bg)]">
-                          Editar
-                        </button>
-                        <button onClick={() => setDeleteId(p.id)} className="btn-delete text-[11px] font-bold uppercase tracking-wider px-2 py-1 rounded hover:bg-[var(--c-rose-bg)]">
-                          Borrar
-                        </button>
-                      </div>
+                    <td className="px-6 py-4.5 text-right">
+                      <button onClick={(e) => { e.stopPropagation(); setDeleteId(p.id) }} className="btn-delete text-[11px] font-bold uppercase tracking-wider px-2 py-1 rounded hover:bg-[var(--c-rose-bg)]">
+                        Borrar
+                      </button>
                     </td>
                   </tr>
               ))}
