@@ -102,119 +102,186 @@ export default function QuotesTable({
 
   const deleteTarget = quotes.find(q => q.id === deleteId)
 
+  const activeFilterCount = [statusFilter, customerFilter, executiveFilter, dateFilter].filter(Boolean).length
+  const hasAnyFilter = searchQuery !== '' || activeFilterCount > 0
+
+  function clearAllFilters() {
+    setSearchQuery('')
+    setStatusFilter('')
+    setCustomerFilter('')
+    setExecutiveFilter('')
+    setDateFilter('')
+  }
+
   return (
     <>
       {/* Controls Bar */}
-      <div className="flex flex-col gap-4 mb-6 p-4 rounded-xl shadow-sm" style={{ border: '1px solid var(--c-rim)', background: 'var(--c-card)', backgroundClip: 'padding-box' }}>
+      <div className="flex flex-col gap-3 mb-6" style={{ backgroundClip: 'padding-box' }}>
+
+        {/* Search bar */}
         <div className="relative">
           <input
             type="text"
             placeholder="Buscar por número, cliente o descripción..."
-            className="w-full pl-12 pr-4 h-11 rounded-lg outline-none focus:ring-2 focus:ring-[var(--c-sky)] transition-all text-sm font-medium"
+            className="w-full pl-11 pr-10 h-11 rounded-xl outline-none text-sm font-medium transition-all"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            style={{ 
-              background: 'var(--c-panel)', 
-              border: '1px solid var(--c-rim)',
-              color: 'var(--c-ink)'
+            style={{
+              background: 'var(--c-card)',
+              border: searchQuery ? '1.5px solid var(--c-navy-bd)' : '1.5px solid var(--c-rim)',
+              color: 'var(--c-ink)',
+              boxShadow: searchQuery ? '0 0 0 3px rgba(27,52,97,0.07)' : '0 1px 3px rgba(27,52,97,0.05)',
             }}
           />
-          <div className="absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none opacity-40" style={{ color: 'var(--c-ghost)' }}>
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+          <div className="absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: searchQuery ? 'var(--c-navy)' : 'var(--c-ghost)', opacity: searchQuery ? 0.8 : 0.5, transition: 'color 0.15s, opacity 0.15s' }}>
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
               <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
             </svg>
           </div>
+          {searchQuery && (
+            <button
+              onClick={() => setSearchQuery('')}
+              className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center justify-center w-5 h-5 rounded-full transition-all hover:opacity-70"
+              style={{ background: 'var(--c-rim-hi)', color: 'var(--c-dim)' }}
+              aria-label="Limpiar búsqueda"
+            >
+              <svg width="9" height="9" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+                <line x1="1" y1="1" x2="11" y2="11"/><line x1="11" y1="1" x2="1" y2="11"/>
+              </svg>
+            </button>
+          )}
         </div>
-        
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <div className="relative h-11">
-            <select
-              className="w-full h-full appearance-none px-4 pr-10 rounded-lg outline-none focus:ring-2 focus:ring-[var(--c-sky)] transition-all cursor-pointer text-sm font-medium"
-              value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value)}
-              style={{ 
-                background: 'var(--c-panel)', 
-                border: '1px solid var(--c-rim)',
-                color: 'var(--c-ink)'
-              }}
-            >
-              <option value="">Estado: Todos</option>
-              {Object.entries(STATE_LABELS).map(([key, { label }]) => (
-                <option key={key} value={key}>{label}</option>
-              ))}
-            </select>
-            <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none opacity-40" style={{ color: 'var(--c-ghost)' }}>
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
-            </div>
+
+        {/* Filters row */}
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-2">
+          {/* Filter label */}
+          <div className="flex items-center gap-1.5 shrink-0" style={{ color: 'var(--c-ghost)' }}>
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/>
+            </svg>
+            <span className="text-xs font-semibold uppercase tracking-wider" style={{ color: 'var(--c-ghost)', letterSpacing: '0.09em' }}>Filtros</span>
+            {activeFilterCount > 0 && (
+              <span className="inline-flex items-center justify-center w-4 h-4 rounded-full text-[10px] font-bold" style={{ background: 'var(--c-navy)', color: '#fff' }}>
+                {activeFilterCount}
+              </span>
+            )}
           </div>
 
-          <div className="relative h-11">
-            <select
-              className="w-full h-full appearance-none px-4 pr-10 rounded-lg outline-none focus:ring-2 focus:ring-[var(--c-sky)] transition-all cursor-pointer text-sm font-medium"
-              value={customerFilter}
-              onChange={(e) => setCustomerFilter(e.target.value)}
-              style={{ 
-                background: 'var(--c-panel)', 
-                border: '1px solid var(--c-rim)',
-                color: 'var(--c-ink)'
-              }}
-            >
-              <option value="">Cliente: Todos</option>
-              {customers.map(c => (
-                <option key={c} value={c!}>{c}</option>
-              ))}
-            </select>
-            <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none opacity-40" style={{ color: 'var(--c-ghost)' }}>
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
-            </div>
-          </div>
-
-          {!isSales && executives.length > 0 && (
-            <div className="relative h-11">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 flex-1">
+            {/* Estado */}
+            <div className="relative h-9">
               <select
-                className="w-full h-full appearance-none px-4 pr-10 rounded-lg outline-none focus:ring-2 focus:ring-[var(--c-sky)] transition-all cursor-pointer text-sm font-medium"
-                value={executiveFilter}
-                onChange={(e) => setExecutiveFilter(e.target.value)}
-                style={{ 
-                  background: 'var(--c-panel)', 
-                  border: '1px solid var(--c-rim)',
-                  color: 'var(--c-ink)'
+                className="w-full h-full appearance-none pl-3 pr-8 rounded-lg outline-none cursor-pointer text-xs font-semibold transition-all"
+                value={statusFilter}
+                onChange={(e) => setStatusFilter(e.target.value)}
+                style={{
+                  background: statusFilter ? 'var(--c-navy-bg)' : 'var(--c-card)',
+                  border: statusFilter ? '1.5px solid var(--c-navy-bd)' : '1.5px solid var(--c-rim)',
+                  color: statusFilter ? 'var(--c-navy)' : 'var(--c-dim)',
                 }}
               >
-                <option value="">Vendedor: Todos</option>
-                {executives.map(e => (
-                  <option key={e} value={e!}>{e}</option>
+                <option value="">Estado: Todos</option>
+                {Object.entries(STATE_LABELS).map(([key, { label }]) => (
+                  <option key={key} value={key}>{label}</option>
                 ))}
               </select>
-              <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none opacity-40" style={{ color: 'var(--c-ghost)' }}>
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+              <div className="absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: statusFilter ? 'var(--c-navy)' : 'var(--c-ghost)', opacity: 0.7 }}>
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
               </div>
             </div>
-          )}
 
-          <div className="relative h-11">
-            <select
-              className="w-full h-full appearance-none px-4 pr-10 rounded-lg outline-none focus:ring-2 focus:ring-[var(--c-sky)] transition-all cursor-pointer text-sm font-medium"
-              value={dateFilter}
-              onChange={(e) => setDateFilter(e.target.value)}
-              style={{ 
-                background: 'var(--c-panel)', 
-                border: '1px solid var(--c-rim)',
-                color: 'var(--c-ink)'
-              }}
-            >
-              <option value="">Fecha: Todas</option>
-              {dates.map(d => {
-                const [y, m] = d.split('-')
-                const dateLabel = new Date(parseInt(y), parseInt(m) - 1).toLocaleString('es-MX', { month: 'long', year: 'numeric' })
-                return <option key={d} value={d}>{dateLabel}</option>
-              })}
-            </select>
-            <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none opacity-40" style={{ color: 'var(--c-ghost)' }}>
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+            {/* Cliente */}
+            <div className="relative h-9">
+              <select
+                className="w-full h-full appearance-none pl-3 pr-8 rounded-lg outline-none cursor-pointer text-xs font-semibold transition-all"
+                value={customerFilter}
+                onChange={(e) => setCustomerFilter(e.target.value)}
+                style={{
+                  background: customerFilter ? 'var(--c-navy-bg)' : 'var(--c-card)',
+                  border: customerFilter ? '1.5px solid var(--c-navy-bd)' : '1.5px solid var(--c-rim)',
+                  color: customerFilter ? 'var(--c-navy)' : 'var(--c-dim)',
+                }}
+              >
+                <option value="">Cliente: Todos</option>
+                {customers.map(c => (
+                  <option key={c} value={c!}>{c}</option>
+                ))}
+              </select>
+              <div className="absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: customerFilter ? 'var(--c-navy)' : 'var(--c-ghost)', opacity: 0.7 }}>
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+              </div>
+            </div>
+
+            {/* Vendedor */}
+            {!isSales && executives.length > 0 && (
+              <div className="relative h-9">
+                <select
+                  className="w-full h-full appearance-none pl-3 pr-8 rounded-lg outline-none cursor-pointer text-xs font-semibold transition-all"
+                  value={executiveFilter}
+                  onChange={(e) => setExecutiveFilter(e.target.value)}
+                  style={{
+                    background: executiveFilter ? 'var(--c-navy-bg)' : 'var(--c-card)',
+                    border: executiveFilter ? '1.5px solid var(--c-navy-bd)' : '1.5px solid var(--c-rim)',
+                    color: executiveFilter ? 'var(--c-navy)' : 'var(--c-dim)',
+                  }}
+                >
+                  <option value="">Vendedor: Todos</option>
+                  {executives.map(e => (
+                    <option key={e} value={e!}>{e}</option>
+                  ))}
+                </select>
+                <div className="absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: executiveFilter ? 'var(--c-navy)' : 'var(--c-ghost)', opacity: 0.7 }}>
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                </div>
+              </div>
+            )}
+
+            {/* Fecha */}
+            <div className="relative h-9">
+              <select
+                className="w-full h-full appearance-none pl-3 pr-8 rounded-lg outline-none cursor-pointer text-xs font-semibold transition-all"
+                value={dateFilter}
+                onChange={(e) => setDateFilter(e.target.value)}
+                style={{
+                  background: dateFilter ? 'var(--c-navy-bg)' : 'var(--c-card)',
+                  border: dateFilter ? '1.5px solid var(--c-navy-bd)' : '1.5px solid var(--c-rim)',
+                  color: dateFilter ? 'var(--c-navy)' : 'var(--c-dim)',
+                }}
+              >
+                <option value="">Fecha: Todas</option>
+                {dates.map(d => {
+                  const [y, m] = d.split('-')
+                  const dateLabel = new Date(parseInt(y), parseInt(m) - 1).toLocaleString('es-MX', { month: 'long', year: 'numeric' })
+                  return <option key={d} value={d}>{dateLabel}</option>
+                })}
+              </select>
+              <div className="absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: dateFilter ? 'var(--c-navy)' : 'var(--c-ghost)', opacity: 0.7 }}>
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+              </div>
             </div>
           </div>
+
+          {/* Clear all button */}
+          {hasAnyFilter && (
+            <button
+              onClick={clearAllFilters}
+              className="shrink-0 flex items-center gap-1.5 h-9 px-3 rounded-lg text-xs font-semibold transition-all hover:opacity-80"
+              style={{ background: 'var(--c-rose-bg)', color: 'var(--c-rose)', border: '1.5px solid rgba(209,44,60,0.2)' }}
+            >
+              <svg width="10" height="10" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+                <line x1="1" y1="1" x2="11" y2="11"/><line x1="11" y1="1" x2="1" y2="11"/>
+              </svg>
+              Limpiar
+            </button>
+          )}
         </div>
+
+        {/* Results count */}
+        {hasAnyFilter && (
+          <p className="text-xs" style={{ color: 'var(--c-ghost)' }}>
+            {filteredQuotes.length} de {quotes.length} {quotes.length === 1 ? 'resultado' : 'resultados'}
+          </p>
+        )}
       </div>
 
       <div
