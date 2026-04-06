@@ -16,6 +16,9 @@ export default function AdminUsersPage() {
   const [users, setUsers] = useState<User[]>([])
   const [form, setForm] = useState({ username: '', role: 'sales', password: '' })
   const [adding, setAdding] = useState(false)
+  const [editUser, setEditUser] = useState<User | null>(null)
+  const [editForm, setEditForm] = useState({ username: '', role: '', password: '' })
+  const [editSaving, setEditSaving] = useState(false)
   const [deleteId, setDeleteId] = useState<string | null>(null)
   const [searchQuery, setSearchQuery] = useState('')
   const [roleFilter, setRoleFilter] = useState('')
@@ -43,6 +46,31 @@ export default function AdminUsersPage() {
     setForm({ username: '', role: 'sales', password: '' })
     setAdding(false)
     load()
+  }
+
+  function openEdit(u: User) {
+    setEditUser(u)
+    setEditForm({ username: u.username, role: u.role, password: '' })
+  }
+
+  async function handleEdit(e: React.FormEvent) {
+    e.preventDefault()
+    if (!editUser) return
+    setEditSaving(true)
+    const body: Record<string, string> = {}
+    if (editForm.username !== editUser.username) body.username = editForm.username
+    if (editForm.role !== editUser.role) body.role = editForm.role
+    if (editForm.password) body.password = editForm.password
+    if (Object.keys(body).length > 0) {
+      await fetch(`/api/admin/users/${editUser.id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      })
+      load()
+    }
+    setEditUser(null)
+    setEditSaving(false)
   }
 
   async function handleDelete(id: string) {
@@ -175,6 +203,94 @@ export default function AdminUsersPage() {
         </div>
       )}
 
+      {/* Modal editar usuario */}
+      {editUser && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4"
+          style={{ background: 'rgba(9,11,16,0.45)', backdropFilter: 'blur(4px)' }}
+          onClick={() => setEditUser(null)}
+        >
+          <form
+            onSubmit={handleEdit}
+            onClick={(e) => e.stopPropagation()}
+            className="w-full max-w-md rounded-2xl p-6 flex flex-col gap-5 shadow-xl animate-in fade-in zoom-in-95"
+            style={{ background: 'var(--c-card)', border: '1px solid var(--c-rim)' }}
+          >
+            <div className="flex items-center justify-between">
+              <h2 className="text-lg font-bold" style={{ color: 'var(--c-ink)' }}>Editar Usuario</h2>
+              <button
+                type="button"
+                onClick={() => setEditUser(null)}
+                className="flex items-center justify-center w-8 h-8 rounded-full transition-colors"
+                style={{ color: 'var(--c-ghost)' }}
+                onMouseEnter={(e) => { e.currentTarget.style.background = 'var(--c-rim)' }}
+                onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent' }}
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+                  <line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/>
+                </svg>
+              </button>
+            </div>
+
+            <div>
+              <label className={labelCls} style={labelStyle}>Usuario</label>
+              <input
+                value={editForm.username}
+                onChange={e => setEditForm(f => ({ ...f, username: e.target.value }))}
+                required
+                placeholder="nombre.usuario"
+                className="w-full px-3.5 py-2.5 rounded-lg outline-none text-sm transition-all"
+                style={{ background: 'var(--c-panel)', border: '1px solid var(--c-rim)', color: 'var(--c-ink)' }}
+                autoFocus
+              />
+            </div>
+            <div>
+              <label className={labelCls} style={labelStyle}>Nueva Contraseña</label>
+              <input
+                type="password"
+                value={editForm.password}
+                onChange={e => setEditForm(f => ({ ...f, password: e.target.value }))}
+                placeholder="Dejar vacío para no cambiar"
+                className="w-full px-3.5 py-2.5 rounded-lg outline-none text-sm transition-all"
+                style={{ background: 'var(--c-panel)', border: '1px solid var(--c-rim)', color: 'var(--c-ink)' }}
+              />
+            </div>
+            <div>
+              <label className={labelCls} style={labelStyle}>Rol</label>
+              <select
+                value={editForm.role}
+                onChange={e => setEditForm(f => ({ ...f, role: e.target.value }))}
+                className="w-full px-3.5 py-2.5 rounded-lg outline-none text-sm cursor-pointer appearance-none transition-all"
+                style={{ background: 'var(--c-panel)', border: '1px solid var(--c-rim)', color: 'var(--c-ink)' }}
+              >
+                <option value="sales">Sales</option>
+                <option value="manager">Manager</option>
+                <option value="admin">Admin</option>
+              </select>
+            </div>
+
+            <div className="flex gap-3 pt-2">
+              <button
+                type="button"
+                onClick={() => setEditUser(null)}
+                className="flex-1 px-4 py-2.5 rounded-xl text-sm font-semibold transition-opacity hover:opacity-80"
+                style={{ background: 'var(--c-rim)', color: 'var(--c-dim)' }}
+              >
+                Cancelar
+              </button>
+              <button
+                type="submit"
+                disabled={editSaving}
+                className="flex-1 px-4 py-2.5 rounded-xl text-sm font-bold uppercase tracking-wider transition-opacity hover:opacity-90"
+                style={{ background: 'var(--c-navy)', color: '#fff', letterSpacing: '0.08em', opacity: editSaving ? 0.6 : 1 }}
+              >
+                {editSaving ? 'Guardando...' : 'Guardar Cambios'}
+              </button>
+            </div>
+          </form>
+        </div>
+      )}
+
       {/* Controls Bar */}
       <div className="flex flex-col gap-4 mb-6">
         <div style={{ maxWidth: '640px', margin: '0 auto', width: '100%' }}>
@@ -266,7 +382,14 @@ export default function AdminUsersPage() {
               >
                 <td className="px-5 py-4 font-mono" style={{ color: 'var(--c-ink)' }}>{u.username}</td>
                 <td className="px-5 py-4 capitalize font-mono text-xs" style={{ color: 'var(--c-dim)' }}>{u.role}</td>
-                <td className="px-5 py-4 text-right">
+                <td className="px-5 py-4 text-right flex items-center justify-end gap-3">
+                  <button
+                    onClick={() => openEdit(u)}
+                    className="text-xs font-semibold transition-opacity hover:opacity-70"
+                    style={{ color: 'var(--c-navy)' }}
+                  >
+                    Editar
+                  </button>
                   <button
                     onClick={() => setDeleteId(u.id)}
                     className="btn-delete text-xs"
