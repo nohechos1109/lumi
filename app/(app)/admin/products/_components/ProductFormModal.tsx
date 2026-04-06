@@ -111,7 +111,7 @@ export default function ProductFormModal({ product, onClose, onSave, onDelete }:
       onClick={onClose}
     >
       <div
-        className="w-full max-w-2xl rounded-2xl p-6 md:p-8 flex flex-col gap-6"
+        className="w-full max-w-2xl lg:max-w-5xl rounded-2xl p-6 md:p-8 flex flex-col gap-6"
         style={{
           background: 'var(--c-card)',
           border: '1px solid var(--c-rim)',
@@ -128,9 +128,9 @@ export default function ProductFormModal({ product, onClose, onSave, onDelete }:
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
           {/* Image upload */}
-          <div className="md:col-span-2">
+          <div className="md:col-span-2 lg:col-span-2">
             <label className={labelCls} style={labelStyle}>Imagen del Producto</label>
             <div
               className={`relative flex flex-col items-center justify-center rounded-xl transition-all cursor-pointer ${
@@ -202,7 +202,7 @@ export default function ProductFormModal({ product, onClose, onSave, onDelete }:
             </div>
           </div>
 
-          <div className="md:col-span-2">
+          <div className="md:col-span-2 lg:col-span-2">
             <label className={labelCls} style={labelStyle}>Nombre del Producto</label>
             <input
               required
@@ -238,7 +238,7 @@ export default function ProductFormModal({ product, onClose, onSave, onDelete }:
             </select>
           </div>
 
-          <div className="md:col-span-2">
+          <div className="md:col-span-2 lg:col-span-2">
             <label className={labelCls} style={labelStyle}>Categoría</label>
             <select
               value={form.category}
@@ -252,7 +252,7 @@ export default function ProductFormModal({ product, onClose, onSave, onDelete }:
             </select>
           </div>
 
-          <div className="md:col-span-2">
+          <div className="md:col-span-2 lg:col-span-4">
             <label className={labelCls} style={labelStyle}>Descripción</label>
             <textarea
               value={form.description}
@@ -286,7 +286,7 @@ export default function ProductFormModal({ product, onClose, onSave, onDelete }:
             />
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-3 md:col-span-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-3 md:col-span-2 lg:col-span-4 gap-4">
             <div>
               <label className={labelCls} style={labelStyle}>Costo Base</label>
               <input
@@ -325,7 +325,7 @@ export default function ProductFormModal({ product, onClose, onSave, onDelete }:
             </div>
           </div>
 
-          <div className="md:col-span-2 flex items-center pt-4" style={{ borderTop: '1px solid var(--c-rim)' }}>
+          <div className="md:col-span-2 lg:col-span-4 flex items-center pt-4" style={{ borderTop: '1px solid var(--c-rim)' }}>
             {isEdit && onDelete && (
               <button
                 type="button"
