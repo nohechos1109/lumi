@@ -137,45 +137,71 @@ export default function AdminUsersPage() {
       )}
 
       {/* Controls Bar */}
-      <div className="flex flex-col md:flex-row gap-4 mb-6 p-4 rounded-xl shadow-sm" style={{ border: '1px solid var(--c-rim)', background: 'var(--c-card)' }}>
-        <div className="flex-1 relative">
-          <input
-            type="text"
-            placeholder="Buscar por nombre de usuario..."
-            className="w-full pl-11 pr-4 py-2.5 rounded-lg outline-none focus:ring-2 focus:ring-[var(--c-sky)] transition-all text-sm"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            style={{ 
-              background: 'var(--c-base)', 
-              border: '1px solid var(--c-rim)',
-              color: 'var(--c-ink)'
-            }}
-          />
-          <div className="absolute left-4 top-1/2 -translate-y-1/2" style={{ color: 'var(--c-ghost)' }}>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
-            </svg>
-          </div>
-        </div>
-        
-        <div className="relative min-w-[180px]">
-          <select
-            className="w-full appearance-none px-4 py-2.5 pr-10 rounded-lg outline-none focus:ring-2 focus:ring-[var(--c-sky)] transition-all cursor-pointer text-sm"
-            value={roleFilter}
-            onChange={(e) => setRoleFilter(e.target.value)}
-            style={{ 
-              background: 'var(--c-base)', 
-              border: '1px solid var(--c-rim)',
-              color: 'var(--c-ink)'
+      <div className="flex flex-col gap-4 mb-6">
+        <div style={{ maxWidth: '640px', margin: '0 auto', width: '100%' }}>
+          <div
+            className="flex items-center h-12 rounded-full transition-shadow"
+            style={{
+              background: 'var(--c-card)',
+              border: searchQuery ? '1.5px solid var(--c-navy-bd)' : '1px solid var(--c-rim)',
+              boxShadow: searchQuery
+                ? '0 2px 8px rgba(27,52,97,0.12), 0 0 0 3px rgba(27,52,97,0.06)'
+                : '0 1px 6px rgba(27,52,97,0.08)',
             }}
           >
-            <option value="">Todos los roles</option>
-            <option value="admin">Admin</option>
-            <option value="manager">Manager</option>
-            <option value="sales">Sales</option>
-          </select>
-          <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: 'var(--c-ghost)' }}>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+            <div className="flex items-center justify-center w-12 shrink-0" style={{ color: searchQuery ? 'var(--c-navy)' : 'var(--c-ghost)', opacity: searchQuery ? 0.85 : 0.5, transition: 'color 0.2s, opacity 0.2s' }}>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+              </svg>
+            </div>
+            <input
+              type="text"
+              placeholder="Buscar por nombre de usuario..."
+              className="flex-1 h-full bg-transparent outline-none text-sm font-medium"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              style={{ color: 'var(--c-ink)' }}
+            />
+            {searchQuery && (
+              <button
+                onClick={() => setSearchQuery('')}
+                className="flex items-center justify-center w-10 h-10 mr-1 rounded-full transition-colors"
+                style={{ color: 'var(--c-dim)' }}
+                onMouseEnter={(e) => { e.currentTarget.style.background = 'var(--c-rim)' }}
+                onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent' }}
+                aria-label="Limpiar búsqueda"
+              >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+                  <line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/>
+                </svg>
+              </button>
+            )}
+          </div>
+        </div>
+
+        {/* Filter — pill chip */}
+        <div className="flex flex-wrap items-center justify-center gap-2">
+          <div className="flex items-center gap-1.5 mr-1" style={{ color: 'var(--c-ghost)' }}>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <line x1="4" y1="6" x2="20" y2="6"/><line x1="7" y1="12" x2="17" y2="12"/><line x1="10" y1="18" x2="14" y2="18"/>
+            </svg>
+          </div>
+
+          <div className="relative">
+            <select
+              className="appearance-none pl-3.5 pr-7 h-8 rounded-full outline-none cursor-pointer text-xs font-semibold transition-all"
+              value={roleFilter}
+              onChange={(e) => setRoleFilter(e.target.value)}
+              style={{ background: roleFilter ? 'var(--c-navy-bg)' : 'var(--c-card)', border: roleFilter ? '1.5px solid var(--c-navy-bd)' : '1px solid var(--c-rim)', color: roleFilter ? 'var(--c-navy)' : 'var(--c-dim)', boxShadow: roleFilter ? 'none' : '0 1px 3px rgba(27,52,97,0.05)' }}
+            >
+              <option value="">Rol</option>
+              <option value="admin">Admin</option>
+              <option value="manager">Manager</option>
+              <option value="sales">Sales</option>
+            </select>
+            <div className="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: roleFilter ? 'var(--c-navy)' : 'var(--c-ghost)', opacity: 0.6 }}>
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+            </div>
           </div>
         </div>
       </div>

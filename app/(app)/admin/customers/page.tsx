@@ -128,29 +128,52 @@ export default function AdminCustomersPage() {
       )}
 
       {/* Controls Bar */}
-      <div className="flex flex-col md:flex-row gap-4 mb-6 p-4 rounded-xl shadow-sm" style={{ border: '1px solid var(--c-rim)', background: 'var(--c-card)' }}>
-        <div className="flex-1 relative">
-          <input
-            type="text"
-            placeholder="Buscar por nombre de cliente..."
-            className="w-full pl-11 pr-4 py-2.5 rounded-lg outline-none focus:ring-2 focus:ring-[var(--c-sky)] transition-all text-sm"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            style={{ 
-              background: 'var(--c-base)', 
-              border: '1px solid var(--c-rim)',
-              color: 'var(--c-ink)'
+      <div className="flex flex-col gap-4 mb-6">
+        <div style={{ maxWidth: '640px', margin: '0 auto', width: '100%' }}>
+          <div
+            className="flex items-center h-12 rounded-full transition-shadow"
+            style={{
+              background: 'var(--c-card)',
+              border: searchQuery ? '1.5px solid var(--c-navy-bd)' : '1px solid var(--c-rim)',
+              boxShadow: searchQuery
+                ? '0 2px 8px rgba(27,52,97,0.12), 0 0 0 3px rgba(27,52,97,0.06)'
+                : '0 1px 6px rgba(27,52,97,0.08)',
             }}
-          />
-          <div className="absolute left-4 top-1/2 -translate-y-1/2" style={{ color: 'var(--c-ghost)' }}>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
-            </svg>
+          >
+            <div className="flex items-center justify-center w-12 shrink-0" style={{ color: searchQuery ? 'var(--c-navy)' : 'var(--c-ghost)', opacity: searchQuery ? 0.85 : 0.5, transition: 'color 0.2s, opacity 0.2s' }}>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+              </svg>
+            </div>
+            <input
+              type="text"
+              placeholder="Buscar por nombre de cliente..."
+              className="flex-1 h-full bg-transparent outline-none text-sm font-medium"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              style={{ color: 'var(--c-ink)' }}
+            />
+            {searchQuery && (
+              <button
+                onClick={() => setSearchQuery('')}
+                className="flex items-center justify-center w-10 h-10 mr-1 rounded-full transition-colors"
+                style={{ color: 'var(--c-dim)' }}
+                onMouseEnter={(e) => { e.currentTarget.style.background = 'var(--c-rim)' }}
+                onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent' }}
+                aria-label="Limpiar búsqueda"
+              >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+                  <line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/>
+                </svg>
+              </button>
+            )}
           </div>
         </div>
-        <div className="flex items-center px-2 text-xs font-mono uppercase tracking-tighter" style={{ color: 'var(--c-ghost)' }}>
-          {filteredCustomers.length} resultados
-        </div>
+        {searchQuery && (
+          <div className="text-center text-xs font-mono" style={{ color: 'var(--c-ghost)' }}>
+            {filteredCustomers.length} resultados
+          </div>
+        )}
       </div>
 
       <div
