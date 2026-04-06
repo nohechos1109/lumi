@@ -94,84 +94,107 @@ export default function AdminCustomersPage() {
           </p>
         </div>
         <button
-          onClick={() => setAdding(v => !v)}
+          onClick={() => setAdding(true)}
           className="text-sm px-5 py-2.5 rounded-xl font-bold uppercase tracking-wider transition-opacity hover:opacity-85"
           style={{
-            background: adding ? 'var(--c-rim-hi)' : 'var(--c-navy)',
-            color: adding ? 'var(--c-dim)' : '#fff',
+            background: 'var(--c-navy)',
+            color: '#fff',
             letterSpacing: '0.08em',
           }}
         >
-          {adding ? 'Cancelar' : '+ Nuevo Cliente'}
+          + Nuevo Cliente
         </button>
       </div>
 
+      {/* Modal crear cliente */}
       {adding && (
-        <form
-          onSubmit={handleAdd}
-          className="rounded-2xl p-5 mb-5"
-          style={{ background: 'var(--c-card)', border: '1px solid var(--c-rim-hi)' }}
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4"
+          style={{ background: 'rgba(9,11,16,0.45)', backdropFilter: 'blur(4px)' }}
+          onClick={() => setAdding(false)}
         >
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
-            <div>
-              <label
-                className="block text-xs font-bold uppercase tracking-widest mb-2"
-                style={{ color: 'var(--c-dim)', letterSpacing: '0.1em' }}
+          <form
+            onSubmit={handleAdd}
+            onClick={(e) => e.stopPropagation()}
+            className="w-full max-w-md rounded-2xl p-6 flex flex-col gap-5 shadow-xl"
+            style={{ background: 'var(--c-card)', border: '1px solid var(--c-rim)' }}
+          >
+            <div className="flex items-center justify-between">
+              <h2 className="text-lg font-bold" style={{ color: 'var(--c-ink)' }}>Nuevo Cliente</h2>
+              <button
+                type="button"
+                onClick={() => setAdding(false)}
+                className="flex items-center justify-center w-8 h-8 rounded-full transition-colors"
+                style={{ color: 'var(--c-ghost)' }}
+                onMouseEnter={(e) => { e.currentTarget.style.background = 'var(--c-rim)' }}
+                onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent' }}
               >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+                  <line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/>
+                </svg>
+              </button>
+            </div>
+
+            <div>
+              <label className="block text-xs font-bold uppercase tracking-widest mb-2" style={{ color: 'var(--c-dim)', letterSpacing: '0.1em' }}>
                 Nombre del cliente *
               </label>
               <input
                 value={name}
                 onChange={e => setName(e.target.value)}
                 required
-                className="w-full"
-                style={{ background: 'var(--c-panel)' }}
                 placeholder="Empresa S.A. de C.V."
+                className="w-full px-3.5 py-2.5 rounded-lg outline-none text-sm transition-all"
+                style={{ background: 'var(--c-panel)', border: '1px solid var(--c-rim)', color: 'var(--c-ink)' }}
+                autoFocus
               />
             </div>
             <div>
-              <label
-                className="block text-xs font-bold uppercase tracking-widest mb-2"
-                style={{ color: 'var(--c-dim)', letterSpacing: '0.1em' }}
-              >
+              <label className="block text-xs font-bold uppercase tracking-widest mb-2" style={{ color: 'var(--c-dim)', letterSpacing: '0.1em' }}>
                 Email
               </label>
               <input
                 type="email"
                 value={email}
                 onChange={e => setEmail(e.target.value)}
-                className="w-full"
-                style={{ background: 'var(--c-panel)' }}
                 placeholder="contacto@empresa.com"
+                className="w-full px-3.5 py-2.5 rounded-lg outline-none text-sm transition-all"
+                style={{ background: 'var(--c-panel)', border: '1px solid var(--c-rim)', color: 'var(--c-ink)' }}
               />
             </div>
             <div>
-              <label
-                className="block text-xs font-bold uppercase tracking-widest mb-2"
-                style={{ color: 'var(--c-dim)', letterSpacing: '0.1em' }}
-              >
+              <label className="block text-xs font-bold uppercase tracking-widest mb-2" style={{ color: 'var(--c-dim)', letterSpacing: '0.1em' }}>
                 Teléfono
               </label>
               <input
                 type="tel"
                 value={phone}
                 onChange={e => setPhone(e.target.value)}
-                className="w-full"
-                style={{ background: 'var(--c-panel)' }}
                 placeholder="(555) 123-4567"
+                className="w-full px-3.5 py-2.5 rounded-lg outline-none text-sm transition-all"
+                style={{ background: 'var(--c-panel)', border: '1px solid var(--c-rim)', color: 'var(--c-ink)' }}
               />
             </div>
-          </div>
-          <div className="flex justify-end">
-            <button
-              type="submit"
-              className="px-5 py-2 rounded-xl text-sm font-bold uppercase tracking-wider"
-              style={{ background: 'var(--c-navy)', color: '#fff' }}
-            >
-              Guardar
-            </button>
-          </div>
-        </form>
+
+            <div className="flex gap-3 pt-2">
+              <button
+                type="button"
+                onClick={() => setAdding(false)}
+                className="flex-1 px-4 py-2.5 rounded-xl text-sm font-semibold transition-opacity hover:opacity-80"
+                style={{ background: 'var(--c-rim)', color: 'var(--c-dim)' }}
+              >
+                Cancelar
+              </button>
+              <button
+                type="submit"
+                className="flex-1 px-4 py-2.5 rounded-xl text-sm font-bold uppercase tracking-wider transition-opacity hover:opacity-90"
+                style={{ background: 'var(--c-navy)', color: '#fff', letterSpacing: '0.08em' }}
+              >
+                Guardar
+              </button>
+            </div>
+          </form>
+        </div>
       )}
 
       {/* Controls Bar */}
