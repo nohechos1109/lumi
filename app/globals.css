@@ -3,7 +3,7 @@
 @theme inline {
   --color-background: var(--c-base);
   --color-foreground: var(--c-ink);
-  --font-sans: var(--font-dm-sans);
+  --font-sans: var(--font-montserrat);
   --font-mono: var(--font-fira-code);
 }
 
@@ -47,7 +47,7 @@ body {
 
 /* ── Heading font ──────────────────────────── */
 .font-heading {
-  font-family: var(--font-barlow-condensed), sans-serif;
+  font-family: var(--font-montserrat), sans-serif;
 }
 
 /* ── Status badges ─────────────────────────── */

@@ -1,17 +1,12 @@
 import type { Metadata } from "next";
-import { DM_Sans, Barlow_Condensed, Fira_Code } from "next/font/google";
+import { Montserrat, Fira_Code } from "next/font/google";
 import "./globals.css";
 
-const dmSans = DM_Sans({
-  variable: "--font-dm-sans",
+const montserrat = Montserrat({
+  variable: "--font-montserrat",
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-});
-
-const barlowCondensed = Barlow_Condensed({
-  variable: "--font-barlow-condensed",
-  subsets: ["latin"],
-  weight: ["600", "700", "800"],
+  weight: ["400", "500", "600", "700", "800", "900"],
+  style: ["normal", "italic"],
 });
 
 const firaCode = Fira_Code({
@@ -33,7 +28,7 @@ export default function RootLayout({
   return (
     <html
       lang="es"
-      className={`${dmSans.variable} ${barlowCondensed.variable} ${firaCode.variable} h-full antialiased`}
+      className={`${montserrat.variable} ${firaCode.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">{children}</body>
     </html>
