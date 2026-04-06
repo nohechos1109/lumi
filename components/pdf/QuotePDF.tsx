@@ -2,7 +2,7 @@ import { Document, Page, Text, View, StyleSheet, Image, Svg, Path, Rect, Circle 
 
 
 const styles = StyleSheet.create({
-  page: { padding: '40 40 60 40', fontFamily: 'Helvetica', fontSize: 9, color: '#262626' },
+  page: { padding: '120 40 60 40', fontFamily: 'Helvetica', fontSize: 9, color: '#262626' },
   
   // Header Branding (SVG)
   headerContainer: { position: 'absolute', top: 0, left: 0, right: 0, height: 110 },
@@ -175,21 +175,21 @@ export default function QuotePDF({ quote, lines, images }: { quote: Quote; lines
           {lines.map((line) => {
             if (line.display_type === 'section') {
               return (
-                <View key={line.id} style={[styles.tableRow, styles.sectionRow]}>
+                <View key={line.id} style={[styles.tableRow, styles.sectionRow]} wrap={false}>
                   <Text style={{ width: '100%', color: '#1B3461', fontWeight: 'bold', fontSize: 9 }}>{line.name.toUpperCase()}</Text>
                 </View>
               )
             }
             if (line.display_type === 'note') {
               return (
-                <View key={line.id} style={styles.tableRow}>
+                <View key={line.id} style={styles.tableRow} wrap={false}>
                   <Text style={{ width: '100%', color: '#6B7280', fontStyle: 'italic', fontSize: 7.5 }}>• {line.name}</Text>
                 </View>
               )
             }
             if (line.display_type === 'discount') {
               return (
-                <View key={line.id} style={styles.tableRow}>
+                <View key={line.id} style={styles.tableRow} wrap={false}>
                   <Text style={[styles.colDesc, { color: '#0EA5E9', fontWeight: 'bold' }]}>DESCUENTO GLOBAL ({line.discount_percent}%)</Text>
                   <Text style={styles.colQty}></Text>
                   <Text style={styles.colPrice}></Text>
@@ -202,7 +202,7 @@ export default function QuotePDF({ quote, lines, images }: { quote: Quote; lines
             }
 
             return (
-              <View key={line.id} style={styles.tableRow}>
+              <View key={line.id} style={styles.tableRow} wrap={false}>
                 <View style={styles.colDesc}>
                   <Text style={styles.itemText}>{line.name}</Text>
                 </View>
@@ -216,7 +216,7 @@ export default function QuotePDF({ quote, lines, images }: { quote: Quote; lines
         </View>
 
         {/* Notes and Totals Section */}
-        <View style={styles.totalsArea}>
+        <View style={styles.totalsArea} wrap={false}>
           <View style={styles.notesBox}>
             <View style={styles.noteItem}>
               <Text style={styles.noteBullet}>•</Text>
@@ -290,13 +290,13 @@ export default function QuotePDF({ quote, lines, images }: { quote: Quote; lines
         </View>
 
         {/* Contact info below totals */}
-        <View style={styles.contactSection}>
+        <View style={styles.contactSection} wrap={false}>
           <Text style={styles.website}>www.smart-systems.com.mx</Text>
         </View>
 
         {/* Terms and Conditions */}
         {quote.terms && (
-          <View style={styles.terms}>
+          <View style={styles.terms} wrap={false}>
             <Text style={[styles.label, { color: '#1B3461', fontWeight: 'bold' }]}>TÉRMINOS Y CONDICIONES</Text>
             <Text style={{ fontSize: 7.5, color: '#4B5563', marginTop: 4, lineHeight: 1.4 }}>{quote.terms}</Text>
           </View>
