@@ -7,8 +7,8 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
   if (!session) return unauthorized()
   if (session.role !== 'admin') return forbidden()
   const { id } = await params
-  const { name } = await req.json()
-  await updateCustomer(id, name)
+  const { name, email, phone } = await req.json()
+  await updateCustomer(id, name, email, phone)
   return NextResponse.json({ ok: true })
 }
 

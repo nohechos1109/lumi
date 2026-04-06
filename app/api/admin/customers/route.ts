@@ -13,6 +13,6 @@ export async function POST(req: NextRequest) {
   const session = await getSession()
   if (!session) return unauthorized()
   if (session.role !== 'admin') return forbidden()
-  const { name } = await req.json()
-  return NextResponse.json(await createCustomer(name), { status: 201 })
+  const { name, email, phone } = await req.json()
+  return NextResponse.json(await createCustomer(name, email, phone), { status: 201 })
 }

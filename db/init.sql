@@ -11,8 +11,10 @@ CREATE TABLE users (
 
 -- CUSTOMERS
 CREATE TABLE customers (
-    id   uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-    name text NOT NULL
+    id    uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+    name  text NOT NULL,
+    email text,
+    phone text
 );
 
 -- PAYMENT_TERMS

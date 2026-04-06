@@ -11,8 +11,8 @@ export async function GET() {
 export async function POST(req: NextRequest) {
   const session = await getSession()
   if (!session) return unauthorized()
-  const { name } = await req.json()
+  const { name, email, phone } = await req.json()
   if (!name?.trim()) return NextResponse.json({ error: 'Nombre requerido' }, { status: 400 })
-  const customer = await createCustomer(name.trim())
+  const customer = await createCustomer(name.trim(), email?.trim() || undefined, phone?.trim() || undefined)
   return NextResponse.json(customer, { status: 201 })
 }

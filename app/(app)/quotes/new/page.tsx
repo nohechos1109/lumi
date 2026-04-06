@@ -3,7 +3,7 @@
 import { useState, useEffect, FormEvent, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 
-interface Customer { id: string; name: string }
+interface Customer { id: string; name: string; email: string | null; phone: string | null }
 
 const labelCls = 'block text-xs font-semibold mb-1.5'
 const labelStyle = { color: 'var(--c-dim)' }
@@ -23,6 +23,8 @@ function NewQuoteForm() {
   const [loading, setLoading] = useState(false)
   const [isNewCustomer, setIsNewCustomer] = useState(false)
   const [newCustomerName, setNewCustomerName] = useState('')
+  const [newCustomerEmail, setNewCustomerEmail] = useState('')
+  const [newCustomerPhone, setNewCustomerPhone] = useState('')
   
   const initialCustomerId = searchParams.get('customer_id') || ''
   const initialProjectId = searchParams.get('project_id') || ''
@@ -43,7 +45,11 @@ function NewQuoteForm() {
       const res = await fetch('/api/customers', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name: newCustomerName.trim() }),
+        body: JSON.stringify({
+          name: newCustomerName.trim(),
+          email: newCustomerEmail.trim() || undefined,
+          phone: newCustomerPhone.trim() || undefined,
+        }),
       })
       if (!res.ok) { setLoading(false); return }
       const customer = await res.json()
@@ -123,7 +129,7 @@ function NewQuoteForm() {
                   type="button"
                   className="text-xs font-medium transition-colors"
                   style={{ color: 'var(--c-navy)' }}
-                  onClick={() => { setIsNewCustomer(v => !v); setNewCustomerName('') }}
+                  onClick={() => { setIsNewCustomer(v => !v); setNewCustomerName(''); setNewCustomerEmail(''); setNewCustomerPhone('') }}
                 >
                   {isNewCustomer ? '← Seleccionar existente' : '+ Crear nuevo'}
                 </button>
@@ -131,15 +137,31 @@ function NewQuoteForm() {
             </div>
 
             {isNewCustomer ? (
-              <input
-                type="text"
-                required={isNewCustomer}
-                placeholder="Nombre del cliente"
-                value={newCustomerName}
-                onChange={e => setNewCustomerName(e.target.value)}
-                className="w-full"
-                autoFocus
-              />
+              <div className="flex flex-col gap-2">
+                <input
+                  type="text"
+                  required={isNewCustomer}
+                  placeholder="Nombre del cliente"
+                  value={newCustomerName}
+                  onChange={e => setNewCustomerName(e.target.value)}
+                  className="w-full"
+                  autoFocus
+                />
+                <input
+                  type="email"
+                  placeholder="Email (opcional)"
+                  value={newCustomerEmail}
+                  onChange={e => setNewCustomerEmail(e.target.value)}
+                  className="w-full"
+                />
+                <input
+                  type="tel"
+                  placeholder="Teléfono (opcional)"
+                  value={newCustomerPhone}
+                  onChange={e => setNewCustomerPhone(e.target.value)}
+                  className="w-full"
+                />
+              </div>
             ) : (
               <select
                 name="customer_id"

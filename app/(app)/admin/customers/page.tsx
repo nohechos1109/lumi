@@ -4,14 +4,18 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import ConfirmModal from '@/components/ui/ConfirmModal'
 
-interface Customer { id: string; name: string }
+interface Customer { id: string; name: string; email: string | null; phone: string | null }
 
 export default function AdminCustomersPage() {
   const [customers, setCustomers] = useState<Customer[]>([])
   const [name, setName] = useState('')
+  const [email, setEmail] = useState('')
+  const [phone, setPhone] = useState('')
   const [adding, setAdding] = useState(false)
   const [editingId, setEditingId] = useState<string | null>(null)
   const [editName, setEditName] = useState('')
+  const [editEmail, setEditEmail] = useState('')
+  const [editPhone, setEditPhone] = useState('')
   const [deleteId, setDeleteId] = useState<string | null>(null)
   const [searchQuery, setSearchQuery] = useState('')
 
@@ -22,23 +26,28 @@ export default function AdminCustomersPage() {
 
   useEffect(() => { load() }, [])
 
-  const filteredCustomers = customers.filter(c => 
-    c.name.toLowerCase().includes(searchQuery.toLowerCase())
-  )
+  const filteredCustomers = customers.filter(c => {
+    const q = searchQuery.toLowerCase()
+    return c.name.toLowerCase().includes(q)
+      || (c.email && c.email.toLowerCase().includes(q))
+      || (c.phone && c.phone.toLowerCase().includes(q))
+  })
 
   async function handleAdd(e: React.FormEvent) {
     e.preventDefault()
     await fetch('/api/admin/customers', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name }),
+      body: JSON.stringify({ name, email: email || undefined, phone: phone || undefined }),
     })
-    setName(''); setAdding(false); load()
+    setName(''); setEmail(''); setPhone(''); setAdding(false); load()
   }
 
   function startEdit(c: Customer) {
     setEditingId(c.id)
     setEditName(c.name)
+    setEditEmail(c.email || '')
+    setEditPhone(c.phone || '')
   }
 
   async function saveEdit() {
@@ -46,10 +55,12 @@ export default function AdminCustomersPage() {
     await fetch(`/api/admin/customers/${editingId}`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name: editName }),
+      body: JSON.stringify({ name: editName, email: editEmail || undefined, phone: editPhone || undefined }),
     })
     setEditingId(null)
     setEditName('')
+    setEditEmail('')
+    setEditPhone('')
     load()
   }
 
@@ -61,7 +72,7 @@ export default function AdminCustomersPage() {
   return (
     <div>
       <div className="mb-6">
-        <Link 
+        <Link
           href="/admin"
           className="inline-flex items-center text-xs font-bold uppercase tracking-widest transition-colors hover:opacity-75"
           style={{ color: 'var(--c-ghost)' }}
@@ -98,32 +109,68 @@ export default function AdminCustomersPage() {
       {adding && (
         <form
           onSubmit={handleAdd}
-          className="rounded-2xl p-5 mb-5 flex gap-4 items-end"
+          className="rounded-2xl p-5 mb-5"
           style={{ background: 'var(--c-card)', border: '1px solid var(--c-rim-hi)' }}
         >
-          <div className="flex-1">
-            <label
-              className="block text-xs font-bold uppercase tracking-widest mb-2"
-              style={{ color: 'var(--c-dim)', letterSpacing: '0.1em' }}
-            >
-              Nombre del cliente
-            </label>
-            <input
-              value={name}
-              onChange={e => setName(e.target.value)}
-              required
-              className="w-full"
-              style={{ background: 'var(--c-panel)' }}
-              placeholder="Empresa S.A. de C.V."
-            />
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
+            <div>
+              <label
+                className="block text-xs font-bold uppercase tracking-widest mb-2"
+                style={{ color: 'var(--c-dim)', letterSpacing: '0.1em' }}
+              >
+                Nombre del cliente *
+              </label>
+              <input
+                value={name}
+                onChange={e => setName(e.target.value)}
+                required
+                className="w-full"
+                style={{ background: 'var(--c-panel)' }}
+                placeholder="Empresa S.A. de C.V."
+              />
+            </div>
+            <div>
+              <label
+                className="block text-xs font-bold uppercase tracking-widest mb-2"
+                style={{ color: 'var(--c-dim)', letterSpacing: '0.1em' }}
+              >
+                Email
+              </label>
+              <input
+                type="email"
+                value={email}
+                onChange={e => setEmail(e.target.value)}
+                className="w-full"
+                style={{ background: 'var(--c-panel)' }}
+                placeholder="contacto@empresa.com"
+              />
+            </div>
+            <div>
+              <label
+                className="block text-xs font-bold uppercase tracking-widest mb-2"
+                style={{ color: 'var(--c-dim)', letterSpacing: '0.1em' }}
+              >
+                Teléfono
+              </label>
+              <input
+                type="tel"
+                value={phone}
+                onChange={e => setPhone(e.target.value)}
+                className="w-full"
+                style={{ background: 'var(--c-panel)' }}
+                placeholder="(555) 123-4567"
+              />
+            </div>
           </div>
-          <button
-            type="submit"
-            className="px-5 py-2 rounded-xl text-sm font-bold uppercase tracking-wider"
-            style={{ background: 'var(--c-navy)', color: '#fff' }}
-          >
-            Guardar
-          </button>
+          <div className="flex justify-end">
+            <button
+              type="submit"
+              className="px-5 py-2 rounded-xl text-sm font-bold uppercase tracking-wider"
+              style={{ background: 'var(--c-navy)', color: '#fff' }}
+            >
+              Guardar
+            </button>
+          </div>
         </form>
       )}
 
@@ -147,7 +194,7 @@ export default function AdminCustomersPage() {
             </div>
             <input
               type="text"
-              placeholder="Buscar por nombre de cliente..."
+              placeholder="Buscar por nombre, email o teléfono..."
               className="flex-1 h-full bg-transparent outline-none text-sm font-medium"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
@@ -186,6 +233,12 @@ export default function AdminCustomersPage() {
               <th className="text-left px-5 py-4 text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--c-ghost)' }}>
                 Nombre
               </th>
+              <th className="text-left px-5 py-4 text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--c-ghost)' }}>
+                Email
+              </th>
+              <th className="text-left px-5 py-4 text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--c-ghost)' }}>
+                Teléfono
+              </th>
               <th className="px-5 py-4 w-36"></th>
             </tr>
           </thead>
@@ -211,6 +264,40 @@ export default function AdminCustomersPage() {
                       autoFocus
                     />
                   ) : c.name}
+                </td>
+                <td className="px-5 py-3.5" style={{ color: 'var(--c-ink)' }}>
+                  {editingId === c.id ? (
+                    <input
+                      type="email"
+                      value={editEmail}
+                      onChange={e => setEditEmail(e.target.value)}
+                      onKeyDown={e => { if (e.key === 'Enter') saveEdit() }}
+                      className="w-full max-w-xs"
+                      style={{ background: 'var(--c-panel)' }}
+                      placeholder="contacto@empresa.com"
+                    />
+                  ) : (
+                    <span style={{ color: c.email ? 'var(--c-ink)' : 'var(--c-ghost)' }}>
+                      {c.email || '—'}
+                    </span>
+                  )}
+                </td>
+                <td className="px-5 py-3.5" style={{ color: 'var(--c-ink)' }}>
+                  {editingId === c.id ? (
+                    <input
+                      type="tel"
+                      value={editPhone}
+                      onChange={e => setEditPhone(e.target.value)}
+                      onKeyDown={e => { if (e.key === 'Enter') saveEdit() }}
+                      className="w-full max-w-xs"
+                      style={{ background: 'var(--c-panel)' }}
+                      placeholder="(555) 123-4567"
+                    />
+                  ) : (
+                    <span style={{ color: c.phone ? 'var(--c-ink)' : 'var(--c-ghost)' }}>
+                      {c.phone || '—'}
+                    </span>
+                  )}
                 </td>
                 <td className="px-5 py-3.5 text-right">
                   <div className="flex gap-3 justify-end">
