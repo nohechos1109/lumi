@@ -11,6 +11,8 @@ interface Product {
   cost_base: string
   utility_fixed: string
   utility_factor: string
+  codigo_sat: string | null
+  codigo_proveedor: string | null
 }
 
 interface Props {
@@ -29,6 +31,8 @@ export default function ProductFormModal({ product, onClose, onSave }: Props) {
     cost_base: product?.cost_base ?? '0',
     utility_fixed: product?.utility_fixed ?? '0',
     utility_factor: product?.utility_factor ?? '1',
+    codigo_sat: product?.codigo_sat ?? '',
+    codigo_proveedor: product?.codigo_proveedor ?? '',
   })
   const [busy, setBusy] = useState(false)
 
@@ -124,6 +128,28 @@ export default function ProductFormModal({ product, onClose, onSave }: Props) {
               placeholder="Características adicionales..."
               rows={3}
               className="w-full rounded-xl px-4 py-2.5 outline-none transition-all resize-none"
+              style={inputBase}
+            />
+          </div>
+
+          <div>
+            <label className={labelCls} style={labelStyle}>Código SAT</label>
+            <input
+              value={form.codigo_sat}
+              onChange={e => setForm(f => ({ ...f, codigo_sat: e.target.value }))}
+              placeholder="Ej: 43211508"
+              className="w-full rounded-xl px-4 py-2.5 outline-none transition-all"
+              style={inputBase}
+            />
+          </div>
+
+          <div>
+            <label className={labelCls} style={labelStyle}>Código Proveedor</label>
+            <input
+              value={form.codigo_proveedor}
+              onChange={e => setForm(f => ({ ...f, codigo_proveedor: e.target.value }))}
+              placeholder="Ej: PROV-001"
+              className="w-full rounded-xl px-4 py-2.5 outline-none transition-all"
               style={inputBase}
             />
           </div>

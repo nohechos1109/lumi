@@ -38,7 +38,9 @@ CREATE TABLE products (
     currency         char(3) CHECK (currency IN ('MXN','USD')),
     cost_base        numeric(14,4) NOT NULL CHECK (cost_base >= 0),
     utility_fixed    numeric(14,4) NOT NULL DEFAULT 0,
-    utility_factor   numeric(14,6) NOT NULL DEFAULT 1 CHECK (utility_factor >= 0)
+    utility_factor   numeric(14,6) NOT NULL DEFAULT 1 CHECK (utility_factor >= 0),
+    codigo_sat       text,
+    codigo_proveedor text
 );
 
 -- QUOTES

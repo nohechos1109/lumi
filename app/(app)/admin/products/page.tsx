@@ -6,15 +6,17 @@ import ConfirmModal from '@/components/ui/ConfirmModal'
 import ProductFormModal from './_components/ProductFormModal'
 import ProductGrid from './_components/ProductGrid'
 
-interface Product { 
-  id: string; 
-  sku: string | null; 
-  name: string; 
-  description: string | null; 
-  currency: string; 
-  cost_base: string; 
-  utility_fixed: string; 
-  utility_factor: string 
+interface Product {
+  id: string;
+  sku: string | null;
+  name: string;
+  description: string | null;
+  currency: string;
+  cost_base: string;
+  utility_fixed: string;
+  utility_factor: string;
+  codigo_sat: string | null;
+  codigo_proveedor: string | null
 }
 
 export default function AdminProductsPage() {
@@ -202,7 +204,7 @@ export default function AdminProductsPage() {
       {viewMode === 'list' ? (
         <div className="rounded-2xl overflow-hidden shadow-sm" style={{ border: '1px solid var(--c-rim)', background: 'var(--c-card)' }}>
           <div className="overflow-x-auto">
-          <table className="w-full text-sm min-w-[900px]">
+          <table className="w-full text-sm min-w-[1200px]">
             <thead>
               <tr style={{ background: 'var(--c-panel)', borderBottom: '1px solid var(--c-rim)' }}>
                 <th className="text-left px-6 py-5 text-[10px] font-bold uppercase tracking-[0.2em]" style={{ color: 'var(--c-ghost)' }}>Nombre del Producto</th>
@@ -211,6 +213,8 @@ export default function AdminProductsPage() {
                 <th className="text-right px-6 py-5 text-[10px] font-bold uppercase tracking-[0.2em]" style={{ color: 'var(--c-ghost)' }}>Costo Base</th>
                 <th className="text-right px-6 py-5 text-[10px] font-bold uppercase tracking-[0.2em]" style={{ color: 'var(--c-ghost)' }}>Util. Fija</th>
                 <th className="text-right px-6 py-5 text-[10px] font-bold uppercase tracking-[0.2em]" style={{ color: 'var(--c-ghost)' }}>Factor</th>
+                <th className="text-left px-6 py-5 text-[10px] font-bold uppercase tracking-[0.2em]" style={{ color: 'var(--c-ghost)' }}>Código SAT</th>
+                <th className="text-left px-6 py-5 text-[10px] font-bold uppercase tracking-[0.2em]" style={{ color: 'var(--c-ghost)' }}>Código Proveedor</th>
                 <th className="px-6 py-5 w-32"></th>
               </tr>
             </thead>
@@ -238,6 +242,12 @@ export default function AdminProductsPage() {
                     <td className="px-6 py-4.5 text-right font-mono text-[11px] font-bold" style={{ color: 'var(--c-sky)' }}>
                       {Number(p.utility_factor).toFixed(2)}
                     </td>
+                    <td className="px-6 py-4.5 font-mono text-[11px]" style={{ color: 'var(--c-dim)' }}>
+                      {p.codigo_sat ?? '—'}
+                    </td>
+                    <td className="px-6 py-4.5 font-mono text-[11px]" style={{ color: 'var(--c-dim)' }}>
+                      {p.codigo_proveedor ?? '—'}
+                    </td>
                     <td className="px-6 py-4.5 text-right opacity-0 group-hover:opacity-100 transition-opacity">
                       <div className="flex gap-2 justify-end">
                         <button onClick={() => { setProductToEdit(p); setShowModal(true) }} className="btn-edit text-[11px] font-bold uppercase tracking-wider px-2 py-1 rounded hover:bg-[var(--c-sky-bg)]">
@@ -252,7 +262,7 @@ export default function AdminProductsPage() {
               ))}
               {filteredProducts.length === 0 && (
                 <tr>
-                  <td colSpan={7} className="px-6 py-20 text-center">
+                  <td colSpan={9} className="px-6 py-20 text-center">
                     <p className="text-[var(--c-ghost)] font-mono text-sm uppercase tracking-widest">No se encontraron productos</p>
                   </td>
                 </tr>

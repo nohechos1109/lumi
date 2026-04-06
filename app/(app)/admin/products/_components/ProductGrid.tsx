@@ -9,6 +9,8 @@ interface Product {
   cost_base: string
   utility_fixed: string
   utility_factor: string
+  codigo_sat: string | null
+  codigo_proveedor: string | null
 }
 
 interface ProductGridProps {
