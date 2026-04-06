@@ -75,65 +75,104 @@ export default function AdminUsersPage() {
           </p>
         </div>
         <button
-          onClick={() => setAdding(v => !v)}
+          onClick={() => setAdding(true)}
           className="text-sm px-5 py-2.5 rounded-xl font-bold uppercase tracking-wider transition-opacity hover:opacity-85"
           style={{
-            background: adding ? 'var(--c-rim-hi)' : 'var(--c-gold)',
-            color: adding ? 'var(--c-dim)' : '#090B10',
+            background: 'var(--c-gold)',
+            color: '#090B10',
             letterSpacing: '0.08em',
           }}
         >
-          {adding ? 'Cancelar' : '+ Nuevo Usuario'}
+          + Nuevo Usuario
         </button>
       </div>
 
+      {/* Modal crear usuario */}
       {adding && (
-        <form
-          onSubmit={handleAdd}
-          className="rounded-2xl p-5 mb-5 flex gap-4 items-end flex-wrap"
-          style={{ background: 'var(--c-card)', border: '1px solid var(--c-rim-hi)' }}
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4"
+          style={{ background: 'rgba(9,11,16,0.45)', backdropFilter: 'blur(4px)' }}
+          onClick={() => setAdding(false)}
         >
-          <div>
-            <label className={labelCls} style={labelStyle}>Usuario</label>
-            <input
-              value={form.username}
-              onChange={e => setForm(f => ({ ...f, username: e.target.value }))}
-              required
-              className={inputCls}
-              style={{ ...inputStyle, width: '10rem' }}
-            />
-          </div>
-          <div>
-            <label className={labelCls} style={labelStyle}>Contraseña</label>
-            <input
-              type="password"
-              value={form.password}
-              onChange={e => setForm(f => ({ ...f, password: e.target.value }))}
-              required
-              className={inputCls}
-              style={{ ...inputStyle, width: '10rem' }}
-            />
-          </div>
-          <div>
-            <label className={labelCls} style={labelStyle}>Rol</label>
-            <select
-              value={form.role}
-              onChange={e => setForm(f => ({ ...f, role: e.target.value }))}
-              style={{ ...inputStyle, width: '8rem' }}
-            >
-              <option value="sales">Sales</option>
-              <option value="manager">Manager</option>
-              <option value="admin">Admin</option>
-            </select>
-          </div>
-          <button
-            type="submit"
-            className="px-5 py-2 rounded-xl text-sm font-bold uppercase tracking-wider"
-            style={{ background: 'var(--c-gold)', color: '#090B10', letterSpacing: '0.08em' }}
+          <form
+            onSubmit={handleAdd}
+            onClick={(e) => e.stopPropagation()}
+            className="w-full max-w-md rounded-2xl p-6 flex flex-col gap-5 shadow-xl animate-in fade-in zoom-in-95"
+            style={{ background: 'var(--c-card)', border: '1px solid var(--c-rim)' }}
           >
-            Guardar
-          </button>
-        </form>
+            <div className="flex items-center justify-between">
+              <h2 className="text-lg font-bold" style={{ color: 'var(--c-ink)' }}>Nuevo Usuario</h2>
+              <button
+                type="button"
+                onClick={() => setAdding(false)}
+                className="flex items-center justify-center w-8 h-8 rounded-full transition-colors"
+                style={{ color: 'var(--c-ghost)' }}
+                onMouseEnter={(e) => { e.currentTarget.style.background = 'var(--c-rim)' }}
+                onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent' }}
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+                  <line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/>
+                </svg>
+              </button>
+            </div>
+
+            <div>
+              <label className={labelCls} style={labelStyle}>Usuario</label>
+              <input
+                value={form.username}
+                onChange={e => setForm(f => ({ ...f, username: e.target.value }))}
+                required
+                placeholder="nombre.usuario"
+                className="w-full px-3.5 py-2.5 rounded-lg outline-none text-sm transition-all"
+                style={{ background: 'var(--c-panel)', border: '1px solid var(--c-rim)', color: 'var(--c-ink)' }}
+                autoFocus
+              />
+            </div>
+            <div>
+              <label className={labelCls} style={labelStyle}>Contraseña</label>
+              <input
+                type="password"
+                value={form.password}
+                onChange={e => setForm(f => ({ ...f, password: e.target.value }))}
+                required
+                placeholder="••••••••"
+                className="w-full px-3.5 py-2.5 rounded-lg outline-none text-sm transition-all"
+                style={{ background: 'var(--c-panel)', border: '1px solid var(--c-rim)', color: 'var(--c-ink)' }}
+              />
+            </div>
+            <div>
+              <label className={labelCls} style={labelStyle}>Rol</label>
+              <select
+                value={form.role}
+                onChange={e => setForm(f => ({ ...f, role: e.target.value }))}
+                className="w-full px-3.5 py-2.5 rounded-lg outline-none text-sm cursor-pointer appearance-none transition-all"
+                style={{ background: 'var(--c-panel)', border: '1px solid var(--c-rim)', color: 'var(--c-ink)' }}
+              >
+                <option value="sales">Sales</option>
+                <option value="manager">Manager</option>
+                <option value="admin">Admin</option>
+              </select>
+            </div>
+
+            <div className="flex gap-3 pt-2">
+              <button
+                type="button"
+                onClick={() => setAdding(false)}
+                className="flex-1 px-4 py-2.5 rounded-xl text-sm font-semibold transition-opacity hover:opacity-80"
+                style={{ background: 'var(--c-rim)', color: 'var(--c-dim)' }}
+              >
+                Cancelar
+              </button>
+              <button
+                type="submit"
+                className="flex-1 px-4 py-2.5 rounded-xl text-sm font-bold uppercase tracking-wider transition-opacity hover:opacity-90"
+                style={{ background: 'var(--c-gold)', color: '#090B10', letterSpacing: '0.08em' }}
+              >
+                Guardar
+              </button>
+            </div>
+          </form>
+        </div>
       )}
 
       {/* Controls Bar */}
