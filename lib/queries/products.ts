@@ -36,7 +36,7 @@ export async function createProduct(data: Omit<Product, 'id'>): Promise<Product>
   const { rows } = await pool.query(
     `INSERT INTO products (sku, name, description, currency, cost_base, utility_fixed, utility_factor, codigo_sat, codigo_proveedor, image_url)
      VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10) RETURNING *`,
-    [data.sku, data.name, data.description, data.currency, data.cost_base, data.utility_fixed, data.utility_factor, data.codigo_sat, data.codigo_proveedor, data.image_url]
+    [data.sku || null, data.name, data.description || null, data.currency, data.cost_base, data.utility_fixed, data.utility_factor, data.codigo_sat || null, data.codigo_proveedor || null, data.image_url || null]
   )
   return rows[0]
 }
