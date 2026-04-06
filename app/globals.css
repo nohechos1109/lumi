@@ -176,6 +176,26 @@ input[type="number"] {
   box-shadow: 0 3px 10px rgba(27,52,97,0.10) !important;
 }
 
+/* ── Product cards ─────────────────────────── */
+.product-card {
+  background: var(--c-card);
+  border: 1px solid var(--c-rim);
+  box-shadow: 0 1px 3px rgba(12, 21, 36, 0.04);
+}
+.product-card:hover {
+  border-color: var(--c-sky-bd);
+  box-shadow:
+    0 8px 24px rgba(28, 90, 214, 0.10),
+    0 0 0 1px rgba(28, 90, 214, 0.08);
+  transform: translateY(-3px);
+}
+
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-in { animation: fade-in 0.3s ease-out; }
+
 /* ── Toast animation ───────────────────────── */
 @keyframes toast-in {
   from { opacity: 0; transform: translateY(6px); }

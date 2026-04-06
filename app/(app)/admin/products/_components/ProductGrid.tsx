@@ -41,89 +41,105 @@ export default function ProductGrid({ products, onEdit, onDelete }: ProductGridP
   }
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 animate-fade-in">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 animate-fade-in">
       {products.map((p) => (
         <div
           key={p.id}
           onClick={() => onEdit(p)}
-          className="group relative flex flex-col rounded-2xl transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 overflow-hidden cursor-pointer"
-          style={{
-            background: 'var(--c-card)',
-            border: '1px solid var(--c-rim)',
-          }}
+          className="product-card group relative flex flex-col rounded-xl overflow-hidden cursor-pointer transition-all duration-300"
         >
-          {/* Product image */}
-          <div className="relative w-full h-40 overflow-hidden" style={{ background: 'var(--c-panel)' }}>
+          {/* Image area with overlay gradient */}
+          <div className="relative w-full h-36 overflow-hidden bg-[var(--c-navy)]">
             {p.image_url ? (
-              <Image
-                src={p.image_url}
-                alt={p.name}
-                fill
-                className="object-cover group-hover:scale-105 transition-transform duration-300"
-                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-              />
+              <>
+                <Image
+                  src={p.image_url}
+                  alt={p.name}
+                  fill
+                  className="object-cover group-hover:scale-110 transition-transform duration-500"
+                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-[var(--c-navy)] via-transparent to-transparent opacity-60" />
+              </>
             ) : (
-              <div className="flex items-center justify-center w-full h-full" style={{ color: 'var(--c-ghost)', opacity: 0.4 }}>
-                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                  <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
-                  <circle cx="8.5" cy="8.5" r="1.5"/>
-                  <polyline points="21 15 16 10 5 21"/>
+              <div className="flex items-center justify-center w-full h-full bg-gradient-to-br from-[var(--c-navy)] to-[#0f2240]">
+                <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" className="text-white/20">
+                  <path d="m7.5 4.27 9 5.15"/>
+                  <path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/>
+                  <path d="m3.3 7 8.7 5 8.7-5"/>
+                  <path d="M12 22V12"/>
                 </svg>
               </div>
             )}
-          </div>
 
-          {/* Accent decoration */}
-          <div className="absolute top-0 right-0 w-24 h-24 -mr-8 -mt-8 rounded-full opacity-0 group-hover:opacity-10 transition-opacity" style={{ background: 'var(--c-sky)' }}></div>
-
-          <div className="relative h-full flex flex-col p-6">
-            <div className="flex items-start justify-between mb-3">
-              <span className={`badge ${p.currency === 'USD' ? 'badge-sent' : 'badge-process'} text-[10px] px-2 py-0.5`}>
+            {/* Top badges floating on image */}
+            <div className="absolute top-3 left-3 right-3 flex items-center justify-between z-10">
+              <span className={`
+                inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold tracking-wider backdrop-blur-sm
+                ${p.currency === 'USD'
+                  ? 'bg-[rgba(28,90,214,0.7)] text-white'
+                  : 'bg-[rgba(11,153,98,0.7)] text-white'}
+              `}>
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+                </svg>
                 {p.currency}
               </span>
-              <span className="font-mono text-[10px] uppercase tracking-widest" style={{ color: 'var(--c-ghost)' }}>
+              <span className="font-mono text-[9px] font-medium tracking-widest text-white/70 backdrop-blur-sm bg-black/20 px-2 py-0.5 rounded">
                 {p.sku || 'SIN SKU'}
               </span>
             </div>
+          </div>
 
-            <h3 className="font-bold text-xl leading-tight mb-2 tracking-tight group-hover:text-[var(--c-sky)] transition-colors" style={{ color: 'var(--c-ink)' }}>
+          {/* Content */}
+          <div className="relative flex flex-col flex-1 bg-[var(--c-card)] p-5">
+            {/* Name & description */}
+            <h3 className="font-heading font-bold text-base leading-snug tracking-tight mb-1 group-hover:text-[var(--c-sky)] transition-colors" style={{ color: 'var(--c-ink)' }}>
               {p.name}
             </h3>
-
             {p.description && (
-              <p className="text-sm mb-6 line-clamp-2 leading-relaxed" style={{ color: 'var(--c-dim)' }}>
+              <p className="text-xs mb-4 line-clamp-2 leading-relaxed" style={{ color: 'var(--c-ghost)' }}>
                 {p.description}
               </p>
             )}
+            {!p.description && <div className="mb-4" />}
 
-            <div className="mt-auto space-y-3 mb-8">
-              <div className="flex justify-between items-center text-sm">
-                <span className="text-xs uppercase tracking-wider" style={{ color: 'var(--c-ghost)' }}>Costo Base</span>
-                <span className="font-mono font-bold" style={{ color: 'var(--c-ink)' }}>
-                  $ {Number(p.cost_base).toLocaleString(undefined, { minimumFractionDigits: 2 })}
+            {/* Stats grid */}
+            <div className="mt-auto grid grid-cols-3 gap-px rounded-lg overflow-hidden" style={{ background: 'var(--c-rim)' }}>
+              <div className="flex flex-col items-center py-3 px-2 bg-[var(--c-base)]">
+                <span className="text-[9px] uppercase tracking-wider font-semibold mb-1" style={{ color: 'var(--c-ghost)' }}>
+                  Costo
+                </span>
+                <span className="font-mono text-sm font-bold" style={{ color: 'var(--c-ink)' }}>
+                  ${Number(p.cost_base).toLocaleString(undefined, { minimumFractionDigits: 2 })}
                 </span>
               </div>
-              <div className="flex justify-between items-center text-sm">
-                <span className="text-xs uppercase tracking-wider" style={{ color: 'var(--c-ghost)' }}>Utilidad</span>
-                <span className="font-mono font-bold" style={{ color: 'var(--c-ink)' }}>
-                  $ {Number(p.utility_fixed).toLocaleString(undefined, { minimumFractionDigits: 2 })}
+              <div className="flex flex-col items-center py-3 px-2 bg-[var(--c-base)]">
+                <span className="text-[9px] uppercase tracking-wider font-semibold mb-1" style={{ color: 'var(--c-ghost)' }}>
+                  Utilidad
+                </span>
+                <span className="font-mono text-sm font-bold" style={{ color: 'var(--c-ink)' }}>
+                  ${Number(p.utility_fixed).toLocaleString(undefined, { minimumFractionDigits: 2 })}
                 </span>
               </div>
-              <div className="flex justify-between items-center text-sm">
-                <span className="text-xs uppercase tracking-wider" style={{ color: 'var(--c-ghost)' }}>Factor</span>
-                <span className="font-mono font-bold" style={{ color: 'var(--c-sky)' }}>
-                   {Number(p.utility_factor).toFixed(2)}x
+              <div className="flex flex-col items-center py-3 px-2 bg-[var(--c-base)]">
+                <span className="text-[9px] uppercase tracking-wider font-semibold mb-1" style={{ color: 'var(--c-ghost)' }}>
+                  Factor
+                </span>
+                <span className="font-mono text-sm font-bold" style={{ color: 'var(--c-sky)' }}>
+                  {Number(p.utility_factor).toFixed(2)}x
                 </span>
               </div>
             </div>
 
-            <div className="flex items-center justify-end gap-2 pt-4 border-t border-dashed" style={{ borderColor: 'var(--c-rim)' }}>
+            {/* Delete action */}
+            <div className="flex justify-end mt-3">
               <button
                 onClick={(e) => { e.stopPropagation(); onDelete(p.id) }}
-                className="px-3 py-2.5 rounded-xl text-[var(--c-rose)] hover:bg-[rgba(209,44,60,0.08)] transition-colors active:scale-95"
+                className="p-2 rounded-lg text-[var(--c-ghost)] hover:text-[var(--c-rose)] hover:bg-[rgba(209,44,60,0.08)] transition-all active:scale-95"
                 title="Eliminar"
               >
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/>
                 </svg>
               </button>
