@@ -2,13 +2,13 @@ import { Document, Page, Text, View, StyleSheet, Image, Svg, Path, Rect, Circle 
 
 
 const styles = StyleSheet.create({
-  page: { padding: '120 40 60 40', fontFamily: 'Helvetica', fontSize: 9, color: '#262626' },
+  page: { padding: '120 40 85 40', fontFamily: 'Helvetica', fontSize: 9, color: '#262626' },
   
   // Header Branding (SVG)
   headerContainer: { position: 'absolute', top: 0, left: 0, right: 0, height: 110 },
   
   // Footer Branding (SVG)
-  footerContainer: { position: 'absolute', bottom: 0, left: 0, right: 0, height: 50 },
+  footerContainer: { position: 'absolute', bottom: 0, left: 0, right: 0, height: 75 },
 
   // Content Layout
   logo: { width: 140, marginBottom: 20 },
@@ -120,7 +120,7 @@ export default function QuotePDF({ quote, lines, images }: { quote: Quote; lines
           </View>
         )}
         
-        {/* SVG Header Background */}
+        {/* SVG Header Background + Logo */}
         <View style={styles.headerContainer} fixed>
           <Svg viewBox="0 0 595 110">
             {/* Dark Navy Swoosh */}
@@ -128,11 +128,7 @@ export default function QuotePDF({ quote, lines, images }: { quote: Quote; lines
             {/* Sky Blue Accent Line */}
             <Path d="M 0 90 C 150 40 450 100 595 60 L 595 65 C 450 105 150 45 0 95 Z" fill="#0EA5E9" />
           </Svg>
-        </View>
-
-        {/* Logo and Main Info */}
-        <View style={{ marginTop: 20 }}>
-          <Image src={images.logo} style={styles.logo} />
+          <Image src={images.logo} style={{ position: 'absolute', bottom: 8, left: 40, width: 140 }} />
         </View>
 
         <View style={styles.topInfo}>
@@ -289,11 +285,6 @@ export default function QuotePDF({ quote, lines, images }: { quote: Quote; lines
           </View>
         </View>
 
-        {/* Contact info below totals */}
-        <View style={styles.contactSection} wrap={false}>
-          <Text style={styles.website}>www.smart-systems.com.mx</Text>
-        </View>
-
         {/* Terms and Conditions */}
         {quote.terms && (
           <View style={styles.terms} wrap={false}>
@@ -304,7 +295,8 @@ export default function QuotePDF({ quote, lines, images }: { quote: Quote; lines
 
         {/* SVG Footer Background */}
         <View style={styles.footerContainer} fixed>
-          <Svg viewBox="0 0 595 50">
+          <Text style={[styles.website, { position: 'absolute', top: 0, left: 0, right: 0, textAlign: 'center' }]}>www.smart-systems.com.mx</Text>
+          <Svg viewBox="0 0 595 50" style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: 50 }}>
             <Path d="M 0 50 L 595 50 L 595 10 C 450 40 150 0 0 30 Z" fill="#1B3461" />
             <Path d="M 0 30 C 150 0 450 40 595 10 L 595 5 C 450 35 150 -5 0 25 Z" fill="#0EA5E9" />
           </Svg>
