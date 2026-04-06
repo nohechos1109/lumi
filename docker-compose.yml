@@ -14,6 +14,9 @@ services:
       - DB_PASSWORD=admin
       - SESSION_SECRET=tu_secreto_super_seguro_de_al_menos_32_caracteres_app_cotizador_2026
       - SESSION_COOKIE_NAME=cotizador_session
+      - CLOUDINARY_CLOUD_NAME=dmju3khdw
+      - CLOUDINARY_API_KEY=683764483226584
+      - CLOUDINARY_API_SECRET=ApjUYRcS-X_1ynqZaGDfiKaFsdY
     depends_on:
       db:
         condition: service_healthy
