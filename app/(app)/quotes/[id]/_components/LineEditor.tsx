@@ -14,6 +14,7 @@ interface QuoteLine {
   unit_price_mxn_suggested: string; cost_base_snapshot: string
   subtotal: string; tax_amount: string; total: string
   margin_amount: string; tax_name?: string; sequence: number
+  discount_approval_status?: string
 }
 
 interface Props {
@@ -368,11 +369,19 @@ export default function LineEditor({ quoteId, fxSnapshot, unitCount, role, isLoc
                   if (line.display_type === 'discount') {
                     return (
                       <tr key={line.id} draggable={!isLocked} onDragStart={() => handleDragStart(index)} onDragEnter={() => handleDragEnter(index)} onDragEnd={handleDragEnd} onDragOver={e => e.preventDefault()}
-                        className={isLocked ? '' : 'cursor-grab active:cursor-grabbing'} style={{ ...rowStyle, background: 'var(--c-panel)' }}>
+                        className={isLocked ? '' : 'cursor-grab active:cursor-grabbing'} style={{ ...rowStyle, background: 'var(--c-panel)', opacity: line.discount_approval_status === 'pending' ? 0.6 : 1 }}>
                         <td className="px-2 py-3.5 text-center text-xs" style={{ color: 'var(--c-ghost)' }}>
                           {isLocked ? '' : '⠿'}
                         </td>
-                        <td className="px-4 py-3.5 text-sm font-medium" style={{ color: 'var(--c-amber)' }}>{line.name}</td>
+                        <td className="px-4 py-3.5 text-sm font-medium" style={{ color: 'var(--c-amber)' }}>
+                          {line.name}
+                          {line.discount_approval_status === 'pending' && (
+                            <span className="ml-2 text-xs px-2 py-0.5 rounded-full font-semibold"
+                              style={{ background: 'var(--c-amber-bg, rgba(251,191,36,0.12))', color: 'var(--c-amber)', border: '1px solid rgba(251,191,36,0.3)' }}>
+                              Pendiente de aprobación
+                            </span>
+                          )}
+                        </td>
                         <td className="px-4 py-3.5"></td>
                         <td className="px-4 py-3.5"></td>
                         <td className="px-4 py-3.5 text-right font-mono text-xs">

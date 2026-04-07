@@ -6,14 +6,17 @@ import NavLinks from './_components/NavLinks'
 import LogoutButton from './_components/LogoutButton'
 import MobileNavbar from './_components/MobileNavbar'
 import Toaster from '@/components/ui/Toaster'
+import NotificationBell from '@/components/ui/NotificationBell'
 
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
   const session = await getIronSession<SessionData>(await cookies(), sessionOptions)
 
   const navItems = {
     sales: [
-      { href: '/projects', label: 'Proyectos' },
-      { href: '/quotes',   label: 'Mis Cotizaciones' },
+      { href: '/projects',   label: 'Proyectos' },
+      { href: '/quotes',     label: 'Mis Cotizaciones' },
+      { href: '/catalog',    label: 'Catálogo' },
+      { href: '/customers',  label: 'Clientes' },
     ],
     manager: [
       { href: '/projects', label: 'Proyectos' },
@@ -21,12 +24,13 @@ export default async function AppLayout({ children }: { children: React.ReactNod
       { href: '/manager',  label: 'Equipo' },
     ],
     admin: [
-      { href: '/admin',          label: 'Dashboard' },
-      { href: '/projects',       label: 'Proyectos' },
-      { href: '/admin/users',    label: 'Usuarios' },
-      { href: '/admin/products', label: 'Productos' },
-      { href: '/admin/customers',label: 'Clientes' },
-      { href: '/admin/settings', label: 'Configuración' },
+      { href: '/admin',            label: 'Dashboard' },
+      { href: '/projects',         label: 'Proyectos' },
+      { href: '/admin/users',      label: 'Usuarios' },
+      { href: '/admin/products',   label: 'Productos' },
+      { href: '/admin/plantillas', label: 'Plantillas' },
+      { href: '/admin/customers',  label: 'Clientes' },
+      { href: '/admin/settings',   label: 'Configuración' },
     ],
   }
 
@@ -97,6 +101,9 @@ export default async function AppLayout({ children }: { children: React.ReactNod
                 {roleLabel[session.role] ?? session.role}
               </p>
             </div>
+          </div>
+          <div className="mt-2 flex justify-end">
+            <NotificationBell />
           </div>
         </div>
 
