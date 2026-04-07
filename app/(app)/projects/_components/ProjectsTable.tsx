@@ -16,6 +16,7 @@ interface Project {
 }
 
 const PROJECT_STATUS_LABELS: Record<string, { label: string; cls: string }> = {
+  draft:     { label: 'Borrador',    cls: 'badge badge-draft' },
   follow_up: { label: 'Seguimiento', cls: 'badge badge-sent' },
   demo:      { label: 'Demo',        cls: 'badge badge-demo' },
   approved:  { label: 'Aprobado',    cls: 'badge badge-confirmed' },
