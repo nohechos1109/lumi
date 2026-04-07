@@ -39,8 +39,8 @@ export async function DELETE(_req: NextRequest, { params }: { params: Promise<{ 
   const { id: quoteId } = await params
   const quote = await getQuote(quoteId)
   if (!quote) return NextResponse.json({ error: 'No encontrado' }, { status: 404 })
-  if (quote.state !== 'draft') return NextResponse.json({ error: 'Solo se pueden limpiar cotizaciones en borrador' }, { status: 422 })
   if (session.role === 'sales' && quote.user_id !== session.userId) return forbidden()
+  if (quote.state !== 'draft') return NextResponse.json({ error: 'Solo se pueden limpiar cotizaciones en borrador' }, { status: 422 })
 
   await pool.query('DELETE FROM quote_lines WHERE quote_id = $1', [quoteId])
   await updateQuoteTotals(quoteId)

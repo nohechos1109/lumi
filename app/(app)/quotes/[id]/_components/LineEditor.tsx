@@ -190,13 +190,16 @@ export default function LineEditor({ quoteId, fxSnapshot, unitCount, role, isLoc
   }
 
   async function clearLines() {
+    setBusy(true)
     try {
       const r = await fetch(`/api/quotes/${quoteId}/lines`, { method: 'DELETE' })
       if (!r.ok) throw new Error()
       await loadLines()
-      toast('Cotización limpiada exitosamente', 'success')
+      toast('Cotización limpiada exitosamente')
     } catch {
       toast('Error al limpiar la cotización', 'error')
+    } finally {
+      setBusy(false)
     }
   }
 
