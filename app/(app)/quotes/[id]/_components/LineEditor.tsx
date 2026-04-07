@@ -404,8 +404,8 @@ export default function LineEditor({ quoteId, fxSnapshot, unitCount, role, isLoc
                         )}
                       </td>
                       <td className="px-4 py-3 text-right">
-                        {isLocked ? (
-                          <span className="font-mono text-xs" style={{ color: 'var(--c-dim)' }}>${Number(line.unit_price_mxn_effective).toLocaleString('es-MX', { minimumFractionDigits: 2 })}</span>
+                        {isLocked || role === 'sales' ? (
+                          <span className="font-mono text-xs" style={{ color: 'var(--c-dim)' }}>${Number(role === 'sales' ? line.unit_price_mxn_suggested : line.unit_price_mxn_effective).toLocaleString('es-MX', { minimumFractionDigits: 2 })}</span>
                         ) : (
                           <input type="number" min="0" step="0.01"
                             defaultValue={Number(line.unit_price_mxn_effective).toFixed(2)}
