@@ -7,8 +7,13 @@ export async function GET() {
   const session = await getSession()
   if (!session) return unauthorized()
 
-  const settings = await getSettings()
-  const fxRate = Number(settings?.fx_mxn_per_usd ?? 17)
-  const products = await listProductsCatalog(fxRate)
-  return NextResponse.json(products)
+  try {
+    const settings = await getSettings()
+    const raw = Number(settings?.fx_mxn_per_usd ?? 17)
+    const fxRate = isNaN(raw) || raw <= 0 ? 17 : raw
+    const products = await listProductsCatalog(fxRate)
+    return NextResponse.json(products)
+  } catch {
+    return NextResponse.json({ error: 'Error al cargar el catálogo' }, { status: 500 })
+  }
 }
