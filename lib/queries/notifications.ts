@@ -38,6 +38,13 @@ export async function markAllNotificationsRead(userId: string): Promise<void> {
   )
 }
 
+export async function clearAllNotifications(userId: string): Promise<void> {
+  await pool.query(
+    `DELETE FROM notifications WHERE user_id = $1`,
+    [userId]
+  )
+}
+
 export async function createNotification(data: {
   user_id: string
   type: string

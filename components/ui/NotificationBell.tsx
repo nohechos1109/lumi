@@ -67,6 +67,16 @@ export default function NotificationBell() {
     }
   }
 
+  async function clearAll() {
+    try {
+      const r = await fetch('/api/notifications', { method: 'DELETE' })
+      if (!r.ok) throw new Error()
+      setNotifications([])
+    } catch {
+      // silently fail
+    }
+  }
+
   async function handleNotificationClick(n: Notification) {
     if (!n.read) await markRead(n.id)
     setOpen(false)
@@ -195,24 +205,44 @@ export default function NotificationBell() {
             <span style={{ fontSize: '13px', fontWeight: 700, color: 'var(--c-ink)' }}>
               Notificaciones
             </span>
-            {unreadCount > 0 && (
-              <button
-                onClick={markAllRead}
-                type="button"
-                style={{
-                  background: 'none',
-                  border: 'none',
-                  cursor: 'pointer',
-                  fontSize: '11px',
-                  color: 'var(--c-navy)',
-                  padding: '2px 6px',
-                  borderRadius: '6px',
-                  fontWeight: 600,
-                }}
-              >
-                Marcar todas leídas
-              </button>
-            )}
+            <div style={{ display: 'flex', gap: '4px' }}>
+              {unreadCount > 0 && (
+                <button
+                  onClick={markAllRead}
+                  type="button"
+                  style={{
+                    background: 'none',
+                    border: 'none',
+                    cursor: 'pointer',
+                    fontSize: '11px',
+                    color: 'var(--c-navy)',
+                    padding: '2px 6px',
+                    borderRadius: '6px',
+                    fontWeight: 600,
+                  }}
+                >
+                  Marcar todas leídas
+                </button>
+              )}
+              {notifications.length > 0 && (
+                <button
+                  onClick={clearAll}
+                  type="button"
+                  style={{
+                    background: 'none',
+                    border: 'none',
+                    cursor: 'pointer',
+                    fontSize: '11px',
+                    color: 'var(--c-ghost)',
+                    padding: '2px 6px',
+                    borderRadius: '6px',
+                    fontWeight: 600,
+                  }}
+                >
+                  Limpiar
+                </button>
+              )}
+            </div>
           </div>
 
           {/* Body */}
