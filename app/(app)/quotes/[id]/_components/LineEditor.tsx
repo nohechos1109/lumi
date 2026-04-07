@@ -511,16 +511,28 @@ export default function LineEditor({ quoteId, fxSnapshot, unitCount, role, isLoc
               <div className="text-sm" style={{ color: 'var(--c-dim)' }}>
                 Vehículos: <span className="font-mono font-semibold" style={{ color: 'var(--c-ink)' }}>{unitCount} uds</span>
               </div>
-              <div className="text-right">
-                <div className="flex flex-wrap justify-end gap-4 sm:gap-8 text-sm mb-2">
-                  <span style={{ color: 'var(--c-dim)' }}>Subtotal (1 ud): <span className="font-mono font-semibold" style={{ color: 'var(--c-ink)' }}>${totals.untaxed.toLocaleString('es-MX', { minimumFractionDigits: 2 })}</span></span>
-                  <span style={{ color: 'var(--c-dim)' }}>IVA (1 ud): <span className="font-mono font-semibold" style={{ color: 'var(--c-ink)' }}>${totals.tax.toLocaleString('es-MX', { minimumFractionDigits: 2 })}</span></span>
-                  <span style={{ color: 'var(--c-dim)' }}>Total (1 ud): <span className="font-mono font-semibold" style={{ color: 'var(--c-ink)' }}>${totals.total.toLocaleString('es-MX', { minimumFractionDigits: 2 })} MXN</span></span>
-                </div>
-                <div className="flex justify-end mb-2">
-                  <span className="font-mono text-lg font-bold px-4 py-1.5 rounded-xl" style={{ background: 'var(--c-gold-bg)', color: 'var(--c-gold)', border: '1px solid var(--c-gold-bd)' }}>
-                    Total Flota ({unitCount} uds): ${(totals.total * unitCount).toLocaleString('es-MX', { minimumFractionDigits: 2 })} MXN
+              <div className="flex flex-col items-end gap-3">
+                {/* Pills de desglose por unidad */}
+                <div className="flex flex-wrap justify-end gap-2 text-xs">
+                  <span className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg" style={{ background: 'var(--c-surface)', border: '1px solid var(--c-line)' }}>
+                    <span style={{ color: 'var(--c-dim)' }}>Subtotal</span>
+                    <span className="font-mono font-semibold" style={{ color: 'var(--c-ink)' }}>${totals.untaxed.toLocaleString('es-MX', { minimumFractionDigits: 2 })}</span>
                   </span>
+                  <span className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg" style={{ background: 'var(--c-surface)', border: '1px solid var(--c-line)' }}>
+                    <span style={{ color: 'var(--c-dim)' }}>IVA</span>
+                    <span className="font-mono font-semibold" style={{ color: 'var(--c-ink)' }}>${totals.tax.toLocaleString('es-MX', { minimumFractionDigits: 2 })}</span>
+                  </span>
+                  <span className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg" style={{ background: 'var(--c-surface)', border: '1px solid var(--c-line)' }}>
+                    <span style={{ color: 'var(--c-dim)' }}>Total / ud</span>
+                    <span className="font-mono font-semibold" style={{ color: 'var(--c-ink)' }}>${totals.total.toLocaleString('es-MX', { minimumFractionDigits: 2 })} MXN</span>
+                  </span>
+                </div>
+                {/* Total Flota destacado en cyan */}
+                <div className="flex justify-end">
+                  <div className="flex items-center gap-3 px-5 py-2.5 rounded-2xl" style={{ background: 'rgba(6,182,212,0.08)', border: '1.5px solid rgba(6,182,212,0.4)' }}>
+                    <span className="text-xs font-semibold uppercase tracking-widest" style={{ color: 'rgba(6,182,212,0.7)' }}>Total Flota · {unitCount} uds</span>
+                    <span className="font-mono text-xl font-bold" style={{ color: 'rgb(6,182,212)' }}>${(totals.total * unitCount).toLocaleString('es-MX', { minimumFractionDigits: 2 })} MXN</span>
+                  </div>
                 </div>
                 {role !== 'sales' && (
                   <div className="flex justify-end">
