@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getSession, unauthorized } from '@/lib/auth-guard'
+import { getSession, unauthorized, forbidden } from '@/lib/auth-guard'
 import pool from '@/lib/db'
+import { updatePlantilla, deletePlantilla } from '@/lib/queries/plantillas'
 
 export async function GET(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const session = await getSession()
@@ -28,4 +29,24 @@ export async function GET(_req: NextRequest, { params }: { params: Promise<{ id:
   )
 
   return NextResponse.json({ ...plResult.rows[0], items: itemsResult.rows })
+}
+
+export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const session = await getSession()
+  if (!session) return unauthorized()
+  if (session.role !== 'admin') return forbidden()
+  const { id } = await params
+  const { nombre, requerimiento } = await req.json()
+  if (!nombre?.trim()) return NextResponse.json({ error: 'Nombre requerido' }, { status: 400 })
+  await updatePlantilla(id, nombre.trim(), requerimiento?.trim() || undefined)
+  return NextResponse.json({ ok: true })
+}
+
+export async function DELETE(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const session = await getSession()
+  if (!session) return unauthorized()
+  if (session.role !== 'admin') return forbidden()
+  const { id } = await params
+  await deletePlantilla(id)
+  return NextResponse.json({ ok: true })
 }
