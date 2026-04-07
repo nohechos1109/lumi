@@ -65,3 +65,39 @@ export async function listCategories(): Promise<string[]> {
 export async function deleteProduct(id: string): Promise<void> {
   await pool.query('DELETE FROM products WHERE id = $1', [id])
 }
+
+export interface CatalogProduct {
+  id: string
+  sku: string | null
+  name: string
+  description: string | null
+  category: string | null
+  currency: string
+  image_url: string | null
+  codigo_sat: string | null
+  price_without_tax: number
+  price_with_tax: number
+}
+
+export async function listProductsCatalog(fxRate: number): Promise<CatalogProduct[]> {
+  const { rows } = await pool.query(
+    `SELECT
+       id, sku, name, description, category, currency, image_url, codigo_sat,
+       CASE WHEN currency = 'USD'
+         THEN (cost_base * utility_factor + utility_fixed) * $1
+         ELSE (cost_base * utility_factor + utility_fixed)
+       END AS price_without_tax,
+       CASE WHEN currency = 'USD'
+         THEN (cost_base * utility_factor + utility_fixed) * $1 * 1.16
+         ELSE (cost_base * utility_factor + utility_fixed) * 1.16
+       END AS price_with_tax
+     FROM products
+     ORDER BY category NULLS LAST, name`,
+    [fxRate]
+  )
+  return rows.map((r: Record<string, unknown>) => ({
+    ...r,
+    price_without_tax: Number(r.price_without_tax),
+    price_with_tax: Number(r.price_with_tax),
+  })) as CatalogProduct[]
+}
