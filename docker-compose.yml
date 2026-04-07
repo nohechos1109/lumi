@@ -33,7 +33,7 @@ services:
       # Exponemos el puerto de la BD por si necesitas conectarte desde tu Windows (ej. DBeaver/PgAdmin)
       - "5432:5432"
     volumes:
-      - ./db/data:/var/lib/postgresql/data
+      - cotizador_pg_data:/var/lib/postgresql/data
       - ./db/init:/docker-entrypoint-initdb.d
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U admin -d cotizador"]
