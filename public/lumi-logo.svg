@@ -48,9 +48,6 @@
   <!-- Moon body -->
   <circle cx="26" cy="26" r="22" fill="url(#moonBase)"/>
 
-  <!-- Surface terminator shadow (right edge darker) -->
-  <path d="M26 4 Q52 14 52 26 Q52 38 26 48 Q42 38 42 26 Q42 14 26 4 Z"
-        fill="#3D2E1E" opacity="0.22"/>
 
   <!-- Large crater (top-center) -->
   <ellipse cx="22" cy="16" rx="5.5" ry="5" fill="url(#craterA)"/>
