@@ -154,7 +154,8 @@ CREATE TABLE "public"."quote_lines" (
     "discount_approval_status" text DEFAULT 'approved',
     CONSTRAINT "quote_lines_pkey" PRIMARY KEY ("id"),
     CONSTRAINT "quote_lines_display_type_check" CHECK (((display_type = ANY (ARRAY['product'::text, 'section'::text, 'note'::text, 'discount'::text])))),
-    CONSTRAINT "quote_lines_discount_percent_check" CHECK ((((discount_percent >= (0)::numeric) AND (discount_percent <= (100)::numeric))))
+    CONSTRAINT "quote_lines_discount_percent_check" CHECK ((((discount_percent >= (0)::numeric) AND (discount_percent <= (100)::numeric)))),
+    CONSTRAINT "quote_lines_discount_approval_status_check" CHECK ((discount_approval_status = ANY (ARRAY['pending'::text, 'approved'::text, 'rejected'::text])))
 )
 WITH (oids = false);
 

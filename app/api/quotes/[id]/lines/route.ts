@@ -37,9 +37,13 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
       `UPDATE quote_lines SET discount_approval_status = 'pending' WHERE id = $1`,
       [line.id]
     )
+    const { rows: [updatedLine] } = await pool.query(
+      `SELECT * FROM quote_lines WHERE id = $1`,
+      [line.id]
+    )
 
     // Create approval request
-    await createDiscountApproval({
+    const discountApproval = await createDiscountApproval({
       quote_id: id,
       quote_line_id: line.id,
       requested_by: session.userId,
@@ -50,19 +54,19 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     const { rows: admins } = await pool.query(
       `SELECT id FROM users WHERE role = 'admin'`
     )
-    for (const admin of admins) {
-      await createNotification({
+    await Promise.all(admins.map((admin: { id: string }) =>
+      createNotification({
         user_id: admin.id,
         type: 'discount_request',
         title: 'Nueva solicitud de descuento',
         message: `Vendedor solicitó un descuento del ${body.discount_percent}% para la cotización.`,
         entity: 'discount_approval',
-        entity_id: line.id,
+        entity_id: discountApproval.id,
       })
-    }
+    ))
 
     // Don't recalculate totals for pending discounts
-    return NextResponse.json(line, { status: 201 })
+    return NextResponse.json(updatedLine, { status: 201 })
   }
 
   // Original flow: recalculate totals
