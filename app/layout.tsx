@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Montserrat, Fira_Code } from "next/font/google";
 import "./globals.css";
+import { ConsoleBranding } from "@/components/ui/ConsoleBranding";
 
 const montserrat = Montserrat({
   variable: "--font-montserrat",
@@ -30,7 +31,10 @@ export default function RootLayout({
       lang="es"
       className={`${montserrat.variable} ${firaCode.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col">
+        <ConsoleBranding />
+        {children}
+      </body>
     </html>
   );
 }
