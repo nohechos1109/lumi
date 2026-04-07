@@ -69,6 +69,16 @@ export default function LineEditor({ quoteId, fxSnapshot, unitCount, role, isLoc
 
   useEffect(() => { loadLines() }, [loadLines])
 
+  // Poll every 10s while there are pending discount lines
+  useEffect(() => {
+    const hasPending = lines.some(l => l.discount_approval_status === 'pending')
+    if (!hasPending) return
+    const interval = setInterval(() => {
+      if (document.visibilityState === 'visible') loadLines()
+    }, 10000)
+    return () => clearInterval(interval)
+  }, [lines, loadLines])
+
   // Block A: busy state + error handling on add operations
   async function addProductLine(product: { id: string; name: string; description?: string | null; currency: string; cost_base: string; utility_fixed: string; utility_factor: string }) {
     setBusy(true)
