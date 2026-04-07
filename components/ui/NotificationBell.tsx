@@ -27,7 +27,9 @@ export default function NotificationBell() {
   const [open, setOpen] = useState(false)
   const [notifications, setNotifications] = useState<Notification[]>([])
   const [loading, setLoading] = useState(false)
+  const [dropdownPos, setDropdownPos] = useState({ top: 0, left: 0 })
   const dropdownRef = useRef<HTMLDivElement>(null)
+  const buttonRef = useRef<HTMLButtonElement>(null)
   const fetchingRef = useRef(false)
   const router = useRouter()
 
@@ -100,7 +102,9 @@ export default function NotificationBell() {
   }, [open])
 
   function handleToggle() {
-    if (!open) {
+    if (!open && buttonRef.current) {
+      const rect = buttonRef.current.getBoundingClientRect()
+      setDropdownPos({ top: rect.bottom + 8, left: rect.right + 8 })
       loadNotifications()
     }
     setOpen(prev => !prev)
@@ -112,6 +116,7 @@ export default function NotificationBell() {
     <div ref={dropdownRef} style={{ position: 'relative', display: 'inline-block' }}>
       {/* Bell button */}
       <button
+        ref={buttonRef}
         onClick={handleToggle}
         type="button"
         aria-label={unreadCount > 0 ? `Notificaciones, ${unreadCount} sin leer` : 'Notificaciones'}
@@ -163,10 +168,10 @@ export default function NotificationBell() {
       {open && (
         <div
           style={{
-            position: 'absolute',
-            right: 0,
-            top: 'calc(100% + 8px)',
-            width: '280px',
+            position: 'fixed',
+            top: dropdownPos.top,
+            left: dropdownPos.left,
+            width: '300px',
             background: 'var(--c-card)',
             border: '1px solid var(--c-rim)',
             borderRadius: '16px',
