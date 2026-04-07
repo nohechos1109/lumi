@@ -34,8 +34,8 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
       type: 'delete_request',
       title: 'Solicitud de eliminación de cliente',
       message: `${session.username} solicitó eliminar a "${customerName}".`,
-      entity: 'delete_request',
-      entity_id: deleteReq.id,
+      entity: 'customer',
+      entity_id: id,
     })
   ))
 

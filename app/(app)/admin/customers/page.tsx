@@ -1,6 +1,7 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
+import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import ConfirmModal from '@/components/ui/ConfirmModal'
 
@@ -17,6 +18,15 @@ export default function AdminCustomersPage() {
   const [editSaving, setEditSaving] = useState(false)
   const [deleteId, setDeleteId] = useState<string | null>(null)
   const [searchQuery, setSearchQuery] = useState('')
+  const searchParams = useSearchParams()
+  const highlightId = searchParams.get('highlight')
+  const highlightRef = useRef<HTMLTableRowElement>(null)
+
+  useEffect(() => {
+    if (highlightRef.current) {
+      highlightRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' })
+    }
+  }, [highlightId, customers])
 
   async function load() {
     const r = await fetch('/api/admin/customers')
@@ -358,8 +368,13 @@ export default function AdminCustomersPage() {
             {filteredCustomers.map(c => (
               <tr
                 key={c.id}
+                ref={c.id === highlightId ? highlightRef : undefined}
                 className="tr-hover transition-colors"
-                style={{ borderTop: '1px solid var(--c-rim)' }}
+                style={{
+                  borderTop: '1px solid var(--c-rim)',
+                  background: c.id === highlightId ? 'var(--c-navy-bg)' : undefined,
+                  outline: c.id === highlightId ? '2px solid var(--c-navy-bd)' : undefined,
+                }}
               >
                 <td className="px-5 py-4" style={{ color: 'var(--c-ink)' }}>{c.name}</td>
                 <td className="px-5 py-4">
