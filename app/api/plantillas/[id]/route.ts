@@ -19,10 +19,11 @@ export async function GET(_req: NextRequest, { params }: { params: Promise<{ id:
 
   const itemsResult = await pool.query(
     `SELECT pi.qty, 0 AS discount_percent, pi.sequence,
-            p.id AS product_id, p.name, p.description,
+            p.id AS product_id, p.name, p.name AS product_name,
+            p.sku AS product_sku, p.description,
             p.currency, p.cost_base, p.utility_fixed, p.utility_factor
      FROM plantilla_items pi
-     JOIN products p ON p.id = pi.product_id
+     LEFT JOIN products p ON p.id = pi.product_id
      WHERE pi.plantilla_id = $1
      ORDER BY pi.sequence`,
     [id]

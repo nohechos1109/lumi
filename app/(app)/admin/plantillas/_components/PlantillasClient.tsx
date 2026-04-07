@@ -343,7 +343,6 @@ function PlantillaEditorModal({ plantilla, onClose, onSaved }: EditorModalProps)
                   <table className="w-full text-sm">
                     <thead>
                       <tr style={{ background: 'var(--c-panel)', borderBottom: '1px solid var(--c-rim)' }}>
-                        <th className="text-left px-4 py-3 text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--c-ghost)' }}>#</th>
                         <th className="text-left px-4 py-3 text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--c-ghost)' }}>Producto</th>
                         <th className="text-center px-4 py-3 text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--c-ghost)' }}>Cantidad</th>
                         <th className="px-4 py-3 w-12" />
@@ -352,9 +351,6 @@ function PlantillaEditorModal({ plantilla, onClose, onSaved }: EditorModalProps)
                     <tbody className="divide-y divide-[var(--c-rim)]">
                       {items.map(item => (
                         <tr key={item.sequence} className="tr-hover">
-                          <td className="px-4 py-3 font-mono text-xs" style={{ color: 'var(--c-ghost)' }}>
-                            {item.sequence}
-                          </td>
                           <td className="px-4 py-3">
                             <div className="font-medium" style={{ color: 'var(--c-ink)' }}>
                               {item.product_name ?? <span style={{ color: 'var(--c-ghost)' }}>Producto eliminado</span>}
