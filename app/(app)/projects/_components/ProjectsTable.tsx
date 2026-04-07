@@ -24,6 +24,19 @@ const PROJECT_STATUS_LABELS: Record<string, { label: string; cls: string }> = {
   finished:  { label: 'Terminado',   cls: 'badge badge-hold' },
 }
 
+// Format a YYYY-MM-DD date string without creating Date objects (avoids SSR/client hydration mismatch)
+function formatDateStr(dateStr: string): string {
+  const [y, m, d] = dateStr.split('T')[0].split('-')
+  return `${d}/${m}/${y}`
+}
+
+// Consistent month names to avoid locale-dependent toLocaleString mismatch
+const MONTH_NAMES_ES: Record<string, string> = {
+  '01': 'enero', '02': 'febrero', '03': 'marzo', '04': 'abril',
+  '05': 'mayo', '06': 'junio', '07': 'julio', '08': 'agosto',
+  '09': 'septiembre', '10': 'octubre', '11': 'noviembre', '12': 'diciembre',
+}
+
 export default function ProjectsTable({ projects, role }: { projects: Project[], role: string }) {
   const router = useRouter()
   const [deleteId, setDeleteId] = useState<string | null>(null)
@@ -49,8 +62,8 @@ export default function ProjectsTable({ projects, role }: { projects: Project[],
   const customers = useMemo(() => Array.from(new Set(projects.map(p => p.customer_name).filter(Boolean))).sort(), [projects])
   const executives = useMemo(() => Array.from(new Set(projects.map(p => p.executive_name).filter(Boolean))).sort(), [projects])
   const dates = useMemo(() => Array.from(new Set(projects.map(p => {
-    const d = new Date(p.date)
-    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`
+    const [y, m] = p.date.split('T')[0].split('-')
+    return `${y}-${m}`
   }))).sort().reverse(), [projects])
 
   const filteredProjects = projects.filter(p => {
@@ -64,9 +77,8 @@ export default function ProjectsTable({ projects, role }: { projects: Project[],
     
     let matchesDate = true
     if (dateFilter) {
-      const pDate = new Date(p.date)
-      const filterDate = `${pDate.getFullYear()}-${String(pDate.getMonth() + 1).padStart(2, '0')}`
-      matchesDate = filterDate === dateFilter
+      const [y, m] = p.date.split('T')[0].split('-')
+      matchesDate = `${y}-${m}` === dateFilter
     }
 
     return matchesSearch && matchesStatus && matchesCustomer && matchesExecutive && matchesDate
@@ -207,7 +219,7 @@ export default function ProjectsTable({ projects, role }: { projects: Project[],
               <option value="">Fecha</option>
               {dates.map(d => {
                 const [y, m] = d.split('-')
-                const dateLabel = new Date(parseInt(y), parseInt(m) - 1).toLocaleString('es-MX', { month: 'long', year: 'numeric' })
+                const dateLabel = `${MONTH_NAMES_ES[m] ?? m} ${y}`
                 return <option key={d} value={d}>{dateLabel}</option>
               })}
             </select>
@@ -260,7 +272,7 @@ export default function ProjectsTable({ projects, role }: { projects: Project[],
                       </td>
                     )}
                     <td className="px-5 py-4 font-mono text-xs" style={{ color: 'var(--c-dim)' }}>
-                      {new Date(p.date).toLocaleDateString('es-MX')}
+                      {formatDateStr(p.date)}
                     </td>
                     <td className="px-5 py-4">
                       <span className={s.cls}>{s.label}</span>

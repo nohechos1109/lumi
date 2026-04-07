@@ -45,7 +45,7 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
           <p className="text-sm flex items-center gap-2" style={{ color: 'var(--c-dim)' }}>
             <span className="font-semibold" style={{ color: 'var(--c-navy)' }}>{project.customer_name}</span>
             <span style={{ color: 'var(--c-rim-hi)' }}>•</span>
-            <span>Creado el {new Date(project.created_at).toLocaleDateString('es-MX')}</span>
+            <span suppressHydrationWarning>Creado el {new Date(project.created_at).toLocaleDateString('es-MX')}</span>
           </p>
           {project.description && (
             <p className="mt-3 text-sm italic" style={{ color: 'var(--c-ghost)' }}>

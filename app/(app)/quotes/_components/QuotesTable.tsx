@@ -25,7 +25,20 @@ const STATE_LABELS: Record<string, { label: string; cls: string }> = {
   expired:   { label: 'Expirada',   cls: 'badge badge-expired' },
 }
 
-export default function QuotesTable({ 
+// Format a YYYY-MM-DD date string without creating Date objects (avoids SSR/client hydration mismatch)
+function formatDateStr(dateStr: string): string {
+  const [y, m, d] = dateStr.split('T')[0].split('-')
+  return `${d}/${m}/${y}`
+}
+
+// Consistent month names to avoid locale-dependent toLocaleString mismatch
+const MONTH_NAMES_ES: Record<string, string> = {
+  '01': 'enero', '02': 'febrero', '03': 'marzo', '04': 'abril',
+  '05': 'mayo', '06': 'junio', '07': 'julio', '08': 'agosto',
+  '09': 'septiembre', '10': 'octubre', '11': 'noviembre', '12': 'diciembre',
+}
+
+export default function QuotesTable({
   quotes, 
   role, 
   hideCustomer = false, 
@@ -60,8 +73,8 @@ export default function QuotesTable({
   const customers = useMemo(() => Array.from(new Set(quotes.map(q => q.customer_name).filter(Boolean))).sort(), [quotes])
   const executives = useMemo(() => Array.from(new Set(quotes.map(q => q.executive_name).filter(Boolean))).sort(), [quotes])
   const dates = useMemo(() => Array.from(new Set(quotes.map(q => {
-    const d = new Date(q.quotation_date)
-    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`
+    const [y, m] = q.quotation_date.split('T')[0].split('-')
+    return `${y}-${m}`
   }))).sort().reverse(), [quotes])
 
   const filteredQuotes = quotes.filter(q => {
@@ -76,9 +89,8 @@ export default function QuotesTable({
     
     let matchesDate = true
     if (dateFilter) {
-      const qDate = new Date(q.quotation_date)
-      const filterDate = `${qDate.getFullYear()}-${String(qDate.getMonth() + 1).padStart(2, '0')}`
-      matchesDate = filterDate === dateFilter
+      const [y, m] = q.quotation_date.split('T')[0].split('-')
+      matchesDate = `${y}-${m}` === dateFilter
     }
 
     return matchesSearch && matchesStatus && matchesCustomer && matchesExecutive && matchesDate
@@ -263,7 +275,7 @@ export default function QuotesTable({
               <option value="">Fecha</option>
               {dates.map(d => {
                 const [y, m] = d.split('-')
-                const dateLabel = new Date(parseInt(y), parseInt(m) - 1).toLocaleString('es-MX', { month: 'long', year: 'numeric' })
+                const dateLabel = `${MONTH_NAMES_ES[m] ?? m} ${y}`
                 return <option key={d} value={d}>{dateLabel}</option>
               })}
             </select>
@@ -355,14 +367,14 @@ export default function QuotesTable({
                     )}
                     {!hideDate && (
                       <td className="px-5 py-4 font-mono text-xs" style={{ color: 'var(--c-dim)' }}>
-                        {new Date(q.quotation_date).toLocaleDateString('es-MX')}
+                        {formatDateStr(q.quotation_date)}
                       </td>
                     )}
                     <td className="px-5 py-4">
                       <span className={s.cls}>{s.label}</span>
                     </td>
                     <td className="px-5 py-4 text-right font-mono font-bold" style={{ color: 'var(--c-navy)' }}>
-                      ${Number(q.amount_total).toLocaleString('es-MX', { minimumFractionDigits: 2 })}
+                      ${Number(q.amount_total).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
                     </td>
                     <td className="px-5 py-4 text-right">
                       <div className="flex items-center justify-end gap-2">
