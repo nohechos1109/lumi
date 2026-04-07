@@ -56,14 +56,14 @@ export default function LoginPage() {
   return (
     <>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800;900&family=DM+Sans:wght@400;500;600&display=swap');
 
         .login-root {
           min-height: 100vh;
           display: flex;
           align-items: center;
           justify-content: center;
-          background: #060C1A;
+          background: #F0F4FA;
           font-family: 'DM Sans', sans-serif;
           position: relative;
           overflow: hidden;
@@ -74,7 +74,7 @@ export default function LoginPage() {
         .orb {
           position: absolute;
           border-radius: 50%;
-          filter: blur(80px);
+          filter: blur(90px);
           animation: drift 12s ease-in-out infinite alternate;
           pointer-events: none;
         }
@@ -86,14 +86,14 @@ export default function LoginPage() {
         }
         .orb-2 {
           width: 460px; height: 460px;
-          background: radial-gradient(circle, rgba(16,185,129,0.14) 0%, transparent 70%);
+          background: radial-gradient(circle, rgba(16,185,129,0.15) 0%, transparent 70%);
           bottom: -140px; right: -100px;
           animation-duration: 10s;
           animation-delay: -5s;
         }
         .orb-3 {
           width: 300px; height: 300px;
-          background: radial-gradient(circle, rgba(56,189,248,0.1) 0%, transparent 70%);
+          background: radial-gradient(circle, rgba(56,189,248,0.12) 0%, transparent 70%);
           top: 50%; right: 15%;
           animation-duration: 16s;
           animation-delay: -8s;
@@ -107,7 +107,7 @@ export default function LoginPage() {
         .grid-overlay {
           position: absolute;
           inset: 0;
-          background-image: radial-gradient(circle, rgba(255,255,255,0.04) 1px, transparent 1px);
+          background-image: radial-gradient(circle, rgba(14,165,233,0.12) 1px, transparent 1px);
           background-size: 32px 32px;
           pointer-events: none;
         }
@@ -117,16 +117,16 @@ export default function LoginPage() {
           position: relative;
           width: 100%;
           max-width: 420px;
-          background: rgba(255,255,255,0.035);
-          border: 1px solid rgba(255,255,255,0.08);
+          background: rgba(255,255,255,0.85);
+          border: 1px solid rgba(14,165,233,0.12);
           border-radius: 24px;
           padding: 40px 36px 32px;
-          backdrop-filter: blur(24px);
-          -webkit-backdrop-filter: blur(24px);
+          backdrop-filter: blur(20px);
+          -webkit-backdrop-filter: blur(20px);
           box-shadow:
-            0 0 0 1px rgba(14,165,233,0.08),
-            0 32px 64px rgba(0,0,0,0.5),
-            inset 0 1px 0 rgba(255,255,255,0.06);
+            0 0 0 1px rgba(14,165,233,0.06),
+            0 24px 64px rgba(14,165,233,0.1),
+            0 4px 16px rgba(0,0,0,0.06);
           opacity: ${mounted ? 1 : 0};
           transform: ${mounted ? 'translateY(0)' : 'translateY(16px)'};
           transition: opacity 0.5s ease, transform 0.5s ease;
@@ -143,10 +143,10 @@ export default function LoginPage() {
 
         /* Headline */
         .login-headline {
-          font-family: 'Syne', sans-serif;
+          font-family: 'Montserrat', sans-serif;
           font-size: 26px;
           font-weight: 800;
-          color: #F0F6FF;
+          color: #0F172A;
           text-align: center;
           margin: 0 0 4px;
           letter-spacing: -0.02em;
@@ -154,7 +154,7 @@ export default function LoginPage() {
         }
         .login-sub {
           font-size: 13px;
-          color: rgba(255,255,255,0.38);
+          color: #94A3B8;
           text-align: center;
           margin: 0 0 28px;
         }
@@ -170,31 +170,31 @@ export default function LoginPage() {
           font-weight: 600;
           letter-spacing: 0.08em;
           text-transform: uppercase;
-          color: rgba(255,255,255,0.35);
+          color: #64748B;
           margin-bottom: 8px;
           transition: color 0.2s;
         }
         .field-label.active {
-          color: rgba(14,165,233,0.9);
+          color: #0EA5E9;
         }
         .field-input {
           width: 100%;
-          background: rgba(255,255,255,0.05);
-          border: 1px solid rgba(255,255,255,0.09);
+          background: #F8FAFC;
+          border: 1px solid #E2E8F0;
           border-radius: 12px;
           padding: 13px 16px;
           font-size: 14px;
           font-family: 'DM Sans', sans-serif;
-          color: #F0F6FF;
+          color: #0F172A;
           outline: none;
           transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
           box-sizing: border-box;
         }
-        .field-input::placeholder { color: rgba(255,255,255,0.2); }
+        .field-input::placeholder { color: #CBD5E1; }
         .field-input:focus {
-          background: rgba(14,165,233,0.06);
-          border-color: rgba(14,165,233,0.5);
-          box-shadow: 0 0 0 3px rgba(14,165,233,0.12), 0 0 20px rgba(14,165,233,0.08);
+          background: #fff;
+          border-color: #0EA5E9;
+          box-shadow: 0 0 0 3px rgba(14,165,233,0.12);
         }
 
         /* Error */
@@ -275,9 +275,10 @@ export default function LoginPage() {
           height: 1px;
           background: rgba(255,255,255,0.07);
         }
+        .divider-line { background: #E2E8F0; }
         .divider-text {
           font-size: 11px;
-          color: rgba(255,255,255,0.2);
+          color: #CBD5E1;
           white-space: nowrap;
         }
 
@@ -293,7 +294,7 @@ export default function LoginPage() {
           font-weight: 600;
           letter-spacing: 0.1em;
           text-transform: uppercase;
-          color: rgba(255,255,255,0.2);
+          color: #CBD5E1;
         }
 
         /* Footer */
@@ -303,7 +304,7 @@ export default function LoginPage() {
           left: 0; right: 0;
           text-align: center;
           font-size: 11px;
-          color: rgba(255,255,255,0.12);
+          color: #94A3B8;
         }
       `}</style>
 
@@ -407,7 +408,7 @@ export default function LoginPage() {
               width={64}
               height={20}
               className="object-contain"
-              style={{ filter: 'brightness(0) invert(1)', opacity: 0.3 }}
+              style={{ opacity: 0.45 }}
             />
           </div>
         </div>
