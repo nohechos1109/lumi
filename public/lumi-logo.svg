@@ -1,46 +1,53 @@
-<svg width="200" height="52" viewBox="0 0 200 52" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <!-- Crescent moon -->
-  <circle cx="22" cy="26" r="18" fill="url(#moonGold)"/>
-  <circle cx="30" cy="20" r="14" fill="url(#moonShadow)"/>
-  
-  <!-- Small stars -->
-  <circle cx="14" cy="10" r="1.2" fill="#EAB308" opacity="0.9"/>
-  <circle cx="8" cy="22" r="0.8" fill="#FDE047" opacity="0.7"/>
-  <circle cx="38" cy="8" r="1" fill="#FDE047" opacity="0.6"/>
-  
-  <!-- LUMI text -->
-  <text x="48" y="34" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif" font-weight="900" font-size="28" letter-spacing="0.08em">
-    <tspan fill="url(#textPurple)">LUMI</tspan>
-  </text>
-  
-  <!-- QUOTES text -->
-  <text x="136" y="34" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif" font-weight="500" font-size="14" fill="url(#textGold)" letter-spacing="0.12em">QUOTES</text>
-  
-  <!-- Decorative line -->
-  <line x1="48" y1="40" x2="196" y2="40" stroke="url(#lineGrad)" stroke-width="0.5" opacity="0.4"/>
-  
+<svg width="168" height="46" viewBox="0 0 168 46" fill="none" xmlns="http://www.w3.org/2000/svg">
   <defs>
-    <linearGradient id="moonGold" x1="4" y1="8" x2="40" y2="44" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#FDE047"/>
-      <stop offset="0.5" stop-color="#EAB308"/>
-      <stop offset="1" stop-color="#CA8A04"/>
-    </linearGradient>
-    <linearGradient id="moonShadow" x1="16" y1="6" x2="44" y2="34" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#F5F0E8"/>
-      <stop offset="1" stop-color="#E8E0D0"/>
-    </linearGradient>
-    <linearGradient id="textPurple" x1="48" y1="10" x2="130" y2="38" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#7E22CE"/>
-      <stop offset="1" stop-color="#581C87"/>
-    </linearGradient>
-    <linearGradient id="textGold" x1="136" y1="20" x2="200" y2="38" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#D4AF37"/>
-      <stop offset="1" stop-color="#B8860B"/>
-    </linearGradient>
-    <linearGradient id="lineGrad" x1="48" y1="40" x2="196" y2="40" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#7E22CE" stop-opacity="0.6"/>
-      <stop offset="0.5" stop-color="#D4AF37" stop-opacity="0.8"/>
-      <stop offset="1" stop-color="#D4AF37" stop-opacity="0"/>
+    <radialGradient id="moonFace" cx="38%" cy="32%" r="62%">
+      <stop offset="0%" stop-color="#FEF9C3"/>
+      <stop offset="40%" stop-color="#EAB308"/>
+      <stop offset="100%" stop-color="#B45309"/>
+    </radialGradient>
+    <radialGradient id="moonGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="60%" stop-color="#EAB308" stop-opacity="0.3"/>
+      <stop offset="100%" stop-color="#EAB308" stop-opacity="0"/>
+    </radialGradient>
+    <mask id="crescent">
+      <rect width="46" height="46" fill="white"/>
+      <circle cx="27" cy="17" r="14.5" fill="black"/>
+    </mask>
+    <linearGradient id="quotesGold" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#FDE68A"/>
+      <stop offset="100%" stop-color="#D97706"/>
     </linearGradient>
   </defs>
+
+  <!-- Halo glow behind moon -->
+  <circle cx="21" cy="23" r="22" fill="url(#moonGlow)"/>
+
+  <!-- Moon crescent (mask-based, background-agnostic) -->
+  <circle cx="21" cy="23" r="17" fill="url(#moonFace)" mask="url(#crescent)"/>
+
+  <!-- Stars -->
+  <circle cx="10"  cy="7"  r="1.5" fill="#FDE047" opacity="0.9"/>
+  <circle cx="4"   cy="20" r="0.9" fill="#FDE047" opacity="0.55"/>
+  <circle cx="38"  cy="6"  r="1.1" fill="#FDE047" opacity="0.7"/>
+  <circle cx="36"  cy="32" r="0.7" fill="#FDE047" opacity="0.45"/>
+
+  <!-- LUMI wordmark -->
+  <text
+    x="48" y="30"
+    font-family="system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif"
+    font-weight="900"
+    font-size="24"
+    letter-spacing="3"
+    fill="#FFFFFF"
+  >LUMI</text>
+
+  <!-- QUOTES label -->
+  <text
+    x="50" y="42"
+    font-family="system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif"
+    font-weight="600"
+    font-size="9"
+    letter-spacing="4.5"
+    fill="url(#quotesGold)"
+  >QUOTES</text>
 </svg>

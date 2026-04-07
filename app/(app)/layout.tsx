@@ -74,7 +74,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
             />
             <div className="flex items-center gap-2 opacity-50">
               <span className="text-[10px] uppercase tracking-wider font-semibold" style={{ color: 'var(--c-dim)' }}>Partner</span>
-              <Image unoptimized src="/logosmart.png" alt="Smart Systems" width={60} height={18} className="object-contain grayscale opacity-80" />
+              <Image unoptimized src="/logosmart.png" alt="Smart Systems" width={60} height={18} className="object-contain opacity-90" />
             </div>
           </div>
 
