@@ -1,36 +1,91 @@
 <svg width="200" height="52" viewBox="0 0 200 52" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <!-- Crescent moon -->
-  <circle cx="22" cy="26" r="18" fill="url(#moonGoldW)"/>
-  <circle cx="30" cy="20" r="14" fill="#1B3461"/>
-  
-  <!-- Small stars -->
-  <circle cx="14" cy="10" r="1.2" fill="#EAB308" opacity="0.9"/>
-  <circle cx="8" cy="22" r="0.8" fill="#FDE047" opacity="0.7"/>
-  <circle cx="38" cy="8" r="1" fill="#FDE047" opacity="0.6"/>
-  
-  <!-- LUMI text -->
-  <text x="48" y="34" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif" font-weight="900" font-size="28" fill="#FFFFFF" letter-spacing="0.08em">LUMI</text>
-  
-  <!-- QUOTES text -->
-  <text x="136" y="34" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif" font-weight="500" font-size="14" fill="url(#textGoldW)" letter-spacing="0.12em">QUOTES</text>
-  
-  <!-- Decorative line -->
-  <line x1="48" y1="40" x2="196" y2="40" stroke="url(#lineGradW)" stroke-width="0.5" opacity="0.4"/>
-  
   <defs>
-    <linearGradient id="moonGoldW" x1="4" y1="8" x2="40" y2="44" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#FDE047"/>
-      <stop offset="0.5" stop-color="#EAB308"/>
-      <stop offset="1" stop-color="#CA8A04"/>
+    <linearGradient id="domeGradW" x1="10" y1="10" x2="38" y2="28" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#93C5FD"/>
+      <stop offset="100%" stop-color="#1D4ED8"/>
     </linearGradient>
-    <linearGradient id="textGoldW" x1="136" y1="20" x2="200" y2="38" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#FDE047"/>
-      <stop offset="1" stop-color="#D4AF37"/>
+    <linearGradient id="saucerGradW" x1="2" y1="24" x2="48" y2="32" gradientUnits="userSpaceOnUse">
+      <stop offset="0%"   stop-color="#10B981"/>
+      <stop offset="45%"  stop-color="#0EA5E9"/>
+      <stop offset="100%" stop-color="#059669"/>
     </linearGradient>
-    <linearGradient id="lineGradW" x1="48" y1="40" x2="196" y2="40" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#FFFFFF" stop-opacity="0.3"/>
-      <stop offset="0.5" stop-color="#D4AF37" stop-opacity="0.6"/>
-      <stop offset="1" stop-color="#D4AF37" stop-opacity="0"/>
+    <linearGradient id="rimGradW" x1="2" y1="30" x2="48" y2="34" gradientUnits="userSpaceOnUse">
+      <stop offset="0%"   stop-color="#34D399"/>
+      <stop offset="100%" stop-color="#38BDF8"/>
+    </linearGradient>
+    <linearGradient id="beamGradW" x1="25" y1="34" x2="25" y2="52" gradientUnits="userSpaceOnUse">
+      <stop offset="0%"   stop-color="#34D399" stop-opacity="0.55"/>
+      <stop offset="100%" stop-color="#34D399" stop-opacity="0"/>
+    </linearGradient>
+    <radialGradient id="glowUFOW" cx="50%" cy="50%" r="50%">
+      <stop offset="40%" stop-color="#0EA5E9" stop-opacity="0.15"/>
+      <stop offset="100%" stop-color="#0EA5E9" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="lumiGradW" x1="56" y1="20" x2="160" y2="40" gradientUnits="userSpaceOnUse">
+      <stop offset="0%"   stop-color="#7DD3FC"/>
+      <stop offset="100%" stop-color="#6EE7B7"/>
+    </linearGradient>
+    <linearGradient id="quotesGradW" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%"   stop-color="#34D399"/>
+      <stop offset="100%" stop-color="#38BDF8"/>
     </linearGradient>
   </defs>
+
+  <!-- Ambient glow -->
+  <ellipse cx="25" cy="28" rx="28" ry="20" fill="url(#glowUFOW)"/>
+
+  <!-- Light beam -->
+  <path d="M19 33 L7 52 L43 52 Z" fill="url(#beamGradW)"/>
+
+  <!-- Saucer body -->
+  <ellipse cx="25" cy="29" rx="23" ry="7.5" fill="url(#saucerGradW)"/>
+
+  <!-- Saucer rim highlight -->
+  <ellipse cx="25" cy="30.5" rx="23" ry="3" fill="url(#rimGradW)" opacity="0.45"/>
+
+  <!-- Dome -->
+  <path d="M14 27 Q13 13 25 13 Q37 13 36 27 Z" fill="url(#domeGradW)"/>
+
+  <!-- Dome inner highlight -->
+  <path d="M17 25 Q17 18 22 16 Q18 17 18 23 Z" fill="white" opacity="0.25"/>
+
+  <!-- Porthole windows -->
+  <circle cx="13" cy="29" r="2.8" fill="#A7F3D0" opacity="0.85"/>
+  <circle cx="25" cy="30" r="2.8" fill="#BAE6FD" opacity="0.85"/>
+  <circle cx="37" cy="29" r="2.8" fill="#A7F3D0" opacity="0.85"/>
+
+  <!-- Window glow dots -->
+  <circle cx="13" cy="29" r="1.2" fill="white" opacity="0.7"/>
+  <circle cx="25" cy="30" r="1.2" fill="white" opacity="0.7"/>
+  <circle cx="37" cy="29" r="1.2" fill="white" opacity="0.7"/>
+
+  <!-- Stars -->
+  <circle cx="5"  cy="9"  r="1.4" fill="#34D399" opacity="0.85"/>
+  <circle cx="46" cy="8"  r="1.0" fill="#38BDF8" opacity="0.75"/>
+  <circle cx="49" cy="22" r="1.2" fill="#34D399" opacity="0.6"/>
+  <circle cx="3"  cy="24" r="0.9" fill="#38BDF8" opacity="0.55"/>
+
+  <!-- Star sparkle -->
+  <path d="M43 16 L44 13 L45 16 L48 17 L45 18 L44 21 L43 18 L40 17 Z"
+        fill="#7DD3FC" opacity="0.75"/>
+
+  <!-- LUMI wordmark (lighter tones for dark backgrounds) -->
+  <text
+    x="57" y="35"
+    font-family="system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif"
+    font-weight="900"
+    font-size="26"
+    letter-spacing="2"
+    fill="url(#lumiGradW)"
+  >LUMI</text>
+
+  <!-- QUOTES label -->
+  <text
+    x="59" y="47"
+    font-family="system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif"
+    font-weight="600"
+    font-size="10"
+    letter-spacing="4.5"
+    fill="url(#quotesGradW)"
+  >QUOTES</text>
 </svg>
