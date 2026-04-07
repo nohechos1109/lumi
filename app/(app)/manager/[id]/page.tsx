@@ -35,7 +35,7 @@ export default async function ManagerQuotePage({ params }: { params: Promise<{ i
             {new Date(quote.quotation_date).toLocaleDateString('es-MX')}
           </p>
         </div>
-        <QuoteActions quoteId={id} currentState={quote.state} role="manager" />
+        <QuoteActions quoteId={id} currentState={quote.state} role="manager" projectId={quote.project_id} projectName={quote.project_name ?? null} />
       </div>
 
       <div
