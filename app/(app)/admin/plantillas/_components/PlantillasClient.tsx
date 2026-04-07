@@ -365,8 +365,9 @@ function PlantillaEditorModal({ plantilla, onClose, onSaved }: EditorModalProps)
                             <input
                               type="number"
                               min={1}
-                              value={item.qty}
-                              onChange={e => handleUpdateQty(item.sequence, Number(e.target.value))}
+                              step={1}
+                              value={Math.round(Number(item.qty))}
+                              onChange={e => handleUpdateQty(item.sequence, Math.round(Number(e.target.value)))}
                               className="w-16 text-center px-2 py-1 rounded-lg text-sm outline-none"
                               style={{
                                 background: 'var(--c-panel)',
