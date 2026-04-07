@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, FormEvent } from 'react'
+import { useState, useEffect, FormEvent } from 'react'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 
@@ -8,6 +8,11 @@ export default function LoginPage() {
   const router = useRouter()
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
+  const [year, setYear] = useState<number | null>(null)
+
+  useEffect(() => {
+    setYear(new Date().getFullYear())
+  }, [])
 
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault()
@@ -94,7 +99,7 @@ export default function LoginPage() {
         </div>
 
         <p className="text-xs" style={{ color: 'rgba(255,255,255,0.3)' }}>
-          © {new Date().getFullYear()} LUMI - QUOTES
+          © {year ?? ''} LUMI - QUOTES
         </p>
       </div>
 

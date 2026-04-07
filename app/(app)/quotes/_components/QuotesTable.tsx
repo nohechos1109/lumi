@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import ConfirmModal from '@/components/ui/ConfirmModal'
@@ -56,13 +56,13 @@ export default function QuotesTable({
     router.refresh()
   }
 
-  // Pre-calculate unique values for filters
-  const customers = Array.from(new Set(quotes.map(q => q.customer_name).filter(Boolean))).sort()
-  const executives = Array.from(new Set(quotes.map(q => q.executive_name).filter(Boolean))).sort()
-  const dates = Array.from(new Set(quotes.map(q => {
+  // Pre-calculate unique values for filters (memoized to avoid re-creating Date objects on every render)
+  const customers = useMemo(() => Array.from(new Set(quotes.map(q => q.customer_name).filter(Boolean))).sort(), [quotes])
+  const executives = useMemo(() => Array.from(new Set(quotes.map(q => q.executive_name).filter(Boolean))).sort(), [quotes])
+  const dates = useMemo(() => Array.from(new Set(quotes.map(q => {
     const d = new Date(q.quotation_date)
     return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`
-  }))).sort().reverse()
+  }))).sort().reverse(), [quotes])
 
   const filteredQuotes = quotes.filter(q => {
     const matchesSearch = 

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import ConfirmModal from '@/components/ui/ConfirmModal'
@@ -45,13 +45,13 @@ export default function ProjectsTable({ projects, role }: { projects: Project[],
     }
   }
 
-  // Pre-calculate unique values for filters
-  const customers = Array.from(new Set(projects.map(p => p.customer_name).filter(Boolean))).sort()
-  const executives = Array.from(new Set(projects.map(p => p.executive_name).filter(Boolean))).sort()
-  const dates = Array.from(new Set(projects.map(p => {
+  // Pre-calculate unique values for filters (memoized to avoid re-creating Date objects on every render)
+  const customers = useMemo(() => Array.from(new Set(projects.map(p => p.customer_name).filter(Boolean))).sort(), [projects])
+  const executives = useMemo(() => Array.from(new Set(projects.map(p => p.executive_name).filter(Boolean))).sort(), [projects])
+  const dates = useMemo(() => Array.from(new Set(projects.map(p => {
     const d = new Date(p.date)
     return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`
-  }))).sort().reverse()
+  }))).sort().reverse(), [projects])
 
   const filteredProjects = projects.filter(p => {
     const matchesSearch = 
