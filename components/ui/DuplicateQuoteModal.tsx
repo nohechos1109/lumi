@@ -91,9 +91,10 @@ export default function DuplicateQuoteModal({
 
       const newQuote = await res.json()
       onDuplicated(newQuote.id, newQuote.number)
+      // Do not setLoading(false) here — navigation will unmount the modal
+      return
     } catch {
       toast('Error al duplicar cotización')
-    } finally {
       setLoading(false)
     }
   }

@@ -154,50 +154,115 @@ export async function duplicateQuote(
   userId: string,
   targetProjectId?: string | null
 ): Promise<Quote> {
-  // 1. Get original quote + lines
   const original = await getQuote(quoteId)
   if (!original) throw new Error('Quote not found')
   const lines = await listLines(quoteId)
-
-  // 2. Determine project
   const projectId = targetProjectId !== undefined ? targetProjectId : original.project_id
 
-  // 3. Create new quote (fresh folio, today's date, state=draft, no expiration)
-  const newQuote = await createQuote({
-    customer_id: original.customer_id,
-    payment_term_id: original.payment_term_id ?? undefined,
-    quotation_date: new Date().toISOString().slice(0, 10),
-    fx_mxn_per_usd_snapshot: Number(original.fx_mxn_per_usd_snapshot),
-    description: original.description ?? undefined,
-    unit_count: original.unit_count,
-    terms: original.terms ?? undefined,
-    user_id: userId,
-    project_id: projectId ?? undefined,
-  })
+  const client = await pool.connect()
+  try {
+    await client.query('BEGIN')
 
-  // 4. Copy all lines
-  for (const line of lines) {
-    await pool.query(`
-      INSERT INTO quote_lines
-        (quote_id, sequence, display_type, product_id, name, qty,
-         discount_percent, currency_snapshot, cost_base_snapshot,
-         utility_fixed_snapshot, utility_factor_snapshot, fx_snapshot,
-         unit_price_mxn_suggested, unit_price_mxn_manual,
-         unit_price_mxn_effective, subtotal, tax_amount, total, margin_amount)
-      VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19)
-    `, [newQuote.id, line.sequence, line.display_type, line.product_id,
+    // Generate folio (same logic as createQuote)
+    const dateStr = new Date().toISOString().slice(0, 10).replace(/-/g, '')
+    const { rows: lastQuotes } = await client.query(
+      "SELECT number FROM quotes WHERE number LIKE $1 ORDER BY number DESC LIMIT 1",
+      [`COT-${dateStr}-%`]
+    )
+    let nextSeq = 1
+    if (lastQuotes.length > 0) {
+      const parts = lastQuotes[0].number.split('-')
+      nextSeq = parseInt(parts[parts.length - 1], 10) + 1
+    }
+    const number = `COT-${dateStr}-${String(nextSeq).padStart(4, '0')}`
+
+    // Insert new quote
+    const { rows: [newQuote] } = await client.query(
+      `INSERT INTO quotes
+         (number, state, customer_id, payment_term_id, quotation_date, expiration_date,
+          fx_mxn_per_usd_snapshot, description, unit_count, terms, user_id, project_id)
+       VALUES ($1,'draft',$2,$3,$4,$5,$6,$7,$8,$9,$10,$11)
+       RETURNING *`,
+      [number, original.customer_id, original.payment_term_id ?? null,
+       new Date().toISOString().slice(0, 10), null,
+       Number(original.fx_mxn_per_usd_snapshot),
+       original.description ?? null, original.unit_count,
+       original.terms ?? null, userId, projectId ?? null]
+    )
+
+    // Bulk insert all lines in one query
+    if (lines.length > 0) {
+      const valuePlaceholders = lines.map((_, i) => {
+        const b = i * 19
+        return `($${b+1},$${b+2},$${b+3},$${b+4},$${b+5},$${b+6},$${b+7},$${b+8},$${b+9},$${b+10},$${b+11},$${b+12},$${b+13},$${b+14},$${b+15},$${b+16},$${b+17},$${b+18},$${b+19})`
+      }).join(',')
+      const flatParams = lines.flatMap(line => [
+        newQuote.id, line.sequence, line.display_type, line.product_id,
         line.name, line.qty, line.discount_percent, line.currency_snapshot,
         line.cost_base_snapshot, line.utility_fixed_snapshot,
         line.utility_factor_snapshot, line.fx_snapshot,
         line.unit_price_mxn_suggested, line.unit_price_mxn_manual,
         line.unit_price_mxn_effective, line.subtotal, line.tax_amount,
-        line.total, line.margin_amount])
+        line.total, line.margin_amount
+      ])
+      await client.query(
+        `INSERT INTO quote_lines
+           (quote_id, sequence, display_type, product_id, name, qty,
+            discount_percent, currency_snapshot, cost_base_snapshot,
+            utility_fixed_snapshot, utility_factor_snapshot, fx_snapshot,
+            unit_price_mxn_suggested, unit_price_mxn_manual,
+            unit_price_mxn_effective, subtotal, tax_amount, total, margin_amount)
+         VALUES ${valuePlaceholders}`,
+        flatParams
+      )
+    }
+
+    // updateQuoteTotals inline (using client instead of pool)
+    await client.query(`
+      UPDATE quote_lines
+      SET tax_amount = subtotal * 0.16,
+          total = subtotal * 1.16,
+          margin_amount = subtotal - (cost_base_snapshot * fx_snapshot * COALESCE(qty, 0))
+      WHERE quote_id = $1 AND display_type = 'product'
+    `, [newQuote.id])
+
+    await client.query(`
+      UPDATE quote_lines qld
+      SET
+        subtotal = -(SELECT COALESCE(SUM(subtotal),0) FROM quote_lines qlp WHERE qlp.quote_id = $1 AND qlp.display_type = 'product') * (qld.discount_percent / 100),
+        tax_amount = -(SELECT COALESCE(SUM(tax_amount),0) FROM quote_lines qlp WHERE qlp.quote_id = $1 AND qlp.display_type = 'product') * (qld.discount_percent / 100),
+        margin_amount = -(SELECT COALESCE(SUM(subtotal),0) FROM quote_lines qlp WHERE qlp.quote_id = $1 AND qlp.display_type = 'product') * (qld.discount_percent / 100)
+      WHERE qld.quote_id = $1 AND qld.display_type = 'discount'
+    `, [newQuote.id])
+
+    await client.query(`
+      UPDATE quote_lines SET total = subtotal + tax_amount
+      WHERE quote_id = $1 AND display_type = 'discount'
+    `, [newQuote.id])
+
+    await client.query(`
+      UPDATE quotes q SET
+        amount_untaxed = COALESCE((SELECT SUM(subtotal) FROM quote_lines WHERE quote_id = q.id AND display_type IN ('product','discount')),0),
+        amount_tax = COALESCE((SELECT SUM(tax_amount) FROM quote_lines WHERE quote_id = q.id AND display_type IN ('product','discount')),0),
+        amount_total = COALESCE((SELECT SUM(total) FROM quote_lines WHERE quote_id = q.id AND display_type IN ('product','discount')),0),
+        margin_amount = COALESCE((SELECT SUM(margin_amount) FROM quote_lines WHERE quote_id = q.id AND display_type IN ('product','discount')),0),
+        margin_percent = CASE
+          WHEN COALESCE((SELECT SUM(subtotal) FROM quote_lines WHERE quote_id = q.id AND display_type IN ('product','discount')),0) > 0
+          THEN (COALESCE((SELECT SUM(margin_amount) FROM quote_lines WHERE quote_id = q.id AND display_type IN ('product','discount')),0) /
+                COALESCE((SELECT SUM(subtotal) FROM quote_lines WHERE quote_id = q.id AND display_type IN ('product','discount')),0)) * 100
+          ELSE 0
+        END
+      WHERE q.id = $1
+    `, [newQuote.id])
+
+    await client.query('COMMIT')
+    return newQuote
+  } catch (err) {
+    await client.query('ROLLBACK')
+    throw err
+  } finally {
+    client.release()
   }
-
-  // 5. Recalculate totals
-  await updateQuoteTotals(newQuote.id)
-
-  return newQuote
 }
 
 export async function updateQuoteTotals(id: string): Promise<void> {
