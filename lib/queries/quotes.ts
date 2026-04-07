@@ -1,4 +1,5 @@
 import pool from '@/lib/db'
+import { listLines } from '@/lib/queries/quote_lines'
 
 export type QuoteState = 'draft' | 'sent' | 'confirmed' | 'cancelled' | 'expired'
 
@@ -146,6 +147,57 @@ export async function updateQuoteFields(id: string, data: { description?: string
 export async function deleteQuote(id: string): Promise<void> {
   await pool.query('DELETE FROM quote_lines WHERE quote_id = $1', [id])
   await pool.query('DELETE FROM quotes WHERE id = $1', [id])
+}
+
+export async function duplicateQuote(
+  quoteId: string,
+  userId: string,
+  targetProjectId?: string | null
+): Promise<Quote> {
+  // 1. Get original quote + lines
+  const original = await getQuote(quoteId)
+  if (!original) throw new Error('Quote not found')
+  const lines = await listLines(quoteId)
+
+  // 2. Determine project
+  const projectId = targetProjectId !== undefined ? targetProjectId : original.project_id
+
+  // 3. Create new quote (fresh folio, today's date, state=draft, no expiration)
+  const newQuote = await createQuote({
+    customer_id: original.customer_id,
+    payment_term_id: original.payment_term_id ?? undefined,
+    quotation_date: new Date().toISOString().slice(0, 10),
+    fx_mxn_per_usd_snapshot: Number(original.fx_mxn_per_usd_snapshot),
+    description: original.description ?? undefined,
+    unit_count: original.unit_count,
+    terms: original.terms ?? undefined,
+    user_id: userId,
+    project_id: projectId ?? undefined,
+  })
+
+  // 4. Copy all lines
+  for (const line of lines) {
+    await pool.query(`
+      INSERT INTO quote_lines
+        (quote_id, sequence, display_type, product_id, name, qty,
+         discount_percent, currency_snapshot, cost_base_snapshot,
+         utility_fixed_snapshot, utility_factor_snapshot, fx_snapshot,
+         unit_price_mxn_suggested, unit_price_mxn_manual,
+         unit_price_mxn_effective, subtotal, tax_amount, total, margin_amount)
+      VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19)
+    `, [newQuote.id, line.sequence, line.display_type, line.product_id,
+        line.name, line.qty, line.discount_percent, line.currency_snapshot,
+        line.cost_base_snapshot, line.utility_fixed_snapshot,
+        line.utility_factor_snapshot, line.fx_snapshot,
+        line.unit_price_mxn_suggested, line.unit_price_mxn_manual,
+        line.unit_price_mxn_effective, line.subtotal, line.tax_amount,
+        line.total, line.margin_amount])
+  }
+
+  // 5. Recalculate totals
+  await updateQuoteTotals(newQuote.id)
+
+  return newQuote
 }
 
 export async function updateQuoteTotals(id: string): Promise<void> {

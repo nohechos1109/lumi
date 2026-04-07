@@ -64,7 +64,13 @@ export default async function QuotePage({ params }: { params: Promise<{ id: stri
           </div>
           <DescriptionEditor quoteId={id} description={quote.description} isLocked={quote.state !== 'draft'} />
         </div>
-        <QuoteActions quoteId={id} currentState={quote.state} role={session.role} />
+        <QuoteActions
+          quoteId={id}
+          currentState={quote.state}
+          role={session.role}
+          projectId={quote.project_id}
+          projectName={quote.project_name ?? null}
+        />
       </div>
 
       {/* Stats bar */}

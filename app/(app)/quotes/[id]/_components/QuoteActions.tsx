@@ -4,12 +4,15 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import ConfirmModal from '@/components/ui/ConfirmModal'
+import DuplicateQuoteModal from '@/components/ui/DuplicateQuoteModal'
 import { toast } from '@/lib/toast'
 
 interface Props {
   quoteId: string
   currentState: string
   role: string
+  projectId: string | null
+  projectName: string | null
 }
 
 const VALID_TRANSITIONS: Record<string, string[]> = {
@@ -18,21 +21,49 @@ const VALID_TRANSITIONS: Record<string, string[]> = {
   admin:   ['draft', 'sent', 'confirmed', 'cancelled', 'expired'],
 }
 
-export default function QuoteActions({ quoteId, currentState, role }: Props) {
+export default function QuoteActions({ quoteId, currentState, role, projectId, projectName }: Props) {
+  const router = useRouter()
   const [loading, setLoading] = useState(false)
+  const [showDuplicateModal, setShowDuplicateModal] = useState(false)
 
   const btnBase = `text-sm px-4 py-2 rounded-xl font-semibold transition-opacity ${loading ? 'opacity-50 pointer-events-none' : 'hover:opacity-80'}`
 
+  function handleDuplicated(newQuoteId: string, newQuoteNumber: string) {
+    setShowDuplicateModal(false)
+    toast(`Cotización duplicada: ${newQuoteNumber}`)
+    router.push(`/quotes/${newQuoteId}`)
+  }
+
   return (
-    <div className="flex gap-2 flex-wrap">
-      <Link
-        href={`/api/pdf/${quoteId}`}
-        target="_blank"
-        className={btnBase}
-        style={{ background: 'var(--c-panel)', color: 'var(--c-dim)', border: '1px solid var(--c-rim)' }}
-      >
-        Exportar PDF
-      </Link>
-    </div>
+    <>
+      <div className="flex gap-2 flex-wrap">
+        <Link
+          href={`/api/pdf/${quoteId}`}
+          target="_blank"
+          className={btnBase}
+          style={{ background: 'var(--c-panel)', color: 'var(--c-dim)', border: '1px solid var(--c-rim)' }}
+        >
+          Exportar PDF
+        </Link>
+
+        <button
+          onClick={() => setShowDuplicateModal(true)}
+          className={btnBase}
+          style={{ background: 'var(--c-panel)', color: 'var(--c-dim)', border: '1px solid var(--c-rim)' }}
+        >
+          Duplicar
+        </button>
+      </div>
+
+      {showDuplicateModal && (
+        <DuplicateQuoteModal
+          quoteId={quoteId}
+          currentProjectId={projectId}
+          currentProjectName={projectName}
+          onClose={() => setShowDuplicateModal(false)}
+          onDuplicated={handleDuplicated}
+        />
+      )}
+    </>
   )
 }
