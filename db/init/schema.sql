@@ -151,6 +151,7 @@ CREATE TABLE "public"."quote_lines" (
     "tax_amount" numeric(14,2) DEFAULT '0' NOT NULL,
     "total" numeric(14,2) DEFAULT '0' NOT NULL,
     "margin_amount" numeric(14,2) DEFAULT '0' NOT NULL,
+    "discount_approval_status" text DEFAULT 'approved',
     CONSTRAINT "quote_lines_pkey" PRIMARY KEY ("id"),
     CONSTRAINT "quote_lines_display_type_check" CHECK (((display_type = ANY (ARRAY['product'::text, 'section'::text, 'note'::text, 'discount'::text])))),
     CONSTRAINT "quote_lines_discount_percent_check" CHECK ((((discount_percent >= (0)::numeric) AND (discount_percent <= (100)::numeric))))
@@ -206,6 +207,43 @@ WITH (oids = false);
 CREATE UNIQUE INDEX users_username_key ON public.users USING btree (username);
 
 
+DROP TABLE IF EXISTS "discount_approvals";
+CREATE TABLE "public"."discount_approvals" (
+    "id" uuid DEFAULT gen_random_uuid() NOT NULL,
+    "quote_id" uuid NOT NULL,
+    "quote_line_id" uuid NOT NULL,
+    "requested_by" uuid NOT NULL,
+    "discount_percent" numeric(5,2) NOT NULL,
+    "status" text NOT NULL DEFAULT 'pending',
+    "reviewed_by" uuid,
+    "reviewed_at" timestamptz,
+    "created_at" timestamptz DEFAULT now() NOT NULL,
+    CONSTRAINT "discount_approvals_pkey" PRIMARY KEY ("id"),
+    CONSTRAINT "discount_approvals_status_check" CHECK ((status = ANY (ARRAY['pending'::text, 'approved'::text, 'rejected'::text])))
+)
+WITH (oids = false);
+
+CREATE INDEX idx_discount_approvals_quote ON public.discount_approvals USING btree (quote_id);
+
+
+DROP TABLE IF EXISTS "notifications";
+CREATE TABLE "public"."notifications" (
+    "id" uuid DEFAULT gen_random_uuid() NOT NULL,
+    "user_id" uuid NOT NULL,
+    "type" text NOT NULL,
+    "title" text NOT NULL,
+    "message" text,
+    "entity" text,
+    "entity_id" uuid,
+    "read" boolean DEFAULT false,
+    "created_at" timestamptz DEFAULT now() NOT NULL,
+    CONSTRAINT "notifications_pkey" PRIMARY KEY ("id")
+)
+WITH (oids = false);
+
+CREATE INDEX idx_notifications_user ON public.notifications USING btree (user_id, read, created_at DESC);
+
+
 -- Foreign keys
 
 ALTER TABLE ONLY "public"."plantilla_items" ADD CONSTRAINT "plantilla_items_plantilla_id_fkey" FOREIGN KEY (plantilla_id) REFERENCES plantillas(id) ON DELETE CASCADE;
@@ -222,3 +260,9 @@ ALTER TABLE ONLY "public"."quotes" ADD CONSTRAINT "quotes_payment_term_id_fkey" 
 ALTER TABLE ONLY "public"."quotes" ADD CONSTRAINT "quotes_project_id_fkey" FOREIGN KEY (project_id) REFERENCES projects(id);
 ALTER TABLE ONLY "public"."quotes" ADD CONSTRAINT "quotes_renewed_from_id_fkey" FOREIGN KEY (renewed_from_id) REFERENCES quotes(id);
 ALTER TABLE ONLY "public"."quotes" ADD CONSTRAINT "quotes_user_id_fkey" FOREIGN KEY (user_id) REFERENCES users(id);
+
+ALTER TABLE ONLY "public"."discount_approvals" ADD CONSTRAINT "discount_approvals_quote_id_fkey" FOREIGN KEY (quote_id) REFERENCES quotes(id) ON DELETE CASCADE;
+ALTER TABLE ONLY "public"."discount_approvals" ADD CONSTRAINT "discount_approvals_quote_line_id_fkey" FOREIGN KEY (quote_line_id) REFERENCES quote_lines(id) ON DELETE CASCADE;
+ALTER TABLE ONLY "public"."discount_approvals" ADD CONSTRAINT "discount_approvals_requested_by_fkey" FOREIGN KEY (requested_by) REFERENCES users(id);
+ALTER TABLE ONLY "public"."discount_approvals" ADD CONSTRAINT "discount_approvals_reviewed_by_fkey" FOREIGN KEY (reviewed_by) REFERENCES users(id);
+ALTER TABLE ONLY "public"."notifications" ADD CONSTRAINT "notifications_user_id_fkey" FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;

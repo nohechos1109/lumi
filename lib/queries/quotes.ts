@@ -276,9 +276,10 @@ export async function updateQuoteTotals(id: string): Promise<void> {
   `, [id])
 
   // 1. Recalibrate any 'discount' lines based on the total of 'product' lines
+  // Only recalibrate approved discount lines (exclude pending ones)
   await pool.query(`
     UPDATE quote_lines qld
-    SET 
+    SET
       subtotal = - (
         SELECT COALESCE(SUM(subtotal), 0) FROM quote_lines qlp WHERE qlp.quote_id = $1 AND qlp.display_type = 'product'
       ) * (qld.discount_percent / 100),
@@ -288,27 +289,27 @@ export async function updateQuoteTotals(id: string): Promise<void> {
       margin_amount = - (
         SELECT COALESCE(SUM(subtotal), 0) FROM quote_lines qlp WHERE qlp.quote_id = $1 AND qlp.display_type = 'product'
       ) * (qld.discount_percent / 100)
-    WHERE qld.quote_id = $1 AND qld.display_type = 'discount'
+    WHERE qld.quote_id = $1 AND qld.display_type = 'discount' AND COALESCE(qld.discount_approval_status, 'approved') != 'pending'
   `, [id])
 
   await pool.query(`
     UPDATE quote_lines
     SET total = subtotal + tax_amount
-    WHERE quote_id = $1 AND display_type = 'discount'
+    WHERE quote_id = $1 AND display_type = 'discount' AND COALESCE(discount_approval_status, 'approved') != 'pending'
   `, [id])
 
-  // 2. Recompute totals from ALL lines (products + discounts)
+  // 2. Recompute totals from ALL lines (products + approved discounts only)
   await pool.query(`
     UPDATE quotes q SET
-      amount_untaxed = COALESCE((SELECT SUM(subtotal) FROM quote_lines WHERE quote_id = q.id AND display_type IN ('product', 'discount')), 0),
-      amount_tax     = COALESCE((SELECT SUM(tax_amount) FROM quote_lines WHERE quote_id = q.id AND display_type IN ('product', 'discount')), 0),
-      amount_total   = COALESCE((SELECT SUM(total) FROM quote_lines WHERE quote_id = q.id AND display_type IN ('product', 'discount')), 0),
-      margin_amount  = COALESCE((SELECT SUM(margin_amount) FROM quote_lines WHERE quote_id = q.id AND display_type IN ('product', 'discount')), 0),
-      margin_percent = CASE 
-        WHEN COALESCE((SELECT SUM(subtotal) FROM quote_lines WHERE quote_id = q.id AND display_type IN ('product', 'discount')), 0) > 0 
-        THEN (COALESCE((SELECT SUM(margin_amount) FROM quote_lines WHERE quote_id = q.id AND display_type IN ('product', 'discount')), 0) / 
-              COALESCE((SELECT SUM(subtotal) FROM quote_lines WHERE quote_id = q.id AND display_type IN ('product', 'discount')), 0)) * 100
-        ELSE 0 
+      amount_untaxed = COALESCE((SELECT SUM(subtotal) FROM quote_lines WHERE quote_id = q.id AND (display_type = 'product' OR (display_type = 'discount' AND COALESCE(discount_approval_status, 'approved') != 'pending'))), 0),
+      amount_tax     = COALESCE((SELECT SUM(tax_amount) FROM quote_lines WHERE quote_id = q.id AND (display_type = 'product' OR (display_type = 'discount' AND COALESCE(discount_approval_status, 'approved') != 'pending'))), 0),
+      amount_total   = COALESCE((SELECT SUM(total) FROM quote_lines WHERE quote_id = q.id AND (display_type = 'product' OR (display_type = 'discount' AND COALESCE(discount_approval_status, 'approved') != 'pending'))), 0),
+      margin_amount  = COALESCE((SELECT SUM(margin_amount) FROM quote_lines WHERE quote_id = q.id AND (display_type = 'product' OR (display_type = 'discount' AND COALESCE(discount_approval_status, 'approved') != 'pending'))), 0),
+      margin_percent = CASE
+        WHEN COALESCE((SELECT SUM(subtotal) FROM quote_lines WHERE quote_id = q.id AND (display_type = 'product' OR (display_type = 'discount' AND COALESCE(discount_approval_status, 'approved') != 'pending'))), 0) > 0
+        THEN (COALESCE((SELECT SUM(margin_amount) FROM quote_lines WHERE quote_id = q.id AND (display_type = 'product' OR (display_type = 'discount' AND COALESCE(discount_approval_status, 'approved') != 'pending'))), 0) /
+              COALESCE((SELECT SUM(subtotal) FROM quote_lines WHERE quote_id = q.id AND (display_type = 'product' OR (display_type = 'discount' AND COALESCE(discount_approval_status, 'approved') != 'pending'))), 0)) * 100
+        ELSE 0
       END
     WHERE q.id = $1
   `, [id])

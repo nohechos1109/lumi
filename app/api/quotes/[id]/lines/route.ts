@@ -3,6 +3,8 @@ import { getSession, unauthorized, forbidden } from '@/lib/auth-guard'
 import { getQuote, updateQuoteTotals } from '@/lib/queries/quotes'
 import { listLines, createLine } from '@/lib/queries/quote_lines'
 import pool from '@/lib/db'
+import { createDiscountApproval } from '@/lib/queries/discount-approvals'
+import { createNotification } from '@/lib/queries/notifications'
 
 export async function GET(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const session = await getSession()
@@ -28,6 +30,42 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
 
   const body = await req.json()
   const line = await createLine({ ...body, quote_id: id })
+
+  if (body.display_type === 'discount' && session.role === 'sales') {
+    // Mark as pending instead of directly active
+    await pool.query(
+      `UPDATE quote_lines SET discount_approval_status = 'pending' WHERE id = $1`,
+      [line.id]
+    )
+
+    // Create approval request
+    await createDiscountApproval({
+      quote_id: id,
+      quote_line_id: line.id,
+      requested_by: session.userId,
+      discount_percent: Number(body.discount_percent ?? 0),
+    })
+
+    // Notify all admins
+    const { rows: admins } = await pool.query(
+      `SELECT id FROM users WHERE role = 'admin'`
+    )
+    for (const admin of admins) {
+      await createNotification({
+        user_id: admin.id,
+        type: 'discount_request',
+        title: 'Nueva solicitud de descuento',
+        message: `Vendedor solicitó un descuento del ${body.discount_percent}% para la cotización.`,
+        entity: 'discount_approval',
+        entity_id: line.id,
+      })
+    }
+
+    // Don't recalculate totals for pending discounts
+    return NextResponse.json(line, { status: 201 })
+  }
+
+  // Original flow: recalculate totals
   await updateQuoteTotals(id)
   return NextResponse.json(line, { status: 201 })
 }
