@@ -28,26 +28,41 @@ export default function NotificationBell() {
   const [notifications, setNotifications] = useState<Notification[]>([])
   const [loading, setLoading] = useState(false)
   const dropdownRef = useRef<HTMLDivElement>(null)
+  const fetchingRef = useRef(false)
   const router = useRouter()
 
   async function loadNotifications() {
+    if (fetchingRef.current) return
+    fetchingRef.current = true
     setLoading(true)
     try {
       const r = await fetch('/api/notifications')
       if (r.ok) setNotifications(await r.json())
     } finally {
       setLoading(false)
+      fetchingRef.current = false
     }
   }
 
   async function markRead(id: string) {
-    await fetch(`/api/notifications/${id}`, { method: 'PATCH' })
     setNotifications(prev => prev.map(n => n.id === id ? { ...n, read: true } : n))
+    try {
+      const r = await fetch(`/api/notifications/${id}`, { method: 'PATCH' })
+      if (!r.ok) throw new Error()
+    } catch {
+      // Revert on failure
+      setNotifications(prev => prev.map(n => n.id === id ? { ...n, read: false } : n))
+    }
   }
 
   async function markAllRead() {
-    await fetch('/api/notifications/read-all', { method: 'PATCH' })
-    setNotifications(prev => prev.map(n => ({ ...n, read: true })))
+    try {
+      const r = await fetch('/api/notifications/read-all', { method: 'PATCH' })
+      if (!r.ok) throw new Error()
+      setNotifications(prev => prev.map(n => ({ ...n, read: true })))
+    } catch {
+      // silently fail, next poll will refresh
+    }
   }
 
   async function handleNotificationClick(n: Notification) {
@@ -66,7 +81,7 @@ export default function NotificationBell() {
   // Poll every 30 seconds
   useEffect(() => {
     const interval = setInterval(() => {
-      loadNotifications()
+      if (document.visibilityState === 'visible') loadNotifications()
     }, 30000)
     return () => clearInterval(interval)
   }, [])
@@ -99,7 +114,7 @@ export default function NotificationBell() {
       <button
         onClick={handleToggle}
         type="button"
-        aria-label="Notificaciones"
+        aria-label={unreadCount > 0 ? `Notificaciones, ${unreadCount} sin leer` : 'Notificaciones'}
         style={{
           position: 'relative',
           background: 'none',
