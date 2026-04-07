@@ -10,7 +10,7 @@ interface Project {
   name: string
   customer_name?: string
   executive_name?: string
-  date: string
+  date: string | Date
   status: string
   quote_count?: number
 }
@@ -24,9 +24,15 @@ const PROJECT_STATUS_LABELS: Record<string, { label: string; cls: string }> = {
   finished:  { label: 'Terminado',   cls: 'badge badge-hold' },
 }
 
-// Format a YYYY-MM-DD date string without creating Date objects (avoids SSR/client hydration mismatch)
-function formatDateStr(dateStr: string): string {
-  const [y, m, d] = dateStr.split('T')[0].split('-')
+// Normalize a date value (string or Date object) to "YYYY-MM-DD" prefix
+function toISOPrefix(val: string | Date): string {
+  if (typeof val === 'string') return val.split('T')[0]
+  return val.toISOString().split('T')[0]
+}
+
+// Format a date value as DD/MM/YYYY
+function formatDateStr(val: string | Date): string {
+  const [y, m, d] = toISOPrefix(val).split('-')
   return `${d}/${m}/${y}`
 }
 
@@ -62,7 +68,7 @@ export default function ProjectsTable({ projects, role }: { projects: Project[],
   const customers = useMemo(() => Array.from(new Set(projects.map(p => p.customer_name).filter(Boolean))).sort(), [projects])
   const executives = useMemo(() => Array.from(new Set(projects.map(p => p.executive_name).filter(Boolean))).sort(), [projects])
   const dates = useMemo(() => Array.from(new Set(projects.map(p => {
-    const [y, m] = p.date.split('T')[0].split('-')
+    const [y, m] = toISOPrefix(p.date).split('-')
     return `${y}-${m}`
   }))).sort().reverse(), [projects])
 
@@ -77,7 +83,7 @@ export default function ProjectsTable({ projects, role }: { projects: Project[],
     
     let matchesDate = true
     if (dateFilter) {
-      const [y, m] = p.date.split('T')[0].split('-')
+      const [y, m] = toISOPrefix(p.date).split('-')
       matchesDate = `${y}-${m}` === dateFilter
     }
 

@@ -11,7 +11,7 @@ interface Quote {
   state: string
   customer_name?: string
   executive_name?: string
-  quotation_date: string
+  quotation_date: string | Date
   amount_total: string
   description: string | null
   payment_term_name?: string
@@ -25,9 +25,15 @@ const STATE_LABELS: Record<string, { label: string; cls: string }> = {
   expired:   { label: 'Expirada',   cls: 'badge badge-expired' },
 }
 
-// Format a YYYY-MM-DD date string without creating Date objects (avoids SSR/client hydration mismatch)
-function formatDateStr(dateStr: string): string {
-  const [y, m, d] = dateStr.split('T')[0].split('-')
+// Normalize a date value (string or Date object) to "YYYY-MM-DD" prefix
+function toISOPrefix(val: string | Date): string {
+  if (typeof val === 'string') return val.split('T')[0]
+  return val.toISOString().split('T')[0]
+}
+
+// Format a date value as DD/MM/YYYY
+function formatDateStr(val: string | Date): string {
+  const [y, m, d] = toISOPrefix(val).split('-')
   return `${d}/${m}/${y}`
 }
 
@@ -73,7 +79,7 @@ export default function QuotesTable({
   const customers = useMemo(() => Array.from(new Set(quotes.map(q => q.customer_name).filter(Boolean))).sort(), [quotes])
   const executives = useMemo(() => Array.from(new Set(quotes.map(q => q.executive_name).filter(Boolean))).sort(), [quotes])
   const dates = useMemo(() => Array.from(new Set(quotes.map(q => {
-    const [y, m] = q.quotation_date.split('T')[0].split('-')
+    const [y, m] = toISOPrefix(q.quotation_date).split('-')
     return `${y}-${m}`
   }))).sort().reverse(), [quotes])
 
@@ -89,7 +95,7 @@ export default function QuotesTable({
     
     let matchesDate = true
     if (dateFilter) {
-      const [y, m] = q.quotation_date.split('T')[0].split('-')
+      const [y, m] = toISOPrefix(q.quotation_date).split('-')
       matchesDate = `${y}-${m}` === dateFilter
     }
 
