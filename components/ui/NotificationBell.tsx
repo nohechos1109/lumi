@@ -70,7 +70,9 @@ export default function NotificationBell() {
   async function handleNotificationClick(n: Notification) {
     if (!n.read) await markRead(n.id)
     setOpen(false)
-    if (n.entity === 'quote' && n.entity_id) {
+    if (n.entity === 'discount_approval' && n.entity_id) {
+      router.push(`/admin/discount-approvals`)
+    } else if (n.entity === 'quote' && n.entity_id) {
       router.push(`/quotes/${n.entity_id}`)
     }
   }
