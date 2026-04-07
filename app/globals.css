@@ -156,6 +156,13 @@ input[type="number"] {
 }
 .btn-dashed-amber:hover { opacity: 0.7; }
 
+.btn-dashed-rose {
+  border-color: var(--c-rose);
+  color: var(--c-rose);
+  transition: opacity 0.15s;
+}
+.btn-dashed-rose:hover { opacity: 0.7; }
+
 .dropdown-item {
   transition: background 0.1s;
 }

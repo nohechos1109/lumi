@@ -22,6 +22,7 @@ interface Props {
   unitCount: number
   role?: string
   isLocked?: boolean
+  quoteState?: string
 }
 
 const inputCls = 'text-right rounded-lg px-2 py-1.5 text-sm font-mono outline-none transition-colors'
@@ -31,7 +32,7 @@ const inputStyle = {
   color: 'var(--c-ink)',
 }
 
-export default function LineEditor({ quoteId, fxSnapshot, unitCount, role, isLocked }: Props) {
+export default function LineEditor({ quoteId, fxSnapshot, unitCount, role, isLocked, quoteState }: Props) {
   const router = useRouter()
   const [lines, setLines] = useState<QuoteLine[]>([])
   const [totals, setTotals] = useState({ untaxed: 0, tax: 0, total: 0, margin: 0, marginPct: 0 })
@@ -41,6 +42,7 @@ export default function LineEditor({ quoteId, fxSnapshot, unitCount, role, isLoc
   const [discountPrompt, setDiscountPrompt] = useState(false)
   const [plantillaPrompt, setPlantillaPrompt] = useState(false)
   const [deleteConfirmLine, setDeleteConfirmLine] = useState<QuoteLine | null>(null) // Block B
+  const [clearConfirm, setClearConfirm] = useState(false)
   const dragItem = useRef<number | null>(null)
   const dragOverItem = useRef<number | null>(null)
 
@@ -187,6 +189,17 @@ export default function LineEditor({ quoteId, fxSnapshot, unitCount, role, isLoc
     }
   }
 
+  async function clearLines() {
+    try {
+      const r = await fetch(`/api/quotes/${quoteId}/lines`, { method: 'DELETE' })
+      if (!r.ok) throw new Error()
+      await loadLines()
+      toast('Cotización limpiada exitosamente', 'success')
+    } catch {
+      toast('Error al limpiar la cotización', 'error')
+    }
+  }
+
   function handleDragStart(index: number) { dragItem.current = index }
   function handleDragEnter(index: number) { dragOverItem.current = index }
 
@@ -248,6 +261,16 @@ export default function LineEditor({ quoteId, fxSnapshot, unitCount, role, isLoc
           >
             − Descuento Global
           </button>
+          {quoteState === 'draft' && (
+            <button
+              onClick={() => setClearConfirm(true)}
+              type="button"
+              disabled={busy}
+              className="btn-dashed-rose text-xs px-3 py-1.5 rounded-lg border border-dashed disabled:opacity-40"
+            >
+              🗑 Limpiar
+            </button>
+          )}
           <button
             onClick={() => setPlantillaPrompt(true)}
             type="button"
@@ -534,6 +557,14 @@ export default function LineEditor({ quoteId, fxSnapshot, unitCount, role, isLoc
           confirmLabel="Eliminar"
           onConfirm={() => { deleteLine(deleteConfirmLine.id); setDeleteConfirmLine(null) }}
           onCancel={() => setDeleteConfirmLine(null)}
+        />
+      )}
+      {clearConfirm && (
+        <ConfirmModal
+          message="¿Seguro que deseas eliminar todas las líneas? Esta acción no se puede deshacer."
+          confirmLabel="Limpiar"
+          onConfirm={() => { clearLines(); setClearConfirm(false) }}
+          onCancel={() => setClearConfirm(false)}
         />
       )}
     </div>
