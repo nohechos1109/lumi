@@ -82,6 +82,8 @@ export default function NotificationBell() {
     setOpen(false)
     if (n.entity === 'discount_approval' && n.entity_id) {
       router.push(`/admin/discount-approvals`)
+    } else if (n.entity === 'delete_request' && n.entity_id) {
+      router.push(`/admin/customers`)
     } else if (n.entity === 'quote' && n.entity_id) {
       router.push(`/quotes/${n.entity_id}`)
     }
