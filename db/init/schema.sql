@@ -245,6 +245,25 @@ WITH (oids = false);
 CREATE INDEX idx_notifications_user ON public.notifications USING btree (user_id, read, created_at DESC);
 
 
+DROP TABLE IF EXISTS "delete_requests";
+CREATE TABLE "public"."delete_requests" (
+    "id" uuid DEFAULT gen_random_uuid() NOT NULL,
+    "entity" text NOT NULL,
+    "entity_id" uuid NOT NULL,
+    "requested_by" uuid NOT NULL,
+    "reason" text,
+    "status" text NOT NULL DEFAULT 'pending',
+    "reviewed_by" uuid,
+    "reviewed_at" timestamptz,
+    "created_at" timestamptz DEFAULT now() NOT NULL,
+    CONSTRAINT "delete_requests_pkey" PRIMARY KEY ("id"),
+    CONSTRAINT "delete_requests_status_check" CHECK ((status = ANY (ARRAY['pending'::text, 'approved'::text, 'rejected'::text])))
+)
+WITH (oids = false);
+
+CREATE INDEX idx_delete_requests_entity ON public.delete_requests USING btree (entity, entity_id);
+
+
 -- Foreign keys
 
 ALTER TABLE ONLY "public"."plantilla_items" ADD CONSTRAINT "plantilla_items_plantilla_id_fkey" FOREIGN KEY (plantilla_id) REFERENCES plantillas(id) ON DELETE CASCADE;
@@ -267,3 +286,6 @@ ALTER TABLE ONLY "public"."discount_approvals" ADD CONSTRAINT "discount_approval
 ALTER TABLE ONLY "public"."discount_approvals" ADD CONSTRAINT "discount_approvals_requested_by_fkey" FOREIGN KEY (requested_by) REFERENCES users(id);
 ALTER TABLE ONLY "public"."discount_approvals" ADD CONSTRAINT "discount_approvals_reviewed_by_fkey" FOREIGN KEY (reviewed_by) REFERENCES users(id);
 ALTER TABLE ONLY "public"."notifications" ADD CONSTRAINT "notifications_user_id_fkey" FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY "public"."delete_requests" ADD CONSTRAINT "delete_requests_requested_by_fkey" FOREIGN KEY (requested_by) REFERENCES users(id);
+ALTER TABLE ONLY "public"."delete_requests" ADD CONSTRAINT "delete_requests_reviewed_by_fkey" FOREIGN KEY (reviewed_by) REFERENCES users(id);
