@@ -13,6 +13,10 @@ export interface Notification {
 }
 
 export async function listNotifications(userId: string): Promise<Notification[]> {
+  await pool.query(
+    `DELETE FROM notifications WHERE user_id = $1 AND created_at < NOW() - INTERVAL '1 day'`,
+    [userId]
+  )
   const { rows } = await pool.query(
     `SELECT * FROM notifications WHERE user_id = $1 ORDER BY created_at DESC LIMIT 50`,
     [userId]
