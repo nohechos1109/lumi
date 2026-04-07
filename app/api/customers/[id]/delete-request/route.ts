@@ -19,6 +19,11 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     reason: reason?.trim() || undefined,
   })
 
+  const { rows: [customer] } = await pool.query(
+    `SELECT name FROM customers WHERE id = $1`, [id]
+  )
+  const customerName = customer?.name ?? 'Cliente desconocido'
+
   // Notify admins and managers
   const { rows: managers } = await pool.query(
     `SELECT id FROM users WHERE role IN ('admin', 'manager')`
@@ -28,7 +33,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
       user_id: u.id,
       type: 'delete_request',
       title: 'Solicitud de eliminación de cliente',
-      message: `Un vendedor solicitó eliminar un cliente.`,
+      message: `${session.username} solicitó eliminar a "${customerName}".`,
       entity: 'delete_request',
       entity_id: deleteReq.id,
     })
