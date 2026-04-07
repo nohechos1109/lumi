@@ -104,7 +104,7 @@ export default function NotificationBell() {
   function handleToggle() {
     if (!open && buttonRef.current) {
       const rect = buttonRef.current.getBoundingClientRect()
-      setDropdownPos({ top: rect.bottom + 8, left: rect.right + 8 })
+      setDropdownPos({ top: rect.bottom + 8, left: Math.max(8, rect.right - 300) })
       loadNotifications()
     }
     setOpen(prev => !prev)
