@@ -28,6 +28,7 @@ export interface Quote {
   project_id: string | null
   project_name?: string
   installation_notes: string | null
+  archived_at: string | null
 }
 
 export async function listQuotesByUser(userId: string): Promise<Quote[]> {
@@ -302,4 +303,12 @@ export async function updateQuoteTotals(id: string): Promise<void> {
       END
     WHERE q.id = $1
   `, [id])
+}
+
+export async function archiveQuote(id: string): Promise<void> {
+  await pool.query('UPDATE quotes SET archived_at = NOW() WHERE id = $1', [id])
+}
+
+export async function unarchiveQuote(id: string): Promise<void> {
+  await pool.query('UPDATE quotes SET archived_at = NULL WHERE id = $1', [id])
 }
