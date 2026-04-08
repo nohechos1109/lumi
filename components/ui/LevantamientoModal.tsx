@@ -1,6 +1,7 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
+import { toast } from '@/lib/toast'
 
 interface Props {
   quoteId: string
@@ -10,6 +11,17 @@ interface Props {
 
 export default function LevantamientoModal({ quoteId, installationNotes, onClose }: Props) {
   const [detalles, setDetalles] = useState(installationNotes ?? '')
+  const [saving, setSaving] = useState(false)
+  const textareaRef = useRef<HTMLTextAreaElement>(null)
+
+  // Auto-expand textarea on open
+  useEffect(() => {
+    if (textareaRef.current) {
+      const el = textareaRef.current
+      el.style.height = 'auto'
+      el.style.height = `${el.scrollHeight}px`
+    }
+  }, [])
 
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
@@ -19,10 +31,30 @@ export default function LevantamientoModal({ quoteId, installationNotes, onClose
     return () => window.removeEventListener('keydown', onKey)
   }, [onClose])
 
-  function handleGenerate() {
+  async function handleGenerate() {
+    const trimmed = detalles.trim()
+
+    // Save if changed
+    if (trimmed !== (installationNotes ?? '')) {
+      setSaving(true)
+      try {
+        const r = await fetch(`/api/quotes/${quoteId}`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ installation_notes: trimmed || null }),
+        })
+        if (!r.ok) throw new Error()
+      } catch {
+        toast('Error al guardar los detalles', 'error')
+        setSaving(false)
+        return
+      }
+      setSaving(false)
+    }
+
     const base = `/api/pdf/${quoteId}/levantamiento`
-    const url = detalles.trim()
-      ? `${base}?detalles=${encodeURIComponent(detalles.trim())}`
+    const url = trimmed
+      ? `${base}?detalles=${encodeURIComponent(trimmed)}`
       : base
     window.open(url, '_blank')
     onClose()
@@ -77,12 +109,18 @@ export default function LevantamientoModal({ quoteId, installationNotes, onClose
             Opcional. Aparecerá en el PDF al final del documento.
           </p>
           <textarea
+            ref={textareaRef}
             id="lev-detalles"
             value={detalles}
-            onChange={(e) => setDetalles(e.target.value)}
+            onChange={(e) => {
+              setDetalles(e.target.value)
+              const el = e.target
+              el.style.height = 'auto'
+              el.style.height = `${el.scrollHeight}px`
+            }}
             placeholder="Ej: Instalar en la cabina del conductor. Pasar cable por el lado derecho del tablero. Verificar conexión a tierra..."
-            rows={6}
-            className="w-full rounded-lg p-3 text-sm resize-y"
+            rows={4}
+            className="w-full rounded-lg p-3 text-sm resize-none overflow-hidden"
             style={{
               background: 'var(--c-panel)',
               border: '1px solid var(--c-rim)',
@@ -111,10 +149,11 @@ export default function LevantamientoModal({ quoteId, installationNotes, onClose
           <button
             type="button"
             onClick={handleGenerate}
-            className="px-4 py-2 rounded-lg text-sm font-semibold transition-opacity hover:opacity-85"
+            disabled={saving}
+            className="px-4 py-2 rounded-lg text-sm font-semibold transition-opacity hover:opacity-85 disabled:opacity-50"
             style={{ background: 'var(--c-navy)', color: '#FFFFFF' }}
           >
-            Generar PDF
+            {saving ? 'Guardando...' : 'Generar PDF'}
           </button>
         </div>
       </div>

@@ -1,6 +1,6 @@
 'use client'
 
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { toast } from '@/lib/toast'
 
@@ -33,11 +33,19 @@ export default function InstallationNotesEditor({ quoteId, installationNotes }: 
     }
   }
 
+  // Auto-expand + focus when editing starts
+  useEffect(() => {
+    if (editing && textareaRef.current) {
+      const el = textareaRef.current
+      el.style.height = 'auto'
+      el.style.height = `${el.scrollHeight}px`
+      el.focus()
+    }
+  }, [editing])
+
   function startEditing() {
     setValue(installationNotes ?? '')
     setEditing(true)
-    // Focus on next tick after render
-    setTimeout(() => textareaRef.current?.focus(), 0)
   }
 
   if (editing) {
