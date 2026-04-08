@@ -45,6 +45,7 @@ export default function LineEditor({ quoteId, fxSnapshot, unitCount, role, isLoc
   const [plantillaPrompt, setPlantillaPrompt] = useState(false)
   const [deleteConfirmLine, setDeleteConfirmLine] = useState<QuoteLine | null>(null) // Block B
   const [clearConfirm, setClearConfirm] = useState(false)
+  const [editingLine, setEditingLine] = useState<{ id: string; name: string } | null>(null)
   const dragItem = useRef<number | null>(null)
   const dragOverItem = useRef<number | null>(null)
 
@@ -148,6 +149,23 @@ export default function LineEditor({ quoteId, fxSnapshot, unitCount, role, isLoc
       toast('Error al agregar el descuento', 'error')
     } finally {
       setBusy(false)
+    }
+  }
+
+  async function saveLineName(lineId: string, name: string) {
+    const trimmed = name.trim()
+    if (!trimmed) return
+    setEditingLine(null)
+    setLines(prev => prev.map(l => l.id === lineId ? { ...l, name: trimmed } : l))
+    try {
+      await fetch(`/api/quotes/${quoteId}/lines/${lineId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: trimmed }),
+      })
+    } catch {
+      toast('Error al guardar', 'error')
+      await loadLines()
     }
   }
 
@@ -352,8 +370,29 @@ export default function LineEditor({ quoteId, fxSnapshot, unitCount, role, isLoc
                         <td className="px-2 py-2.5 text-center text-xs" style={{ color: 'var(--c-ghost)' }}>
                           {isLocked ? '' : '⠿'}
                         </td>
-                        <td colSpan={role !== 'sales' ? 6 : 5} className="px-4 py-2.5 text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--c-gold)', letterSpacing: '0.1em' }}>
-                          {line.name}
+                        <td colSpan={role !== 'sales' ? 6 : 5} className="px-4 py-1.5">
+                          {!isLocked && editingLine?.id === line.id ? (
+                            <input
+                              autoFocus
+                              className="w-full text-xs font-bold uppercase tracking-widest outline-none rounded px-1"
+                              style={{ color: 'var(--c-gold)', letterSpacing: '0.1em', background: 'var(--c-surface)', border: '1px solid var(--c-rim)' }}
+                              value={editingLine.name}
+                              onChange={e => setEditingLine({ id: line.id, name: e.target.value })}
+                              onBlur={() => saveLineName(line.id, editingLine.name)}
+                              onKeyDown={e => {
+                                if (e.key === 'Enter') saveLineName(line.id, editingLine.name)
+                                if (e.key === 'Escape') setEditingLine(null)
+                              }}
+                            />
+                          ) : (
+                            <span
+                              className={!isLocked ? 'cursor-text text-xs font-bold uppercase tracking-widest' : 'text-xs font-bold uppercase tracking-widest'}
+                              style={{ color: 'var(--c-gold)', letterSpacing: '0.1em' }}
+                              onClick={() => !isLocked && setEditingLine({ id: line.id, name: line.name })}
+                            >
+                              {line.name}
+                            </span>
+                          )}
                         </td>
                         {!isLocked && (
                           <td className="px-2 py-2.5 text-right">
@@ -371,7 +410,30 @@ export default function LineEditor({ quoteId, fxSnapshot, unitCount, role, isLoc
                         <td className="px-2 py-2.5 text-center text-xs" style={{ color: 'var(--c-ghost)' }}>
                           {isLocked ? '' : '⠿'}
                         </td>
-                        <td colSpan={role !== 'sales' ? 6 : 5} className="px-4 py-2.5 text-xs italic" style={{ color: 'var(--c-ghost)' }}>{line.name}</td>
+                        <td colSpan={role !== 'sales' ? 6 : 5} className="px-4 py-1.5">
+                          {!isLocked && editingLine?.id === line.id ? (
+                            <input
+                              autoFocus
+                              className="w-full text-xs italic outline-none rounded px-1"
+                              style={{ color: 'var(--c-ghost)', background: 'var(--c-surface)', border: '1px solid var(--c-rim)' }}
+                              value={editingLine.name}
+                              onChange={e => setEditingLine({ id: line.id, name: e.target.value })}
+                              onBlur={() => saveLineName(line.id, editingLine.name)}
+                              onKeyDown={e => {
+                                if (e.key === 'Enter') saveLineName(line.id, editingLine.name)
+                                if (e.key === 'Escape') setEditingLine(null)
+                              }}
+                            />
+                          ) : (
+                            <span
+                              className={!isLocked ? 'cursor-text text-xs italic' : 'text-xs italic'}
+                              style={{ color: 'var(--c-ghost)' }}
+                              onClick={() => !isLocked && setEditingLine({ id: line.id, name: line.name })}
+                            >
+                              {line.name}
+                            </span>
+                          )}
+                        </td>
                         {!isLocked && (
                           <td className="px-2 py-2.5 text-right">
                             <button aria-label="Eliminar nota" onClick={() => setDeleteConfirmLine(line)} className="btn-delete text-xs">✕</button>
