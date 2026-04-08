@@ -146,7 +146,11 @@ export default async function QuotePage({ params }: { params: Promise<{ id: stri
         quoteState={quote.state}
       />
 
-      <ActivityLog entity="quote" entityId={id} />
+      {(session.role === 'manager' || session.role === 'admin') && (
+        <div className="mt-10">
+          <ActivityLog entity="quote" entityId={id} />
+        </div>
+      )}
     </div>
   )
 }

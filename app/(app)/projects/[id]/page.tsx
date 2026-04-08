@@ -90,7 +90,11 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
         />
       </div>
 
-      <ActivityLog entity="project" entityId={id} />
+      {(session.role === 'manager' || session.role === 'admin') && (
+        <div className="mt-10">
+          <ActivityLog entity="project" entityId={id} />
+        </div>
+      )}
 
     </div>
   )
