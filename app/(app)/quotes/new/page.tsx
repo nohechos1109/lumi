@@ -25,6 +25,11 @@ function NewQuoteForm() {
   const [newCustomerName, setNewCustomerName] = useState('')
   const [newCustomerEmail, setNewCustomerEmail] = useState('')
   const [newCustomerPhone, setNewCustomerPhone] = useState('')
+  const [today, setToday] = useState('')
+
+  useEffect(() => {
+    setToday(new Date().toISOString().split('T')[0])
+  }, [])
   
   const initialCustomerId = searchParams.get('customer_id') || ''
   const initialProjectId = searchParams.get('project_id') || ''
@@ -205,6 +210,7 @@ function NewQuoteForm() {
           <input
             name="expiration_date"
             type="date"
+            min={today}
             className="w-full"
           />
         </div>
