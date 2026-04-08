@@ -189,7 +189,7 @@ export default function AdminProductsPage() {
               onChange={(e) => setCategoryFilter(e.target.value)}
               style={{ background: categoryFilter ? 'var(--c-navy-bg)' : 'var(--c-card)', border: categoryFilter ? '1.5px solid var(--c-navy-bd)' : '1px solid var(--c-rim)', color: categoryFilter ? 'var(--c-navy)' : 'var(--c-dim)', boxShadow: categoryFilter ? 'none' : '0 1px 3px rgba(27,52,97,0.05)' }}
             >
-              <option value="">Categoría</option>
+              <option value="">Todos</option>
               {categories.sort().map(c => (
                 <option key={c} value={c}>{c}</option>
               ))}
