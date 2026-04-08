@@ -192,15 +192,16 @@ export async function duplicateQuote(
        original.terms ?? null, userId, projectId ?? null]
     )
 
-    // Bulk insert all lines in one query
-    if (lines.length > 0) {
-      const valuePlaceholders = lines.map((_, i) => {
+    // Bulk insert lines (excluding discounts — duplicated quotes start clean)
+    const linesToCopy = lines.filter(line => line.display_type !== 'discount')
+    if (linesToCopy.length > 0) {
+      const valuePlaceholders = linesToCopy.map((_, i) => {
         const b = i * 19
         return `($${b+1},$${b+2},$${b+3},$${b+4},$${b+5},$${b+6},$${b+7},$${b+8},$${b+9},$${b+10},$${b+11},$${b+12},$${b+13},$${b+14},$${b+15},$${b+16},$${b+17},$${b+18},$${b+19})`
       }).join(',')
-      const flatParams = lines.flatMap(line => [
+      const flatParams = linesToCopy.flatMap(line => [
         newQuote.id, line.sequence, line.display_type, line.product_id,
-        line.name, line.qty, line.discount_percent, line.currency_snapshot,
+        line.name, line.qty, 0, line.currency_snapshot,
         line.cost_base_snapshot, line.utility_fixed_snapshot,
         line.utility_factor_snapshot, line.fx_snapshot,
         line.unit_price_mxn_suggested, line.unit_price_mxn_manual,
@@ -226,20 +227,6 @@ export async function duplicateQuote(
           total = subtotal * 1.16,
           margin_amount = subtotal - (cost_base_snapshot * fx_snapshot * COALESCE(qty, 0))
       WHERE quote_id = $1 AND display_type = 'product'
-    `, [newQuote.id])
-
-    await client.query(`
-      UPDATE quote_lines qld
-      SET
-        subtotal = -(SELECT COALESCE(SUM(subtotal),0) FROM quote_lines qlp WHERE qlp.quote_id = $1 AND qlp.display_type = 'product') * (qld.discount_percent / 100),
-        tax_amount = -(SELECT COALESCE(SUM(tax_amount),0) FROM quote_lines qlp WHERE qlp.quote_id = $1 AND qlp.display_type = 'product') * (qld.discount_percent / 100),
-        margin_amount = -(SELECT COALESCE(SUM(subtotal),0) FROM quote_lines qlp WHERE qlp.quote_id = $1 AND qlp.display_type = 'product') * (qld.discount_percent / 100)
-      WHERE qld.quote_id = $1 AND qld.display_type = 'discount'
-    `, [newQuote.id])
-
-    await client.query(`
-      UPDATE quote_lines SET total = subtotal + tax_amount
-      WHERE quote_id = $1 AND display_type = 'discount'
     `, [newQuote.id])
 
     await client.query(`
