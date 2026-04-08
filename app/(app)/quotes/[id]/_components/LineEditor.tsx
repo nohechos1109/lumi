@@ -15,6 +15,7 @@ interface QuoteLine {
   subtotal: string; tax_amount: string; total: string
   margin_amount: string; tax_name?: string; sequence: number
   discount_approval_status?: string
+  pending_discount_percent?: string | null
 }
 
 interface Props {
@@ -429,7 +430,15 @@ export default function LineEditor({ quoteId, fxSnapshot, unitCount, role, isLoc
                       <td className="px-2 py-3 text-center text-xs" style={{ color: 'var(--c-ghost)' }}>
                         {isLocked ? '' : '⠿'}
                       </td>
-                      <td className="px-4 py-3" style={{ color: 'var(--c-ink)' }}>{line.name}</td>
+                      <td className="px-4 py-3" style={{ color: 'var(--c-ink)' }}>
+                        {line.name}
+                        {line.discount_approval_status === 'pending' && (
+                          <span className="ml-2 text-xs px-2 py-0.5 rounded-full font-semibold"
+                            style={{ background: 'var(--c-amber-bg, rgba(251,191,36,0.12))', color: 'var(--c-amber)', border: '1px solid rgba(251,191,36,0.3)' }}>
+                            Desc. {Number(line.pending_discount_percent ?? 0).toFixed(0)}% — Pendiente
+                          </span>
+                        )}
+                      </td>
                       <td className="px-4 py-3 text-right">
                         {isLocked ? (
                           <span className="font-mono text-xs" style={{ color: 'var(--c-dim)' }}>{Math.floor(Number(line.qty ?? 1))}</span>
@@ -466,7 +475,7 @@ export default function LineEditor({ quoteId, fxSnapshot, unitCount, role, isLoc
                         )}
                       </td>
                       <td className="px-4 py-3 text-right">
-                        {isLocked ? (
+                        {isLocked || line.discount_approval_status === 'pending' ? (
                           <span className="font-mono text-xs" style={{ color: 'var(--c-dim)' }}>{Number(line.discount_percent).toFixed(0)}%</span>
                         ) : (
                           <input type="number" min="0" max="100" step="1"
