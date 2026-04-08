@@ -13,6 +13,7 @@ interface Project {
   date: string | Date
   status: string
   quote_count?: number
+  archived_at: string | null
 }
 
 const PROJECT_STATUS_LABELS: Record<string, { label: string; cls: string }> = {
@@ -54,8 +55,23 @@ export default function ProjectsTable({ projects, role }: { projects: Project[],
   const [customerFilter, setCustomerFilter] = useState('')
   const [executiveFilter, setExecutiveFilter] = useState('')
   const [dateFilter, setDateFilter] = useState('')
+  const [showArchived, setShowArchived] = useState(false)
+  const [archivingId, setArchivingId] = useState<string | null>(null)
 
   const isSales = role === 'sales'
+
+  const archivedCount = useMemo(() => projects.filter(p => p.archived_at !== null).length, [projects])
+
+  async function handleArchive(id: string, archive: boolean) {
+    setArchivingId(id)
+    const res = await fetch(`/api/projects/${id}/archive`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ archive }),
+    })
+    setArchivingId(null)
+    if (res.ok) router.refresh()
+  }
 
   async function handleDelete(id: string) {
     const res = await fetch(`/api/projects/${id}`, { method: 'DELETE' })
@@ -74,7 +90,10 @@ export default function ProjectsTable({ projects, role }: { projects: Project[],
   }))).sort().reverse(), [projects])
 
   const filteredProjects = projects.filter(p => {
-    const matchesSearch = 
+    const isArchived = p.archived_at !== null
+    if (!showArchived && isArchived) return false
+
+    const matchesSearch =
       p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       (p.customer_name?.toLowerCase().includes(searchQuery.toLowerCase()) ?? false)
     
@@ -157,6 +176,22 @@ export default function ProjectsTable({ projects, role }: { projects: Project[],
 
         {/* Filters — pill chips */}
         <div className="flex flex-wrap items-center justify-center gap-2">
+          {archivedCount > 0 && (
+            <button
+              onClick={() => setShowArchived(v => !v)}
+              className="flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-full transition-colors"
+              style={{
+                background: showArchived ? 'var(--c-navy)' : 'var(--c-panel)',
+                color: showArchived ? '#fff' : 'var(--c-ghost)',
+                border: '1px solid var(--c-rim)',
+              }}
+            >
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/><line x1="10" y1="12" x2="14" y2="12"/>
+              </svg>
+              {showArchived ? 'Ocultar archivados' : `Archivados (${archivedCount})`}
+            </button>
+          )}
           <div className="flex items-center gap-1.5 mr-1" style={{ color: 'var(--c-ghost)' }}>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <line x1="4" y1="6" x2="20" y2="6"/><line x1="7" y1="12" x2="17" y2="12"/><line x1="10" y1="18" x2="14" y2="18"/>
@@ -263,10 +298,18 @@ export default function ProjectsTable({ projects, role }: { projects: Project[],
                     key={p.id}
                     onClick={() => router.push(`/projects/${p.id}`)}
                     className="tr-hover transition-colors cursor-pointer"
+                    style={{ opacity: p.archived_at ? 0.5 : 1 }}
                   >
                     <td className="px-5 py-4 font-bold" style={{ color: 'var(--c-navy)' }}>
-                      <div className="flex flex-col">
-                        <span>{p.name}</span>
+                      <div className="flex flex-col gap-1">
+                        <div className="flex items-center gap-2">
+                          <span>{p.name}</span>
+                          {p.archived_at && (
+                            <span className="badge" style={{ background: 'var(--c-panel)', color: 'var(--c-ghost)', border: '1px solid var(--c-rim)', fontSize: '10px' }}>
+                              Archivado
+                            </span>
+                          )}
+                        </div>
                         <span className="text-[10px] font-normal opacity-60 uppercase">{p.quote_count} {p.quote_count === 1 ? 'cotización' : 'cotizaciones'}</span>
                       </div>
                     </td>
@@ -286,6 +329,25 @@ export default function ProjectsTable({ projects, role }: { projects: Project[],
                     </td>
                     <td className="px-5 py-4 text-right">
                       <div className="flex items-center justify-end gap-2">
+                        <button
+                          onClick={(e) => { e.stopPropagation(); handleArchive(p.id, p.archived_at === null) }}
+                          disabled={archivingId === p.id}
+                          title={p.archived_at ? 'Desarchivar' : 'Archivar'}
+                          className="p-1.5 rounded-lg transition-colors"
+                          style={{ color: 'var(--c-ghost)' }}
+                          onMouseEnter={(e) => { e.currentTarget.style.background = 'var(--c-rim)' }}
+                          onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent' }}
+                        >
+                          {p.archived_at ? (
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                              <polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/><polyline points="10 14 12 12 14 14"/><line x1="12" y1="12" x2="12" y2="17"/>
+                            </svg>
+                          ) : (
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                              <polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/><line x1="10" y1="12" x2="14" y2="12"/>
+                            </svg>
+                          )}
+                        </button>
                         <button
                           aria-label="Eliminar proyecto"
                           onClick={(e) => { e.stopPropagation(); setDeleteId(p.id) }}
