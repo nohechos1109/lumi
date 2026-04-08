@@ -24,6 +24,8 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
     return NextResponse.json({ error: 'Esta solicitud ya fue procesada' }, { status: 409 })
   }
 
+  const isProductLine = approval.quote_line_display_type === 'product'
+
   const client = await pool.connect()
   try {
     await client.query('BEGIN')
@@ -35,17 +37,41 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
     )
 
     if (decision === 'approved') {
-      // 2a. Update line status
-      await client.query(
-        `UPDATE quote_lines SET discount_approval_status = 'approved' WHERE id = $1`,
-        [approval.quote_line_id]
-      )
+      if (isProductLine) {
+        // Apply the pending discount_percent and recalculate subtotal.
+        // updateQuoteTotals() step 0 will fix tax_amount and total for product lines after commit.
+        await client.query(
+          `UPDATE quote_lines
+           SET discount_percent = $1,
+               discount_approval_status = 'approved',
+               subtotal = unit_price_mxn_effective * COALESCE(qty, 1) * (1 - $1::numeric / 100),
+               margin_amount = unit_price_mxn_effective * COALESCE(qty, 1) * (1 - $1::numeric / 100)
+                               - (cost_base_snapshot * fx_snapshot * COALESCE(qty, 0))
+           WHERE id = $2`,
+          [Number(approval.discount_percent), approval.quote_line_id]
+        )
+      } else {
+        // Global discount line: just mark as approved (updateQuoteTotals recalibrates subtotal)
+        await client.query(
+          `UPDATE quote_lines SET discount_approval_status = 'approved' WHERE id = $1`,
+          [approval.quote_line_id]
+        )
+      }
     } else {
-      // 2b. Delete the line
-      await client.query(`DELETE FROM quote_lines WHERE id = $1`, [approval.quote_line_id])
+      // Rejected
+      if (isProductLine) {
+        // Clear the pending flag — do NOT delete the product line
+        await client.query(
+          `UPDATE quote_lines SET discount_approval_status = NULL WHERE id = $1`,
+          [approval.quote_line_id]
+        )
+      } else {
+        // Global discount line: delete it
+        await client.query(`DELETE FROM quote_lines WHERE id = $1`, [approval.quote_line_id])
+      }
     }
 
-    // 3. Create notification
+    // Notify requesting user
     await client.query(
       `INSERT INTO notifications (user_id, type, title, message, entity, entity_id)
        VALUES ($1, $2, $3, $4, $5, $6)`,
@@ -53,7 +79,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
         approval.requested_by,
         decision === 'approved' ? 'discount_approved' : 'discount_rejected',
         decision === 'approved' ? 'Descuento aprobado' : 'Descuento rechazado',
-        `Tu descuento del ${approval.discount_percent}% en la cotización ha sido ${decision === 'approved' ? 'aprobado' : 'rechazado'}.`,
+        `Tu descuento del ${approval.discount_percent}% ${isProductLine ? `en "${approval.quote_line_name}"` : 'en la cotización'} ha sido ${decision === 'approved' ? 'aprobado' : 'rechazado'}.`,
         'quote',
         approval.quote_id,
       ]
