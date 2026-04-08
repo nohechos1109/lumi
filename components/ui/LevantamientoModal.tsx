@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { toast } from '@/lib/toast'
 
 interface Props {
@@ -10,6 +11,7 @@ interface Props {
 }
 
 export default function LevantamientoModal({ quoteId, installationNotes, onClose }: Props) {
+  const router = useRouter()
   const [detalles, setDetalles] = useState(installationNotes ?? '')
   const [saving, setSaving] = useState(false)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
@@ -42,6 +44,7 @@ export default function LevantamientoModal({ quoteId, installationNotes, onClose
         body: JSON.stringify({ installation_notes: trimmed || null }),
       })
       if (!r.ok) throw new Error()
+      router.refresh()
     } catch {
       toast('Error al guardar los detalles', 'error')
     } finally {
