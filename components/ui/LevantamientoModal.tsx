@@ -120,7 +120,6 @@ export default function LevantamientoModal({ quoteId, installationNotes, onClose
             ref={textareaRef}
             id="lev-detalles"
             value={detalles}
-            maxLength={890}
             onChange={(e) => {
               setDetalles(e.target.value)
               const el = e.target
@@ -149,8 +148,8 @@ export default function LevantamientoModal({ quoteId, installationNotes, onClose
               overflowY: 'auto',
             }}
           />
-          <span className="text-xs text-right block" style={{ color: detalles.length >= 850 ? 'var(--c-warn, #d97706)' : 'var(--c-ghost)' }}>
-            {detalles.length}/890
+          <span className="text-xs text-right block" style={{ color: 'var(--c-ghost)' }}>
+            {detalles.length} caracteres
           </span>
         </div>
 

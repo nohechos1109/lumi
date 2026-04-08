@@ -58,7 +58,6 @@ export default function InstallationNotesEditor({ quoteId, installationNotes }: 
           ref={textareaRef}
           value={value}
           rows={5}
-          maxLength={890}
           onChange={e => {
             setValue(e.target.value)
             const el = e.target
@@ -84,8 +83,8 @@ export default function InstallationNotesEditor({ quoteId, installationNotes }: 
             overflowY: 'auto',
           }}
         />
-        <span className="text-xs text-right" style={{ color: value.length >= 850 ? 'var(--c-warn, #d97706)' : 'var(--c-ghost)' }}>
-          {value.length}/890
+        <span className="text-xs text-right" style={{ color: 'var(--c-ghost)' }}>
+          {value.length} caracteres
         </span>
         <span className="text-xs" style={{ color: 'var(--c-ghost)' }}>
           Ctrl+Enter para guardar · Esc para cancelar
