@@ -13,6 +13,7 @@ export interface Project {
   user_id: string | null;
   executive_name?: string;
   created_at: string;
+  archived_at: string | null;
   quote_count?: number;  // Number of associated quotes
 }
 
@@ -103,4 +104,12 @@ export async function deleteProject(id: string): Promise<void> {
   // For now, let's allow it but warn the user in UI if it has quotes.
   await pool.query('UPDATE quotes SET project_id = NULL WHERE project_id = $1', [id]);
   await pool.query('DELETE FROM projects WHERE id = $1', [id]);
+}
+
+export async function archiveProject(id: string): Promise<void> {
+  await pool.query('UPDATE projects SET archived_at = NOW() WHERE id = $1', [id]);
+}
+
+export async function unarchiveProject(id: string): Promise<void> {
+  await pool.query('UPDATE projects SET archived_at = NULL WHERE id = $1', [id]);
 }
