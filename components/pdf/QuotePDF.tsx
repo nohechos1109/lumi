@@ -59,15 +59,16 @@ const styles = StyleSheet.create({
   footerText: { fontSize: 7, color: '#9CA3AF', textAlign: 'center', marginTop: 10 }
 })
 
-interface Line { 
-  id: string; 
-  name: string; 
+interface Line {
+  id: string;
+  name: string;
   sku?: string;
-  qty: string | null; 
-  unit_price_mxn_effective: string; 
-  subtotal: string; 
-  display_type: string; 
-  discount_percent: string 
+  qty: string | null;
+  unit_price_mxn_effective: string;
+  subtotal: string;
+  display_type: string;
+  discount_percent: string;
+  discount_approval_status?: string | null;
 }
 
 interface Quote { 
@@ -258,6 +259,18 @@ export default function QuotePDF({ quote, lines, images }: { quote: Quote; lines
           </View>
 
           <View style={styles.totalsBox}>
+            {(() => {
+              const dl = lines.find(l => l.display_type === 'discount' && l.discount_approval_status !== 'pending')
+              if (!dl) return null
+              return (
+                <View style={styles.totalEntry}>
+                  <Text style={styles.label}>Descuento Global ({dl.discount_percent}%):</Text>
+                  <Text style={[styles.value, { color: '#0EA5E9' }]}>
+                    -${Math.abs(Number(dl.subtotal)).toLocaleString('es-MX', { minimumFractionDigits: 2 })} MXN
+                  </Text>
+                </View>
+              )
+            })()}
             <View style={styles.totalEntry}>
               <Text style={styles.label}>Subtotal:</Text>
               <Text style={styles.value}>${Number(quote.amount_untaxed).toLocaleString('es-MX', { minimumFractionDigits: 2 })} MXN</Text>

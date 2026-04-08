@@ -35,7 +35,9 @@ export async function listLines(quoteId: string): Promise<QuoteLine[]> {
      LEFT JOIN discount_approvals da
             ON da.quote_line_id = ql.id AND da.status = 'pending'
      WHERE ql.quote_id = $1
-     ORDER BY ql.sequence`,
+     ORDER BY
+       CASE WHEN ql.display_type = 'discount' THEN 1 ELSE 0 END ASC,
+       ql.sequence ASC`,
     [quoteId]
   )
   return rows

@@ -138,7 +138,11 @@ export default function LineEditor({ quoteId, fxSnapshot, unitCount, role, isLoc
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ display_type: 'discount', name: 'Descuento Global', qty: null, discount_percent: discount }),
       })
-      if (!r.ok) throw new Error()
+      if (!r.ok) {
+        const body = await r.json().catch(() => ({}))
+        toast(body.error ?? 'Error al agregar el descuento', 'error')
+        return
+      }
       await loadLines()
     } catch {
       toast('Error al agregar el descuento', 'error')
@@ -379,8 +383,8 @@ export default function LineEditor({ quoteId, fxSnapshot, unitCount, role, isLoc
 
                   if (line.display_type === 'discount') {
                     return (
-                      <tr key={line.id} draggable={!isLocked} onDragStart={() => handleDragStart(index)} onDragEnter={() => handleDragEnter(index)} onDragEnd={handleDragEnd} onDragOver={e => e.preventDefault()}
-                        className={isLocked ? '' : 'cursor-grab active:cursor-grabbing'} style={{ ...rowStyle, background: 'var(--c-panel)', opacity: line.discount_approval_status === 'pending' ? 0.6 : 1 }}>
+                      <tr key={line.id} draggable={line.display_type !== 'discount' && !isLocked} onDragStart={() => handleDragStart(index)} onDragEnter={() => handleDragEnter(index)} onDragEnd={handleDragEnd} onDragOver={e => e.preventDefault()}
+                        className={line.display_type !== 'discount' && !isLocked ? 'cursor-grab active:cursor-grabbing' : ''} style={{ ...rowStyle, background: 'var(--c-panel)', opacity: line.discount_approval_status === 'pending' ? 0.6 : 1 }}>
                         <td className="px-2 py-3.5 text-center text-xs" style={{ color: 'var(--c-ghost)' }}>
                           {isLocked ? '' : '⠿'}
                         </td>
@@ -527,6 +531,18 @@ export default function LineEditor({ quoteId, fxSnapshot, unitCount, role, isLoc
                     <span style={{ color: 'var(--c-dim)' }}>Subtotal</span>
                     <span className="font-mono font-semibold" style={{ color: 'var(--c-ink)' }}>${totals.untaxed.toLocaleString('es-MX', { minimumFractionDigits: 2 })}</span>
                   </span>
+                  {(() => {
+                    const dl = lines.find(l => l.display_type === 'discount' && l.discount_approval_status !== 'pending')
+                    if (!dl) return null
+                    return (
+                      <span className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg" style={{ background: 'var(--c-surface)', border: '1px solid var(--c-line)' }}>
+                        <span style={{ color: 'var(--c-dim)' }}>Descuento Global ({dl.discount_percent}%)</span>
+                        <span className="font-mono font-semibold" style={{ color: 'var(--c-amber)' }}>
+                          -${Math.abs(Number(dl.subtotal)).toLocaleString('es-MX', { minimumFractionDigits: 2 })}
+                        </span>
+                      </span>
+                    )
+                  })()}
                   <span className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg" style={{ background: 'var(--c-surface)', border: '1px solid var(--c-line)' }}>
                     <span style={{ color: 'var(--c-dim)' }}>IVA</span>
                     <span className="font-mono font-semibold" style={{ color: 'var(--c-ink)' }}>${totals.tax.toLocaleString('es-MX', { minimumFractionDigits: 2 })}</span>

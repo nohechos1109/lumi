@@ -29,6 +29,16 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
   if (session.role === 'sales' && quote.user_id !== session.userId) return forbidden()
 
   const body = await req.json()
+
+  if (body.display_type === 'discount') {
+    const { rows: [{ count }] } = await pool.query(
+      `SELECT COUNT(*) FROM quote_lines WHERE quote_id = $1 AND display_type = 'discount'`,
+      [id]
+    )
+    if (Number(count) >= 1)
+      return NextResponse.json({ error: 'Ya existe un descuento global en esta cotización' }, { status: 400 })
+  }
+
   const line = await createLine({ ...body, quote_id: id })
 
   if (body.display_type === 'discount' && session.role === 'sales') {
