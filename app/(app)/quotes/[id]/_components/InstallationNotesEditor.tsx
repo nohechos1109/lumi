@@ -79,7 +79,7 @@ export default function InstallationNotesEditor({ quoteId, installationNotes }: 
             boxShadow: '0 0 0 3px rgba(27,52,97,0.10)',
             fontFamily: 'inherit',
             lineHeight: '1.5',
-            maxHeight: '220px',
+            maxHeight: '440px',
             overflowY: 'auto',
           }}
         />

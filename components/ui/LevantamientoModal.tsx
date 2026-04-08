@@ -124,7 +124,7 @@ export default function LevantamientoModal({ quoteId, installationNotes, onClose
               setDetalles(e.target.value)
               const el = e.target
               el.style.height = 'auto'
-              el.style.height = `${Math.min(el.scrollHeight, 220)}px`
+              el.style.height = `${Math.min(el.scrollHeight, 440)}px`
             }}
             onBlur={(e) => saveNotes(e.target.value)}
             onKeyDown={(e) => {
@@ -144,7 +144,7 @@ export default function LevantamientoModal({ quoteId, installationNotes, onClose
               outline: 'none',
               fontFamily: 'inherit',
               lineHeight: '1.5',
-              maxHeight: '220px',
+              maxHeight: '440px',
               overflowY: 'auto',
             }}
           />
