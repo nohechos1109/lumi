@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import ConfirmModal from '@/components/ui/ConfirmModal'
 import DuplicateQuoteModal from '@/components/ui/DuplicateQuoteModal'
+import LevantamientoModal from '@/components/ui/LevantamientoModal'
 import { toast } from '@/lib/toast'
 
 interface Props {
@@ -25,6 +26,7 @@ export default function QuoteActions({ quoteId, currentState, role, projectId, p
   const router = useRouter()
   const [loading, setLoading] = useState(false)
   const [showDuplicateModal, setShowDuplicateModal] = useState(false)
+  const [showLevantamientoModal, setShowLevantamientoModal] = useState(false)
 
   const btnBase = `text-sm px-4 py-2 rounded-xl font-semibold transition-opacity ${loading ? 'opacity-50 pointer-events-none' : 'hover:opacity-80'}`
 
@@ -47,6 +49,14 @@ export default function QuoteActions({ quoteId, currentState, role, projectId, p
         </Link>
 
         <button
+          onClick={() => setShowLevantamientoModal(true)}
+          className={btnBase}
+          style={{ background: 'var(--c-panel)', color: 'var(--c-dim)', border: '1px solid var(--c-rim)' }}
+        >
+          Levantamiento PDF
+        </button>
+
+        <button
           onClick={() => setShowDuplicateModal(true)}
           className={btnBase}
           style={{ background: 'var(--c-panel)', color: 'var(--c-dim)', border: '1px solid var(--c-rim)' }}
@@ -54,6 +64,13 @@ export default function QuoteActions({ quoteId, currentState, role, projectId, p
           Duplicar
         </button>
       </div>
+
+      {showLevantamientoModal && (
+        <LevantamientoModal
+          quoteId={quoteId}
+          onClose={() => setShowLevantamientoModal(false)}
+        />
+      )}
 
       {showDuplicateModal && (
         <DuplicateQuoteModal
