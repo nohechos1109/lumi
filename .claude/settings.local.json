@@ -43,7 +43,16 @@
       "Bash(ls -la \"C:\\\\Users\\\\MARKETING & DISEÑO\\\\Documents\\\\cotizador-app/app/api/quotes\" 2>/dev/null)",
       "Bash(cat \"C:\\\\Users\\\\MARKETING & DISEÑO\\\\Documents\\\\cotizador-app/app/api/quotes/\\\\[id\\\\]/state/route.ts\" 2>/dev/null | head -50)",
       "Bash(find \"C:\\\\Users\\\\MARKETING & DISEÑO\\\\Documents\\\\cotizador-app\" -path \"*quotes*state*\" -name \"route.ts\" -type f 2>/dev/null)",
-      "Bash(grep:*)"
+      "Bash(grep:*)",
+      "Bash(ls *.sql)",
+      "Bash(npx tsc:*)",
+      "Bash(./node_modules/.bin/tsc --noEmit)",
+      "Bash(node_modules/.bin/tsc --noEmit)",
+      "Bash(cmd /c \"cd \\\\\"C:\\\\Users\\\\MARKETING & DISEÑO\\\\Documents\\\\cotizador-app\\\\\" && node_modules\\\\\\\\.bin\\\\\\\\tsc --noEmit 2>&1\")",
+      "Bash(cmd /c \"cd \\\\\"C:\\\\Users\\\\MARKETING & DISEÑO\\\\Documents\\\\cotizador-app\\\\\" && node_modules\\\\\\\\.bin\\\\\\\\tsc.cmd --noEmit\")",
+      "Bash(powershell -Command \"Set-Location 'C:\\\\Users\\\\MARKETING & DISEÑO\\\\Documents\\\\cotizador-app'; node_modules\\\\\\\\.bin\\\\\\\\tsc --noEmit 2>&1 | Select-Object -First 30\")",
+      "Bash(powershell -Command \"Set-Location 'C:\\\\Users\\\\MARKETING & DISEÑO\\\\Documents\\\\cotizador-app'; & '.\\\\node_modules\\\\.bin\\\\tsc.cmd' --noEmit 2>&1 | Select-Object -First 30\")",
+      "mcp__Claude_Preview__preview_start"
     ]
   }
 }
