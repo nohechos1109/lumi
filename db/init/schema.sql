@@ -124,6 +124,7 @@ CREATE TABLE "public"."projects" (
     "description" text,
     "user_id" uuid,
     "created_at" timestamptz DEFAULT CURRENT_TIMESTAMP,
+    "archived_at" timestamptz NULL,
     CONSTRAINT "projects_pkey" PRIMARY KEY ("id")
 )
 WITH (oids = false);
@@ -185,6 +186,7 @@ CREATE TABLE "public"."quotes" (
     "version" integer DEFAULT '1' NOT NULL,
     "project_id" uuid,
     "installation_notes" text,
+    "archived_at" timestamptz NULL,
     CONSTRAINT "quotes_pkey" PRIMARY KEY ("id"),
     CONSTRAINT "quotes_state_check" CHECK (((state = ANY (ARRAY['draft'::text, 'sent'::text, 'confirmed'::text, 'cancelled'::text, 'expired'::text])))),
     CONSTRAINT "quotes_fx_mxn_per_usd_snapshot_check" CHECK (((fx_mxn_per_usd_snapshot > (0)::numeric))),
