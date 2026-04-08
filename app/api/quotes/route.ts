@@ -26,7 +26,9 @@ export async function POST(req: NextRequest) {
       customer_id: body.customer_id,
       payment_term_id: body.payment_term_id,
       quotation_date: body.quotation_date ?? new Date().toISOString(),
-      expiration_date: body.expiration_date,
+      expiration_date: body.expiration_date ?? (() => {
+        const d = new Date(); d.setDate(d.getDate() + 1); return d.toISOString()
+      })(),
       fx_mxn_per_usd_snapshot: Number(settings?.fx_mxn_per_usd ?? 17.85),
       description: body.description,
       unit_count: body.unit_count ? Number(body.unit_count) : 1,
