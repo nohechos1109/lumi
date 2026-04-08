@@ -58,12 +58,13 @@ export default function InstallationNotesEditor({ quoteId, installationNotes }: 
           ref={textareaRef}
           value={value}
           rows={5}
+          maxLength={890}
           onChange={e => {
             setValue(e.target.value)
-            // Auto-expand height
             const el = e.target
             el.style.height = 'auto'
-            el.style.height = `${el.scrollHeight}px`
+            const maxH = parseInt(getComputedStyle(el).maxHeight)
+            el.style.height = `${Math.min(el.scrollHeight, maxH)}px`
           }}
           onBlur={save}
           onKeyDown={e => {
@@ -71,7 +72,7 @@ export default function InstallationNotesEditor({ quoteId, installationNotes }: 
             if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) (e.target as HTMLTextAreaElement).blur()
           }}
           placeholder="Ej: Instalar en cabina del conductor. Cable por el lado derecho del tablero..."
-          className="w-full rounded-lg px-4 py-2 text-sm outline-none resize-none overflow-hidden"
+          className="w-full rounded-lg px-4 py-2 text-sm outline-none resize-none"
           style={{
             background: 'var(--c-panel)',
             border: '2px solid var(--c-navy)',
@@ -79,8 +80,13 @@ export default function InstallationNotesEditor({ quoteId, installationNotes }: 
             boxShadow: '0 0 0 3px rgba(27,52,97,0.10)',
             fontFamily: 'inherit',
             lineHeight: '1.5',
+            maxHeight: '220px',
+            overflowY: 'auto',
           }}
         />
+        <span className="text-xs text-right" style={{ color: value.length >= 850 ? 'var(--c-warn, #d97706)' : 'var(--c-ghost)' }}>
+          {value.length}/890
+        </span>
         <span className="text-xs" style={{ color: 'var(--c-ghost)' }}>
           Ctrl+Enter para guardar · Esc para cancelar
         </span>
@@ -104,12 +110,11 @@ export default function InstallationNotesEditor({ quoteId, installationNotes }: 
               background: 'var(--c-hover)',
               border: '1px solid var(--c-rim)',
               color: 'var(--c-dim)',
-              display: '-webkit-box',
-              WebkitLineClamp: 2,
-              WebkitBoxOrient: 'vertical',
-              overflow: 'hidden',
               whiteSpace: 'pre-wrap',
-            } as React.CSSProperties}
+              display: 'block',
+              maxHeight: '80px',
+              overflowY: 'auto',
+            }}
           >
             {installationNotes}
             <span

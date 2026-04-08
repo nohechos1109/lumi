@@ -120,11 +120,12 @@ export default function LevantamientoModal({ quoteId, installationNotes, onClose
             ref={textareaRef}
             id="lev-detalles"
             value={detalles}
+            maxLength={890}
             onChange={(e) => {
               setDetalles(e.target.value)
               const el = e.target
               el.style.height = 'auto'
-              el.style.height = `${el.scrollHeight}px`
+              el.style.height = `${Math.min(el.scrollHeight, 220)}px`
             }}
             onBlur={(e) => saveNotes(e.target.value)}
             onKeyDown={(e) => {
@@ -136,7 +137,7 @@ export default function LevantamientoModal({ quoteId, installationNotes, onClose
             }}
             placeholder="Ej: Instalar en la cabina del conductor. Pasar cable por el lado derecho del tablero. Verificar conexión a tierra..."
             rows={4}
-            className="w-full rounded-lg p-3 text-sm resize-none overflow-hidden"
+            className="w-full rounded-lg p-3 text-sm resize-none"
             style={{
               background: 'var(--c-panel)',
               border: '1px solid var(--c-rim)',
@@ -144,8 +145,13 @@ export default function LevantamientoModal({ quoteId, installationNotes, onClose
               outline: 'none',
               fontFamily: 'inherit',
               lineHeight: '1.5',
+              maxHeight: '220px',
+              overflowY: 'auto',
             }}
           />
+          <span className="text-xs text-right block" style={{ color: detalles.length >= 850 ? 'var(--c-warn, #d97706)' : 'var(--c-ghost)' }}>
+            {detalles.length}/890
+          </span>
         </div>
 
         {/* Actions */}
