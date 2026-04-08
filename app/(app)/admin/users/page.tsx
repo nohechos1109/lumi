@@ -22,6 +22,7 @@ export default function AdminUsersPage() {
   const [deleteId, setDeleteId] = useState<string | null>(null)
   const [searchQuery, setSearchQuery] = useState('')
   const [roleFilter, setRoleFilter] = useState('')
+  const [showRoles, setShowRoles] = useState(false)
 
   async function load() {
     const r = await fetch('/api/admin/users')
@@ -102,17 +103,26 @@ export default function AdminUsersPage() {
             {users.length} {users.length === 1 ? 'usuario' : 'usuarios'}
           </p>
         </div>
-        <button
-          onClick={() => setAdding(true)}
-          className="text-sm px-5 py-2.5 rounded-xl font-bold uppercase tracking-wider transition-opacity hover:opacity-85"
-          style={{
-            background: 'var(--c-navy)',
-            color: '#fff',
-            letterSpacing: '0.08em',
-          }}
-        >
-          + Nuevo Usuario
-        </button>
+        <div className="flex items-center gap-3">
+          <button
+            onClick={() => setShowRoles(true)}
+            className="text-xs font-semibold transition-all hover:underline cursor-pointer"
+            style={{ color: '#0EA5E9' }}
+          >
+            Sobre los roles
+          </button>
+          <button
+            onClick={() => setAdding(true)}
+            className="text-sm px-5 py-2.5 rounded-xl font-bold uppercase tracking-wider transition-opacity hover:opacity-85"
+            style={{
+              background: 'var(--c-navy)',
+              color: '#fff',
+              letterSpacing: '0.08em',
+            }}
+          >
+            + Nuevo Usuario
+          </button>
+        </div>
       </div>
 
       {/* Modal crear usuario */}
@@ -402,6 +412,98 @@ export default function AdminUsersPage() {
           </tbody>
         </table>
       </div>
+      {/* Modal sobre los roles */}
+      {showRoles && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4"
+          style={{ background: 'rgba(9,11,16,0.45)', backdropFilter: 'blur(4px)' }}
+          onClick={() => setShowRoles(false)}
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="w-full max-w-lg rounded-2xl p-6 flex flex-col gap-5 shadow-xl animate-in fade-in zoom-in-95"
+            style={{ background: 'var(--c-card)', border: '1px solid var(--c-rim)' }}
+          >
+            <div className="flex items-center justify-between">
+              <h2 className="text-lg font-bold" style={{ color: 'var(--c-ink)' }}>Roles del sistema</h2>
+              <button
+                onClick={() => setShowRoles(false)}
+                className="flex items-center justify-center w-8 h-8 rounded-full transition-colors"
+                style={{ color: 'var(--c-ghost)' }}
+                onMouseEnter={(e) => { e.currentTarget.style.background = 'var(--c-rim)' }}
+                onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent' }}
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+                  <line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/>
+                </svg>
+              </button>
+            </div>
+
+            <div className="flex flex-col gap-4">
+              {[
+                {
+                  label: 'Sales',
+                  sublabel: 'Ventas',
+                  items: [
+                    'Ve y gestiona solo sus propias cotizaciones y proyectos',
+                    'Puede enviar cotizaciones o cancelarlas',
+                    'Puede solicitar descuentos (requieren aprobación del Admin)',
+                  ],
+                  cant: 'No puede ver cotizaciones de otros ni confirmarlas',
+                },
+                {
+                  label: 'Manager',
+                  sublabel: 'Gerente',
+                  items: [
+                    'Ve todas las cotizaciones y proyectos del equipo',
+                    'Puede confirmar o cancelar cotizaciones',
+                    'Puede establecer precios manuales en líneas',
+                    'Accede al log de actividad',
+                  ],
+                  cant: 'No puede aprobar descuentos ni gestionar usuarios o catálogo',
+                },
+                {
+                  label: 'Admin',
+                  sublabel: 'Administrador',
+                  items: [
+                    'Control total: usuarios, productos, clientes, plantillas',
+                    'Puede cambiar cotizaciones a cualquier estado',
+                    'Aprueba o rechaza solicitudes de descuento',
+                    'Gestiona configuración global del sistema',
+                  ],
+                  cant: null,
+                },
+              ].map(({ label, sublabel, items, cant }) => (
+                <div
+                  key={label}
+                  className="rounded-xl p-4"
+                  style={{ background: 'var(--c-panel)', border: '1px solid var(--c-rim)' }}
+                >
+                  <div className="flex items-baseline gap-2 mb-2.5">
+                    <span className="text-sm font-bold font-mono" style={{ color: 'var(--c-ink)' }}>{label}</span>
+                    <span className="text-xs" style={{ color: 'var(--c-ghost)' }}>{sublabel}</span>
+                  </div>
+                  <ul className="flex flex-col gap-1">
+                    {items.map((item) => (
+                      <li key={item} className="flex items-start gap-2 text-xs" style={{ color: 'var(--c-dim)' }}>
+                        <span className="mt-0.5 shrink-0" style={{ color: 'var(--c-navy)' }}>✓</span>
+                        {item}
+                      </li>
+                    ))}
+                    {cant && (
+                      <li className="flex items-start gap-2 text-xs mt-0.5" style={{ color: 'var(--c-ghost)' }}>
+                        <span className="mt-0.5 shrink-0">✗</span>
+                        {cant}
+                      </li>
+                    )}
+                  </ul>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
       {deleteId && (
         <ConfirmModal
           message="¿Eliminar este usuario? Esta acción no se puede deshacer."
