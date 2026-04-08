@@ -3,8 +3,6 @@ import { getSession, unauthorized, forbidden } from '@/lib/auth-guard'
 import { updateLine, deleteLine } from '@/lib/queries/quote_lines'
 import { updateQuoteTotals } from '@/lib/queries/quotes'
 import pool from '@/lib/db'
-import { createDiscountApproval } from '@/lib/queries/discount-approvals'
-import { createNotification } from '@/lib/queries/notifications'
 
 export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string; lineId: string }> }) {
   const session = await getSession()
@@ -18,20 +16,18 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
 
   // Individual discount approval flow: sales + discount_percent > 0 on a product line
   if (session.role === 'sales' && body.discount_percent !== undefined && Number(body.discount_percent) > 0) {
-    // Check the line exists and belongs to this quote
+    // Check the line exists, belongs to this quote, and the quote belongs to this user
     const { rows: [line] } = await pool.query(
-      `SELECT display_type, discount_approval_status FROM quote_lines WHERE id = $1 AND quote_id = $2`,
-      [lineId, id]
+      `SELECT ql.display_type, ql.discount_approval_status, ql.name
+       FROM quote_lines ql
+       JOIN quotes q ON q.id = ql.quote_id
+       WHERE ql.id = $1 AND ql.quote_id = $2 AND q.user_id = $3`,
+      [lineId, id, session.userId]
     )
-    if (!line) return NextResponse.json({ error: 'Línea no encontrada' }, { status: 404 })
+    if (!line) return forbidden()
 
     // Only product lines use this flow; global discount lines go through POST
     if (line.display_type === 'product') {
-      // Block concurrent pending approval
-      if (line.discount_approval_status === 'pending') {
-        return NextResponse.json({ error: 'Ya existe una solicitud de descuento pendiente para esta línea' }, { status: 409 })
-      }
-
       const requestedDiscount = Number(body.discount_percent)
 
       // Apply all other field changes (qty, name…) but NOT discount_percent.
@@ -42,38 +38,58 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
         await updateLine(lineId, restBody)
       }
 
-      // Mark line as pending
-      await pool.query(
-        `UPDATE quote_lines SET discount_approval_status = 'pending' WHERE id = $1`,
-        [lineId]
-      )
+      const client = await pool.connect()
+      try {
+        await client.query('BEGIN')
 
-      // Get the line name for the notification message
-      const { rows: [lineInfo] } = await pool.query(
-        `SELECT name FROM quote_lines WHERE id = $1`,
-        [lineId]
-      )
+        // Lock the row to prevent concurrent approvals
+        const { rows: [lockedLine] } = await client.query(
+          `SELECT discount_approval_status FROM quote_lines WHERE id = $1 FOR UPDATE`,
+          [lineId]
+        )
 
-      // Create approval record
-      const discountApproval = await createDiscountApproval({
-        quote_id: id,
-        quote_line_id: lineId,
-        requested_by: session.userId,
-        discount_percent: requestedDiscount,
-      })
+        if (lockedLine.discount_approval_status === 'pending') {
+          await client.query('ROLLBACK')
+          return NextResponse.json({ error: 'Ya existe una solicitud de descuento pendiente para esta línea' }, { status: 409 })
+        }
 
-      // Notify all admins
-      const { rows: admins } = await pool.query(`SELECT id FROM users WHERE role = 'admin'`)
-      await Promise.all(admins.map((admin: { id: string }) =>
-        createNotification({
-          user_id: admin.id,
-          type: 'discount_request',
-          title: 'Nueva solicitud de descuento',
-          message: `Vendedor solicitó un descuento del ${requestedDiscount}% en "${lineInfo?.name ?? 'producto'}".`,
-          entity: 'discount_approval',
-          entity_id: discountApproval.id,
-        })
-      ))
+        // Mark line as pending
+        await client.query(
+          `UPDATE quote_lines SET discount_approval_status = 'pending' WHERE id = $1`,
+          [lineId]
+        )
+
+        // Create approval record
+        const { rows: [approval] } = await client.query(
+          `INSERT INTO discount_approvals (quote_id, quote_line_id, requested_by, discount_percent)
+           VALUES ($1, $2, $3, $4) RETURNING *`,
+          [id, lineId, session.userId, requestedDiscount]
+        )
+
+        // Get admins and create notifications within transaction
+        const { rows: admins } = await client.query(`SELECT id FROM users WHERE role = 'admin'`)
+        await Promise.all(admins.map((admin: { id: string }) =>
+          client.query(
+            `INSERT INTO notifications (user_id, type, title, message, entity, entity_id)
+             VALUES ($1, $2, $3, $4, $5, $6)`,
+            [
+              admin.id,
+              'discount_request',
+              'Nueva solicitud de descuento',
+              `Vendedor solicitó un descuento del ${requestedDiscount}% en "${line?.name ?? 'producto'}".`,
+              'discount_approval',
+              approval.id,
+            ]
+          )
+        ))
+
+        await client.query('COMMIT')
+      } catch (err) {
+        await client.query('ROLLBACK')
+        throw err
+      } finally {
+        client.release()
+      }
 
       // updateQuoteTotals is still called but since discount_percent on the line was NOT changed,
       // the product line's subtotal is unchanged and totals remain correct (pending discount excluded).
