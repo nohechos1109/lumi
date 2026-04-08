@@ -10,6 +10,7 @@ interface DiscountApproval {
   quote_number: string
   requester_username: string
   quote_line_name: string
+  quote_line_display_type: string | null
   discount_percent: string
   created_at: string
 }
@@ -85,6 +86,7 @@ export default function DiscountApprovalsClient() {
                   <th className="text-left px-4 py-3.5 text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--c-ghost)' }}>Cotización</th>
                   <th className="text-left px-4 py-3.5 text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--c-ghost)' }}>Vendedor</th>
                   <th className="text-left px-4 py-3.5 text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--c-ghost)' }}>Línea</th>
+                  <th className="text-left px-4 py-3.5 text-xs font-bold uppercase tracking-widest w-24" style={{ color: 'var(--c-ghost)' }}>Tipo</th>
                   <th className="text-right px-4 py-3.5 text-xs font-bold uppercase tracking-widest w-24" style={{ color: 'var(--c-ghost)' }}>Descuento</th>
                   <th className="text-right px-4 py-3.5 text-xs font-bold uppercase tracking-widest w-24" style={{ color: 'var(--c-ghost)' }}>Solicitado</th>
                   <th className="px-4 py-3.5 w-40"></th>
@@ -109,6 +111,15 @@ export default function DiscountApprovalsClient() {
                       </td>
                       <td className="px-4 py-3 text-sm max-w-xs truncate" style={{ color: 'var(--c-ink)' }}>
                         {a.quote_line_name}
+                      </td>
+                      <td className="px-4 py-3">
+                        <span className="text-xs px-2 py-0.5 rounded-full font-semibold"
+                          style={a.quote_line_display_type === 'product'
+                            ? { background: 'rgba(99,102,241,0.1)', color: 'rgb(99,102,241)', border: '1px solid rgba(99,102,241,0.3)' }
+                            : { background: 'var(--c-amber-bg, rgba(251,191,36,0.12))', color: 'var(--c-amber)', border: '1px solid rgba(251,191,36,0.3)' }
+                          }>
+                          {a.quote_line_display_type === 'product' ? 'Individual' : 'Global'}
+                        </span>
                       </td>
                       <td className="px-4 py-3 text-right font-mono font-semibold" style={{ color: 'var(--c-amber)' }}>
                         {Number(a.discount_percent).toFixed(1)}%
