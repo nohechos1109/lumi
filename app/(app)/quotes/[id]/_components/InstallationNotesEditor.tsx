@@ -49,15 +49,21 @@ export default function InstallationNotesEditor({ quoteId, installationNotes }: 
         <textarea
           ref={textareaRef}
           value={value}
-          rows={4}
-          onChange={e => setValue(e.target.value)}
+          rows={5}
+          onChange={e => {
+            setValue(e.target.value)
+            // Auto-expand height
+            const el = e.target
+            el.style.height = 'auto'
+            el.style.height = `${el.scrollHeight}px`
+          }}
           onBlur={save}
           onKeyDown={e => {
             if (e.key === 'Escape') { setValue(installationNotes ?? ''); setEditing(false) }
             if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) (e.target as HTMLTextAreaElement).blur()
           }}
           placeholder="Ej: Instalar en cabina del conductor. Cable por el lado derecho del tablero..."
-          className="w-full rounded-lg px-4 py-2 text-sm outline-none resize-none"
+          className="w-full rounded-lg px-4 py-2 text-sm outline-none resize-none overflow-hidden"
           style={{
             background: 'var(--c-panel)',
             border: '2px solid var(--c-navy)',
@@ -85,12 +91,17 @@ export default function InstallationNotesEditor({ quoteId, installationNotes }: 
       >
         {installationNotes ? (
           <span
-            className="text-sm px-4 py-2 rounded-lg transition-colors w-full whitespace-pre-wrap"
+            className="text-sm px-4 py-2 rounded-lg transition-colors w-full"
             style={{
               background: 'var(--c-hover)',
               border: '1px solid var(--c-rim)',
               color: 'var(--c-dim)',
-            }}
+              display: '-webkit-box',
+              WebkitLineClamp: 2,
+              WebkitBoxOrient: 'vertical',
+              overflow: 'hidden',
+              whiteSpace: 'pre-wrap',
+            } as React.CSSProperties}
           >
             {installationNotes}
             <span
