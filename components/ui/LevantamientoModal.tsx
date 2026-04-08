@@ -31,27 +31,27 @@ export default function LevantamientoModal({ quoteId, installationNotes, onClose
     return () => window.removeEventListener('keydown', onKey)
   }, [onClose])
 
-  async function handleGenerate() {
-    const trimmed = detalles.trim()
-
-    // Save if changed
-    if (trimmed !== (installationNotes ?? '')) {
-      setSaving(true)
-      try {
-        const r = await fetch(`/api/quotes/${quoteId}`, {
-          method: 'PATCH',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ installation_notes: trimmed || null }),
-        })
-        if (!r.ok) throw new Error()
-      } catch {
-        toast('Error al guardar los detalles', 'error')
-        setSaving(false)
-        return
-      }
+  async function saveNotes(value: string) {
+    const trimmed = value.trim()
+    if (trimmed === (installationNotes ?? '').trim()) return
+    setSaving(true)
+    try {
+      const r = await fetch(`/api/quotes/${quoteId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ installation_notes: trimmed || null }),
+      })
+      if (!r.ok) throw new Error()
+    } catch {
+      toast('Error al guardar los detalles', 'error')
+    } finally {
       setSaving(false)
     }
+  }
 
+  async function handleGenerate() {
+    await saveNotes(detalles)
+    const trimmed = detalles.trim()
     const base = `/api/pdf/${quoteId}/levantamiento`
     const url = trimmed
       ? `${base}?detalles=${encodeURIComponent(trimmed)}`
@@ -98,13 +98,18 @@ export default function LevantamientoModal({ quoteId, installationNotes, onClose
 
         {/* Textarea */}
         <div>
-          <label
-            htmlFor="lev-detalles"
-            className="block text-xs font-semibold mb-1.5 uppercase tracking-wide"
-            style={{ color: 'var(--c-dim)' }}
-          >
-            Detalles para la instalación
-          </label>
+          <div className="flex items-center gap-2 mb-1.5">
+            <label
+              htmlFor="lev-detalles"
+              className="block text-xs font-semibold uppercase tracking-wide"
+              style={{ color: 'var(--c-dim)' }}
+            >
+              Detalles para la instalación
+            </label>
+            {saving && (
+              <span className="text-xs" style={{ color: 'var(--c-ghost)' }}>Guardando...</span>
+            )}
+          </div>
           <p className="text-xs mb-2" style={{ color: 'var(--c-ghost)' }}>
             Opcional. Aparecerá en el PDF al final del documento.
           </p>
@@ -117,6 +122,14 @@ export default function LevantamientoModal({ quoteId, installationNotes, onClose
               const el = e.target
               el.style.height = 'auto'
               el.style.height = `${el.scrollHeight}px`
+            }}
+            onBlur={(e) => saveNotes(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
+                e.preventDefault()
+                saveNotes(detalles)
+                textareaRef.current?.blur()
+              }
             }}
             placeholder="Ej: Instalar en la cabina del conductor. Pasar cable por el lado derecho del tablero. Verificar conexión a tierra..."
             rows={4}
