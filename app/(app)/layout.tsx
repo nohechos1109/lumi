@@ -24,7 +24,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
       { href: '/manager',  label: 'Equipo' },
     ],
     admin: [
-      { href: '/admin',            label: 'Dashboard' },
+      { href: '/admin',            label: 'Dashboard', exact: true },
       { href: '/projects',         label: 'Proyectos' },
       { href: '/admin/users',      label: 'Usuarios' },
       { href: '/admin/products',            label: 'Productos' },
