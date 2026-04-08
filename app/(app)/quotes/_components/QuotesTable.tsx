@@ -15,6 +15,7 @@ interface Quote {
   amount_total: string
   description: string | null
   payment_term_name?: string
+  archived_at: string | null
 }
 
 const STATE_LABELS: Record<string, { label: string; cls: string }> = {
@@ -66,8 +67,23 @@ export default function QuotesTable({
   const [customerFilter, setCustomerFilter] = useState('')
   const [executiveFilter, setExecutiveFilter] = useState('')
   const [dateFilter, setDateFilter] = useState('')
+  const [showArchived, setShowArchived] = useState(false)
+  const [archivingId, setArchivingId] = useState<string | null>(null)
 
   const isSales = role === 'sales'
+
+  const archivedCount = useMemo(() => quotes.filter(q => q.archived_at !== null).length, [quotes])
+
+  async function handleArchive(id: string, archive: boolean) {
+    setArchivingId(id)
+    const res = await fetch(`/api/quotes/${id}/archive`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ archive }),
+    })
+    setArchivingId(null)
+    if (res.ok) router.refresh()
+  }
 
   async function handleDelete(id: string) {
     await fetch(`/api/quotes/${id}`, { method: 'DELETE' })
@@ -84,7 +100,10 @@ export default function QuotesTable({
   }))).sort().reverse(), [quotes])
 
   const filteredQuotes = quotes.filter(q => {
-    const matchesSearch = 
+    const isArchived = q.archived_at !== null
+    if (!showArchived && isArchived) return false
+
+    const matchesSearch =
       q.number.toLowerCase().includes(searchQuery.toLowerCase()) ||
       (q.customer_name?.toLowerCase().includes(searchQuery.toLowerCase()) ?? false) ||
       (q.description?.toLowerCase().includes(searchQuery.toLowerCase()) ?? false)
@@ -187,6 +206,22 @@ export default function QuotesTable({
 
         {/* Filters — pill chips */}
         <div className="flex flex-wrap items-center justify-center gap-2">
+          {archivedCount > 0 && (
+            <button
+              onClick={() => setShowArchived(v => !v)}
+              className="flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-full transition-colors"
+              style={{
+                background: showArchived ? 'var(--c-navy)' : 'var(--c-panel)',
+                color: showArchived ? '#fff' : 'var(--c-ghost)',
+                border: '1px solid var(--c-rim)',
+              }}
+            >
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/><line x1="10" y1="12" x2="14" y2="12"/>
+              </svg>
+              {showArchived ? 'Ocultar archivados' : `Archivados (${archivedCount})`}
+            </button>
+          )}
           {/* Filter icon + label */}
           <div className="flex items-center gap-1.5 mr-1" style={{ color: 'var(--c-ghost)' }}>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -352,9 +387,17 @@ export default function QuotesTable({
                     key={q.id}
                     onClick={() => router.push(`/quotes/${q.id}`)}
                     className="tr-hover transition-colors cursor-pointer"
+                    style={{ opacity: q.archived_at ? 0.5 : 1 }}
                   >
                     <td className="px-5 py-4 font-mono text-xs font-bold" style={{ color: 'var(--c-navy)', letterSpacing: '0.08em' }}>
-                      {q.number}
+                      <div className="flex items-center gap-2">
+                        <span>{q.number}</span>
+                        {q.archived_at && (
+                          <span className="badge" style={{ background: 'var(--c-panel)', color: 'var(--c-ghost)', border: '1px solid var(--c-rim)', fontSize: '10px' }}>
+                            Archivado
+                          </span>
+                        )}
+                      </div>
                     </td>
                     {!hideCustomer && (
                       <td className="px-5 py-4 font-semibold" style={{ color: 'var(--c-ink)' }}>
@@ -384,6 +427,25 @@ export default function QuotesTable({
                     </td>
                     <td className="px-5 py-4 text-right">
                       <div className="flex items-center justify-end gap-2">
+                        <button
+                          onClick={(e) => { e.stopPropagation(); handleArchive(q.id, q.archived_at === null) }}
+                          disabled={archivingId === q.id}
+                          title={q.archived_at ? 'Desarchivar' : 'Archivar'}
+                          className="p-1.5 rounded-lg transition-colors"
+                          style={{ color: 'var(--c-ghost)' }}
+                          onMouseEnter={(e) => { e.currentTarget.style.background = 'var(--c-rim)' }}
+                          onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent' }}
+                        >
+                          {q.archived_at ? (
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                              <polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/><polyline points="10 14 12 12 14 14"/><line x1="12" y1="12" x2="12" y2="17"/>
+                            </svg>
+                          ) : (
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                              <polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/><line x1="10" y1="12" x2="14" y2="12"/>
+                            </svg>
+                          )}
+                        </button>
                         <button
                           aria-label="Eliminar cotización"
                           onClick={(e) => { e.stopPropagation(); setDeleteId(q.id) }}
