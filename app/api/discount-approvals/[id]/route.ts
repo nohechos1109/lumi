@@ -46,7 +46,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
                discount_approval_status = 'approved',
                subtotal = unit_price_mxn_effective * COALESCE(qty, 1) * (1 - $1::numeric / 100),
                margin_amount = unit_price_mxn_effective * COALESCE(qty, 1) * (1 - $1::numeric / 100)
-                               - (cost_base_snapshot * fx_snapshot * COALESCE(qty, 0))
+                               - (cost_base_snapshot * fx_snapshot * COALESCE(qty, 1))
            WHERE id = $2`,
           [Number(approval.discount_percent), approval.quote_line_id]
         )
