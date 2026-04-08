@@ -63,24 +63,23 @@ export default async function QuotePage({ params }: { params: Promise<{ id: stri
               </>
             )}
           </div>
-          {/* Description + Installation Notes side by side */}
-          <div className="flex flex-col sm:flex-row gap-4 mt-0">
-            <div className="flex-1 min-w-0">
-              <DescriptionEditor quoteId={id} description={quote.description} isLocked={quote.state !== 'draft'} />
-            </div>
-            <div className="flex-1 min-w-0">
-              <InstallationNotesEditor quoteId={id} installationNotes={quote.installation_notes ?? null} />
-            </div>
+          <DescriptionEditor quoteId={id} description={quote.description} isLocked={quote.state !== 'draft'} />
+        </div>
+
+        {/* Right column: actions + installation notes */}
+        <div className="flex flex-col gap-3 sm:items-end">
+          <QuoteActions
+            quoteId={id}
+            currentState={quote.state}
+            role={session.role}
+            projectId={quote.project_id}
+            projectName={quote.project_name ?? null}
+            installationNotes={quote.installation_notes ?? null}
+          />
+          <div className="w-full sm:w-72">
+            <InstallationNotesEditor quoteId={id} installationNotes={quote.installation_notes ?? null} />
           </div>
         </div>
-        <QuoteActions
-          quoteId={id}
-          currentState={quote.state}
-          role={session.role}
-          projectId={quote.project_id}
-          projectName={quote.project_name ?? null}
-          installationNotes={quote.installation_notes ?? null}
-        />
       </div>
 
       {/* Stats bar */}

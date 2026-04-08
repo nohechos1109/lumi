@@ -42,7 +42,7 @@ export default function InstallationNotesEditor({ quoteId, installationNotes }: 
 
   if (editing) {
     return (
-      <div className="flex flex-col gap-1.5 mt-3 w-full">
+      <div className="flex flex-col gap-1.5 w-full">
         <span className="text-xs font-semibold uppercase tracking-wide" style={{ color: 'var(--c-ghost)' }}>
           Detalles para la instalación
         </span>
@@ -75,7 +75,7 @@ export default function InstallationNotesEditor({ quoteId, installationNotes }: 
   }
 
   return (
-    <div className="flex flex-col gap-1.5 mt-3 w-full">
+    <div className="flex flex-col gap-1.5 w-full">
       <span className="text-xs font-semibold uppercase tracking-wide" style={{ color: 'var(--c-ghost)' }}>
         Detalles para la instalación
       </span>

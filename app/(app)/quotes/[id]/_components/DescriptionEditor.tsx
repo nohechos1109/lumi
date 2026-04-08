@@ -35,64 +35,74 @@ export default function DescriptionEditor({ quoteId, description, isLocked }: Pr
 
   if (editing) {
     return (
-      <input
-        type="text"
-        value={value}
-        onChange={e => setValue(e.target.value)}
-        onBlur={save}
-        onKeyDown={e => {
-          if (e.key === 'Enter') (e.target as HTMLInputElement).blur()
-          if (e.key === 'Escape') { setValue(description ?? ''); setEditing(false) }
-        }}
-        autoFocus
-        placeholder="Descripción de la cotización..."
-        className="text-sm mt-3 max-w-xl w-full rounded-lg px-4 py-2 outline-none"
-        style={{
-          background: 'var(--c-panel)',
-          border: '2px solid var(--c-navy)',
-          color: 'var(--c-ink)',
-          boxShadow: '0 0 0 3px rgba(27,52,97,0.10)',
-        }}
-      />
+      <div className="flex flex-col gap-1.5 mt-3 max-w-xl">
+        <span className="text-xs font-semibold uppercase tracking-wide" style={{ color: 'var(--c-ghost)' }}>
+          Requerimiento
+        </span>
+        <input
+          type="text"
+          value={value}
+          onChange={e => setValue(e.target.value)}
+          onBlur={save}
+          onKeyDown={e => {
+            if (e.key === 'Enter') (e.target as HTMLInputElement).blur()
+            if (e.key === 'Escape') { setValue(description ?? ''); setEditing(false) }
+          }}
+          autoFocus
+          placeholder="Descripción de la cotización..."
+          className="text-sm w-full rounded-lg px-4 py-2 outline-none"
+          style={{
+            background: 'var(--c-panel)',
+            border: '2px solid var(--c-navy)',
+            color: 'var(--c-ink)',
+            boxShadow: '0 0 0 3px rgba(27,52,97,0.10)',
+          }}
+        />
+      </div>
     )
   }
 
   return (
-    <button
-      disabled={isLocked}
-      onClick={() => { setValue(description ?? ''); setEditing(true) }}
-      className={`group flex items-center gap-2 mt-3 text-left max-w-xl ${isLocked ? 'cursor-default' : ''}`}
-    >
-      {description ? (
-        <span
-          className="text-sm px-4 py-2 rounded-lg transition-colors"
-          style={{
-            background: 'var(--c-hover)',
-            border: '1px solid var(--c-rim)',
-            color: 'var(--c-dim)',
-          }}
-        >
-          {description}
-          {!isLocked && (
-            <span
-              className="ml-2 opacity-0 group-hover:opacity-60 transition-opacity"
-              style={{ color: 'var(--c-navy)' }}
-            >
-              ✎
-            </span>
-          )}
-        </span>
-      ) : !isLocked ? (
-        <span
-          className="text-sm px-4 py-2 rounded-lg border border-dashed transition-colors"
-          style={{
-            borderColor: 'var(--c-rim-hi)',
-            color: 'var(--c-ghost)',
-          }}
-        >
-          + Agregar descripción
-        </span>
-      ) : null}
-    </button>
+    <div className="flex flex-col gap-1.5 mt-3 max-w-xl">
+      <span className="text-xs font-semibold uppercase tracking-wide" style={{ color: 'var(--c-ghost)' }}>
+        Requerimiento
+      </span>
+      <button
+        disabled={isLocked}
+        onClick={() => { setValue(description ?? ''); setEditing(true) }}
+        className={`group flex items-center gap-2 text-left ${isLocked ? 'cursor-default' : ''}`}
+      >
+        {description ? (
+          <span
+            className="text-sm px-4 py-2 rounded-lg transition-colors"
+            style={{
+              background: 'var(--c-hover)',
+              border: '1px solid var(--c-rim)',
+              color: 'var(--c-dim)',
+            }}
+          >
+            {description}
+            {!isLocked && (
+              <span
+                className="ml-2 opacity-0 group-hover:opacity-60 transition-opacity"
+                style={{ color: 'var(--c-navy)' }}
+              >
+                ✎
+              </span>
+            )}
+          </span>
+        ) : !isLocked ? (
+          <span
+            className="text-sm px-4 py-2 rounded-lg border border-dashed transition-colors"
+            style={{
+              borderColor: 'var(--c-rim-hi)',
+              color: 'var(--c-ghost)',
+            }}
+          >
+            + Agregar descripción
+          </span>
+        ) : null}
+      </button>
+    </div>
   )
 }
