@@ -1,0 +1,24 @@
+import { NextRequest, NextResponse } from 'next/server'
+import { getSession, unauthorized, forbidden } from '@/lib/auth-guard'
+import { getProject, archiveProject, unarchiveProject } from '@/lib/queries/projects'
+
+export async function POST(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const session = await getSession()
+  if (!session) return unauthorized()
+
+  const { id } = await params
+  const { archive } = await req.json() as { archive: boolean }
+
+  const project = await getProject(id)
+  if (!project) return NextResponse.json({ error: 'Not found' }, { status: 404 })
+
+  if (session.role === 'sales' && project.user_id !== session.userId) return forbidden()
+
+  if (archive) {
+    await archiveProject(id)
+  } else {
+    await unarchiveProject(id)
+  }
+
+  return NextResponse.json({ ok: true })
+}
