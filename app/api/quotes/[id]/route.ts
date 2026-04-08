@@ -41,6 +41,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
   await updateQuoteFields(id, {
     description: body.description,
     unit_count: body.unit_count ? Number(body.unit_count) : undefined,
+    installation_notes: body.installation_notes !== undefined ? (body.installation_notes || null) : undefined,
   })
   return NextResponse.json({ ok: true })
 }

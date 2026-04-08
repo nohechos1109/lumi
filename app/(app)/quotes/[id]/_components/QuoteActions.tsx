@@ -14,6 +14,7 @@ interface Props {
   role: string
   projectId: string | null
   projectName: string | null
+  installationNotes?: string | null
 }
 
 const VALID_TRANSITIONS: Record<string, string[]> = {
@@ -22,7 +23,7 @@ const VALID_TRANSITIONS: Record<string, string[]> = {
   admin:   ['draft', 'sent', 'confirmed', 'cancelled', 'expired'],
 }
 
-export default function QuoteActions({ quoteId, currentState, role, projectId, projectName }: Props) {
+export default function QuoteActions({ quoteId, currentState, role, projectId, projectName, installationNotes }: Props) {
   const router = useRouter()
   const [loading, setLoading] = useState(false)
   const [showDuplicateModal, setShowDuplicateModal] = useState(false)
@@ -68,6 +69,7 @@ export default function QuoteActions({ quoteId, currentState, role, projectId, p
       {showLevantamientoModal && (
         <LevantamientoModal
           quoteId={quoteId}
+          installationNotes={installationNotes}
           onClose={() => setShowLevantamientoModal(false)}
         />
       )}

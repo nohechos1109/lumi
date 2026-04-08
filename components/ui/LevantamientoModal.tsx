@@ -4,11 +4,12 @@ import { useEffect, useState } from 'react'
 
 interface Props {
   quoteId: string
+  installationNotes?: string | null
   onClose: () => void
 }
 
-export default function LevantamientoModal({ quoteId, onClose }: Props) {
-  const [detalles, setDetalles] = useState('')
+export default function LevantamientoModal({ quoteId, installationNotes, onClose }: Props) {
+  const [detalles, setDetalles] = useState(installationNotes ?? '')
 
   useEffect(() => {
     function onKey(e: KeyboardEvent) {

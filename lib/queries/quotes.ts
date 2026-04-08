@@ -27,6 +27,7 @@ export interface Quote {
   user_id: string | null
   project_id: string | null
   project_name?: string
+  installation_notes: string | null
 }
 
 export async function listQuotesByUser(userId: string): Promise<Quote[]> {
@@ -133,12 +134,13 @@ export async function updateQuoteState(id: string, state: QuoteState): Promise<v
   await pool.query('UPDATE quotes SET state = $1 WHERE id = $2', [state, id])
 }
 
-export async function updateQuoteFields(id: string, data: { description?: string; unit_count?: number }): Promise<void> {
+export async function updateQuoteFields(id: string, data: { description?: string; unit_count?: number; installation_notes?: string | null }): Promise<void> {
   const fields: string[] = []
   const values: unknown[] = []
   let i = 1
   if (data.description !== undefined) { fields.push(`description = $${i++}`); values.push(data.description) }
   if (data.unit_count !== undefined) { fields.push(`unit_count = $${i++}`); values.push(data.unit_count) }
+  if (data.installation_notes !== undefined) { fields.push(`installation_notes = $${i++}`); values.push(data.installation_notes) }
   if (!fields.length) return
   values.push(id)
   await pool.query(`UPDATE quotes SET ${fields.join(', ')} WHERE id = $${i}`, values)

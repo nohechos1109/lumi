@@ -184,6 +184,7 @@ CREATE TABLE "public"."quotes" (
     "margin_percent" numeric(6,2) DEFAULT '0' NOT NULL,
     "version" integer DEFAULT '1' NOT NULL,
     "project_id" uuid,
+    "installation_notes" text,
     CONSTRAINT "quotes_pkey" PRIMARY KEY ("id"),
     CONSTRAINT "quotes_state_check" CHECK (((state = ANY (ARRAY['draft'::text, 'sent'::text, 'confirmed'::text, 'cancelled'::text, 'expired'::text])))),
     CONSTRAINT "quotes_fx_mxn_per_usd_snapshot_check" CHECK (((fx_mxn_per_usd_snapshot > (0)::numeric))),

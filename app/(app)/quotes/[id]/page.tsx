@@ -8,6 +8,7 @@ import LineEditor from './_components/LineEditor'
 import QuoteActions from './_components/QuoteActions'
 import UnitCountEditor from './_components/UnitCountEditor'
 import DescriptionEditor from './_components/DescriptionEditor'
+import InstallationNotesEditor from './_components/InstallationNotesEditor'
 import QuoteStatusEditor from './_components/QuoteStatusEditor'
 
 export default async function QuotePage({ params }: { params: Promise<{ id: string }> }) {
@@ -62,7 +63,15 @@ export default async function QuotePage({ params }: { params: Promise<{ id: stri
               </>
             )}
           </div>
-          <DescriptionEditor quoteId={id} description={quote.description} isLocked={quote.state !== 'draft'} />
+          {/* Description + Installation Notes side by side */}
+          <div className="flex flex-col sm:flex-row gap-4 mt-0">
+            <div className="flex-1 min-w-0">
+              <DescriptionEditor quoteId={id} description={quote.description} isLocked={quote.state !== 'draft'} />
+            </div>
+            <div className="flex-1 min-w-0">
+              <InstallationNotesEditor quoteId={id} installationNotes={quote.installation_notes ?? null} />
+            </div>
+          </div>
         </div>
         <QuoteActions
           quoteId={id}
@@ -70,6 +79,7 @@ export default async function QuotePage({ params }: { params: Promise<{ id: stri
           role={session.role}
           projectId={quote.project_id}
           projectName={quote.project_name ?? null}
+          installationNotes={quote.installation_notes ?? null}
         />
       </div>
 
