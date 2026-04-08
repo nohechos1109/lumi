@@ -111,13 +111,13 @@ function NewQuoteForm() {
       >
         <div>
           <label className={labelCls} style={labelStyle}>
-            Descripción de la cotización *
+            Requerimiento de la cotización *
           </label>
           <input
             name="description"
             type="text"
             required
-            placeholder="Ej. Flotilla vehículos proyecto Q2..."
+            placeholder="Ej. Requerimiento de la cotización..."
             className="w-full"
           />
         </div>
