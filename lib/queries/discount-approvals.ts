@@ -14,11 +14,13 @@ export interface DiscountApproval {
   quote_number?: string
   requester_username?: string
   quote_line_name?: string
+  quote_line_display_type?: string | null
 }
 
 export async function listPendingApprovals(): Promise<DiscountApproval[]> {
   const { rows } = await pool.query(
-    `SELECT da.*, q.number as quote_number, u.username as requester_username, ql.name as quote_line_name
+    `SELECT da.*, q.number as quote_number, u.username as requester_username,
+            ql.name as quote_line_name, ql.display_type as quote_line_display_type
      FROM discount_approvals da
      JOIN quotes q ON q.id = da.quote_id
      JOIN users u ON u.id = da.requested_by
@@ -59,7 +61,8 @@ export async function reviewDiscountApproval(
 
 export async function getDiscountApproval(id: string): Promise<DiscountApproval | null> {
   const { rows } = await pool.query(
-    `SELECT da.*, q.number as quote_number, u.username as requester_username, ql.name as quote_line_name
+    `SELECT da.*, q.number as quote_number, u.username as requester_username,
+            ql.name as quote_line_name, ql.display_type as quote_line_display_type
      FROM discount_approvals da
      JOIN quotes q ON q.id = da.quote_id
      JOIN users u ON u.id = da.requested_by
