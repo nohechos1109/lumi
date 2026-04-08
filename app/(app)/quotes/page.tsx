@@ -2,12 +2,16 @@ import Link from 'next/link'
 import { cookies } from 'next/headers'
 import { getIronSession } from 'iron-session'
 import { sessionOptions, SessionData } from '@/lib/session'
-import { listQuotesByUser } from '@/lib/queries/quotes'
+import { listQuotesByUser, listAllQuotes } from '@/lib/queries/quotes'
 import QuotesTable from './_components/QuotesTable'
 
 export default async function QuotesPage() {
   const session = await getIronSession<SessionData>(await cookies(), sessionOptions)
-  const quotes = await listQuotesByUser(session.userId)
+  const quotes = session.role === 'sales'
+    ? await listQuotesByUser(session.userId)
+    : await listAllQuotes()
+
+  const title = session.role === 'sales' ? 'Mis Cotizaciones' : 'Cotizaciones'
 
   return (
     <div>
@@ -17,7 +21,7 @@ export default async function QuotesPage() {
             className="font-heading text-3xl font-bold"
             style={{ color: 'var(--c-ink)', letterSpacing: '0.04em' }}
           >
-            Mis Cotizaciones
+            {title}
           </h1>
           <p className="text-sm mt-1" style={{ color: 'var(--c-ghost)' }}>
             {quotes.length} {quotes.length === 1 ? 'registro' : 'registros'}
