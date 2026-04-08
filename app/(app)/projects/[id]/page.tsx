@@ -7,6 +7,7 @@ import { getProject } from '@/lib/queries/projects'
 import { listQuotesByProject } from '@/lib/queries/quotes'
 import QuotesTable from '@/app/(app)/quotes/_components/QuotesTable'
 import ProjectStatusEditor from './_components/ProjectStatusEditor'
+import ActivityLog from '@/components/ActivityLog'
 
 export default async function ProjectDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
@@ -88,6 +89,8 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
           showDescription={true} 
         />
       </div>
+
+      <ActivityLog entity="project" entityId={id} />
 
     </div>
   )

@@ -10,6 +10,7 @@ import UnitCountEditor from './_components/UnitCountEditor'
 import DescriptionEditor from './_components/DescriptionEditor'
 import InstallationNotesEditor from './_components/InstallationNotesEditor'
 import QuoteStatusEditor from './_components/QuoteStatusEditor'
+import ActivityLog from '@/components/ActivityLog'
 
 export default async function QuotePage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
@@ -144,6 +145,8 @@ export default async function QuotePage({ params }: { params: Promise<{ id: stri
         isLocked={quote.state !== 'draft'}
         quoteState={quote.state}
       />
+
+      <ActivityLog entity="quote" entityId={id} />
     </div>
   )
 }

@@ -42,7 +42,8 @@
       "Bash(find \"C:\\\\Users\\\\MARKETING & DISEÑO\\\\Documents\\\\cotizador-app/app/api\" -name \"route.ts\" -type f | xargs wc -l | sort -n | tail -10)",
       "Bash(ls -la \"C:\\\\Users\\\\MARKETING & DISEÑO\\\\Documents\\\\cotizador-app/app/api/quotes\" 2>/dev/null)",
       "Bash(cat \"C:\\\\Users\\\\MARKETING & DISEÑO\\\\Documents\\\\cotizador-app/app/api/quotes/\\\\[id\\\\]/state/route.ts\" 2>/dev/null | head -50)",
-      "Bash(find \"C:\\\\Users\\\\MARKETING & DISEÑO\\\\Documents\\\\cotizador-app\" -path \"*quotes*state*\" -name \"route.ts\" -type f 2>/dev/null)"
+      "Bash(find \"C:\\\\Users\\\\MARKETING & DISEÑO\\\\Documents\\\\cotizador-app\" -path \"*quotes*state*\" -name \"route.ts\" -type f 2>/dev/null)",
+      "Bash(grep:*)"
     ]
   }
 }

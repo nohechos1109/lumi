@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getSession, unauthorized, forbidden } from '@/lib/auth-guard'
 import { getQuote, updateQuoteState, QuoteState } from '@/lib/queries/quotes'
+import { insertAuditEvent } from '@/lib/queries/audit'
 
 const VALID_TRANSITIONS: Record<string, QuoteState[]> = {
   sales:   ['sent', 'cancelled'],
@@ -24,5 +25,11 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
   if (!allowed.includes(state)) return forbidden()
 
   await updateQuoteState(id, state)
+  await insertAuditEvent('quote', id, 'status_change', {
+    from: quote.state,
+    to: state,
+    user_id: session.userId,
+    username: session.username,
+  })
   return NextResponse.json({ ok: true })
 }
