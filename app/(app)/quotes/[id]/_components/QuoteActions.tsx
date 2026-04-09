@@ -79,6 +79,7 @@ export default function QuoteActions({ quoteId, currentState, role, projectId, p
           quoteId={quoteId}
           currentProjectId={projectId}
           currentProjectName={projectName}
+          role={role}
           onClose={() => setShowDuplicateModal(false)}
           onDuplicated={handleDuplicated}
         />

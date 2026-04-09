@@ -18,6 +18,7 @@ interface Props {
   quoteId: string
   currentProjectId: string | null
   currentProjectName: string | null
+  role: string
   onClose: () => void
   onDuplicated: (newQuoteId: string, newQuoteNumber: string) => void
 }
@@ -28,10 +29,12 @@ export default function DuplicateQuoteModal({
   quoteId,
   currentProjectId,
   currentProjectName,
+  role,
   onClose,
   onDuplicated,
 }: Props) {
   const hasProject = currentProjectId !== null
+  const canUseShowroom = role !== 'sales'
 
   const [projects, setProjects] = useState<Project[]>([])
   const [customers, setCustomers] = useState<Customer[]>([])
@@ -249,10 +252,12 @@ export default function DuplicateQuoteModal({
                 </select>
               )}
 
-              <button style={optionStyle(selection === 'none')} onClick={() => setSelection('none')}>
-                <span style={radioCircle(selection === 'none')} />
-                <span className="text-sm" style={{ color: 'var(--c-ink)' }}>Sin proyecto</span>
-              </button>
+              {canUseShowroom && (
+                <button style={optionStyle(selection === 'none')} onClick={() => setSelection('none')}>
+                  <span style={radioCircle(selection === 'none')} />
+                  <span className="text-sm" style={{ color: 'var(--c-ink)' }}>Sin proyecto</span>
+                </button>
+              )}
             </>
           ) : (
             <>
@@ -273,10 +278,12 @@ export default function DuplicateQuoteModal({
                 </select>
               )}
 
-              <button style={optionStyle(selection === 'none')} onClick={() => setSelection('none')}>
-                <span style={radioCircle(selection === 'none')} />
-                <span className="text-sm" style={{ color: 'var(--c-ink)' }}>Sin proyecto</span>
-              </button>
+              {canUseShowroom && (
+                <button style={optionStyle(selection === 'none')} onClick={() => setSelection('none')}>
+                  <span style={radioCircle(selection === 'none')} />
+                  <span className="text-sm" style={{ color: 'var(--c-ink)' }}>Sin proyecto</span>
+                </button>
+              )}
             </>
           )}
         </div>
