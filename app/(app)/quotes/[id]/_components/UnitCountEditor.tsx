@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { toast } from '@/lib/toast'
+import { toast, notifyRefresh } from '@/lib/toast'
 
 interface Props {
   quoteId: string
@@ -28,6 +28,7 @@ export default function UnitCountEditor({ quoteId, unitCount, isLocked }: Props)
         body: JSON.stringify({ unit_count: v }),
       })
       if (!r.ok) throw new Error()
+      notifyRefresh()
       router.refresh()
     } catch {
       toast('Error al guardar el número de vehículos', 'error')

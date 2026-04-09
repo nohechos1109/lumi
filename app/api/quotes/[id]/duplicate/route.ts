@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { revalidatePath } from 'next/cache'
 import { getSession, unauthorized, forbidden } from '@/lib/auth-guard'
 import { getQuote, duplicateQuote } from '@/lib/queries/quotes'
 
@@ -35,6 +36,8 @@ export async function POST(
 
   try {
     const newQuote = await duplicateQuote(id, session.userId, targetProjectId, targetCustomerId)
+    revalidatePath('/quotes')
+    revalidatePath('/projects')
     return NextResponse.json(newQuote, { status: 201 })
   } catch (error) {
     console.error('POST /api/quotes/[id]/duplicate ERROR:', error)

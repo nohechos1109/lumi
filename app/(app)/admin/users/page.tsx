@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import ConfirmModal from '@/components/ui/ConfirmModal'
+import { toast, notifyRefresh } from '@/lib/toast'
 
 interface User { id: string; username: string; role: string }
 
@@ -39,11 +40,17 @@ export default function AdminUsersPage() {
 
   async function handleAdd(e: React.FormEvent) {
     e.preventDefault()
-    await fetch('/api/admin/users', {
+    const res = await fetch('/api/admin/users', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(form),
     })
+    if (!res.ok) {
+      const data = await res.json().catch(() => ({}))
+      toast(data.error ?? 'Error al crear usuario', 'error')
+      return
+    }
+    notifyRefresh()
     setForm({ username: '', role: 'sales', password: '' })
     setAdding(false)
     load()
@@ -63,11 +70,18 @@ export default function AdminUsersPage() {
     if (editForm.role !== editUser.role) body.role = editForm.role
     if (editForm.password) body.password = editForm.password
     if (Object.keys(body).length > 0) {
-      await fetch(`/api/admin/users/${editUser.id}`, {
+      const res = await fetch(`/api/admin/users/${editUser.id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body),
       })
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}))
+        toast(data.error ?? 'Error al actualizar usuario', 'error')
+        setEditSaving(false)
+        return
+      }
+      notifyRefresh()
       load()
     }
     setEditUser(null)
@@ -75,7 +89,13 @@ export default function AdminUsersPage() {
   }
 
   async function handleDelete(id: string) {
-    await fetch(`/api/admin/users/${id}`, { method: 'DELETE' })
+    const res = await fetch(`/api/admin/users/${id}`, { method: 'DELETE' })
+    if (!res.ok) {
+      const data = await res.json().catch(() => ({}))
+      toast(data.error ?? 'Error al eliminar usuario', 'error')
+      return
+    }
+    notifyRefresh()
     load()
   }
 

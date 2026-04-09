@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { toast } from '@/lib/toast'
+import { toast, notifyRefresh } from '@/lib/toast'
 
 interface DiscountApproval {
   id: string
@@ -38,6 +38,7 @@ export default function DiscountApprovalsClient() {
         body: JSON.stringify({ decision }),
       })
       if (!r.ok) throw new Error()
+      notifyRefresh()
       setApprovals(prev => prev.filter(a => a.id !== id))
       toast(decision === 'approved' ? 'Descuento aprobado' : 'Descuento rechazado')
       router.refresh()

@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { revalidatePath } from 'next/cache'
 import { getSession, unauthorized, forbidden } from '@/lib/auth-guard'
 import { getQuote, updateQuoteState, QuoteState } from '@/lib/queries/quotes'
 import { insertAuditEvent } from '@/lib/queries/audit'
@@ -31,5 +32,6 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
     user_id: session.userId,
     username: session.username,
   })
+  revalidatePath('/quotes')
   return NextResponse.json({ ok: true })
 }

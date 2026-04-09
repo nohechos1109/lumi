@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { revalidatePath } from 'next/cache'
 import { getSession, unauthorized, forbidden } from '@/lib/auth-guard'
 import { updateLine, deleteLine } from '@/lib/queries/quote_lines'
 import { updateQuoteTotals } from '@/lib/queries/quotes'
@@ -84,6 +85,8 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
 
       // Totals are unchanged since discount_percent on the line was NOT modified
       await updateQuoteTotals(id)
+      revalidatePath('/quotes')
+      revalidatePath('/admin/discount-approvals')
       return NextResponse.json({ ok: true })
     }
 
@@ -155,6 +158,8 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
       // updateQuoteTotals is still called but since discount_percent on the line was NOT changed,
       // the product line's subtotal is unchanged and totals remain correct (pending discount excluded).
       await updateQuoteTotals(id)
+      revalidatePath('/quotes')
+      revalidatePath('/admin/discount-approvals')
       return NextResponse.json({ ok: true })
     }
   }
@@ -162,6 +167,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
   // Default flow for non-sales or zero discount
   await updateLine(lineId, body)
   await updateQuoteTotals(id)
+  revalidatePath('/quotes')
   return NextResponse.json({ ok: true })
 }
 
@@ -172,5 +178,6 @@ export async function DELETE(_req: NextRequest, { params }: { params: Promise<{ 
   const { id, lineId } = await params
   await deleteLine(lineId)
   await updateQuoteTotals(id)
+  revalidatePath('/quotes')
   return NextResponse.json({ ok: true })
 }

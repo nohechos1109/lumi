@@ -3,6 +3,7 @@
 import { useState, useEffect, FormEvent, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { CustomerFormModal, CustomerSaved } from '@/app/(app)/customers/_components/CustomerFormModal'
+import { notifyRefresh } from '@/lib/toast'
 
 interface Customer { id: string; name: string; email: string | null; phone: string | null }
 
@@ -73,6 +74,7 @@ function NewQuoteForm() {
       return
     }
 
+    notifyRefresh()
     router.push(`/quotes/${result.id}`)
   }
 

@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { toast } from '@/lib/toast'
+import { toast, notifyRefresh } from '@/lib/toast'
 
 export interface CustomerSaved {
   id: string
@@ -54,6 +54,7 @@ export function CustomerFormModal({ customer, onClose, onSaved }: CustomerFormMo
         return
       }
       const saved: CustomerSaved = await res.json()
+      notifyRefresh()
       toast(isEdit ? 'Cliente actualizado' : 'Cliente creado', 'success')
       onSaved(saved)
     } finally {

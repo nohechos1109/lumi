@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { revalidatePath } from 'next/cache'
 import { getSession, unauthorized, forbidden } from '@/lib/auth-guard'
 import { updateUser, deleteUser } from '@/lib/queries/users'
 import bcrypt from 'bcryptjs'
@@ -11,6 +12,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
   const body = await req.json()
   if (body.password) { body.password_hash = await bcrypt.hash(body.password, 10); delete body.password }
   await updateUser(id, body)
+  revalidatePath('/admin/users')
   return NextResponse.json({ ok: true })
 }
 
@@ -20,5 +22,6 @@ export async function DELETE(_req: NextRequest, { params }: { params: Promise<{ 
   if (session.role !== 'admin') return forbidden()
   const { id } = await params
   await deleteUser(id)
+  revalidatePath('/admin/users')
   return NextResponse.json({ ok: true })
 }

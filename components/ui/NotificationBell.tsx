@@ -102,6 +102,13 @@ export default function NotificationBell() {
     return () => clearInterval(interval)
   }, [])
 
+  // Refresh on mutation events
+  useEffect(() => {
+    function handleRefresh() { loadNotifications() }
+    window.addEventListener('app:refresh-notifications', handleRefresh)
+    return () => window.removeEventListener('app:refresh-notifications', handleRefresh)
+  }, [])
+
   // Close on outside click
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {

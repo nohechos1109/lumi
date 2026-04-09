@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { revalidatePath } from 'next/cache'
 import { getSession, unauthorized, forbidden } from '@/lib/auth-guard'
 import pool from '@/lib/db'
 import { createPlantilla } from '@/lib/queries/plantillas'
@@ -23,5 +24,7 @@ export async function POST(req: NextRequest) {
   const { nombre, requerimiento } = await req.json()
   if (!nombre?.trim()) return NextResponse.json({ error: 'Nombre requerido' }, { status: 400 })
   const plantilla = await createPlantilla(nombre.trim(), requerimiento?.trim() || undefined)
+  revalidatePath('/admin/plantillas')
+  revalidatePath('/plantillas')
   return NextResponse.json(plantilla, { status: 201 })
 }

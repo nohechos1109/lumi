@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { revalidatePath } from 'next/cache'
 import { getSession, unauthorized } from '@/lib/auth-guard'
 import { listQuotesByUser, listAllQuotes, createQuote } from '@/lib/queries/quotes'
 import { getSettings } from '@/lib/queries/settings'
@@ -37,6 +38,8 @@ export async function POST(req: NextRequest) {
       project_id: body.project_id,
     })
 
+    revalidatePath('/quotes')
+    revalidatePath('/projects')
     return NextResponse.json(quote, { status: 201 })
   } catch (error) {
     console.error('POST /api/quotes ERROR:', error)

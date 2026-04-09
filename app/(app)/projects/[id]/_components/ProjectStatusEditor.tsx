@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { toast } from '@/lib/toast'
+import { toast, notifyRefresh } from '@/lib/toast'
 
 interface Props {
   projectId: string
@@ -32,6 +32,7 @@ export default function ProjectStatusEditor({ projectId, currentStatus }: Props)
         body: JSON.stringify({ status: newStatus }),
       })
       if (!r.ok) throw new Error()
+      notifyRefresh()
       toast('Estado del proyecto actualizado')
       router.refresh()
     } catch {

@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from 'react'
 import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import ConfirmModal from '@/components/ui/ConfirmModal'
+import { notifyRefresh } from '@/lib/toast'
 
 interface Customer { id: string; name: string; email: string | null; phone: string | null }
 
@@ -44,11 +45,12 @@ export default function AdminCustomersPage() {
 
   async function handleAdd(e: React.FormEvent) {
     e.preventDefault()
-    await fetch('/api/admin/customers', {
+    const res = await fetch('/api/admin/customers', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ name, email: email || undefined, phone: phone || undefined }),
     })
+    if (res.ok) notifyRefresh()
     setName(''); setEmail(''); setPhone(''); setAdding(false); load()
   }
 
@@ -61,18 +63,20 @@ export default function AdminCustomersPage() {
     e.preventDefault()
     if (!editCustomer) return
     setEditSaving(true)
-    await fetch(`/api/admin/customers/${editCustomer.id}`, {
+    const res = await fetch(`/api/admin/customers/${editCustomer.id}`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ name: editForm.name, email: editForm.email || undefined, phone: editForm.phone || undefined }),
     })
+    if (res.ok) notifyRefresh()
     setEditCustomer(null)
     setEditSaving(false)
     load()
   }
 
   async function handleDelete(id: string) {
-    await fetch(`/api/admin/customers/${id}`, { method: 'DELETE' })
+    const res = await fetch(`/api/admin/customers/${id}`, { method: 'DELETE' })
+    if (res.ok) notifyRefresh()
     load()
   }
 

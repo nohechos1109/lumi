@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { toast } from '@/lib/toast'
+import { toast, notifyRefresh } from '@/lib/toast'
 
 interface Project {
   id: string
@@ -118,6 +118,7 @@ export default function DuplicateQuoteModal({
         return
       }
 
+      notifyRefresh()
       const newQuote = await res.json()
       onDuplicated(newQuote.id, newQuote.number)
       return

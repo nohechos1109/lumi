@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { revalidatePath } from 'next/cache'
 import { getSession, unauthorized, forbidden } from '@/lib/auth-guard'
 import { listUsers, createUser } from '@/lib/queries/users'
 import bcrypt from 'bcryptjs'
@@ -17,5 +18,6 @@ export async function POST(req: NextRequest) {
   const { username, role, password } = await req.json()
   const hash = await bcrypt.hash(password, 10)
   const user = await createUser(username, role, hash)
+  revalidatePath('/admin/users')
   return NextResponse.json(user, { status: 201 })
 }

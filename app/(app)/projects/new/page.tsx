@@ -3,6 +3,7 @@
 import { useState, useEffect, FormEvent } from 'react'
 import { useRouter } from 'next/navigation'
 import { CustomerFormModal, CustomerSaved } from '@/app/(app)/customers/_components/CustomerFormModal'
+import { notifyRefresh } from '@/lib/toast'
 
 interface Customer { id: string; name: string }
 
@@ -51,6 +52,7 @@ export default function NewProjectPage() {
       return
     }
 
+    notifyRefresh()
     router.push(`/projects/${result.id}`)
   }
 

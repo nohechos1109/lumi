@@ -1,8 +1,9 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
+import { useRouter } from 'next/navigation'
 import ConfirmModal from '@/components/ui/ConfirmModal'
-import { toast } from '@/lib/toast'
+import { toast, notifyRefresh } from '@/lib/toast'
 import { CustomerFormModal } from './CustomerFormModal'
 
 interface Customer {
@@ -46,6 +47,7 @@ function DeleteRequestModal({ customer, onClose, onSent }: DeleteRequestModalPro
         toast(data.error ?? 'Error al enviar solicitud', 'error')
         return
       }
+      notifyRefresh()
       toast('Solicitud de eliminación enviada', 'success')
       onSent()
     } finally {
@@ -140,11 +142,13 @@ function DeleteRequestModal({ customer, onClose, onSent }: DeleteRequestModalPro
 
 interface Props {
   role: string
+  initialCustomers: Customer[]
 }
 
-export default function CustomersClient({ role }: Props) {
-  const [customers, setCustomers] = useState<Customer[]>([])
-  const [loading, setLoading] = useState(true)
+export default function CustomersClient({ role, initialCustomers }: Props) {
+  const router = useRouter()
+  const [customers, setCustomers] = useState<Customer[]>(initialCustomers)
+  const [loading, setLoading] = useState(false)
   const [search, setSearch] = useState('')
   const [showCreate, setShowCreate] = useState(false)
   const [editCustomer, setEditCustomer] = useState<Customer | null>(null)
@@ -160,15 +164,12 @@ export default function CustomersClient({ role }: Props) {
       if (res.ok) {
         const data = await res.json()
         setCustomers(data)
+        router.refresh()
       }
     } finally {
       setLoading(false)
     }
-  }, [])
-
-  useEffect(() => {
-    loadCustomers()
-  }, [loadCustomers])
+  }, [router])
 
   const filtered = customers.filter(c => {
     const q = search.toLowerCase()
@@ -186,6 +187,7 @@ export default function CustomersClient({ role }: Props) {
       const data = await res.json().catch(() => ({}))
       toast(data.error ?? 'Error al eliminar', 'error')
     } else {
+      notifyRefresh()
       toast('Cliente eliminado', 'success')
     }
     setDeleteConfirmCustomer(null)

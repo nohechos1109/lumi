@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { revalidatePath } from 'next/cache'
 import { getSession, unauthorized, forbidden } from '@/lib/auth-guard'
 import { getQuote, archiveQuote, unarchiveQuote } from '@/lib/queries/quotes'
 
@@ -20,5 +21,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     await unarchiveQuote(id)
   }
 
+  revalidatePath('/quotes')
+  revalidatePath('/projects')
   return NextResponse.json({ ok: true })
 }

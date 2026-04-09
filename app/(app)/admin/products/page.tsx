@@ -6,6 +6,7 @@ import Link from 'next/link'
 import ConfirmModal from '@/components/ui/ConfirmModal'
 import ProductFormModal from './_components/ProductFormModal'
 import ProductGrid from './_components/ProductGrid'
+import { notifyRefresh } from '@/lib/toast'
 
 interface Product {
   id: string;
@@ -55,24 +56,27 @@ export default function AdminProductsPage() {
   })
 
   async function handleSave(data: Partial<Product>) {
+    let res: Response
     if (productToEdit) {
-      await fetch(`/api/admin/products/${productToEdit.id}`, {
+      res = await fetch(`/api/admin/products/${productToEdit.id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
       })
     } else {
-      await fetch('/api/admin/products', {
+      res = await fetch('/api/admin/products', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
       })
     }
+    if (res.ok) notifyRefresh()
     load()
   }
 
   async function handleDelete(id: string) {
-    await fetch(`/api/admin/products/${id}`, { method: 'DELETE' })
+    const res = await fetch(`/api/admin/products/${id}`, { method: 'DELETE' })
+    if (res.ok) notifyRefresh()
     load()
   }
 

@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { toast } from '@/lib/toast'
+import { toast, notifyRefresh } from '@/lib/toast'
 
 interface Props {
   quoteId: string
@@ -26,6 +26,7 @@ export default function DescriptionEditor({ quoteId, description, isLocked }: Pr
         body: JSON.stringify({ description: trimmed || null }),
       })
       if (!r.ok) throw new Error()
+      notifyRefresh()
       router.refresh()
     } catch {
       toast('Error al guardar la descripción', 'error')

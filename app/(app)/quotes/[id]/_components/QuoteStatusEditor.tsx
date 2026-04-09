@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { toast } from '@/lib/toast'
+import { toast, notifyRefresh } from '@/lib/toast'
 import { QuoteState } from '@/lib/queries/quotes'
 
 interface Props {
@@ -43,6 +43,7 @@ export default function QuoteStatusEditor({ quoteId, currentStatus, role }: Prop
         body: JSON.stringify({ state: newState }),
       })
       if (!r.ok) throw new Error()
+      notifyRefresh()
       toast('Estado de la cotización actualizado')
       router.refresh()
     } catch {

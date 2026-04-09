@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { revalidatePath } from 'next/cache'
 import { getSession, unauthorized } from '@/lib/auth-guard'
 import { getProject, updateProject, deleteProject } from '@/lib/queries/projects'
 import { insertAuditEvent } from '@/lib/queries/audit'
@@ -32,6 +33,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
         username: session.username,
       })
     }
+    revalidatePath('/projects')
     return NextResponse.json({ ok: true })
   } catch (error) {
     console.error('PATCH /api/projects/[id] ERROR:', error)
@@ -47,6 +49,7 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ i
 
   try {
     await deleteProject(id)
+    revalidatePath('/projects')
     return NextResponse.json({ ok: true })
   } catch (error) {
     console.error('DELETE /api/projects/[id] ERROR:', error)

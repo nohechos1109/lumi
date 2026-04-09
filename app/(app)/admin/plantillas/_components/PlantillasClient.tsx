@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import Link from 'next/link'
 import ConfirmModal from '@/components/ui/ConfirmModal'
-import { toast } from '@/lib/toast'
+import { toast, notifyRefresh } from '@/lib/toast'
 
 interface Plantilla {
   id: string
@@ -102,6 +102,7 @@ function PlantillaEditorModal({ plantilla, onClose, onSaved }: EditorModalProps)
         toast(data.error ?? 'Error al guardar', 'error')
         return
       }
+      notifyRefresh()
       toast(isEdit ? 'Plantilla actualizada' : 'Plantilla creada', 'success')
       onSaved()
     } finally {
@@ -123,6 +124,7 @@ function PlantillaEditorModal({ plantilla, onClose, onSaved }: EditorModalProps)
         toast(data.error ?? 'Error al agregar producto', 'error')
         return
       }
+      notifyRefresh()
       await refreshItems()
       setProductSearch('')
       setShowProductSearch(false)
@@ -139,6 +141,7 @@ function PlantillaEditorModal({ plantilla, onClose, onSaved }: EditorModalProps)
       toast('Error al eliminar ítem', 'error')
       return
     }
+    notifyRefresh()
     await refreshItems()
   }
 
@@ -153,6 +156,7 @@ function PlantillaEditorModal({ plantilla, onClose, onSaved }: EditorModalProps)
       toast('Error al actualizar cantidad', 'error')
       return
     }
+    notifyRefresh()
     setItems(prev => prev.map(it => it.sequence === seq ? { ...it, qty: String(newQty) } : it))
   }
 
@@ -470,6 +474,7 @@ export default function PlantillasClient() {
       const data = await res.json().catch(() => ({}))
       toast(data.error ?? 'Error al eliminar', 'error')
     } else {
+      notifyRefresh()
       toast('Plantilla eliminada', 'success')
     }
     setDeleteConfirm(null)

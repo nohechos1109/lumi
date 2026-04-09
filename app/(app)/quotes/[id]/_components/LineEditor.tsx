@@ -6,7 +6,7 @@ import ProductSearch from './ProductSearch'
 import PromptModal from '@/components/ui/PromptModal'
 import ConfirmModal from '@/components/ui/ConfirmModal'
 import PlantillaModal from '@/components/ui/PlantillaModal'
-import { toast } from '@/lib/toast'
+import { toast, notifyRefresh } from '@/lib/toast'
 
 interface QuoteLine {
   id: string; display_type: string; name: string; qty: string | null
@@ -63,8 +63,6 @@ export default function LineEditor({ quoteId, fxSnapshot, unitCount, role, isLoc
       const tax = productLines.reduce((s, l) => s + Number(l.tax_amount), 0)
       const margin = productLines.reduce((s, l) => s + Number(l.margin_amount), 0)
       setTotals({ untaxed, tax, total: untaxed + tax, margin, marginPct: untaxed > 0 ? (margin / untaxed) * 100 : 0 })
-
-      router.refresh()
     } catch {
       toast('Error al cargar las líneas', 'error')
     }
@@ -105,7 +103,9 @@ export default function LineEditor({ quoteId, fxSnapshot, unitCount, role, isLoc
         }),
       })
       if (!r.ok) throw new Error()
+      notifyRefresh()
       await loadLines()
+      router.refresh()
     } catch {
       toast('Error al agregar el producto', 'error')
     } finally {
@@ -122,7 +122,9 @@ export default function LineEditor({ quoteId, fxSnapshot, unitCount, role, isLoc
         body: JSON.stringify({ display_type: type, name, qty: null }),
       })
       if (!r.ok) throw new Error()
+      notifyRefresh()
       await loadLines()
+      router.refresh()
     } catch {
       toast('Error al agregar la línea', 'error')
     } finally {
@@ -145,7 +147,9 @@ export default function LineEditor({ quoteId, fxSnapshot, unitCount, role, isLoc
         toast(body.error ?? 'Error al agregar el descuento', 'error')
         return
       }
+      notifyRefresh()
       await loadLines()
+      router.refresh()
     } catch {
       toast('Error al agregar el descuento', 'error')
     } finally {
@@ -187,7 +191,9 @@ export default function LineEditor({ quoteId, fxSnapshot, unitCount, role, isLoc
         body: JSON.stringify(payload),
       })
       if (!r.ok) throw new Error()
+      notifyRefresh()
       await loadLines()
+      router.refresh()
     } catch {
       toast('Error al aplicar la plantilla', 'error')
     } finally {
@@ -218,7 +224,9 @@ export default function LineEditor({ quoteId, fxSnapshot, unitCount, role, isLoc
         body: JSON.stringify({ [field]: value }),
       })
       if (!r.ok) throw new Error()
+      notifyRefresh()
       await loadLines()
+      router.refresh()
     } catch {
       toast('Error al actualizar el campo', 'error')
     } finally {
@@ -231,7 +239,9 @@ export default function LineEditor({ quoteId, fxSnapshot, unitCount, role, isLoc
     try {
       const r = await fetch(`/api/quotes/${quoteId}/lines/${lineId}`, { method: 'DELETE' })
       if (!r.ok) throw new Error()
+      notifyRefresh()
       await loadLines()
+      router.refresh()
     } catch {
       toast('Error al eliminar la línea', 'error')
     }
@@ -242,7 +252,9 @@ export default function LineEditor({ quoteId, fxSnapshot, unitCount, role, isLoc
     try {
       const r = await fetch(`/api/quotes/${quoteId}/lines`, { method: 'DELETE' })
       if (!r.ok) throw new Error()
+      notifyRefresh()
       await loadLines()
+      router.refresh()
       toast('Cotización limpiada exitosamente')
     } catch {
       toast('Error al limpiar la cotización', 'error')

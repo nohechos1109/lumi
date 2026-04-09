@@ -4,6 +4,7 @@ import { useState, useMemo } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import ConfirmModal from '@/components/ui/ConfirmModal'
+import { notifyRefresh } from '@/lib/toast'
 
 interface Quote {
   id: string
@@ -82,11 +83,15 @@ export default function QuotesTable({
       body: JSON.stringify({ archive }),
     })
     setArchivingId(null)
-    if (res.ok) router.refresh()
+    if (res.ok) {
+      notifyRefresh()
+      router.refresh()
+    }
   }
 
   async function handleDelete(id: string) {
     await fetch(`/api/quotes/${id}`, { method: 'DELETE' })
+    notifyRefresh()
     setDeleteId(null)
     router.refresh()
   }

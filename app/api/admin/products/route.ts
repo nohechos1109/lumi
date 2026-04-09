@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { revalidatePath } from 'next/cache'
 import { getSession, unauthorized, forbidden } from '@/lib/auth-guard'
 import { listProducts, createProduct } from '@/lib/queries/products'
 
@@ -15,5 +16,6 @@ export async function POST(req: NextRequest) {
   if (session.role !== 'admin') return forbidden()
   const body = await req.json()
   const product = await createProduct(body)
+  revalidatePath('/admin/products')
   return NextResponse.json(product, { status: 201 })
 }

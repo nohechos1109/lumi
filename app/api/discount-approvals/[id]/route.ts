@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { revalidatePath } from 'next/cache'
 import { getSession, unauthorized, forbidden } from '@/lib/auth-guard'
 import { getDiscountApproval } from '@/lib/queries/discount-approvals'
 import pool from '@/lib/db'
@@ -97,6 +98,8 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
   // Call updateQuoteTotals AFTER commit (uses pool.query internally, safe after tx)
   await updateQuoteTotals(approval.quote_id)
 
+  revalidatePath('/admin/discount-approvals')
+  revalidatePath('/quotes')
   return NextResponse.json({ ok: true })
 }
 

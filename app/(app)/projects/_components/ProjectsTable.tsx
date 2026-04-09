@@ -4,6 +4,7 @@ import { useState, useMemo } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import ConfirmModal from '@/components/ui/ConfirmModal'
+import { notifyRefresh } from '@/lib/toast'
 
 interface Project {
   id: string
@@ -70,12 +71,16 @@ export default function ProjectsTable({ projects, role }: { projects: Project[],
       body: JSON.stringify({ archive }),
     })
     setArchivingId(null)
-    if (res.ok) router.refresh()
+    if (res.ok) {
+      notifyRefresh()
+      router.refresh()
+    }
   }
 
   async function handleDelete(id: string) {
     const res = await fetch(`/api/projects/${id}`, { method: 'DELETE' })
     if (res.ok) {
+      notifyRefresh()
       setDeleteId(null)
       router.refresh()
     }

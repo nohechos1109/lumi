@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { revalidatePath } from 'next/cache'
 import { getSession, unauthorized } from '@/lib/auth-guard'
 import { listProjectsByUser, listAllProjects, createProject } from '@/lib/queries/projects'
 
@@ -29,6 +30,7 @@ export async function POST(req: NextRequest) {
       user_id: session.userId,
     })
 
+    revalidatePath('/projects')
     return NextResponse.json(project, { status: 201 })
   } catch (error) {
     console.error('POST /api/projects ERROR:', error)

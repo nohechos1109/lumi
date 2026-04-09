@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { revalidatePath } from 'next/cache'
 import { getSession, unauthorized, forbidden } from '@/lib/auth-guard'
 import pool from '@/lib/db'
 import { updatePlantilla, deletePlantilla } from '@/lib/queries/plantillas'
@@ -40,6 +41,8 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
   const { nombre, requerimiento } = await req.json()
   if (!nombre?.trim()) return NextResponse.json({ error: 'Nombre requerido' }, { status: 400 })
   await updatePlantilla(id, nombre.trim(), requerimiento?.trim() || undefined)
+  revalidatePath('/admin/plantillas')
+  revalidatePath('/plantillas')
   return NextResponse.json({ ok: true })
 }
 
@@ -49,5 +52,7 @@ export async function DELETE(_req: NextRequest, { params }: { params: Promise<{ 
   if (session.role !== 'admin') return forbidden()
   const { id } = await params
   await deletePlantilla(id)
+  revalidatePath('/admin/plantillas')
+  revalidatePath('/plantillas')
   return NextResponse.json({ ok: true })
 }
