@@ -45,6 +45,12 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
           return NextResponse.json({ error: 'Ya existe una solicitud de descuento pendiente para esta línea' }, { status: 409 })
         }
 
+        // No-op if the requested value matches the current approved value
+        if (requestedDiscount === Number(lockedLine.discount_percent)) {
+          await client.query('ROLLBACK')
+          return NextResponse.json({ ok: true })
+        }
+
         // Mark as pending — do NOT update discount_percent yet (admin must approve first)
         await client.query(
           `UPDATE quote_lines SET discount_approval_status = 'pending' WHERE id = $1`,
@@ -108,13 +114,19 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
 
         // Lock the row to prevent concurrent approvals
         const { rows: [lockedLine] } = await client.query(
-          `SELECT discount_approval_status FROM quote_lines WHERE id = $1 FOR UPDATE`,
+          `SELECT discount_approval_status, discount_percent FROM quote_lines WHERE id = $1 FOR UPDATE`,
           [lineId]
         )
 
         if (lockedLine.discount_approval_status === 'pending') {
           await client.query('ROLLBACK')
           return NextResponse.json({ error: 'Ya existe una solicitud de descuento pendiente para esta línea' }, { status: 409 })
+        }
+
+        // No-op if the requested value matches the current approved value
+        if (requestedDiscount === Number(lockedLine.discount_percent)) {
+          await client.query('ROLLBACK')
+          return NextResponse.json({ ok: true })
         }
 
         // Mark line as pending

@@ -68,8 +68,22 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
           [approval.quote_line_id]
         )
       } else {
-        // Global discount line: delete it
-        await client.query(`DELETE FROM quote_lines WHERE id = $1`, [approval.quote_line_id])
+        // Global discount line: if it's a re-approval (line's current percent ≠ requested percent),
+        // the old approved value is still on the line — just restore the approved status.
+        // If it's a brand-new discount, delete the line entirely.
+        const { rows: [currentLine] } = await client.query(
+          `SELECT discount_percent FROM quote_lines WHERE id = $1`,
+          [approval.quote_line_id]
+        )
+        const isReApproval = currentLine && Number(currentLine.discount_percent) !== Number(approval.discount_percent)
+        if (isReApproval) {
+          await client.query(
+            `UPDATE quote_lines SET discount_approval_status = 'approved' WHERE id = $1`,
+            [approval.quote_line_id]
+          )
+        } else {
+          await client.query(`DELETE FROM quote_lines WHERE id = $1`, [approval.quote_line_id])
+        }
       }
     }
 
@@ -126,11 +140,22 @@ export async function DELETE(_req: NextRequest, { params }: { params: Promise<{ 
     // Delete the approval record
     await client.query(`DELETE FROM discount_approvals WHERE id = $1`, [id])
 
-    // Reset line status so the discount field becomes editable again
-    await client.query(
-      `UPDATE quote_lines SET discount_approval_status = NULL WHERE id = $1`,
+    // If the line's current percent differs from the requested percent, this was a re-approval:
+    // the old approved value is still on the line, so just restore approved status.
+    // If they're the same, it was a new discount — delete the line.
+    const { rows: [currentLine] } = await client.query(
+      `SELECT discount_percent FROM quote_lines WHERE id = $1`,
       [approval.quote_line_id]
     )
+    const isReApproval = currentLine && Number(currentLine.discount_percent) !== Number(approval.discount_percent)
+    if (isReApproval) {
+      await client.query(
+        `UPDATE quote_lines SET discount_approval_status = 'approved' WHERE id = $1`,
+        [approval.quote_line_id]
+      )
+    } else {
+      await client.query(`DELETE FROM quote_lines WHERE id = $1`, [approval.quote_line_id])
+    }
 
     await client.query('COMMIT')
   } catch (err) {

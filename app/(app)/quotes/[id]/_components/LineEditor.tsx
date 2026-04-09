@@ -482,7 +482,9 @@ export default function LineEditor({ quoteId, fxSnapshot, unitCount, role, isLoc
                             <span className="ml-2 inline-flex items-center gap-1.5">
                               <span className="text-xs px-2 py-0.5 rounded-full font-semibold"
                                 style={{ background: 'var(--c-amber-bg, rgba(251,191,36,0.12))', color: 'var(--c-amber)', border: '1px solid rgba(251,191,36,0.3)' }}>
-                                Pendiente de aprobación
+                                {line.pending_discount_percent != null
+                                  ? `Desc. ${Number(line.pending_discount_percent).toFixed(0)}% — Pendiente`
+                                  : 'Pendiente de aprobación'}
                               </span>
                               {line.pending_approval_id && (
                                 <button
@@ -504,8 +506,10 @@ export default function LineEditor({ quoteId, fxSnapshot, unitCount, role, isLoc
                             <span style={{ color: 'var(--c-amber)' }}>{line.discount_percent}%</span>
                           ) : (
                             <input type="number" step="0.01" min="0" max="100"
+                              key={`${line.discount_percent}-${line.discount_approval_status ?? ''}`}
                               defaultValue={line.discount_percent}
                               disabled={line.discount_approval_status === 'pending'}
+                              onKeyDown={e => { if (e.key === 'Enter') (e.target as HTMLInputElement).blur() }}
                               onBlur={e => { const val = Number(e.target.value); if (val !== Number(line.discount_percent)) updateField(line.id, 'discount_percent', val) }}
                               className="w-full text-right outline-none rounded transition-all px-1 py-1 disabled:cursor-not-allowed"
                               style={{ background: 'var(--c-card)', color: 'var(--c-amber)', border: '1px solid var(--c-rim)' }}
@@ -602,7 +606,7 @@ export default function LineEditor({ quoteId, fxSnapshot, unitCount, role, isLoc
                             onBlur={e => {
                               e.target.style.borderColor = 'var(--c-rim)'
                               const v = Number(e.target.value)
-                              if (v >= 0 && v <= 100) updateField(line.id, 'discount_percent', v)
+                              if (v >= 0 && v <= 100 && v !== Number(line.discount_percent)) updateField(line.id, 'discount_percent', v)
                             }}
                             onKeyDown={e => { if (e.key === 'Enter') (e.target as HTMLInputElement).blur() }}
                           />
