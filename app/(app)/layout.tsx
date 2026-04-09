@@ -10,6 +10,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
 
   const navItems: Record<string, NavItem[]> = {
     sales: [
+      { href: '/dashboard',  label: 'Inicio',           icon: 'dashboard', color: '#1B3461', exact: true },
       { href: '/projects',   label: 'Proyectos',        icon: 'projects',  color: '#1C5AD6' },
       { href: '/quotes',     label: 'Mis Cotizaciones', icon: 'quotes',    color: '#0B9962' },
       { href: '/catalog',    label: 'Catálogo',         icon: 'catalog',   color: '#C47F08' },
@@ -17,6 +18,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
       { href: '/plantillas', label: 'Plantillas',       icon: 'templates', color: '#7C3AED' },
     ],
     manager: [
+      { href: '/dashboard',  label: 'Inicio',       icon: 'dashboard', color: '#1B3461', exact: true },
       { href: '/projects',   label: 'Proyectos',    icon: 'projects',  color: '#1C5AD6' },
       { href: '/quotes',     label: 'Cotizaciones', icon: 'quotes',    color: '#0B9962' },
       { href: '/customers',  label: 'Clientes',     icon: 'customers', color: '#D12C3C' },
@@ -46,6 +48,8 @@ export default async function AppLayout({ children }: { children: React.ReactNod
     admin:   'Administrador',
   }
 
+  const homeHref = session.role === 'admin' ? '/admin' : '/dashboard'
+
   return (
     <div className="min-h-screen" style={{ background: 'var(--c-base)' }}>
       <TopBar
@@ -53,6 +57,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
         username={session.username ?? ''}
         roleLabel={roleLabel[session.role] ?? session.role}
         userInitial={(session.username?.charAt(0) ?? '?').toUpperCase()}
+        homeHref={homeHref}
       />
 
       <Toaster />
