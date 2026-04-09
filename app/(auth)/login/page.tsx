@@ -44,8 +44,7 @@ export default function LoginPage() {
       }
 
       if (data.role === 'admin') router.push('/admin')
-      else if (data.role === 'manager') router.push('/manager')
-      else router.push('/quotes')
+      else router.push('/dashboard')
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Error de conexión')
     } finally {
