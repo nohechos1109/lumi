@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { revalidatePath } from 'next/cache'
 import { getSession, unauthorized, forbidden } from '@/lib/auth-guard'
+import { canViewOwnQuotesOnly } from '@/lib/permissions'
 import { getQuote, duplicateQuote } from '@/lib/queries/quotes'
 
 export async function POST(
@@ -14,7 +15,7 @@ export async function POST(
 
   const quote = await getQuote(id)
   if (!quote) return NextResponse.json({ error: 'No encontrado' }, { status: 404 })
-  if (session.role === 'sales' && quote.user_id !== session.userId) return forbidden()
+  if (canViewOwnQuotesOnly(session.role) && quote.user_id !== session.userId) return forbidden()
 
   // Parse body — project_id key presence matters
   let body: Record<string, unknown> = {}

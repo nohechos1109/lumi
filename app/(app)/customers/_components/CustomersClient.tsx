@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import ConfirmModal from '@/components/ui/ConfirmModal'
 import { toast, notifyRefresh } from '@/lib/toast'
 import { CustomerFormModal } from './CustomerFormModal'
+import { canDeleteCustomers } from '@/lib/permissions'
 
 interface Customer {
   id: string
@@ -155,7 +156,7 @@ export default function CustomersClient({ role, initialCustomers }: Props) {
   const [deleteConfirmCustomer, setDeleteConfirmCustomer] = useState<Customer | null>(null)
   const [deleteRequestCustomer, setDeleteRequestCustomer] = useState<Customer | null>(null)
 
-  const isSales = role === 'sales'
+  const isSales = !canDeleteCustomers(role)
 
   const loadCustomers = useCallback(async () => {
     setLoading(true)

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { revalidatePath } from 'next/cache'
 import { getSession, unauthorized, forbidden } from '@/lib/auth-guard'
+import { canSetManualPrice, canRequestDiscounts } from '@/lib/permissions'
 import { updateLine, deleteLine } from '@/lib/queries/quote_lines'
 import { updateQuoteTotals } from '@/lib/queries/quotes'
 import pool from '@/lib/db'
@@ -14,10 +15,10 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
   const body = await req.json()
 
   // Existing guard: sales cannot manually set unit price
-  if (session.role === 'sales' && body.unit_price_mxn_manual !== undefined) return forbidden()
+  if (!canSetManualPrice(session.role) && body.unit_price_mxn_manual !== undefined) return forbidden()
 
   // Individual discount approval flow: sales + discount_percent > 0 on a product line
-  if (session.role === 'sales' && body.discount_percent !== undefined && Number(body.discount_percent) > 0) {
+  if (canRequestDiscounts(session.role) && body.discount_percent !== undefined && Number(body.discount_percent) > 0) {
     // Check the line exists, belongs to this quote, and the quote belongs to this user
     const { rows: [line] } = await pool.query(
       `SELECT ql.display_type, ql.discount_approval_status, ql.name

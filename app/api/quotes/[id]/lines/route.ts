@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getSession, unauthorized, forbidden } from '@/lib/auth-guard'
+import { canViewOwnQuotesOnly, canRequestDiscounts } from '@/lib/permissions'
 import { getQuote, updateQuoteTotals } from '@/lib/queries/quotes'
 import { listLines, createLine } from '@/lib/queries/quote_lines'
 import pool from '@/lib/db'
@@ -13,7 +14,7 @@ export async function GET(_req: NextRequest, { params }: { params: Promise<{ id:
   const { id } = await params
   const quote = await getQuote(id)
   if (!quote) return NextResponse.json({ error: 'No encontrado' }, { status: 404 })
-  if (session.role === 'sales' && quote.user_id !== session.userId) return forbidden()
+  if (canViewOwnQuotesOnly(session.role) && quote.user_id !== session.userId) return forbidden()
 
   const lines = await listLines(id)
   return NextResponse.json(lines)
@@ -26,7 +27,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
   const { id } = await params
   const quote = await getQuote(id)
   if (!quote) return NextResponse.json({ error: 'No encontrado' }, { status: 404 })
-  if (session.role === 'sales' && quote.user_id !== session.userId) return forbidden()
+  if (canViewOwnQuotesOnly(session.role) && quote.user_id !== session.userId) return forbidden()
 
   const body = await req.json()
 
@@ -41,7 +42,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
 
   const line = await createLine({ ...body, quote_id: id })
 
-  if (body.display_type === 'discount' && session.role === 'sales') {
+  if (body.display_type === 'discount' && canRequestDiscounts(session.role)) {
     // Mark as pending instead of directly active
     await pool.query(
       `UPDATE quote_lines SET discount_approval_status = 'pending' WHERE id = $1`,
@@ -91,7 +92,7 @@ export async function DELETE(_req: NextRequest, { params }: { params: Promise<{ 
   const { id: quoteId } = await params
   const quote = await getQuote(quoteId)
   if (!quote) return NextResponse.json({ error: 'No encontrado' }, { status: 404 })
-  if (session.role === 'sales' && quote.user_id !== session.userId) return forbidden()
+  if (canViewOwnQuotesOnly(session.role) && quote.user_id !== session.userId) return forbidden()
   if (quote.state !== 'draft') return NextResponse.json({ error: 'Solo se pueden limpiar cotizaciones en borrador' }, { status: 422 })
 
   await pool.query('DELETE FROM quote_lines WHERE quote_id = $1', [quoteId])

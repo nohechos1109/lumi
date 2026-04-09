@@ -33,6 +33,11 @@ const managerSections: Section[] = [
   { href: '/manager',    label: 'Equipo',       desc: 'Vista gerencial del equipo',   icon: <IconTeam />,      color: '#0891B2' },
 ]
 
+const restrictedSections: Section[] = [
+  { href: '/quotes',  label: 'Cotizaciones', desc: 'Cotizaciones del sistema', icon: <IconQuotes />, color: '#0B9962' },
+  { href: '/catalog', label: 'Catálogo',     desc: 'Productos disponibles',    icon: <IconCatalog />, color: '#C47F08' },
+]
+
 const roleLabel: Record<string, string> = {
   sales:   'Ventas',
   manager: 'Gerente',
@@ -43,7 +48,8 @@ export default async function DashboardPage() {
 
   if (session.role === 'admin') redirect('/admin')
 
-  const sections = session.role === 'manager' ? managerSections : salesSections
+  const isRestricted = session.role === 'almacen' || session.role === 'soporte'
+  const sections = session.role === 'manager' ? managerSections : isRestricted ? restrictedSections : salesSections
 
   return (
     <div>

@@ -2,12 +2,9 @@ import { cookies } from 'next/headers'
 import { getIronSession } from 'iron-session'
 import { notFound } from 'next/navigation'
 import { sessionOptions, SessionData } from '@/lib/session'
-import { listCustomers } from '@/lib/queries/customers'
-import CustomersClient from './_components/CustomersClient'
 
-export default async function CustomersPage() {
+export default async function ProjectsLayout({ children }: { children: React.ReactNode }) {
   const session = await getIronSession<SessionData>(await cookies(), sessionOptions)
   if (session.role === 'almacen' || session.role === 'soporte') notFound()
-  const customers = await listCustomers()
-  return <CustomersClient role={session.role ?? 'sales'} initialCustomers={customers} />
+  return <>{children}</>
 }

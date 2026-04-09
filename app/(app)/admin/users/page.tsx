@@ -209,6 +209,8 @@ export default function AdminUsersPage() {
                 <option value="sales">Sales</option>
                 <option value="manager">Manager</option>
                 <option value="admin">Admin</option>
+                <option value="almacen">Almacén</option>
+                <option value="soporte">Soporte</option>
               </select>
             </div>
 
@@ -296,6 +298,8 @@ export default function AdminUsersPage() {
                 <option value="sales">Sales</option>
                 <option value="manager">Manager</option>
                 <option value="admin">Admin</option>
+                <option value="almacen">Almacén</option>
+                <option value="soporte">Soporte</option>
               </select>
             </div>
 
@@ -383,6 +387,8 @@ export default function AdminUsersPage() {
               <option value="admin">Admin</option>
               <option value="manager">Manager</option>
               <option value="sales">Sales</option>
+              <option value="almacen">Almacén</option>
+              <option value="soporte">Soporte</option>
             </select>
             <div className="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: roleFilter ? 'var(--c-navy)' : 'var(--c-ghost)', opacity: 0.6 }}>
               <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
@@ -492,6 +498,28 @@ export default function AdminUsersPage() {
                     'Gestiona configuración global del sistema',
                   ],
                   cant: null,
+                },
+                {
+                  label: 'Almacén',
+                  sublabel: 'Almacén',
+                  items: [
+                    'Ve y gestiona solo sus propias cotizaciones',
+                    'Puede enviar cotizaciones o cancelarlas',
+                    'Puede solicitar descuentos (requieren aprobación del Admin)',
+                    'Accede al catálogo de productos',
+                  ],
+                  cant: 'No puede ver cotizaciones de otros ni confirmarlas',
+                },
+                {
+                  label: 'Soporte',
+                  sublabel: 'Soporte',
+                  items: [
+                    'Ve y gestiona solo sus propias cotizaciones',
+                    'Puede enviar cotizaciones o cancelarlas',
+                    'Puede solicitar descuentos (requieren aprobación del Admin)',
+                    'Accede al catálogo de productos',
+                  ],
+                  cant: 'No puede ver cotizaciones de otros ni confirmarlas',
                 },
               ].map(({ label, sublabel, items, cant }) => (
                 <div

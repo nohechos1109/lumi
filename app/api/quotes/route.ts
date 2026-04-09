@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { revalidatePath } from 'next/cache'
 import { getSession, unauthorized } from '@/lib/auth-guard'
+import { canViewOwnQuotesOnly } from '@/lib/permissions'
 import { listQuotesByUser, listAllQuotes, createQuote } from '@/lib/queries/quotes'
 import { getSettings } from '@/lib/queries/settings'
 
@@ -8,7 +9,7 @@ export async function GET() {
   const session = await getSession()
   if (!session) return unauthorized()
 
-  const quotes = session.role === 'sales'
+  const quotes = canViewOwnQuotesOnly(session.role)
     ? await listQuotesByUser(session.userId)
     : await listAllQuotes()
 

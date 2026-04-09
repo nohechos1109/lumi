@@ -1,11 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { revalidatePath } from 'next/cache'
 import { getSession, unauthorized, forbidden } from '@/lib/auth-guard'
+import { canViewOwnQuotesOnly } from '@/lib/permissions'
 import { getQuote, updateQuoteState, QuoteState } from '@/lib/queries/quotes'
 import { insertAuditEvent } from '@/lib/queries/audit'
 
 const VALID_TRANSITIONS: Record<string, QuoteState[]> = {
   sales:   ['sent', 'cancelled'],
+  almacen: ['sent', 'cancelled'],
+  soporte: ['sent', 'cancelled'],
   manager: ['confirmed', 'cancelled'],
   admin:   ['draft', 'sent', 'confirmed', 'cancelled', 'expired'],
 }
@@ -20,7 +23,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
   const quote = await getQuote(id)
   if (!quote) return NextResponse.json({ error: 'No encontrado' }, { status: 404 })
 
-  if (session.role === 'sales' && quote.user_id !== session.userId) return forbidden()
+  if (canViewOwnQuotesOnly(session.role) && quote.user_id !== session.userId) return forbidden()
 
   const allowed = VALID_TRANSITIONS[session.role] ?? []
   if (!allowed.includes(state)) return forbidden()

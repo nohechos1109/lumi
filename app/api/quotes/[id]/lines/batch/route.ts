@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getSession, unauthorized, forbidden } from '@/lib/auth-guard'
+import { canViewOwnQuotesOnly } from '@/lib/permissions'
 import { getQuote, updateQuoteTotals } from '@/lib/queries/quotes'
 import { createLine } from '@/lib/queries/quote_lines'
 
@@ -22,7 +23,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
   const { id } = await params
   const quote = await getQuote(id)
   if (!quote) return NextResponse.json({ error: 'No encontrado' }, { status: 404 })
-  if (session.role === 'sales' && quote.user_id !== session.userId) return forbidden()
+  if (canViewOwnQuotesOnly(session.role) && quote.user_id !== session.userId) return forbidden()
 
   const lines: BatchLine[] = await req.json()
 

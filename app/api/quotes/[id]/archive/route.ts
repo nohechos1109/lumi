@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { revalidatePath } from 'next/cache'
 import { getSession, unauthorized, forbidden } from '@/lib/auth-guard'
+import { canViewOwnQuotesOnly } from '@/lib/permissions'
 import { getQuote, archiveQuote, unarchiveQuote } from '@/lib/queries/quotes'
 
 export async function POST(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
@@ -13,7 +14,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
   const quote = await getQuote(id)
   if (!quote) return NextResponse.json({ error: 'Not found' }, { status: 404 })
 
-  if (session.role === 'sales' && quote.user_id !== session.userId) return forbidden()
+  if (canViewOwnQuotesOnly(session.role) && quote.user_id !== session.userId) return forbidden()
 
   if (archive) {
     await archiveQuote(id)

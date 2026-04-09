@@ -2,12 +2,13 @@ import Link from 'next/link'
 import { cookies } from 'next/headers'
 import { getIronSession } from 'iron-session'
 import { sessionOptions, SessionData } from '@/lib/session'
+import { canViewOwnProjectsOnly } from '@/lib/permissions'
 import { listProjectsByUser, listAllProjects } from '@/lib/queries/projects'
 import ProjectsTable from './_components/ProjectsTable'
 
 export default async function ProjectsPage() {
   const session = await getIronSession<SessionData>(await cookies(), sessionOptions)
-  const projects = session.role === 'sales'
+  const projects = canViewOwnProjectsOnly(session.role)
     ? await listProjectsByUser(session.userId)
     : await listAllProjects()
 

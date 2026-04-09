@@ -3,6 +3,7 @@ import { getIronSession } from 'iron-session'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { sessionOptions, SessionData } from '@/lib/session'
+import { canViewOwnProjectsOnly } from '@/lib/permissions'
 import { getProject } from '@/lib/queries/projects'
 import { listQuotesByProject } from '@/lib/queries/quotes'
 import QuotesTable from '@/app/(app)/quotes/_components/QuotesTable'
@@ -15,7 +16,7 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
   const project = await getProject(id)
 
   if (!project) notFound()
-  if (session.role === 'sales' && project.user_id !== session.userId) notFound()
+  if (canViewOwnProjectsOnly(session.role) && project.user_id !== session.userId) notFound()
 
   const quotes = await listQuotesByProject(id)
 

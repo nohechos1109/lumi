@@ -2,7 +2,7 @@ import { SessionOptions } from 'iron-session'
 
 export interface SessionData {
   userId: string
-  role: 'sales' | 'manager' | 'admin'
+  role: 'sales' | 'manager' | 'admin' | 'almacen' | 'soporte'
   username: string
 }
 

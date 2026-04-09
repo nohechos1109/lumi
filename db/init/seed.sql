@@ -6,7 +6,9 @@ INSERT INTO "users" ("id", "role", "username", "password_hash") VALUES
 ('00000000-0001-0000-0000-000000000001',	'admin',	'admin',	'$2a$10$DMk.G0ukxQGJ1bJFhlh0uOe2TpclY121LEAcYXSd6onBgNd2ZuWDe'),
 ('00000000-0001-0000-0000-000000000002',	'manager',	'manager',	'$2a$10$DMk.G0ukxQGJ1bJFhlh0uOe2TpclY121LEAcYXSd6onBgNd2ZuWDe'),
 ('00000000-0001-0000-0000-000000000003',	'sales',	'sales1',	'$2a$10$DMk.G0ukxQGJ1bJFhlh0uOe2TpclY121LEAcYXSd6onBgNd2ZuWDe'),
-('00000000-0001-0000-0000-000000000004',	'sales',	'sales2',	'$2a$10$DMk.G0ukxQGJ1bJFhlh0uOe2TpclY121LEAcYXSd6onBgNd2ZuWDe');
+('00000000-0001-0000-0000-000000000004',	'sales',	'sales2',	'$2a$10$DMk.G0ukxQGJ1bJFhlh0uOe2TpclY121LEAcYXSd6onBgNd2ZuWDe'),
+('00000000-0001-0000-0000-000000000005',	'almacen',	'almacen',	'$2a$10$DMk.G0ukxQGJ1bJFhlh0uOe2TpclY121LEAcYXSd6onBgNd2ZuWDe'),
+('00000000-0001-0000-0000-000000000006',	'soporte',	'soporte',	'$2a$10$DMk.G0ukxQGJ1bJFhlh0uOe2TpclY121LEAcYXSd6onBgNd2ZuWDe');
 
 INSERT INTO "customers" ("id", "name", "email", "phone") VALUES
 ('00000000-0002-0000-0000-000000000001',	'Constructora Vértice S.A. de C.V.',	NULL,	NULL),

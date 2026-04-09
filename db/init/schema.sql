@@ -204,7 +204,7 @@ CREATE TABLE "public"."users" (
     "username" text NOT NULL,
     "password_hash" text NOT NULL,
     CONSTRAINT "users_pkey" PRIMARY KEY ("id"),
-    CONSTRAINT "users_role_check" CHECK (((role = ANY (ARRAY['sales'::text, 'manager'::text, 'admin'::text]))))
+    CONSTRAINT "users_role_check" CHECK (((role = ANY (ARRAY['sales'::text, 'manager'::text, 'admin'::text, 'almacen'::text, 'soporte'::text]))))
 )
 WITH (oids = false);
 

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { revalidatePath } from 'next/cache'
 import { getSession, unauthorized, forbidden } from '@/lib/auth-guard'
+import { canViewOwnProjectsOnly } from '@/lib/permissions'
 import { getProject, archiveProject, unarchiveProject } from '@/lib/queries/projects'
 
 export async function POST(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
@@ -13,7 +14,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
   const project = await getProject(id)
   if (!project) return NextResponse.json({ error: 'Not found' }, { status: 404 })
 
-  if (session.role === 'sales' && project.user_id !== session.userId) return forbidden()
+  if (canViewOwnProjectsOnly(session.role) && project.user_id !== session.userId) return forbidden()
 
   if (archive) {
     await archiveProject(id)

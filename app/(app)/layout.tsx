@@ -8,15 +8,19 @@ import type { NavItem } from './_components/nav-types'
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
   const session = await getIronSession<SessionData>(await cookies(), sessionOptions)
 
+  const salesNav: NavItem[] = [
+    { href: '/dashboard',  label: 'Inicio',           icon: 'dashboard', color: '#1B3461', exact: true },
+    { href: '/projects',   label: 'Proyectos',        icon: 'projects',  color: '#1C5AD6' },
+    { href: '/quotes',     label: 'Mis Cotizaciones', icon: 'quotes',    color: '#0B9962' },
+    { href: '/catalog',    label: 'Catálogo',         icon: 'catalog',   color: '#C47F08' },
+    { href: '/customers',  label: 'Clientes',         icon: 'customers', color: '#D12C3C' },
+    { href: '/plantillas', label: 'Plantillas',       icon: 'templates', color: '#7C3AED' },
+  ]
+
   const navItems: Record<string, NavItem[]> = {
-    sales: [
-      { href: '/dashboard',  label: 'Inicio',           icon: 'dashboard', color: '#1B3461', exact: true },
-      { href: '/projects',   label: 'Proyectos',        icon: 'projects',  color: '#1C5AD6' },
-      { href: '/quotes',     label: 'Mis Cotizaciones', icon: 'quotes',    color: '#0B9962' },
-      { href: '/catalog',    label: 'Catálogo',         icon: 'catalog',   color: '#C47F08' },
-      { href: '/customers',  label: 'Clientes',         icon: 'customers', color: '#D12C3C' },
-      { href: '/plantillas', label: 'Plantillas',       icon: 'templates', color: '#7C3AED' },
-    ],
+    sales:   salesNav,
+    almacen: salesNav,
+    soporte: salesNav,
     manager: [
       { href: '/dashboard',  label: 'Inicio',       icon: 'dashboard', color: '#1B3461', exact: true },
       { href: '/projects',   label: 'Proyectos',    icon: 'projects',  color: '#1C5AD6' },
@@ -47,6 +51,8 @@ export default async function AppLayout({ children }: { children: React.ReactNod
     sales:   'Ventas',
     manager: 'Gerente',
     admin:   'Administrador',
+    almacen: 'Almacén',
+    soporte: 'Soporte',
   }
 
   const homeHref = session.role === 'admin' ? '/admin' : '/dashboard'

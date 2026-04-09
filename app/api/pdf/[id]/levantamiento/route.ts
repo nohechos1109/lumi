@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getSession, unauthorized, forbidden } from '@/lib/auth-guard'
+import { canViewOwnQuotesOnly } from '@/lib/permissions'
 import { getQuote } from '@/lib/queries/quotes'
 import { listLines } from '@/lib/queries/quote_lines'
 import { renderToBuffer } from '@react-pdf/renderer'
@@ -14,7 +15,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
   const { id } = await params
   const quote = await getQuote(id)
   if (!quote) return NextResponse.json({ error: 'No encontrado' }, { status: 404 })
-  if (session.role === 'sales' && quote.user_id !== session.userId) return forbidden()
+  if (canViewOwnQuotesOnly(session.role) && quote.user_id !== session.userId) return forbidden()
 
   const lines = await listLines(id)
   const detalles = req.nextUrl.searchParams.get('detalles') || ''

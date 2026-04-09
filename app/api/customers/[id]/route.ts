@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { revalidatePath } from 'next/cache'
 import { getSession, unauthorized, forbidden } from '@/lib/auth-guard'
+import { canDeleteCustomers } from '@/lib/permissions'
 import { updateCustomer, deleteCustomer } from '@/lib/queries/customers'
 
 export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
@@ -20,7 +21,7 @@ export async function DELETE(_req: NextRequest, { params }: { params: Promise<{ 
   const session = await getSession()
   if (!session) return unauthorized()
   // Only admin and manager can delete directly
-  if (session.role === 'sales') return forbidden()
+  if (!canDeleteCustomers(session.role)) return forbidden()
 
   const { id } = await params
   await deleteCustomer(id)

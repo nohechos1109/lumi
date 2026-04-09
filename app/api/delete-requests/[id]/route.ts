@@ -1,12 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getSession, unauthorized, forbidden } from '@/lib/auth-guard'
+import { canAccessDeleteRequests } from '@/lib/permissions'
 import { getDeleteRequest } from '@/lib/queries/delete-requests'
 import pool from '@/lib/db'
 
 export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const session = await getSession()
   if (!session) return unauthorized()
-  if (session.role === 'sales') return forbidden()
+  if (!canAccessDeleteRequests(session.role)) return forbidden()
 
   const { id } = await params
   const { decision } = await req.json()

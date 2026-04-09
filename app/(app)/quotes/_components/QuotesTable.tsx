@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import ConfirmModal from '@/components/ui/ConfirmModal'
 import { notifyRefresh } from '@/lib/toast'
+import { canViewOwnQuotesOnly } from '@/lib/permissions'
 
 interface Quote {
   id: string
@@ -18,6 +19,7 @@ interface Quote {
   description: string | null
   payment_term_name?: string
   archived_at: string | null
+  project_id: string | null
 }
 
 const STATE_LABELS: Record<string, { label: string; cls: string }> = {
@@ -72,7 +74,7 @@ export default function QuotesTable({
   const [showArchived, setShowArchived] = useState(false)
   const [archivingId, setArchivingId] = useState<string | null>(null)
 
-  const isSales = role === 'sales'
+  const isSales = canViewOwnQuotesOnly(role)
 
   const archivedCount = useMemo(() => quotes.filter(q => q.archived_at !== null).length, [quotes])
 
@@ -426,7 +428,10 @@ export default function QuotesTable({
                       </td>
                     )}
                     <td className="px-5 py-4">
-                      <span className={s.cls}>{s.label}</span>
+                      {!q.project_id
+                        ? <span className="badge" style={{ background: '#fef3c7', color: '#92400e', border: '1px solid #fde68a' }}>Mostrador</span>
+                        : <span className={s.cls}>{s.label}</span>
+                      }
                     </td>
                     <td className="px-5 py-4 text-right font-mono font-bold" style={{ color: 'var(--c-navy)' }}>
                       ${(Number(q.amount_total) * (q.unit_count ?? 1)).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}

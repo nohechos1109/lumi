@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getIronSession } from 'iron-session'
 import { cookies } from 'next/headers'
 import { sessionOptions, SessionData } from '@/lib/session'
+import { canAccessManagerSection } from '@/lib/permissions'
 
 const PUBLIC_PATHS = ['/login', '/api/auth/login', '/logosmart.png', '/lumi-logo.svg', '/lumi-logo-white.svg']
 
@@ -32,7 +33,7 @@ export async function proxy(req: NextRequest) {
     return NextResponse.redirect(new URL('/quotes', req.url))
   }
 
-  if (path.startsWith('/manager') && session.role === 'sales') {
+  if (path.startsWith('/manager') && !canAccessManagerSection(session.role)) {
     return NextResponse.redirect(new URL('/quotes', req.url))
   }
 

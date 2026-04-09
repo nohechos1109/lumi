@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import ConfirmModal from '@/components/ui/ConfirmModal'
 import { notifyRefresh } from '@/lib/toast'
+import { canViewOwnProjectsOnly } from '@/lib/permissions'
 
 interface Project {
   id: string
@@ -59,7 +60,7 @@ export default function ProjectsTable({ projects, role }: { projects: Project[],
   const [showArchived, setShowArchived] = useState(false)
   const [archivingId, setArchivingId] = useState<string | null>(null)
 
-  const isSales = role === 'sales'
+  const isSales = canViewOwnProjectsOnly(role)
 
   const archivedCount = useMemo(() => projects.filter(p => p.archived_at !== null).length, [projects])
 

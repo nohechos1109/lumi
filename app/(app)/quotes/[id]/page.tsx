@@ -3,6 +3,7 @@ import { cookies } from 'next/headers'
 import { getIronSession } from 'iron-session'
 import { notFound } from 'next/navigation'
 import { sessionOptions, SessionData } from '@/lib/session'
+import { canViewOwnQuotesOnly } from '@/lib/permissions'
 import { getQuote } from '@/lib/queries/quotes'
 import LineEditor from './_components/LineEditor'
 import QuoteActions from './_components/QuoteActions'
@@ -18,7 +19,7 @@ export default async function QuotePage({ params }: { params: Promise<{ id: stri
   const quote = await getQuote(id)
 
   if (!quote) notFound()
-  if (session.role === 'sales' && quote.user_id !== session.userId) notFound()
+  if (canViewOwnQuotesOnly(session.role) && quote.user_id !== session.userId) notFound()
 
   return (
     <div>
@@ -43,7 +44,7 @@ export default async function QuotePage({ params }: { params: Promise<{ id: stri
             >
               {quote.number}
             </h1>
-            <QuoteStatusEditor quoteId={id} currentStatus={quote.state} role={session.role} />
+            <QuoteStatusEditor quoteId={id} currentStatus={quote.state} role={session.role} isShowroom={!quote.project_id} />
           </div>
           
           <div className="flex flex-wrap items-center gap-x-2 text-sm" style={{ color: 'var(--c-dim)' }}>

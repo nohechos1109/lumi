@@ -1,13 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { revalidatePath } from 'next/cache'
 import { getSession, unauthorized } from '@/lib/auth-guard'
+import { canViewOwnProjectsOnly } from '@/lib/permissions'
 import { listProjectsByUser, listAllProjects, createProject } from '@/lib/queries/projects'
 
 export async function GET() {
   const session = await getSession()
   if (!session) return unauthorized()
 
-  const projects = session.role === 'sales'
+  const projects = canViewOwnProjectsOnly(session.role)
     ? await listProjectsByUser(session.userId)
     : await listAllProjects()
 
