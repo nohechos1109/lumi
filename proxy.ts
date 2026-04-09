@@ -37,10 +37,7 @@ export async function proxy(req: NextRequest) {
     return NextResponse.redirect(new URL('/quotes', req.url))
   }
 
-  // Pass pathname to server components via header
-  const response = NextResponse.next()
-  response.headers.set('x-pathname', path)
-  return response
+  return NextResponse.next()
 }
 
 export const config = {

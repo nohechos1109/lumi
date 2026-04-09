@@ -1,4 +1,4 @@
-import { cookies, headers } from 'next/headers'
+import { cookies } from 'next/headers'
 import { getIronSession } from 'iron-session'
 import { sessionOptions, SessionData } from '@/lib/session'
 import TopBar from './_components/TopBar'
@@ -58,11 +58,6 @@ export default async function AppLayout({ children }: { children: React.ReactNod
 
   const homeHref = session.role === 'admin' ? '/admin' : '/dashboard'
 
-  // Detect current section for dynamic logo
-  const headersList = await headers()
-  const pathname = headersList.get('x-pathname') ?? ''
-  const appSection: 'quotes' | 'collection' = pathname.startsWith('/ventas') ? 'collection' : 'quotes'
-
   return (
     <div className="min-h-screen" style={{ background: 'var(--c-base)' }}>
       <TopBar
@@ -71,7 +66,6 @@ export default async function AppLayout({ children }: { children: React.ReactNod
         roleLabel={roleLabel[session.role] ?? session.role}
         userInitial={(session.username?.charAt(0) ?? '?').toUpperCase()}
         homeHref={homeHref}
-        appSection={appSection}
       />
 
       <Toaster />
