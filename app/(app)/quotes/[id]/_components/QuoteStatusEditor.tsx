@@ -64,6 +64,7 @@ export default function QuoteStatusEditor({ quoteId, currentStatus, role, isShow
 
   const showBadge = !(isShowroom && currentStatus === 'draft')
   const canSend = currentStatus === 'draft' && allowed.includes('sent')
+  const canConfirm = currentStatus === 'sent' && allowed.includes('confirmed')
   const canCancel = (currentStatus === 'draft' || currentStatus === 'sent' || currentStatus === 'confirmed') && allowed.includes('cancelled')
 
   return (
@@ -105,6 +106,19 @@ export default function QuoteStatusEditor({ quoteId, currentStatus, role, isShow
         </button>
       )}
 
+      {canConfirm && (
+        <button
+          disabled={loading}
+          onClick={() => {
+            if (confirm('¿Confirmar esta cotización? Se generará una venta automáticamente.')) handleChange('confirmed')
+          }}
+          className="flex items-center gap-2 px-4 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider transition-all hover:opacity-85 shadow-sm active:scale-95 disabled:opacity-50"
+          style={{ background: '#059669', color: '#FFFFFF' }}
+        >
+          {loading ? '...' : 'Confirmar'}
+        </button>
+      )}
+
       {canCancel && (
         <button
           disabled={loading}
@@ -118,7 +132,7 @@ export default function QuoteStatusEditor({ quoteId, currentStatus, role, isShow
         </button>
       )}
 
-      {loading && !canSend && !canCancel && <span className="animate-spin text-xs">⏳</span>}
+      {loading && !canSend && !canConfirm && !canCancel && <span className="animate-spin text-xs">⏳</span>}
     </div>
   )
 }
