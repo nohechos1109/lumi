@@ -60,7 +60,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
 
   // Detect current section for dynamic logo
   const headersList = await headers()
-  const pathname = headersList.get('x-next-pathname') ?? headersList.get('x-invoke-path') ?? ''
+  const pathname = headersList.get('x-pathname') ?? ''
   const appSection: 'quotes' | 'collection' = pathname.startsWith('/ventas') ? 'collection' : 'quotes'
 
   return (

@@ -283,7 +283,10 @@ export default function SaleDetail({ sale, notes, payments, schedule, role }: Pr
                     <tr key={p.id} style={{ borderBottom: '1px solid var(--c-rim)' }}>
                       <td className="px-3 py-2.5 font-mono font-medium" style={{ color: 'var(--c-ink)' }}>{p.number}</td>
                       <td className="px-3 py-2.5" style={{ color: 'var(--c-dim)' }}>
-                        {new Date(p.payment_date + 'T12:00:00').toLocaleDateString('es-MX')}
+                        {(() => {
+                          const d = new Date(p.payment_date)
+                          return isNaN(d.getTime()) ? p.payment_date : d.toLocaleDateString('es-MX')
+                        })()}
                       </td>
                       <td className="px-3 py-2.5" style={{ color: 'var(--c-dim)' }}>{p.concept || '—'}</td>
                       <td className="px-3 py-2.5" style={{ color: 'var(--c-dim)' }}>{METHOD_LABELS[p.payment_method] ?? p.payment_method}</td>
