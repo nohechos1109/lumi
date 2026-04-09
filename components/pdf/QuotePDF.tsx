@@ -71,25 +71,29 @@ interface Line {
   discount_approval_status?: string | null;
 }
 
-interface Quote { 
-  number: string; 
-  quotation_date: string; 
-  expiration_date: string | null; 
-  customer_name?: string; 
+interface Quote {
+  number: string;
+  quotation_date: string;
+  expiration_date: string | null;
+  customer_name?: string;
   executive_name?: string;
-  amount_untaxed: string; 
-  amount_tax: string; 
-  amount_total: string; 
-  terms: string | null; 
-  description: string | null; 
-  unit_count: number; 
+  amount_untaxed: string;
+  amount_tax: string;
+  amount_total: string;
+  terms: string | null;
+  description: string | null;
+  unit_count: number;
   state: string;
+  project_id?: string | null;
 }
 
 export default function QuotePDF({ quote, lines, images }: { quote: Quote; lines: Line[]; images: { logo: string } }) {
   const isFleet = quote.unit_count > 1
+  const isMostrador = !quote.project_id
 
-  const watermarkText = quote.state === 'draft' ? 'VISTA PREVIA' : quote.state === 'cancelled' ? 'CANCELADA' : null
+  const watermarkText = isMostrador ? 'MOSTRADOR' : quote.state === 'draft' ? 'VISTA PREVIA' : quote.state === 'cancelled' ? 'CANCELADA' : null
+  const watermarkColor = isMostrador ? '#000000' : '#FF0000'
+  const watermarkOpacity = isMostrador ? 0.04 : 0.15
 
   return (
     <Document>
@@ -106,12 +110,12 @@ export default function QuotePDF({ quote, lines, images }: { quote: Quote; lines
             }}
             fixed
           >
-            <Text 
-              style={{ 
-                fontSize: 80, 
-                fontWeight: 'bold', 
-                color: '#FF0000', 
-                opacity: 0.15,
+            <Text
+              style={{
+                fontSize: 80,
+                fontWeight: 'bold',
+                color: watermarkColor,
+                opacity: watermarkOpacity,
                 transform: 'rotate(-45deg)',
                 letterSpacing: 8
               }}
@@ -134,7 +138,7 @@ export default function QuotePDF({ quote, lines, images }: { quote: Quote; lines
 
         <View style={styles.topInfo}>
           <View style={styles.column}>
-            <Text style={styles.sectionTitle}>INFORMACIÓN DEL PROYECTO</Text>
+            <Text style={styles.sectionTitle}>{isMostrador ? 'VENTA DE MOSTRADOR' : 'INFORMACIÓN DEL PROYECTO'}</Text>
             <Text style={styles.label}>CLIENTE</Text>
             <Text style={styles.highlightValue}>{quote.customer_name?.toUpperCase()}</Text>
             <Text style={[styles.label, { marginTop: 8 }]}>FOLIO</Text>

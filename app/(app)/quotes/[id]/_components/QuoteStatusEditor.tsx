@@ -62,37 +62,35 @@ export default function QuoteStatusEditor({ quoteId, currentStatus, role, isShow
     expired:   { bg: 'var(--c-base)',    text: 'var(--c-ghost)' },
   }
 
-  const showBadge = true
+  const showBadge = !(isShowroom && currentStatus === 'draft')
   const canSend = currentStatus === 'draft' && allowed.includes('sent')
   const canCancel = (currentStatus === 'draft' || currentStatus === 'sent' || currentStatus === 'confirmed') && allowed.includes('cancelled')
 
   return (
     <div className="flex items-center gap-3">
-      {(showBadge || isShowroom) && (
+      {isShowroom && (
+        <span
+          className="text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider"
+          style={{ background: '#fef3c7', color: '#92400e', border: '1px solid #fde68a' }}
+        >
+          Mostrador
+        </span>
+      )}
+      {showBadge && (
         <div className="flex items-center gap-2 mr-2">
           <span className="text-[10px] uppercase font-bold tracking-wider" style={{ color: 'var(--c-ghost)' }}>
             Estatus:
           </span>
-          {isShowroom && (
-            <span
-              className="text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider"
-              style={{ background: '#fef3c7', color: '#92400e', border: '1px solid #fde68a' }}
-            >
-              Mostrador
-            </span>
-          )}
-          {showBadge && (
-            <span
-              className="text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider"
-              style={{
-                background: badgeColors[currentStatus]?.bg || 'var(--c-base)',
-                color: badgeColors[currentStatus]?.text || 'var(--c-dim)',
-                border: `1px solid ${badgeColors[currentStatus]?.text || 'var(--c-dim)'}40`
-              }}
-            >
-              {QUOTE_STATUSES.find(x => x.value === currentStatus)?.label || currentStatus}
-            </span>
-          )}
+          <span
+            className="text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider"
+            style={{
+              background: badgeColors[currentStatus]?.bg || 'var(--c-base)',
+              color: badgeColors[currentStatus]?.text || 'var(--c-dim)',
+              border: `1px solid ${badgeColors[currentStatus]?.text || 'var(--c-dim)'}40`
+            }}
+          >
+            {QUOTE_STATUSES.find(x => x.value === currentStatus)?.label || currentStatus}
+          </span>
         </div>
       )}
 

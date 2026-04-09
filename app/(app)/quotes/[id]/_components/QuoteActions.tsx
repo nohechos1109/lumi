@@ -15,6 +15,7 @@ interface Props {
   projectId: string | null
   projectName: string | null
   installationNotes?: string | null
+  isShowroom?: boolean
 }
 
 const VALID_TRANSITIONS: Record<string, string[]> = {
@@ -23,7 +24,7 @@ const VALID_TRANSITIONS: Record<string, string[]> = {
   admin:   ['draft', 'sent', 'confirmed', 'cancelled', 'expired'],
 }
 
-export default function QuoteActions({ quoteId, currentState, role, projectId, projectName, installationNotes }: Props) {
+export default function QuoteActions({ quoteId, currentState, role, projectId, projectName, installationNotes, isShowroom }: Props) {
   const router = useRouter()
   const [loading, setLoading] = useState(false)
   const [showDuplicateModal, setShowDuplicateModal] = useState(false)
@@ -49,13 +50,15 @@ export default function QuoteActions({ quoteId, currentState, role, projectId, p
           Exportar PDF
         </Link>
 
-        <button
-          onClick={() => setShowLevantamientoModal(true)}
-          className={btnBase}
-          style={{ background: 'var(--c-panel)', color: 'var(--c-dim)', border: '1px solid var(--c-rim)' }}
-        >
-          Levantamiento PDF
-        </button>
+        {!isShowroom && (
+          <button
+            onClick={() => setShowLevantamientoModal(true)}
+            className={btnBase}
+            style={{ background: 'var(--c-panel)', color: 'var(--c-dim)', border: '1px solid var(--c-rim)' }}
+          >
+            Levantamiento PDF
+          </button>
+        )}
 
         <button
           onClick={() => setShowDuplicateModal(true)}

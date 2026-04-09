@@ -22,6 +22,8 @@ export default async function QuotePage({ params }: { params: Promise<{ id: stri
   if (canViewOwnQuotesOnly(session.role) && quote.user_id !== session.userId) notFound()
   if (!canAccessShowroomQuotes(session.role) && !quote.project_id) notFound()
 
+  const isShowroom = !quote.project_id
+
   return (
     <div>
       {/* Back navigation */}
@@ -78,24 +80,29 @@ export default async function QuotePage({ params }: { params: Promise<{ id: stri
             projectId={quote.project_id}
             projectName={quote.project_name ?? null}
             installationNotes={quote.installation_notes ?? null}
+            isShowroom={isShowroom}
           />
-          <div className="w-full sm:w-72">
-            <InstallationNotesEditor quoteId={id} installationNotes={quote.installation_notes ?? null} />
-          </div>
+          {!isShowroom && (
+            <div className="w-full sm:w-72">
+              <InstallationNotesEditor quoteId={id} installationNotes={quote.installation_notes ?? null} />
+            </div>
+          )}
         </div>
       </div>
 
       {/* Stats bar */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-7">
-        <div
-          className="rounded-xl p-4"
-          style={{ background: 'var(--c-card)', border: '1px solid var(--c-rim)', boxShadow: '0 1px 3px rgba(27,52,97,0.05)' }}
-        >
-          <p className="text-xs font-semibold mb-2" style={{ color: 'var(--c-ghost)' }}>
-            Vehículos
-          </p>
-          <UnitCountEditor quoteId={id} unitCount={quote.unit_count} isLocked={quote.state !== 'draft'} />
-        </div>
+      <div className={`grid grid-cols-2 ${isShowroom ? 'md:grid-cols-3' : 'md:grid-cols-4'} gap-3 mb-7`}>
+        {!isShowroom && (
+          <div
+            className="rounded-xl p-4"
+            style={{ background: 'var(--c-card)', border: '1px solid var(--c-rim)', boxShadow: '0 1px 3px rgba(27,52,97,0.05)' }}
+          >
+            <p className="text-xs font-semibold mb-2" style={{ color: 'var(--c-ghost)' }}>
+              Vehículos
+            </p>
+            <UnitCountEditor quoteId={id} unitCount={quote.unit_count} isLocked={quote.state !== 'draft'} />
+          </div>
+        )}
 
         <div
           className="rounded-xl p-4"
@@ -131,7 +138,7 @@ export default async function QuotePage({ params }: { params: Promise<{ id: stri
           }}
         >
           <p className="text-xs font-semibold mb-2" style={{ color: 'rgba(255,255,255,0.6)' }}>
-            Total · {quote.unit_count} unidades
+            {isShowroom ? 'Total' : `Total · ${quote.unit_count} unidades`}
           </p>
           <p className="font-mono text-xl font-bold" style={{ color: '#FFFFFF' }}>
             ${(Number(quote.amount_total) * quote.unit_count).toLocaleString('es-MX', { minimumFractionDigits: 2 })}
@@ -146,6 +153,7 @@ export default async function QuotePage({ params }: { params: Promise<{ id: stri
         role={session.role}
         isLocked={quote.state !== 'draft'}
         quoteState={quote.state}
+        isShowroom={isShowroom}
       />
 
       {(session.role === 'manager' || session.role === 'admin') && (

@@ -28,6 +28,7 @@ interface Props {
   role?: string
   isLocked?: boolean
   quoteState?: string
+  isShowroom?: boolean
 }
 
 const inputCls = 'text-right rounded-lg px-2 py-1.5 text-sm font-mono outline-none transition-colors'
@@ -37,7 +38,7 @@ const inputStyle = {
   color: 'var(--c-ink)',
 }
 
-export default function LineEditor({ quoteId, fxSnapshot, unitCount, role, isLocked, quoteState }: Props) {
+export default function LineEditor({ quoteId, fxSnapshot, unitCount, role, isLocked, quoteState, isShowroom }: Props) {
   const router = useRouter()
   const [lines, setLines] = useState<QuoteLine[]>([])
   const [totals, setTotals] = useState({ untaxed: 0, tax: 0, total: 0, margin: 0, marginPct: 0 })
@@ -378,7 +379,7 @@ export default function LineEditor({ quoteId, fxSnapshot, unitCount, role, isLoc
                   <th className="text-right px-4 py-3.5 text-xs font-bold uppercase tracking-widest w-28" style={{ color: 'var(--c-ghost)' }}>Precio Unit.</th>
                   <th className="text-right px-4 py-3.5 text-xs font-bold uppercase tracking-widest w-20" style={{ color: 'var(--c-ghost)' }}>Desc %</th>
                   <th className="text-right px-4 py-3.5 text-xs font-bold uppercase tracking-widest w-28" style={{ color: 'var(--c-ghost)' }}>Subtotal</th>
-                  {role !== 'sales' && (
+                  {role === 'admin' && (
                     <th className="text-right px-4 py-3.5 text-xs font-bold uppercase tracking-widest w-24" style={{ color: 'var(--c-ghost)' }}>Margen</th>
                   )}
                   {!isLocked && <th className="w-10 px-2 py-3.5"></th>}
@@ -395,7 +396,7 @@ export default function LineEditor({ quoteId, fxSnapshot, unitCount, role, isLoc
                         <td className="px-2 py-2.5 text-center text-xs" style={{ color: 'var(--c-ghost)' }}>
                           {isLocked ? '' : '⠿'}
                         </td>
-                        <td colSpan={role !== 'sales' ? 6 : 5} className="px-4 py-1.5">
+                        <td colSpan={role === 'admin' ? 6 : 5} className="px-4 py-1.5">
                           {!isLocked && editingLine?.id === line.id ? (
                             <input
                               autoFocus
@@ -435,7 +436,7 @@ export default function LineEditor({ quoteId, fxSnapshot, unitCount, role, isLoc
                         <td className="px-2 py-2.5 text-center text-xs" style={{ color: 'var(--c-ghost)' }}>
                           {isLocked ? '' : '⠿'}
                         </td>
-                        <td colSpan={role !== 'sales' ? 6 : 5} className="px-4 py-1.5">
+                        <td colSpan={role === 'admin' ? 6 : 5} className="px-4 py-1.5">
                           {!isLocked && editingLine?.id === line.id ? (
                             <input
                               autoFocus
@@ -518,7 +519,7 @@ export default function LineEditor({ quoteId, fxSnapshot, unitCount, role, isLoc
                         <td className="px-4 py-3.5 text-right font-mono text-xs font-medium" style={{ color: 'var(--c-amber)' }}>
                           {Number(line.subtotal) < 0 ? '-' : ''}${Math.abs(Number(line.subtotal)).toLocaleString('es-MX', { minimumFractionDigits: 2 })}
                         </td>
-                        {role !== 'sales' && <td className="px-4 py-3.5"></td>}
+                        {role === 'admin' && <td className="px-4 py-3.5"></td>}
                         {!isLocked && (
                           <td className="px-2 py-3.5 text-right">
                             <button aria-label="Eliminar descuento" onClick={() => setDeleteConfirmLine(line)} className="btn-delete text-xs">✕</button>
@@ -614,7 +615,7 @@ export default function LineEditor({ quoteId, fxSnapshot, unitCount, role, isLoc
                       <td className="px-4 py-3 text-right font-mono font-medium" style={{ color: 'var(--c-ink)' }}>
                         ${sub.toLocaleString('es-MX', { minimumFractionDigits: 2 })}
                       </td>
-                      {role !== 'sales' && (
+                      {role === 'admin' && (
                         <td className="px-4 py-3 text-right">
                           <span className="text-xs font-mono font-medium" style={{ color: margin >= 0 ? 'var(--c-mint)' : 'var(--c-rose)' }}>
                             ${margin.toLocaleString('es-MX', { minimumFractionDigits: 0 })}
@@ -664,23 +665,30 @@ export default function LineEditor({ quoteId, fxSnapshot, unitCount, role, isLoc
                     <span className="font-mono font-semibold" style={{ color: 'var(--c-ink)' }}>${totals.tax.toLocaleString('es-MX', { minimumFractionDigits: 2 })}</span>
                   </span>
                   <span className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg" style={{ background: 'var(--c-surface)', border: '1px solid var(--c-line)' }}>
-                    <span style={{ color: 'var(--c-dim)' }}>Total por unidad</span>
+                    <span style={{ color: 'var(--c-dim)' }}>{isShowroom ? 'Total' : 'Total por unidad'}</span>
                     <span className="font-mono font-semibold" style={{ color: 'var(--c-ink)' }}>${totals.total.toLocaleString('es-MX', { minimumFractionDigits: 2 })} MXN</span>
                   </span>
                 </div>
-                {/* Total Flota destacado en cyan */}
-                <div className="flex justify-end">
-                  <div className="flex items-center gap-3 px-5 py-2.5 rounded-2xl" style={{ background: 'rgba(6,182,212,0.08)', border: '1.5px solid rgba(6,182,212,0.4)' }}>
-                    <span className="text-xs font-semibold uppercase tracking-widest" style={{ color: 'rgba(6,182,212,0.7)' }}>Total Flota · {unitCount} unidades</span>
-                    <span className="font-mono text-xl font-bold" style={{ color: 'rgb(6,182,212)' }}>${(totals.total * unitCount).toLocaleString('es-MX', { minimumFractionDigits: 2 })} MXN</span>
+                {/* Total Flota destacado en cyan — solo para cotizaciones de proyecto */}
+                {!isShowroom && (
+                  <div className="flex justify-end">
+                    <div className="flex items-center gap-3 px-5 py-2.5 rounded-2xl" style={{ background: 'rgba(6,182,212,0.08)', border: '1.5px solid rgba(6,182,212,0.4)' }}>
+                      <span className="text-xs font-semibold uppercase tracking-widest" style={{ color: 'rgba(6,182,212,0.7)' }}>Total Flota · {unitCount} unidades</span>
+                      <span className="font-mono text-xl font-bold" style={{ color: 'rgb(6,182,212)' }}>${(totals.total * unitCount).toLocaleString('es-MX', { minimumFractionDigits: 2 })} MXN</span>
+                    </div>
                   </div>
-                </div>
-                {role !== 'sales' && (
+                )}
+                {role === 'admin' && (
                   <div className="flex justify-end">
                     <span className="text-xs font-mono" style={{ color: totals.margin >= 0 ? 'var(--c-mint)' : 'var(--c-rose)' }}>
-                      Margen unitario: ${totals.margin.toLocaleString('es-MX', { minimumFractionDigits: 0 })} ({totals.marginPct.toFixed(1)}%)
-                      <span style={{ color: 'var(--c-ghost)', margin: '0 0.5rem' }}>|</span>
-                      Margen total: ${(totals.margin * unitCount).toLocaleString('es-MX', { minimumFractionDigits: 0 })}
+                      {isShowroom
+                        ? `Margen: $${totals.margin.toLocaleString('es-MX', { minimumFractionDigits: 0 })} (${totals.marginPct.toFixed(1)}%)`
+                        : <>
+                            Margen unitario: ${totals.margin.toLocaleString('es-MX', { minimumFractionDigits: 0 })} ({totals.marginPct.toFixed(1)}%)
+                            <span style={{ color: 'var(--c-ghost)', margin: '0 0.5rem' }}>|</span>
+                            Margen total: ${(totals.margin * unitCount).toLocaleString('es-MX', { minimumFractionDigits: 0 })}
+                          </>
+                      }
                     </span>
                   </div>
                 )}
