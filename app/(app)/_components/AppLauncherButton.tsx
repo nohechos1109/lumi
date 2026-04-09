@@ -16,8 +16,8 @@ export default function AppLauncherButton({ items }: Props) {
         onClick={() => setOpen(v => !v)}
         className="flex items-center gap-2 px-3 rounded-lg transition-colors"
         style={{
-          paddingTop: '11px',
-          paddingBottom: '11px',
+          paddingTop: '12px',
+          paddingBottom: '12px',
           color: open ? 'var(--c-navy)' : 'var(--c-dim)',
           background: open ? 'var(--c-navy-bg)' : 'var(--c-base)',
           border: open ? '1px solid var(--c-navy-bd)' : '1px solid transparent',

@@ -25,7 +25,7 @@ export default function TopBar({ items, username, roleLabel, userInitial, homeHr
     >
       {/* Logo — links to role home */}
       <Link href={homeHref} className="flex items-center shrink-0">
-        <Image src="/lumi-logo.svg" alt="LUMI" width={88} height={28} className="object-contain" priority />
+        <Image src="/lumi-logo.svg" alt="LUMI" width={150} height={46} className="object-contain" priority />
       </Link>
 
       {/* Waffle launcher button */}
