@@ -5,7 +5,7 @@ import Link from 'next/link'
 import { sessionOptions, SessionData } from '@/lib/session'
 import {
   IconProjects, IconQuotes, IconCatalog,
-  IconCustomers, IconTemplates, IconTeam,
+  IconCustomers, IconTemplates,
 } from '../_components/NavIcons'
 
 interface Section {
@@ -30,7 +30,6 @@ const managerSections: Section[] = [
   { href: '/customers',  label: 'Clientes',     desc: 'Directorio de clientes',       icon: <IconCustomers />, color: '#D12C3C' },
   { href: '/plantillas', label: 'Plantillas',   desc: 'Plantillas de cotización',     icon: <IconTemplates />, color: '#7C3AED' },
   { href: '/catalog',    label: 'Catálogo',     desc: 'Productos disponibles',        icon: <IconCatalog />,   color: '#C47F08' },
-  { href: '/manager',    label: 'Equipo',       desc: 'Vista gerencial del equipo',   icon: <IconTeam />,      color: '#0891B2' },
 ]
 
 const restrictedSections: Section[] = [

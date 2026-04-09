@@ -173,7 +173,7 @@ export default function LevantamientoPDF({
         </View>
 
         {/* Detalles para la Instalación */}
-        <View style={styles.detallesBox}>
+        <View style={styles.detallesBox} wrap={false}>
           <Text style={styles.detallesTitle}>DETALLES PARA LA INSTALACIÓN</Text>
           <Text style={styles.detallesContent}>{detalles || ''}</Text>
         </View>

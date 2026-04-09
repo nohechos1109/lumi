@@ -1,13 +1,12 @@
 import Link from 'next/link'
 import {
-  IconProjects, IconQuotes, IconTeam, IconUsers,
+  IconProjects, IconQuotes, IconUsers,
   IconProducts, IconDiscounts, IconTemplates, IconCustomers, IconSettings, IconCatalog,
 } from '../_components/NavIcons'
 
 const sections = [
   { href: '/projects',                 label: 'Proyectos',     desc: 'Gestión de proyectos',              icon: <IconProjects />,  color: '#1C5AD6' },
   { href: '/quotes',                   label: 'Cotizaciones',  desc: 'Todas las cotizaciones del equipo', icon: <IconQuotes />,    color: '#0B9962' },
-  { href: '/manager',                  label: 'Equipo',        desc: 'Vista gerencial del equipo',        icon: <IconTeam />,      color: '#0891B2' },
   { href: '/admin/users',              label: 'Usuarios',      desc: 'Cuentas y roles de acceso',         icon: <IconUsers />,     color: '#1B3461' },
   { href: '/admin/products',           label: 'Productos',     desc: 'Catálogo, precios y costos',        icon: <IconProducts />,  color: '#0B9962' },
   { href: '/admin/discount-approvals', label: 'Descuentos',    desc: 'Aprobación de descuentos',          icon: <IconDiscounts />, color: '#C47F08' },

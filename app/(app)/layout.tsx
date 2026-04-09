@@ -28,13 +28,11 @@ export default async function AppLayout({ children }: { children: React.ReactNod
       { href: '/customers',  label: 'Clientes',     icon: 'customers', color: '#D12C3C' },
       { href: '/plantillas', label: 'Plantillas',   icon: 'templates', color: '#7C3AED' },
       { href: '/catalog',    label: 'Catálogo',     icon: 'catalog',   color: '#C47F08' },
-      { href: '/manager',    label: 'Equipo',       icon: 'team',      color: '#0891B2' },
     ],
     admin: [
       { href: '/admin',                    label: 'Inicio',       icon: 'dashboard', color: '#1B3461', exact: true },
       { href: '/projects',                 label: 'Proyectos',    icon: 'projects',  color: '#1C5AD6' },
       { href: '/quotes',                   label: 'Cotizaciones', icon: 'quotes',    color: '#0B9962' },
-      { href: '/manager',                  label: 'Equipo',       icon: 'team',      color: '#0891B2' },
       { href: '/admin/users',              label: 'Usuarios',     icon: 'users',     color: '#1B3461' },
       { href: '/admin/products',           label: 'Productos',    icon: 'products',  color: '#0B9962' },
       { href: '/admin/discount-approvals', label: 'Descuentos',   icon: 'discounts', color: '#C47F08' },
