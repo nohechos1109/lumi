@@ -74,7 +74,7 @@ export default function UnitCountEditor({ quoteId, unitCount, isLocked }: Props)
       >
         {unitCount}
       </span>
-      <span className="text-sm font-sans" style={{ color: 'var(--c-dim)' }}>uds</span>
+      <span className="text-sm font-sans" style={{ color: 'var(--c-dim)' }}>unidades</span>
       {!isLocked && (
         <span
           className="text-xs opacity-0 group-hover:opacity-60 transition-opacity ml-0.5"

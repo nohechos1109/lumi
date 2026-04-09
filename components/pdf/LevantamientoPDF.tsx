@@ -21,8 +21,9 @@ const styles = StyleSheet.create({
   sectionRow: { backgroundColor: '#F9FAFB', borderBottom: '1 solid #E5E7EB' },
   itemText: { fontSize: 8.5 },
 
-  colDesc: { width: '80%' },
-  colQty: { width: '20%', textAlign: 'right' },
+  colQty: { width: '10%' },
+  colSku: { width: '20%' },
+  colDesc: { width: '70%' },
 
   detallesBox: {
     marginTop: 25,
@@ -130,8 +131,9 @@ export default function LevantamientoPDF({
         {/* Items Table — DESCRIPCIÓN + CANTIDAD only */}
         <View style={styles.table}>
           <View style={styles.tableHeader} fixed>
-            <Text style={[styles.tableHeaderText, styles.colDesc]}>DESCRIPCIÓN</Text>
             <Text style={[styles.tableHeaderText, styles.colQty]}>CANT.</Text>
+            <Text style={[styles.tableHeaderText, styles.colSku]}>SKU</Text>
+            <Text style={[styles.tableHeaderText, styles.colDesc]}>DESCRIPCIÓN</Text>
           </View>
 
           {lines.map((line) => {
@@ -160,10 +162,11 @@ export default function LevantamientoPDF({
 
             return (
               <View key={line.id} style={styles.tableRow} wrap={false}>
+                <Text style={[styles.itemText, styles.colQty]}>{Math.floor(Number(line.qty))}</Text>
+                <Text style={[styles.itemText, styles.colSku]}>{line.sku ?? ''}</Text>
                 <View style={styles.colDesc}>
                   <Text style={styles.itemText}>{line.name}</Text>
                 </View>
-                <Text style={[styles.itemText, styles.colQty]}>{Math.floor(Number(line.qty))}</Text>
               </View>
             )
           })}

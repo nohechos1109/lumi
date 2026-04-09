@@ -129,7 +129,7 @@ export default async function QuotePage({ params }: { params: Promise<{ id: stri
           }}
         >
           <p className="text-xs font-semibold mb-2" style={{ color: 'rgba(255,255,255,0.6)' }}>
-            Total · {quote.unit_count} uds
+            Total · {quote.unit_count} unidades
           </p>
           <p className="font-mono text-xl font-bold" style={{ color: '#FFFFFF' }}>
             ${(Number(quote.amount_total) * quote.unit_count).toLocaleString('es-MX', { minimumFractionDigits: 2 })}

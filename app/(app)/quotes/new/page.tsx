@@ -188,7 +188,7 @@ function NewQuoteForm() {
 
           {/* ── Unidades ────────────────────────────── */}
           <div>
-            <label className={labelCls} style={labelStyle}>Vehículos (uds) *</label>
+            <label className={labelCls} style={labelStyle}>Vehículos (unidades) *</label>
             <input
               name="unit_count"
               type="number"

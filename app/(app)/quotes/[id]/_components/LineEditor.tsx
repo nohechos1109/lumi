@@ -584,7 +584,7 @@ export default function LineEditor({ quoteId, fxSnapshot, unitCount, role, isLoc
           <div className="px-5 py-4" style={{ borderTop: '1px solid var(--c-rim)', background: 'var(--c-panel)' }}>
             <div className="flex flex-col gap-3 sm:flex-row sm:justify-between sm:items-start">
               <div className="text-sm" style={{ color: 'var(--c-dim)' }}>
-                Vehículos: <span className="font-mono font-semibold" style={{ color: 'var(--c-ink)' }}>{unitCount} uds</span>
+                Vehículos: <span className="font-mono font-semibold" style={{ color: 'var(--c-ink)' }}>{unitCount} unidades</span>
               </div>
               <div className="flex flex-col items-end gap-3">
                 {/* Pills de desglose por unidad */}
@@ -610,14 +610,14 @@ export default function LineEditor({ quoteId, fxSnapshot, unitCount, role, isLoc
                     <span className="font-mono font-semibold" style={{ color: 'var(--c-ink)' }}>${totals.tax.toLocaleString('es-MX', { minimumFractionDigits: 2 })}</span>
                   </span>
                   <span className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg" style={{ background: 'var(--c-surface)', border: '1px solid var(--c-line)' }}>
-                    <span style={{ color: 'var(--c-dim)' }}>Total / ud</span>
+                    <span style={{ color: 'var(--c-dim)' }}>Total por unidad</span>
                     <span className="font-mono font-semibold" style={{ color: 'var(--c-ink)' }}>${totals.total.toLocaleString('es-MX', { minimumFractionDigits: 2 })} MXN</span>
                   </span>
                 </div>
                 {/* Total Flota destacado en cyan */}
                 <div className="flex justify-end">
                   <div className="flex items-center gap-3 px-5 py-2.5 rounded-2xl" style={{ background: 'rgba(6,182,212,0.08)', border: '1.5px solid rgba(6,182,212,0.4)' }}>
-                    <span className="text-xs font-semibold uppercase tracking-widest" style={{ color: 'rgba(6,182,212,0.7)' }}>Total Flota · {unitCount} uds</span>
+                    <span className="text-xs font-semibold uppercase tracking-widest" style={{ color: 'rgba(6,182,212,0.7)' }}>Total Flota · {unitCount} unidades</span>
                     <span className="font-mono text-xl font-bold" style={{ color: 'rgb(6,182,212)' }}>${(totals.total * unitCount).toLocaleString('es-MX', { minimumFractionDigits: 2 })} MXN</span>
                   </div>
                 </div>
