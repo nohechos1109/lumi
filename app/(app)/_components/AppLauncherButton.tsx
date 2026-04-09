@@ -14,18 +14,20 @@ export default function AppLauncherButton({ items }: Props) {
     <>
       <button
         onClick={() => setOpen(v => !v)}
-        className="w-8 h-8 flex items-center justify-center rounded-lg transition-colors"
+        className="flex items-center gap-2 px-3 rounded-lg transition-colors"
         style={{
+          paddingTop: '7px',
+          paddingBottom: '7px',
           color: open ? 'var(--c-navy)' : 'var(--c-dim)',
-          background: open ? 'var(--c-navy-bg)' : 'transparent',
+          background: open ? 'var(--c-navy-bg)' : 'var(--c-base)',
+          border: open ? '1px solid var(--c-navy-bd)' : '1px solid transparent',
         }}
         onMouseEnter={e => { if (!open) (e.currentTarget as HTMLElement).style.background = 'var(--c-hover)' }}
-        onMouseLeave={e => { if (!open) (e.currentTarget as HTMLElement).style.background = 'transparent' }}
+        onMouseLeave={e => { if (!open) (e.currentTarget as HTMLElement).style.background = open ? 'var(--c-navy-bg)' : 'var(--c-base)' }}
         aria-label="Abrir menú de módulos"
-        title="Módulos"
       >
         {/* Waffle icon — 3×3 grid of dots */}
-        <svg width="18" height="18" viewBox="0 0 18 18" fill="currentColor">
+        <svg width="16" height="16" viewBox="0 0 18 18" fill="currentColor">
           <rect x="1"  y="1"  width="4" height="4" rx="1" />
           <rect x="7"  y="1"  width="4" height="4" rx="1" />
           <rect x="13" y="1"  width="4" height="4" rx="1" />
@@ -36,6 +38,7 @@ export default function AppLauncherButton({ items }: Props) {
           <rect x="7"  y="13" width="4" height="4" rx="1" />
           <rect x="13" y="13" width="4" height="4" rx="1" />
         </svg>
+        <span className="text-xs font-semibold" style={{ fontFamily: 'var(--font-montserrat)' }}>Menú</span>
       </button>
 
       {open && typeof window !== 'undefined' &&

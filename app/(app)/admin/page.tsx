@@ -24,7 +24,7 @@ export default function AdminPage() {
           className="font-heading text-3xl font-bold"
           style={{ color: 'var(--c-ink)', letterSpacing: '0.04em' }}
         >
-          Panel Admin
+          Inicio
         </h1>
         <p className="text-sm mt-1" style={{ color: 'var(--c-ghost)' }}>
           Administración del sistema

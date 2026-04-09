@@ -27,7 +27,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
       { href: '/manager',    label: 'Equipo',       icon: 'team',      color: '#0891B2' },
     ],
     admin: [
-      { href: '/admin',                    label: 'Dashboard',    icon: 'dashboard', color: '#1B3461', exact: true },
+      { href: '/admin',                    label: 'Inicio',       icon: 'dashboard', color: '#1B3461', exact: true },
       { href: '/projects',                 label: 'Proyectos',    icon: 'projects',  color: '#1C5AD6' },
       { href: '/quotes',                   label: 'Cotizaciones', icon: 'quotes',    color: '#0B9962' },
       { href: '/manager',                  label: 'Equipo',       icon: 'team',      color: '#0891B2' },
