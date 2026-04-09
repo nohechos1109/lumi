@@ -5,7 +5,7 @@ import Link from 'next/link'
 import { sessionOptions, SessionData } from '@/lib/session'
 import {
   IconProjects, IconQuotes, IconCatalog,
-  IconCustomers, IconTemplates,
+  IconCustomers, IconTemplates, IconCobranza,
 } from '../_components/NavIcons'
 
 interface Section {
@@ -19,6 +19,7 @@ interface Section {
 const salesSections: Section[] = [
   { href: '/projects',   label: 'Proyectos',        desc: 'Mis proyectos activos',          icon: <IconProjects />,  color: '#1C5AD6' },
   { href: '/quotes',     label: 'Mis Cotizaciones', desc: 'Cotizaciones que he generado',   icon: <IconQuotes />,    color: '#0B9962' },
+  { href: '/ventas',     label: 'Cobranza',         desc: 'Ventas y cobros',                icon: <IconCobranza />, color: '#059669' },
   { href: '/catalog',    label: 'Catálogo',         desc: 'Productos disponibles',          icon: <IconCatalog />,   color: '#C47F08' },
   { href: '/customers',  label: 'Clientes',         desc: 'Directorio de clientes',         icon: <IconCustomers />, color: '#D12C3C' },
   { href: '/plantillas', label: 'Plantillas',       desc: 'Plantillas de cotización',       icon: <IconTemplates />, color: '#7C3AED' },
@@ -27,6 +28,7 @@ const salesSections: Section[] = [
 const managerSections: Section[] = [
   { href: '/projects',   label: 'Proyectos',    desc: 'Todos los proyectos',          icon: <IconProjects />,  color: '#1C5AD6' },
   { href: '/quotes',     label: 'Cotizaciones', desc: 'Cotizaciones del equipo',      icon: <IconQuotes />,    color: '#0B9962' },
+  { href: '/ventas',     label: 'Cobranza',     desc: 'Ventas y cobros',              icon: <IconCobranza />, color: '#059669' },
   { href: '/customers',  label: 'Clientes',     desc: 'Directorio de clientes',       icon: <IconCustomers />, color: '#D12C3C' },
   { href: '/plantillas', label: 'Plantillas',   desc: 'Plantillas de cotización',     icon: <IconTemplates />, color: '#7C3AED' },
   { href: '/catalog',    label: 'Catálogo',     desc: 'Productos disponibles',        icon: <IconCatalog />,   color: '#C47F08' },
@@ -34,6 +36,7 @@ const managerSections: Section[] = [
 
 const restrictedSections: Section[] = [
   { href: '/quotes',  label: 'Cotizaciones', desc: 'Cotizaciones del sistema', icon: <IconQuotes />, color: '#0B9962' },
+  { href: '/ventas',  label: 'Cobranza',     desc: 'Ventas y cobros',          icon: <IconCobranza />, color: '#059669' },
   { href: '/catalog', label: 'Catálogo',     desc: 'Productos disponibles',    icon: <IconCatalog />, color: '#C47F08' },
 ]
 

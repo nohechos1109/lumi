@@ -122,3 +122,13 @@ export function IconSettings() {
     </svg>
   )
 }
+
+export function IconCobranza() {
+  return (
+    <svg {...props}>
+      <rect x="2" y="5" width="20" height="14" rx="2" />
+      <line x1="2" y1="10" x2="22" y2="10" />
+      <circle cx="16" cy="15" r="1" fill="currentColor" stroke="none" />
+    </svg>
+  )
+}
