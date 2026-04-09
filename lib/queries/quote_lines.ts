@@ -23,13 +23,15 @@ export interface QuoteLine {
   margin_amount: string
   discount_approval_status?: string | null
   pending_discount_percent?: string | null
+  pending_approval_id?: string | null
   sku?: string
 }
 
 export async function listLines(quoteId: string): Promise<QuoteLine[]> {
   const { rows } = await pool.query(
     `SELECT ql.*, p.sku as sku,
-            da.discount_percent as pending_discount_percent
+            da.discount_percent as pending_discount_percent,
+            da.id as pending_approval_id
      FROM quote_lines ql
      LEFT JOIN products p ON p.id = ql.product_id
      LEFT JOIN discount_approvals da

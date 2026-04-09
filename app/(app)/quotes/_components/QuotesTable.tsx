@@ -446,13 +446,15 @@ export default function QuotesTable({
                             </svg>
                           )}
                         </button>
-                        <button
-                          aria-label="Eliminar cotización"
-                          onClick={(e) => { e.stopPropagation(); setDeleteId(q.id) }}
-                          className="btn-delete text-xs"
-                        >
-                          ✕
-                        </button>
+                        {!isSales && (
+                          <button
+                            aria-label="Eliminar cotización"
+                            onClick={(e) => { e.stopPropagation(); setDeleteId(q.id) }}
+                            className="btn-delete text-xs"
+                          >
+                            ✕
+                          </button>
+                        )}
                       </div>
                     </td>
                   </tr>

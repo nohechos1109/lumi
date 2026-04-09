@@ -348,13 +348,15 @@ export default function ProjectsTable({ projects, role }: { projects: Project[],
                             </svg>
                           )}
                         </button>
-                        <button
-                          aria-label="Eliminar proyecto"
-                          onClick={(e) => { e.stopPropagation(); setDeleteId(p.id) }}
-                          className="btn-delete text-xs"
-                        >
-                          ✕
-                        </button>
+                        {!isSales && (
+                          <button
+                            aria-label="Eliminar proyecto"
+                            onClick={(e) => { e.stopPropagation(); setDeleteId(p.id) }}
+                            className="btn-delete text-xs"
+                          >
+                            ✕
+                          </button>
+                        )}
                       </div>
                     </td>
                   </tr>

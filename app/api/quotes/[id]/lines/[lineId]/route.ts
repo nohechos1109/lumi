@@ -26,6 +26,67 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
     )
     if (!line) return forbidden()
 
+    // Global discount line re-approval: when a sales user changes an already-approved discount
+    if (line.display_type === 'discount') {
+      const requestedDiscount = Number(body.discount_percent)
+
+      const client = await pool.connect()
+      try {
+        await client.query('BEGIN')
+
+        const { rows: [lockedLine] } = await client.query(
+          `SELECT discount_approval_status, discount_percent FROM quote_lines WHERE id = $1 FOR UPDATE`,
+          [lineId]
+        )
+
+        if (lockedLine.discount_approval_status === 'pending') {
+          await client.query('ROLLBACK')
+          return NextResponse.json({ error: 'Ya existe una solicitud de descuento pendiente para esta línea' }, { status: 409 })
+        }
+
+        // Mark as pending — do NOT update discount_percent yet (admin must approve first)
+        await client.query(
+          `UPDATE quote_lines SET discount_approval_status = 'pending' WHERE id = $1`,
+          [lineId]
+        )
+
+        // Create approval record
+        const { rows: [approval] } = await client.query(
+          `INSERT INTO discount_approvals (quote_id, quote_line_id, requested_by, discount_percent)
+           VALUES ($1, $2, $3, $4) RETURNING *`,
+          [id, lineId, session.userId, requestedDiscount]
+        )
+
+        // Notify admins
+        const { rows: admins } = await client.query(`SELECT id FROM users WHERE role = 'admin'`)
+        await Promise.all(admins.map((admin: { id: string }) =>
+          client.query(
+            `INSERT INTO notifications (user_id, type, title, message, entity, entity_id)
+             VALUES ($1, $2, $3, $4, $5, $6)`,
+            [
+              admin.id,
+              'discount_request',
+              'Nueva solicitud de descuento',
+              `Vendedor solicitó cambiar el descuento global al ${requestedDiscount}% en la cotización.`,
+              'discount_approval',
+              approval.id,
+            ]
+          )
+        ))
+
+        await client.query('COMMIT')
+      } catch (err) {
+        await client.query('ROLLBACK')
+        throw err
+      } finally {
+        client.release()
+      }
+
+      // Totals are unchanged since discount_percent on the line was NOT modified
+      await updateQuoteTotals(id)
+      return NextResponse.json({ ok: true })
+    }
+
     // Only product lines use this flow; global discount lines go through POST
     if (line.display_type === 'product') {
       const requestedDiscount = Number(body.discount_percent)

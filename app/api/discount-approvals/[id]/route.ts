@@ -51,10 +51,11 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
           [Number(approval.discount_percent), approval.quote_line_id]
         )
       } else {
-        // Global discount line: just mark as approved (updateQuoteTotals recalibrates subtotal)
+        // Global discount line: apply the requested discount_percent and mark as approved
+        // (updateQuoteTotals recalibrates the subtotal based on the new percent)
         await client.query(
-          `UPDATE quote_lines SET discount_approval_status = 'approved' WHERE id = $1`,
-          [approval.quote_line_id]
+          `UPDATE quote_lines SET discount_percent = $1, discount_approval_status = 'approved' WHERE id = $2`,
+          [Number(approval.discount_percent), approval.quote_line_id]
         )
       }
     } else {
@@ -96,5 +97,46 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
   // Call updateQuoteTotals AFTER commit (uses pool.query internally, safe after tx)
   await updateQuoteTotals(approval.quote_id)
 
+  return NextResponse.json({ ok: true })
+}
+
+export async function DELETE(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const session = await getSession()
+  if (!session) return unauthorized()
+
+  const { id } = await params
+
+  const approval = await getDiscountApproval(id)
+  if (!approval) return NextResponse.json({ error: 'Not found' }, { status: 404 })
+
+  // Only the requester or an admin can cancel
+  if (session.role !== 'admin' && approval.requested_by !== session.userId) return forbidden()
+
+  if (approval.status !== 'pending') {
+    return NextResponse.json({ error: 'Esta solicitud ya fue procesada' }, { status: 409 })
+  }
+
+  const client = await pool.connect()
+  try {
+    await client.query('BEGIN')
+
+    // Delete the approval record
+    await client.query(`DELETE FROM discount_approvals WHERE id = $1`, [id])
+
+    // Reset line status so the discount field becomes editable again
+    await client.query(
+      `UPDATE quote_lines SET discount_approval_status = NULL WHERE id = $1`,
+      [approval.quote_line_id]
+    )
+
+    await client.query('COMMIT')
+  } catch (err) {
+    await client.query('ROLLBACK')
+    throw err
+  } finally {
+    client.release()
+  }
+
+  await updateQuoteTotals(approval.quote_id)
   return NextResponse.json({ ok: true })
 }
