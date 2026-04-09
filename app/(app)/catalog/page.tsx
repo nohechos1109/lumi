@@ -128,8 +128,6 @@ export default function CatalogPage() {
   const [loading, setLoading] = useState(true)
   const [search, setSearch] = useState('')
   const [categoryFilter, setCategoryFilter] = useState('all')
-  const [currencyFilter, setCurrencyFilter] = useState('all')
-
   useEffect(() => {
     fetch('/api/products/catalog')
       .then(r => { if (!r.ok) throw new Error(); return r.json() })
@@ -149,9 +147,8 @@ export default function CatalogPage() {
       || (p.sku ?? '').toLowerCase().includes(q)
       || (p.category ?? '').toLowerCase().includes(q)
     const matchCat = categoryFilter === 'all' || p.category === categoryFilter
-    const matchCur = currencyFilter === 'all' || p.currency === currencyFilter
-    return matchSearch && matchCat && matchCur
-  }), [products, search, categoryFilter, currencyFilter])
+    return matchSearch && matchCat
+  }), [products, search, categoryFilter])
 
   if (loading) {
     return (
@@ -188,7 +185,7 @@ export default function CatalogPage() {
       />
 
       {/* Category filter */}
-      <div className="flex flex-wrap gap-2 mb-4">
+      <div className="flex flex-wrap gap-2 mb-6">
         {(['all', ...categories] as string[]).map(cat => (
           <button
             key={cat}
@@ -206,29 +203,6 @@ export default function CatalogPage() {
             }}
           >
             {cat === 'all' ? 'Todos' : cat}
-          </button>
-        ))}
-      </div>
-
-      {/* Currency filter */}
-      <div className="flex gap-2 mb-6">
-        {(['all', 'MXN', 'USD'] as const).map(cur => (
-          <button
-            key={cur}
-            onClick={() => setCurrencyFilter(cur)}
-            style={{
-              padding: '5px 12px',
-              borderRadius: '8px',
-              fontSize: '13px',
-              fontWeight: 500,
-              cursor: 'pointer',
-              border: currencyFilter === cur ? 'none' : '1px solid var(--c-rim)',
-              background: currencyFilter === cur ? 'var(--c-navy)' : 'var(--c-panel)',
-              color: currencyFilter === cur ? 'white' : 'var(--c-dim)',
-              transition: 'background 0.15s, color 0.15s',
-            }}
-          >
-            {cur === 'all' ? 'Todos' : cur}
           </button>
         ))}
       </div>
