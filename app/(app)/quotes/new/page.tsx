@@ -2,6 +2,7 @@
 
 import { useState, useEffect, FormEvent, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
+import { CustomerFormModal, CustomerSaved } from '@/app/(app)/customers/_components/CustomerFormModal'
 
 interface Customer { id: string; name: string; email: string | null; phone: string | null }
 
@@ -21,52 +22,41 @@ function NewQuoteForm() {
   const searchParams = useSearchParams()
   const [customers, setCustomers] = useState<Customer[]>([])
   const [loading, setLoading] = useState(false)
-  const [isNewCustomer, setIsNewCustomer] = useState(false)
-  const [newCustomerName, setNewCustomerName] = useState('')
-  const [newCustomerEmail, setNewCustomerEmail] = useState('')
-  const [newCustomerPhone, setNewCustomerPhone] = useState('')
+  const [selectedCustomerId, setSelectedCustomerId] = useState('')
+  const [showNewCustomerModal, setShowNewCustomerModal] = useState(false)
   const [today, setToday] = useState('')
 
   useEffect(() => {
     setToday(new Date().toISOString().split('T')[0])
   }, [])
-  
+
   const initialCustomerId = searchParams.get('customer_id') || ''
   const initialProjectId = searchParams.get('project_id') || ''
 
   useEffect(() => {
-    fetch('/api/customers').then(r => r.json()).then(setCustomers)
-  }, [])
+    fetch('/api/customers').then(r => r.json()).then((data: Customer[]) => {
+      setCustomers(data)
+      if (initialCustomerId) setSelectedCustomerId(initialCustomerId)
+    })
+  }, [initialCustomerId])
+
+  function handleCustomerSaved(customer: CustomerSaved) {
+    setCustomers(prev => [...prev, customer])
+    setSelectedCustomerId(customer.id)
+    setShowNewCustomerModal(false)
+  }
 
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault()
     setLoading(true)
     const form = new FormData(e.currentTarget)
 
-    let customerId = form.get('customer_id') as string
-
-    if (isNewCustomer) {
-      if (!newCustomerName.trim()) { setLoading(false); return }
-      const res = await fetch('/api/customers', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          name: newCustomerName.trim(),
-          email: newCustomerEmail.trim() || undefined,
-          phone: newCustomerPhone.trim() || undefined,
-        }),
-      })
-      if (!res.ok) { setLoading(false); return }
-      const customer = await res.json()
-      customerId = customer.id
-    }
-
     const res = await fetch('/api/quotes', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         description: form.get('description'),
-        customer_id: customerId,
+        customer_id: selectedCustomerId || initialCustomerId,
         unit_count: Number(form.get('unit_count')),
         payment_term_id: form.get('payment_term_id') || null,
         quotation_date: new Date().toISOString(),
@@ -122,7 +112,7 @@ function NewQuoteForm() {
           />
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-2 gap-4 items-end">
           {/* ── Cliente ─────────────────────────────── */}
           <div>
             <div className="flex items-center justify-between mb-1.5">
@@ -132,55 +122,27 @@ function NewQuoteForm() {
               {!initialCustomerId && (
                 <button
                   type="button"
-                  className="text-xs font-medium transition-colors"
-                  style={{ color: 'var(--c-navy)' }}
-                  onClick={() => { setIsNewCustomer(v => !v); setNewCustomerName(''); setNewCustomerEmail(''); setNewCustomerPhone('') }}
+                  className="flex items-center gap-1 rounded-md px-3 py-1 text-xs font-semibold text-white transition-opacity hover:opacity-85"
+                  style={{ backgroundColor: 'var(--c-navy)', cursor: 'pointer' }}
+                  onClick={() => setShowNewCustomerModal(true)}
                 >
-                  {isNewCustomer ? '← Seleccionar existente' : '+ Crear nuevo'}
+                  + Nuevo cliente
                 </button>
               )}
             </div>
 
-            {isNewCustomer ? (
-              <div className="flex flex-col gap-2">
-                <input
-                  type="text"
-                  required={isNewCustomer}
-                  placeholder="Nombre del cliente"
-                  value={newCustomerName}
-                  onChange={e => setNewCustomerName(e.target.value)}
-                  className="w-full"
-                  autoFocus
-                />
-                <input
-                  type="email"
-                  placeholder="Email (opcional)"
-                  value={newCustomerEmail}
-                  onChange={e => setNewCustomerEmail(e.target.value)}
-                  className="w-full"
-                />
-                <input
-                  type="tel"
-                  placeholder="Teléfono (opcional)"
-                  value={newCustomerPhone}
-                  onChange={e => setNewCustomerPhone(e.target.value)}
-                  className="w-full"
-                />
-              </div>
-            ) : (
-              <select
-                name="customer_id"
-                required={!isNewCustomer}
-                className="w-full disabled:bg-slate-50 disabled:text-slate-500"
-                value={initialCustomerId || undefined}
-                disabled={!!initialCustomerId}
-              >
-                <option value="">Seleccionar...</option>
-                {customers.map(c => (
-                  <option key={c.id} value={c.id}>{c.name}</option>
-                ))}
-              </select>
-            )}
+            <select
+              required={!initialCustomerId}
+              value={selectedCustomerId}
+              onChange={e => setSelectedCustomerId(e.target.value)}
+              className="w-full disabled:bg-slate-50 disabled:text-slate-500"
+              disabled={!!initialCustomerId}
+            >
+              <option value="">Seleccionar...</option>
+              {customers.map(c => (
+                <option key={c.id} value={c.id}>{c.name}</option>
+              ))}
+            </select>
             {initialCustomerId && (
               <input type="hidden" name="customer_id" value={initialCustomerId} />
             )}
@@ -227,6 +189,7 @@ function NewQuoteForm() {
               background: 'transparent',
               color: 'var(--c-dim)',
               border: '1px solid var(--c-rim)',
+              cursor: 'pointer'
             }}
           >
             Cancelar
@@ -246,6 +209,14 @@ function NewQuoteForm() {
           </button>
         </div>
       </form>
+
+      {showNewCustomerModal && (
+        <CustomerFormModal
+          customer={null}
+          onClose={() => setShowNewCustomerModal(false)}
+          onSaved={handleCustomerSaved}
+        />
+      )}
     </div>
   )
 }
