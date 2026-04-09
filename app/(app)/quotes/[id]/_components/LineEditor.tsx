@@ -7,6 +7,7 @@ import PromptModal from '@/components/ui/PromptModal'
 import ConfirmModal from '@/components/ui/ConfirmModal'
 import PlantillaModal from '@/components/ui/PlantillaModal'
 import { toast, notifyRefresh } from '@/lib/toast'
+import { useSSE } from '@/hooks/useSSE'
 
 interface QuoteLine {
   id: string; display_type: string; name: string; qty: string | null
@@ -70,15 +71,12 @@ export default function LineEditor({ quoteId, fxSnapshot, unitCount, role, isLoc
 
   useEffect(() => { loadLines() }, [loadLines])
 
-  // Poll every 10s while there are pending discount lines
-  useEffect(() => {
-    const hasPending = lines.some(l => l.discount_approval_status === 'pending')
-    if (!hasPending) return
-    const interval = setInterval(() => {
-      if (document.visibilityState === 'visible') loadLines()
-    }, 10000)
-    return () => clearInterval(interval)
-  }, [lines, loadLines])
+  useSSE({
+    discount_decision: (data) => {
+      const d = data as { quoteId: string }
+      if (d.quoteId === quoteId) loadLines()
+    },
+  })
 
   // Block A: busy state + error handling on add operations
   async function addProductLine(product: { id: string; name: string; description?: string | null; currency: string; cost_base: string; utility_fixed: string; utility_factor: string }) {

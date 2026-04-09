@@ -4,6 +4,7 @@ import { getSession, unauthorized, forbidden } from '@/lib/auth-guard'
 import { updateLine, deleteLine } from '@/lib/queries/quote_lines'
 import { updateQuoteTotals } from '@/lib/queries/quotes'
 import pool from '@/lib/db'
+import { broadcastToUser, broadcastToUsers } from '@/lib/sse'
 
 export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string; lineId: string }> }) {
   const session = await getSession()
@@ -30,6 +31,9 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
     // Global discount line re-approval: when a sales user changes an already-approved discount
     if (line.display_type === 'discount') {
       const requestedDiscount = Number(body.discount_percent)
+
+      let approval!: { id: string }
+      let admins: { id: string }[] = []
 
       const client = await pool.connect()
       try {
@@ -58,14 +62,16 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
         )
 
         // Create approval record
-        const { rows: [approval] } = await client.query(
+        const { rows: [_approval] } = await client.query(
           `INSERT INTO discount_approvals (quote_id, quote_line_id, requested_by, discount_percent)
            VALUES ($1, $2, $3, $4) RETURNING *`,
           [id, lineId, session.userId, requestedDiscount]
         )
+        approval = _approval
 
         // Notify admins
-        const { rows: admins } = await client.query(`SELECT id FROM users WHERE role = 'admin'`)
+        const { rows: _admins } = await client.query(`SELECT id FROM users WHERE role = 'admin'`)
+        admins = _admins
         await Promise.all(admins.map((admin: { id: string }) =>
           client.query(
             `INSERT INTO notifications (user_id, type, title, message, entity, entity_id)
@@ -89,6 +95,32 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
         client.release()
       }
 
+      broadcastToUsers(
+        admins.map((a: { id: string }) => a.id),
+        'discount_request',
+        {
+          approvalId: approval.id,
+          quoteId: id,
+          quoteNumber: null,
+          requesterUsername: session.username,
+          quoteLineName: 'Descuento Global',
+          quoteLineDisplayType: 'discount',
+          discountPercent: requestedDiscount,
+          createdAt: new Date().toISOString(),
+        }
+      )
+      for (const admin of admins) {
+        broadcastToUser(admin.id, 'notification', {
+          type: 'discount_request',
+          title: 'Nueva solicitud de descuento',
+          message: `Vendedor solicitó cambiar el descuento global al ${requestedDiscount}%.`,
+          entity: 'discount_approval',
+          entity_id: approval.id,
+          read: false,
+          created_at: new Date().toISOString(),
+        })
+      }
+
       // Totals are unchanged since discount_percent on the line was NOT modified
       await updateQuoteTotals(id)
       revalidatePath('/quotes')
@@ -107,6 +139,9 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
       if (Object.keys(restBody).length > 0) {
         await updateLine(lineId, restBody)
       }
+
+      let approval!: { id: string }
+      let admins: { id: string }[] = []
 
       const client = await pool.connect()
       try {
@@ -136,14 +171,16 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
         )
 
         // Create approval record
-        const { rows: [approval] } = await client.query(
+        const { rows: [_approval] } = await client.query(
           `INSERT INTO discount_approvals (quote_id, quote_line_id, requested_by, discount_percent)
            VALUES ($1, $2, $3, $4) RETURNING *`,
           [id, lineId, session.userId, requestedDiscount]
         )
+        approval = _approval
 
         // Get admins and create notifications within transaction
-        const { rows: admins } = await client.query(`SELECT id FROM users WHERE role = 'admin'`)
+        const { rows: _admins } = await client.query(`SELECT id FROM users WHERE role = 'admin'`)
+        admins = _admins
         await Promise.all(admins.map((admin: { id: string }) =>
           client.query(
             `INSERT INTO notifications (user_id, type, title, message, entity, entity_id)
@@ -165,6 +202,32 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
         throw err
       } finally {
         client.release()
+      }
+
+      broadcastToUsers(
+        admins.map((a: { id: string }) => a.id),
+        'discount_request',
+        {
+          approvalId: approval.id,
+          quoteId: id,
+          quoteNumber: null,
+          requesterUsername: session.username,
+          quoteLineName: line?.name ?? 'producto',
+          quoteLineDisplayType: 'product',
+          discountPercent: requestedDiscount,
+          createdAt: new Date().toISOString(),
+        }
+      )
+      for (const admin of admins) {
+        broadcastToUser(admin.id, 'notification', {
+          type: 'discount_request',
+          title: 'Nueva solicitud de descuento',
+          message: `Vendedor solicitó un descuento del ${requestedDiscount}% en "${line?.name ?? 'producto'}".`,
+          entity: 'discount_approval',
+          entity_id: approval.id,
+          read: false,
+          created_at: new Date().toISOString(),
+        })
       }
 
       // updateQuoteTotals is still called but since discount_percent on the line was NOT changed,

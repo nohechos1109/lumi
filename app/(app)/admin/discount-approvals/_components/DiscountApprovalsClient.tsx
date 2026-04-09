@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { toast, notifyRefresh } from '@/lib/toast'
+import { useSSE } from '@/hooks/useSSE'
 
 interface DiscountApproval {
   id: string
@@ -21,12 +22,53 @@ export default function DiscountApprovalsClient() {
   const [processing, setProcessing] = useState<string | null>(null)
   const router = useRouter()
 
+  async function loadApprovals() {
+    try {
+      const r = await fetch('/api/discount-approvals')
+      if (!r.ok) throw new Error()
+      setApprovals(await r.json())
+    } catch {
+      toast('Error al cargar las solicitudes', 'error')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  // Load on mount
+  useEffect(() => { loadApprovals() }, [])
+
+  useSSE({
+    discount_request: (data) => {
+      const d = data as {
+        approvalId: string; quoteId: string; quoteNumber: string | null
+        requesterUsername: string; quoteLineName: string; quoteLineDisplayType: string | null
+        discountPercent: number; createdAt: string
+      }
+      setApprovals(prev => [{
+        id: d.approvalId,
+        quote_id: d.quoteId,
+        quote_number: d.quoteNumber ?? '—',
+        requester_username: d.requesterUsername,
+        quote_line_name: d.quoteLineName,
+        quote_line_display_type: d.quoteLineDisplayType,
+        discount_percent: String(d.discountPercent),
+        created_at: d.createdAt,
+      }, ...prev])
+    },
+    approval_cancelled: (data) => {
+      const { approvalId } = data as { approvalId: string }
+      setApprovals(prev => prev.filter(a => a.id !== approvalId))
+    },
+    discount_decision: (data) => {
+      const { approvalId } = data as { approvalId: string }
+      setApprovals(prev => prev.filter(a => a.id !== approvalId))
+    },
+  })
+
+  // Also reload immediately when any mutation event fires (same session)
   useEffect(() => {
-    fetch('/api/discount-approvals')
-      .then(r => { if (!r.ok) throw new Error(); return r.json() })
-      .then(setApprovals)
-      .catch(() => toast('Error al cargar las solicitudes', 'error'))
-      .finally(() => setLoading(false))
+    window.addEventListener('app:refresh-notifications', loadApprovals)
+    return () => window.removeEventListener('app:refresh-notifications', loadApprovals)
   }, [])
 
   async function decide(id: string, decision: 'approved' | 'rejected') {

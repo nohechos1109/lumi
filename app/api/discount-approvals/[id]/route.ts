@@ -4,6 +4,7 @@ import { getSession, unauthorized, forbidden } from '@/lib/auth-guard'
 import { getDiscountApproval } from '@/lib/queries/discount-approvals'
 import pool from '@/lib/db'
 import { updateQuoteTotals } from '@/lib/queries/quotes'
+import { broadcastToUser, broadcastToUsers } from '@/lib/sse'
 
 export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const session = await getSession()
@@ -109,6 +110,29 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
     client.release()
   }
 
+  broadcastToUser(
+    approval.requested_by,
+    'discount_decision',
+    {
+      approvalId: id,
+      quoteId: approval.quote_id,
+      decision,
+      discountPercent: approval.discount_percent,
+      quoteLineName: approval.quote_line_name ?? '',
+    }
+  )
+  broadcastToUser(approval.requested_by, 'notification', {
+    type: decision === 'approved' ? 'discount_approved' : 'discount_rejected',
+    title: decision === 'approved' ? 'Descuento aprobado' : 'Descuento rechazado',
+    message: `Tu descuento del ${approval.discount_percent}% ha sido ${decision === 'approved' ? 'aprobado' : 'rechazado'}.`,
+    entity: 'quote',
+    entity_id: approval.quote_id,
+    read: false,
+    created_at: new Date().toISOString(),
+  })
+  const { rows: adminIds } = await pool.query(`SELECT id FROM users WHERE role = 'admin'`)
+  broadcastToUsers(adminIds.map((r: { id: string }) => r.id), 'approval_cancelled', { approvalId: id })
+
   // Call updateQuoteTotals AFTER commit (uses pool.query internally, safe after tx)
   await updateQuoteTotals(approval.quote_id)
 
@@ -164,6 +188,9 @@ export async function DELETE(_req: NextRequest, { params }: { params: Promise<{ 
   } finally {
     client.release()
   }
+
+  const { rows: adminIds } = await pool.query(`SELECT id FROM users WHERE role = 'admin'`)
+  broadcastToUsers(adminIds.map((r: { id: string }) => r.id), 'approval_cancelled', { approvalId: id })
 
   await updateQuoteTotals(approval.quote_id)
   return NextResponse.json({ ok: true })

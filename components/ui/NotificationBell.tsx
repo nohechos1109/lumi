@@ -1,6 +1,7 @@
 'use client'
 import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
+import { useSSE } from '@/hooks/useSSE'
 
 interface Notification {
   id: string
@@ -82,24 +83,37 @@ export default function NotificationBell() {
     setOpen(false)
     if (n.entity === 'discount_approval' && n.entity_id) {
       router.push(`/admin/discount-approvals`)
+      router.refresh()
     } else if (n.type === 'delete_request' && n.entity_id) {
       router.push(`/admin/customers?highlight=${n.entity_id}`)
+      router.refresh()
     } else if (n.entity === 'quote' && n.entity_id) {
       router.push(`/quotes/${n.entity_id}`)
+      router.refresh()
     }
   }
+
+  useSSE({
+    notification: (data) => {
+      const n = data as { id?: string; type: string; title: string; message?: string | null; entity?: string | null; entity_id?: string | null; created_at?: string }
+      if (!n.title) return
+      setNotifications(prev => [{
+        id: n.id ?? String(Date.now()),
+        type: n.type,
+        title: n.title,
+        message: n.message ?? null,
+        entity: n.entity ?? null,
+        entity_id: n.entity_id ?? null,
+        read: false,
+        created_at: n.created_at ?? new Date().toISOString(),
+      }, ...prev])
+    },
+    discount_decision: () => { loadNotifications() },
+  })
 
   // Load on mount
   useEffect(() => {
     loadNotifications()
-  }, [])
-
-  // Poll every 30 seconds
-  useEffect(() => {
-    const interval = setInterval(() => {
-      if (document.visibilityState === 'visible') loadNotifications()
-    }, 30000)
-    return () => clearInterval(interval)
   }, [])
 
   // Refresh on mutation events
