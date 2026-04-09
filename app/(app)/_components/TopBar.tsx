@@ -28,14 +28,14 @@ export default function TopBar({ items, username, roleLabel, userInitial, homeHr
         <Image src="/lumi-logo.svg" alt="LUMI" width={150} height={46} className="object-contain" priority />
       </Link>
 
-      {/* Waffle launcher button */}
-      <AppLauncherButton items={items} />
+      {/* User menu (chip + dropdown with logout) */}
+      <UserMenu username={username} roleLabel={roleLabel} userInitial={userInitial} />
 
       {/* Notifications */}
       <NotificationBell />
 
-      {/* User menu (chip + dropdown with logout) */}
-      <UserMenu username={username} roleLabel={roleLabel} userInitial={userInitial} />
+      {/* Waffle launcher button */}
+      <AppLauncherButton items={items} />
     </header>
   )
 }
