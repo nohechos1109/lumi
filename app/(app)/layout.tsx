@@ -36,6 +36,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
       { href: '/admin/discount-approvals', label: 'Descuentos',   icon: 'discounts', color: '#C47F08' },
       { href: '/admin/plantillas',         label: 'Plantillas',   icon: 'templates', color: '#7C3AED' },
       { href: '/admin/customers',          label: 'Clientes',     icon: 'customers', color: '#D12C3C' },
+      { href: '/catalog',                  label: 'Catálogo',     icon: 'catalog',   color: '#C47F08' },
       { href: '/admin/settings',           label: 'Configuración',icon: 'settings',  color: '#445566' },
     ],
   }

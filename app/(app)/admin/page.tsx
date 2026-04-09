@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import {
   IconProjects, IconQuotes, IconTeam, IconUsers,
-  IconProducts, IconDiscounts, IconTemplates, IconCustomers, IconSettings,
+  IconProducts, IconDiscounts, IconTemplates, IconCustomers, IconSettings, IconCatalog,
 } from '../_components/NavIcons'
 
 const sections = [
@@ -13,6 +13,7 @@ const sections = [
   { href: '/admin/discount-approvals', label: 'Descuentos',    desc: 'Aprobación de descuentos',          icon: <IconDiscounts />, color: '#C47F08' },
   { href: '/admin/plantillas',         label: 'Plantillas',    desc: 'Gestión de plantillas',             icon: <IconTemplates />, color: '#7C3AED' },
   { href: '/admin/customers',          label: 'Clientes',      desc: 'Base de datos de clientes',         icon: <IconCustomers />, color: '#D12C3C' },
+  { href: '/catalog',                  label: 'Catálogo',      desc: 'Vista de catálogo para el público', icon: <IconCatalog />,   color: '#C47F08' },
   { href: '/admin/settings',           label: 'Configuración', desc: 'Tipo de cambio e impuestos',        icon: <IconSettings />,  color: '#445566' },
 ]
 
