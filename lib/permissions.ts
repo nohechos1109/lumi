@@ -28,3 +28,7 @@ export function canAccessDeleteRequests(role: string) {
 export function canAccessManagerSection(role: string) {
   return role === 'manager' || role === 'admin'
 }
+
+export function canAccessShowroomQuotes(role: string) {
+  return role !== 'sales'
+}

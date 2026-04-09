@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { revalidatePath } from 'next/cache'
 import { getSession, unauthorized } from '@/lib/auth-guard'
-import { canViewOwnQuotesOnly } from '@/lib/permissions'
+import { canViewOwnQuotesOnly, canAccessShowroomQuotes } from '@/lib/permissions'
 import { listQuotesByUser, listAllQuotes, createQuote } from '@/lib/queries/quotes'
 import { getSettings } from '@/lib/queries/settings'
 
@@ -21,6 +21,11 @@ export async function POST(req: NextRequest) {
   if (!session) return unauthorized()
 
   const body = await req.json()
+
+  if (!canAccessShowroomQuotes(session.role) && !body.project_id) {
+    return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+  }
+
   const settings = await getSettings()
 
   try {

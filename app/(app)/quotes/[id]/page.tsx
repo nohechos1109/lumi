@@ -3,7 +3,7 @@ import { cookies } from 'next/headers'
 import { getIronSession } from 'iron-session'
 import { notFound } from 'next/navigation'
 import { sessionOptions, SessionData } from '@/lib/session'
-import { canViewOwnQuotesOnly } from '@/lib/permissions'
+import { canViewOwnQuotesOnly, canAccessShowroomQuotes } from '@/lib/permissions'
 import { getQuote } from '@/lib/queries/quotes'
 import LineEditor from './_components/LineEditor'
 import QuoteActions from './_components/QuoteActions'
@@ -20,6 +20,7 @@ export default async function QuotePage({ params }: { params: Promise<{ id: stri
 
   if (!quote) notFound()
   if (canViewOwnQuotesOnly(session.role) && quote.user_id !== session.userId) notFound()
+  if (!canAccessShowroomQuotes(session.role) && !quote.project_id) notFound()
 
   return (
     <div>
