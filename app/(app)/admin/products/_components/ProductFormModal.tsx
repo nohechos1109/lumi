@@ -40,9 +40,9 @@ export default function ProductFormModal({ product, onClose, onSave, onDelete }:
     sku: product?.sku ?? '',
     description: product?.description ?? '',
     currency: product?.currency ?? 'MXN',
-    cost_base: product?.cost_base ?? '0',
-    utility_fixed: product?.utility_fixed ?? '0',
-    utility_factor: product?.utility_factor ?? '1',
+    cost_base: product?.cost_base != null ? Number(product.cost_base).toFixed(2) : '0.00',
+    utility_fixed: product?.utility_fixed != null ? Number(product.utility_fixed).toFixed(2) : '0.00',
+    utility_factor: product?.utility_factor != null ? Number(product.utility_factor).toFixed(2) : '1.00',
     codigo_sat: product?.codigo_sat ?? '',
     codigo_proveedor: product?.codigo_proveedor ?? '',
     image_url: product?.image_url ?? '',
@@ -325,10 +325,11 @@ export default function ProductFormModal({ product, onClose, onSave, onDelete }:
               <label className={labelCls} style={labelStyle}>Costo Base</label>
               <input
                 type="number"
-                step="0.01"
+                step="any"
                 required
                 value={form.cost_base}
                 onChange={e => setForm(f => ({ ...f, cost_base: e.target.value }))}
+                onBlur={e => setForm(f => ({ ...f, cost_base: Number(e.target.value).toFixed(2) }))}
                 className="w-full rounded-xl px-4 py-2.5 outline-none transition-all text-right"
                 style={inputBase}
               />
@@ -337,10 +338,11 @@ export default function ProductFormModal({ product, onClose, onSave, onDelete }:
               <label className={labelCls} style={labelStyle}>Utilidad Fija</label>
               <input
                 type="number"
-                step="0.01"
+                step="any"
                 required
                 value={form.utility_fixed}
                 onChange={e => setForm(f => ({ ...f, utility_fixed: e.target.value }))}
+                onBlur={e => setForm(f => ({ ...f, utility_fixed: Number(e.target.value).toFixed(2) }))}
                 className="w-full rounded-xl px-4 py-2.5 outline-none transition-all text-right"
                 style={inputBase}
               />
@@ -349,10 +351,11 @@ export default function ProductFormModal({ product, onClose, onSave, onDelete }:
               <label className={labelCls} style={labelStyle}>Factor Utilidad</label>
               <input
                 type="number"
-                step="0.01"
+                step="any"
                 required
                 value={form.utility_factor}
                 onChange={e => setForm(f => ({ ...f, utility_factor: e.target.value }))}
+                onBlur={e => setForm(f => ({ ...f, utility_factor: Number(e.target.value).toFixed(2) }))}
                 className="w-full rounded-xl px-4 py-2.5 outline-none transition-all text-right"
                 style={inputBase}
               />
