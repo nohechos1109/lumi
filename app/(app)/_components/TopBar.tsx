@@ -2,7 +2,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import type { NavItem } from './nav-types'
 import AppLauncherButton from './AppLauncherButton'
-import LogoutButton from './LogoutButton'
+import UserMenu from './UserMenu'
 import NotificationBell from '@/components/ui/NotificationBell'
 
 interface Props {
@@ -37,29 +37,8 @@ export default function TopBar({ items, username, roleLabel, userInitial, homeHr
       {/* Notifications */}
       <NotificationBell />
 
-      {/* User chip */}
-      <div
-        className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-lg"
-        style={{ background: 'var(--c-base)' }}
-      >
-        <div
-          className="w-6 h-6 rounded-full flex items-center justify-center shrink-0 font-bold text-xs"
-          style={{
-            background: 'var(--c-navy-bg)',
-            color: 'var(--c-navy)',
-            border: '1.5px solid var(--c-navy-bd)',
-          }}
-        >
-          {userInitial}
-        </div>
-        <div className="leading-tight">
-          <p className="text-xs font-semibold" style={{ color: 'var(--c-ink)' }}>{username}</p>
-          <p className="text-[10px]" style={{ color: 'var(--c-ghost)' }}>{roleLabel}</p>
-        </div>
-      </div>
-
-      {/* Logout */}
-      <LogoutButton />
+      {/* User menu (chip + dropdown with logout) */}
+      <UserMenu username={username} roleLabel={roleLabel} userInitial={userInitial} />
     </header>
   )
 }
