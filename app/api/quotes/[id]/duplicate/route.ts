@@ -29,8 +29,12 @@ export async function POST(
     ? (body.project_id as string | null)
     : undefined
 
+  const targetCustomerId = 'customer_id' in body
+    ? (body.customer_id as string | null)
+    : undefined
+
   try {
-    const newQuote = await duplicateQuote(id, session.userId, targetProjectId)
+    const newQuote = await duplicateQuote(id, session.userId, targetProjectId, targetCustomerId)
     return NextResponse.json(newQuote, { status: 201 })
   } catch (error) {
     console.error('POST /api/quotes/[id]/duplicate ERROR:', error)

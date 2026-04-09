@@ -155,12 +155,14 @@ export async function deleteQuote(id: string): Promise<void> {
 export async function duplicateQuote(
   quoteId: string,
   userId: string,
-  targetProjectId?: string | null
+  targetProjectId?: string | null,
+  targetCustomerId?: string | null
 ): Promise<Quote> {
   const original = await getQuote(quoteId)
   if (!original) throw new Error('Quote not found')
   const lines = await listLines(quoteId)
   const projectId = targetProjectId !== undefined ? targetProjectId : original.project_id
+  const customerId = targetCustomerId !== undefined ? targetCustomerId : original.customer_id
 
   const client = await pool.connect()
   try {
@@ -186,7 +188,7 @@ export async function duplicateQuote(
           fx_mxn_per_usd_snapshot, description, unit_count, terms, user_id, project_id)
        VALUES ($1,'draft',$2,$3,$4,$5,$6,$7,$8,$9,$10,$11)
        RETURNING *`,
-      [number, original.customer_id, original.payment_term_id ?? null,
+      [number, customerId, original.payment_term_id ?? null,
        new Date().toISOString().slice(0, 10), null,
        Number(original.fx_mxn_per_usd_snapshot),
        original.description ?? null, original.unit_count,
