@@ -6,6 +6,7 @@ import { toast } from '@/lib/toast'
 interface Project {
   id: string
   name: string
+  customer_id: string | null
 }
 
 interface Customer {
@@ -53,6 +54,23 @@ export default function DuplicateQuoteModal({
       .then((data: Customer[]) => setCustomers(data))
       .catch(() => {/* ignore */})
   }, [])
+
+  // Auto-select customer based on selected project
+  useEffect(() => {
+    if (projects.length === 0) return
+    let projectId: string | null = null
+    if (selection === 'same' && currentProjectId) {
+      projectId = currentProjectId
+    } else if (selection === 'other' && selectedProjectId) {
+      projectId = selectedProjectId
+    } else {
+      return
+    }
+    const project = projects.find(p => p.id === projectId)
+    if (project?.customer_id) {
+      setSelectedCustomerId(project.customer_id)
+    }
+  }, [selection, selectedProjectId, projects, currentProjectId])
 
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
@@ -163,22 +181,37 @@ export default function DuplicateQuoteModal({
         </h2>
 
         {/* Customer selector */}
-        <div className="flex flex-col gap-1.5">
-          <p className="text-xs font-semibold uppercase tracking-wider" style={{ color: 'var(--c-ghost)' }}>
-            Cliente de la nueva cotización
-          </p>
-          <select
-            value={selectedCustomerId}
-            onChange={e => setSelectedCustomerId(e.target.value)}
-            className="text-sm rounded-lg px-3 py-2"
-            style={selectStyle}
-          >
-            <option value="">— Seleccionar cliente —</option>
-            {customers.map(c => (
-              <option key={c.id} value={c.id}>{c.name}</option>
-            ))}
-          </select>
-        </div>
+        {(() => {
+          const locked = selection === 'same' || selection === 'other'
+          return (
+            <div className="flex flex-col gap-1.5">
+              <p className="text-xs font-semibold uppercase tracking-wider" style={{ color: 'var(--c-ghost)' }}>
+                Cliente de la nueva cotización
+                {locked && (
+                  <span className="ml-1.5 normal-case font-normal" style={{ color: 'var(--c-ghost)' }}>
+                    (definido por el proyecto)
+                  </span>
+                )}
+              </p>
+              <select
+                value={selectedCustomerId}
+                onChange={e => setSelectedCustomerId(e.target.value)}
+                disabled={locked}
+                className="text-sm rounded-lg px-3 py-2"
+                style={{
+                  ...selectStyle,
+                  opacity: locked ? 0.5 : 1,
+                  cursor: locked ? 'not-allowed' : 'default',
+                }}
+              >
+                <option value="">— Seleccionar cliente —</option>
+                {customers.map(c => (
+                  <option key={c.id} value={c.id}>{c.name}</option>
+                ))}
+              </select>
+            </div>
+          )
+        })()}
 
         {/* Project destination options */}
         <div className="flex flex-col gap-2">
@@ -203,6 +236,18 @@ export default function DuplicateQuoteModal({
                 <span className="text-sm" style={{ color: 'var(--c-ink)' }}>Otro proyecto</span>
               </button>
 
+              {selection === 'other' && (
+                <select
+                  value={selectedProjectId}
+                  onChange={e => setSelectedProjectId(e.target.value)}
+                  className="text-sm rounded-lg px-3 py-2"
+                  style={selectStyle}
+                >
+                  {projects.length === 0 && <option value="">Sin proyectos disponibles</option>}
+                  {projects.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
+                </select>
+              )}
+
               <button style={optionStyle(selection === 'none')} onClick={() => setSelection('none')}>
                 <span style={radioCircle(selection === 'none')} />
                 <span className="text-sm" style={{ color: 'var(--c-ink)' }}>Sin proyecto</span>
@@ -215,27 +260,23 @@ export default function DuplicateQuoteModal({
                 <span className="text-sm" style={{ color: 'var(--c-ink)' }}>Seleccionar proyecto</span>
               </button>
 
+              {selection === 'other' && (
+                <select
+                  value={selectedProjectId}
+                  onChange={e => setSelectedProjectId(e.target.value)}
+                  className="text-sm rounded-lg px-3 py-2"
+                  style={selectStyle}
+                >
+                  {projects.length === 0 && <option value="">Sin proyectos disponibles</option>}
+                  {projects.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
+                </select>
+              )}
+
               <button style={optionStyle(selection === 'none')} onClick={() => setSelection('none')}>
                 <span style={radioCircle(selection === 'none')} />
                 <span className="text-sm" style={{ color: 'var(--c-ink)' }}>Sin proyecto</span>
               </button>
             </>
-          )}
-
-          {selection === 'other' && (
-            <select
-              value={selectedProjectId}
-              onChange={e => setSelectedProjectId(e.target.value)}
-              className="mt-1 text-sm rounded-lg px-3 py-2"
-              style={selectStyle}
-            >
-              {projects.length === 0 && (
-                <option value="">Sin proyectos disponibles</option>
-              )}
-              {projects.map(p => (
-                <option key={p.id} value={p.id}>{p.name}</option>
-              ))}
-            </select>
           )}
         </div>
 
