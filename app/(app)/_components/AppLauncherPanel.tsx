@@ -2,6 +2,7 @@
 
 import { useEffect } from 'react'
 import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 import type { NavItem } from './nav-types'
 import {
   IconDashboard, IconProjects, IconQuotes, IconCatalog,
@@ -29,6 +30,8 @@ interface Props {
 }
 
 export default function AppLauncherPanel({ items, onClose }: Props) {
+  const pathname = usePathname()
+
   useEffect(() => {
     const handler = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose() }
     window.addEventListener('keydown', handler)
@@ -73,7 +76,12 @@ export default function AppLauncherPanel({ items, onClose }: Props) {
 
         {/* Grid */}
         <div className="grid grid-cols-3 sm:grid-cols-4 gap-3">
-          {items.map(item => (
+          {items.map(item => {
+            const isActive = item.exact
+              ? pathname === item.href
+              : pathname === item.href || pathname.startsWith(item.href + '/')
+
+            return (
             <Link
               key={item.href}
               href={item.href}
@@ -92,19 +100,30 @@ export default function AppLauncherPanel({ items, onClose }: Props) {
               {/* Icon circle */}
               <div
                 className="w-14 h-14 rounded-2xl flex items-center justify-center shadow-sm"
-                style={{ background: item.color, color: '#fff' }}
+                style={{
+                  background: item.color,
+                  color: '#fff',
+                  boxShadow: isActive
+                    ? `0 0 0 3px ${item.color}55, 0 4px 12px ${item.color}44`
+                    : '0 2px 8px rgba(0,0,0,0.12)',
+                }}
               >
                 {ICON_MAP[item.icon]}
               </div>
               {/* Label */}
               <span
-                className="text-xs text-center leading-tight font-medium"
-                style={{ color: 'var(--c-ink)', fontFamily: 'var(--font-montserrat)' }}
+                className="text-xs text-center leading-tight"
+                style={{
+                  color: isActive ? 'var(--c-navy)' : 'var(--c-ink)',
+                  fontWeight: isActive ? 700 : 500,
+                  fontFamily: 'var(--font-montserrat)',
+                }}
               >
                 {item.label}
               </span>
             </Link>
-          ))}
+          )
+          })}
         </div>
       </div>
     </div>
