@@ -11,6 +11,7 @@ interface Quote {
   executive_name?: string
   quotation_date: string
   amount_total: string
+  unit_count: number
   margin_amount: string
 }
 
@@ -226,7 +227,7 @@ export default function ManagerQuotesTable({ quotes }: { quotes: Quote[] }) {
                     <span className={s.cls}>{s.label}</span>
                   </td>
                   <td className="px-5 py-4 text-right font-mono font-bold" style={{ color: 'var(--c-navy)' }}>
-                    ${Number(q.amount_total).toLocaleString('es-MX', { minimumFractionDigits: 2 })}
+                    ${(Number(q.amount_total) * (q.unit_count ?? 1)).toLocaleString('es-MX', { minimumFractionDigits: 2 })}
                   </td>
                   <td className="px-5 py-4 text-right">
                     <span className="text-xs font-mono font-bold" style={{ color: Number(q.margin_amount) >= 0 ? 'var(--c-mint)' : 'var(--c-rose)' }}>

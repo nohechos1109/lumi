@@ -94,13 +94,13 @@ export default async function ManagerQuotePage({ params }: { params: Promise<{ i
           <span style={{ color: 'var(--c-dim)' }}>
             Subtotal:{' '}
             <span className="font-mono font-semibold" style={{ color: 'var(--c-ink)' }}>
-              ${Number(quote.amount_untaxed).toLocaleString('es-MX', { minimumFractionDigits: 2 })}
+              ${(Number(quote.amount_untaxed) * quote.unit_count).toLocaleString('es-MX', { minimumFractionDigits: 2 })}
             </span>
           </span>
           <span style={{ color: 'var(--c-dim)' }}>
             IVA:{' '}
             <span className="font-mono font-semibold" style={{ color: 'var(--c-ink)' }}>
-              ${Number(quote.amount_tax).toLocaleString('es-MX', { minimumFractionDigits: 2 })}
+              ${(Number(quote.amount_tax) * quote.unit_count).toLocaleString('es-MX', { minimumFractionDigits: 2 })}
             </span>
           </span>
           <span
@@ -111,7 +111,7 @@ export default async function ManagerQuotePage({ params }: { params: Promise<{ i
               border: '1px solid var(--c-gold-bd)',
             }}
           >
-            Total: ${Number(quote.amount_total).toLocaleString('es-MX', { minimumFractionDigits: 2 })} MXN
+            Total: ${(Number(quote.amount_total) * quote.unit_count).toLocaleString('es-MX', { minimumFractionDigits: 2 })} MXN
           </span>
           <span className="text-xs font-mono" style={{ color: Number(quote.margin_amount) >= 0 ? 'var(--c-mint)' : 'var(--c-rose)' }}>
             Margen: ${Number(quote.margin_amount).toLocaleString('es-MX', { minimumFractionDigits: 0 })}

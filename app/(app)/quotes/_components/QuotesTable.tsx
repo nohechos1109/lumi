@@ -14,6 +14,7 @@ interface Quote {
   executive_name?: string
   quotation_date: string | Date
   amount_total: string
+  unit_count: number
   description: string | null
   payment_term_name?: string
   archived_at: string | null
@@ -428,7 +429,7 @@ export default function QuotesTable({
                       <span className={s.cls}>{s.label}</span>
                     </td>
                     <td className="px-5 py-4 text-right font-mono font-bold" style={{ color: 'var(--c-navy)' }}>
-                      ${Number(q.amount_total).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                      ${(Number(q.amount_total) * (q.unit_count ?? 1)).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
                     </td>
                     <td className="px-5 py-4 text-right">
                       <div className="flex items-center justify-end gap-2">
