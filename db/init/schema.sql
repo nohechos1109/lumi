@@ -104,6 +104,7 @@ CREATE TABLE "public"."products" (
     "codigo_proveedor" text,
     "image_url" text,
     "category" text,
+    "public_price" numeric(14,4) DEFAULT NULL,
     CONSTRAINT "products_pkey" PRIMARY KEY ("id"),
     CONSTRAINT "products_currency_check" CHECK (((currency = ANY (ARRAY['MXN'::bpchar, 'USD'::bpchar])))),
     CONSTRAINT "products_cost_base_check" CHECK (((cost_base >= (0)::numeric))),

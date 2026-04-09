@@ -15,6 +15,7 @@ interface Product {
   codigo_proveedor: string | null
   image_url: string | null
   category: string | null
+  public_price: string | null
 }
 
 interface ProductGridProps {

@@ -22,6 +22,7 @@ interface Product {
   codigo_proveedor: string | null
   image_url: string | null
   category: string | null
+  public_price: string | null
 }
 
 interface Props {
@@ -46,6 +47,7 @@ export default function ProductFormModal({ product, onClose, onSave, onDelete }:
     codigo_proveedor: product?.codigo_proveedor ?? '',
     image_url: product?.image_url ?? '',
     category: product?.category ?? 'Varios',
+    public_price: product?.public_price ?? '',
   })
   const [busy, setBusy] = useState(false)
   const [uploading, setUploading] = useState(false)
@@ -99,6 +101,13 @@ export default function ProductFormModal({ product, onClose, onSave, onDelete }:
       setBusy(false)
     }
   }
+
+  // Precio calculado en tiempo real desde la fórmula (igual que el catálogo)
+  const calcBase = Number(form.cost_base) || 0
+  const calcFactor = Number(form.utility_factor) || 0
+  const calcFixed = Number(form.utility_fixed) || 0
+  const calcSinIva = calcBase * calcFactor + calcFixed
+  const calcConIva = calcSinIva * 1.16
 
   const labelCls = 'block text-xs font-bold uppercase tracking-widest mb-1.5'
   const labelStyle = { color: 'var(--c-dim)', letterSpacing: '0.1em' }
@@ -262,6 +271,31 @@ export default function ProductFormModal({ product, onClose, onSave, onDelete }:
               className="w-full rounded-xl px-4 py-2.5 outline-none transition-all resize-none"
               style={inputBase}
             />
+          </div>
+
+          {/* Precio público calculado (solo lectura) */}
+          <div className="md:col-span-2 lg:col-span-4">
+            <label className={labelCls} style={labelStyle}>Precio Público <span style={{ color: 'var(--c-ghost)', fontWeight: 400, textTransform: 'none', letterSpacing: 0 }}>(calculado automáticamente · {form.currency})</span></label>
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <p className="text-[10px] mb-1" style={{ color: 'var(--c-ghost)' }}>Sin IVA</p>
+                <div
+                  className="w-full rounded-xl px-4 py-2.5 text-right font-mono text-sm font-bold"
+                  style={{ background: 'var(--c-panel)', border: '1px dashed var(--c-rim)', color: 'var(--c-ink)', cursor: 'default', userSelect: 'none' }}
+                >
+                  $ {calcSinIva.toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                </div>
+              </div>
+              <div>
+                <p className="text-[10px] mb-1" style={{ color: 'var(--c-ghost)' }}>Con IVA (+16%)</p>
+                <div
+                  className="w-full rounded-xl px-4 py-2.5 text-right font-mono text-sm font-bold"
+                  style={{ background: 'var(--c-panel)', border: '1px dashed var(--c-rim)', color: 'var(--c-navy)', cursor: 'default', userSelect: 'none' }}
+                >
+                  $ {calcConIva.toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                </div>
+              </div>
+            </div>
           </div>
 
           <div>
