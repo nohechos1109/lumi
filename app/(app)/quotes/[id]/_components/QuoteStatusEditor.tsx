@@ -55,13 +55,14 @@ export default function QuoteStatusEditor({ quoteId, currentStatus, role, isShow
   }
 
   const badgeColors: Record<string, { bg: string; text: string }> = {
-    sent:      { bg: 'var(--c-sky-bg)',  text: 'var(--c-sky)' },
+    draft:     { bg: '#FEF9EC',           text: '#B45309' },
+    sent:      { bg: 'var(--c-sky-bg)',   text: 'var(--c-sky)' },
     confirmed: { bg: 'var(--c-mint-bg)', text: 'var(--c-mint)' },
     cancelled: { bg: 'var(--c-rose-bg)', text: 'var(--c-rose)' },
-    expired:   { bg: 'var(--c-base)',     text: 'var(--c-ghost)' },
+    expired:   { bg: 'var(--c-base)',    text: 'var(--c-ghost)' },
   }
 
-  const showBadge = currentStatus !== 'draft'
+  const showBadge = true
   const canSend = currentStatus === 'draft' && allowed.includes('sent')
   const canCancel = (currentStatus === 'draft' || currentStatus === 'sent' || currentStatus === 'confirmed') && allowed.includes('cancelled')
 
