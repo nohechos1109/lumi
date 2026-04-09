@@ -1,5 +1,6 @@
 import pool from '@/lib/db'
 import { listLines } from '@/lib/queries/quote_lines'
+import { getSettings } from '@/lib/queries/settings'
 
 export type QuoteState = 'draft' | 'sent' | 'confirmed' | 'cancelled' | 'expired'
 
@@ -164,6 +165,25 @@ export async function duplicateQuote(
   const projectId = targetProjectId !== undefined ? targetProjectId : original.project_id
   const customerId = targetCustomerId !== undefined ? targetCustomerId : original.customer_id
 
+  // Fetch current FX rate and product prices before opening the transaction
+  const settings = await getSettings()
+  const currentFx = Number(settings?.fx_mxn_per_usd ?? 17.85)
+
+  // Batch-fetch current product data for all product lines
+  const linesToCopy = lines.filter(line => line.display_type !== 'discount')
+  const productIds = linesToCopy
+    .filter(l => l.product_id && l.display_type === 'product')
+    .map(l => l.product_id as string)
+
+  const productMap = new Map<string, { cost_base: string; utility_fixed: string; utility_factor: string; currency: string }>()
+  if (productIds.length > 0) {
+    const { rows: currentProducts } = await pool.query(
+      `SELECT id, cost_base, utility_fixed, utility_factor, currency FROM products WHERE id = ANY($1)`,
+      [productIds]
+    )
+    for (const p of currentProducts) productMap.set(p.id, p)
+  }
+
   const client = await pool.connect()
   try {
     await client.query('BEGIN')
@@ -181,7 +201,7 @@ export async function duplicateQuote(
     }
     const number = `COT-${dateStr}-${String(nextSeq).padStart(4, '0')}`
 
-    // Insert new quote
+    // Insert new quote with current FX rate
     const { rows: [newQuote] } = await client.query(
       `INSERT INTO quotes
          (number, state, customer_id, payment_term_id, quotation_date, expiration_date,
@@ -190,27 +210,50 @@ export async function duplicateQuote(
        RETURNING *`,
       [number, customerId, original.payment_term_id ?? null,
        new Date().toISOString().slice(0, 10), null,
-       Number(original.fx_mxn_per_usd_snapshot),
+       currentFx,
        original.description ?? null, original.unit_count,
        original.terms ?? null, userId, projectId ?? null]
     )
 
-    // Bulk insert lines (excluding discounts — duplicated quotes start clean)
-    const linesToCopy = lines.filter(line => line.display_type !== 'discount')
+    // Bulk insert lines with recalculated prices from current catalog
     if (linesToCopy.length > 0) {
       const valuePlaceholders = linesToCopy.map((_, i) => {
         const b = i * 19
         return `($${b+1},$${b+2},$${b+3},$${b+4},$${b+5},$${b+6},$${b+7},$${b+8},$${b+9},$${b+10},$${b+11},$${b+12},$${b+13},$${b+14},$${b+15},$${b+16},$${b+17},$${b+18},$${b+19})`
       }).join(',')
-      const flatParams = linesToCopy.flatMap(line => [
-        newQuote.id, line.sequence, line.display_type, line.product_id,
-        line.name, line.qty, 0, line.currency_snapshot,
-        line.cost_base_snapshot, line.utility_fixed_snapshot,
-        line.utility_factor_snapshot, line.fx_snapshot,
-        line.unit_price_mxn_suggested, line.unit_price_mxn_manual,
-        line.unit_price_mxn_effective, line.subtotal, line.tax_amount,
-        line.total, line.margin_amount
-      ])
+      const flatParams = linesToCopy.flatMap(line => {
+        // For product lines: recalculate from current catalog prices
+        if (line.display_type === 'product' && line.product_id && productMap.has(line.product_id)) {
+          const p = productMap.get(line.product_id)!
+          const costBase = Number(p.cost_base)
+          const utilityFixed = Number(p.utility_fixed)
+          const utilityFactor = Number(p.utility_factor)
+          const fx = p.currency === 'USD' ? currentFx : 1
+          const qty = Number(line.qty ?? 1)
+          const suggested = (costBase * utilityFactor + utilityFixed) * fx
+          const subtotal = suggested * qty  // discount_percent = 0
+          const taxAmount = subtotal * 0.16
+          const total = subtotal * 1.16
+          const marginAmount = subtotal - (costBase * fx * qty)
+          return [
+            newQuote.id, line.sequence, line.display_type, line.product_id,
+            line.name, line.qty, 0, p.currency,
+            costBase, utilityFixed, utilityFactor, fx,
+            suggested, null, suggested,
+            subtotal, taxAmount, total, marginAmount
+          ]
+        }
+        // For non-product lines (sections, notes) or deleted products: copy as-is
+        return [
+          newQuote.id, line.sequence, line.display_type, line.product_id,
+          line.name, line.qty, 0, line.currency_snapshot,
+          line.cost_base_snapshot, line.utility_fixed_snapshot,
+          line.utility_factor_snapshot, line.fx_snapshot,
+          line.unit_price_mxn_suggested, line.unit_price_mxn_manual,
+          line.unit_price_mxn_effective, line.subtotal, line.tax_amount,
+          line.total, line.margin_amount
+        ]
+      })
       await client.query(
         `INSERT INTO quote_lines
            (quote_id, sequence, display_type, product_id, name, qty,

@@ -21,6 +21,7 @@ interface Product {
   codigo_proveedor: string | null;
   image_url: string | null;
   category: string | null;
+  public_price: string | null;
 }
 
 export default function AdminProductsPage() {
@@ -241,6 +242,7 @@ export default function AdminProductsPage() {
                 <th className="text-left px-6 py-5 text-[10px] font-bold uppercase tracking-[0.2em]" style={{ color: 'var(--c-ghost)' }}>Categoría</th>
                 <th className="text-left px-6 py-5 text-[10px] font-bold uppercase tracking-[0.2em]" style={{ color: 'var(--c-ghost)' }}>Moneda</th>
                 <th className="text-right px-6 py-5 text-[10px] font-bold uppercase tracking-[0.2em]" style={{ color: 'var(--c-ghost)' }}>Costo Base</th>
+                <th className="text-right px-6 py-5 text-[10px] font-bold uppercase tracking-[0.2em]" style={{ color: 'var(--c-ghost)' }}>Precio Público</th>
                 <th className="text-right px-6 py-5 text-[10px] font-bold uppercase tracking-[0.2em]" style={{ color: 'var(--c-ghost)' }}>Util. Fija</th>
                 <th className="text-right px-6 py-5 text-[10px] font-bold uppercase tracking-[0.2em]" style={{ color: 'var(--c-ghost)' }}>Factor</th>
                 <th className="text-left px-6 py-5 text-[10px] font-bold uppercase tracking-[0.2em]" style={{ color: 'var(--c-ghost)' }}>Código SAT</th>
@@ -280,6 +282,9 @@ export default function AdminProductsPage() {
                     </td>
                     <td className="px-6 py-4.5 text-right font-mono text-[11px] font-bold" style={{ color: 'var(--c-ink)' }}>
                       $ {Number(p.cost_base).toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                    </td>
+                    <td className="px-6 py-4.5 text-right font-mono text-[11px] font-semibold" style={{ color: 'var(--c-navy)' }}>
+                      $ {(Number(p.cost_base) * Number(p.utility_factor) + Number(p.utility_fixed)).toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                     </td>
                     <td className="px-6 py-4.5 text-right font-mono text-[11px]" style={{ color: 'var(--c-dim)' }}>
                       $ {Number(p.utility_fixed).toLocaleString(undefined, { minimumFractionDigits: 2 })}
