@@ -31,9 +31,6 @@ export default function TopBar({ items, username, roleLabel, userInitial, homeHr
       {/* Waffle launcher button */}
       <AppLauncherButton items={items} />
 
-      {/* Spacer */}
-      <div className="flex-1" />
-
       {/* Notifications */}
       <NotificationBell />
 
