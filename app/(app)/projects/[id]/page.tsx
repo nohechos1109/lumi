@@ -8,6 +8,7 @@ import { getProject } from '@/lib/queries/projects'
 import { listQuotesByProject } from '@/lib/queries/quotes'
 import QuotesTable from '@/app/(app)/quotes/_components/QuotesTable'
 import ProjectStatusEditor from './_components/ProjectStatusEditor'
+import ProjectDescriptionEditor from './_components/ProjectDescriptionEditor'
 import ActivityLog from '@/components/ActivityLog'
 
 export default async function ProjectDetailPage({ params }: { params: Promise<{ id: string }> }) {
@@ -49,11 +50,7 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
             <span style={{ color: 'var(--c-rim-hi)' }}>•</span>
             <span suppressHydrationWarning>Creado el {new Date(project.created_at).toLocaleDateString('es-MX')}</span>
           </p>
-          {project.description && (
-            <p className="mt-3 text-sm italic" style={{ color: 'var(--c-ghost)' }}>
-              "{project.description}"
-            </p>
-          )}
+          <ProjectDescriptionEditor projectId={id} description={project.description ?? null} />
         </div>
         
         <div className="flex flex-col items-end gap-3">
