@@ -321,8 +321,8 @@ export default function LoginPage() {
             <Image
               src="/lumi-logo-saas.svg"
               alt="LUMI SAAS"
-              width={160}
-              height={46}
+              width={320}
+              height={92}
               className="object-contain"
               priority
             />
