@@ -25,6 +25,7 @@ interface Row {
 }
 
 export default function PaymentScheduleModal({ saleId, saleTotal, currentSchedule, onClose, onSaved }: Props) {
+  const today = new Date().toISOString().slice(0, 10)
   const [rows, setRows] = useState<Row[]>(() => {
     if (currentSchedule.length > 0) {
       return currentSchedule.map(s => ({
@@ -138,6 +139,7 @@ export default function PaymentScheduleModal({ saleId, saleTotal, currentSchedul
                   type="date"
                   value={row.due_date}
                   onChange={e => updateRow(i, 'due_date', e.target.value)}
+                  min={today}
                   className="text-sm rounded-lg px-2 py-1.5 w-full"
                   style={inputStyle}
                   required

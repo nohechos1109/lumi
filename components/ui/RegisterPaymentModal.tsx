@@ -13,7 +13,8 @@ export default function RegisterPaymentModal({ saleId, onClose, onCreated }: Pro
   const [concept, setConcept] = useState('')
   const [amount, setAmount] = useState('')
   const [method, setMethod] = useState('transferencia')
-  const [date, setDate] = useState(new Date().toISOString().slice(0, 10))
+  const today = new Date().toISOString().slice(0, 10)
+  const [date, setDate] = useState(today)
   const [reference, setReference] = useState('')
   const [notes, setNotes] = useState('')
   const [loading, setLoading] = useState(false)
@@ -114,7 +115,7 @@ export default function RegisterPaymentModal({ saleId, onClose, onCreated }: Pro
         <div className="grid grid-cols-2 gap-3">
           <div className="flex flex-col gap-1.5">
             <label className="text-xs font-semibold uppercase tracking-wider" style={{ color: 'var(--c-ghost)' }}>Fecha</label>
-            <input type="date" value={date} onChange={e => setDate(e.target.value)} className="text-sm rounded-lg px-3 py-2" style={inputStyle} />
+            <input type="date" value={date} onChange={e => setDate(e.target.value)} min={today} className="text-sm rounded-lg px-3 py-2" style={inputStyle} />
           </div>
           <div className="flex flex-col gap-1.5">
             <label className="text-xs font-semibold uppercase tracking-wider" style={{ color: 'var(--c-ghost)' }}>Referencia</label>
