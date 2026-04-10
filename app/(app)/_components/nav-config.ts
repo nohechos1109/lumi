@@ -21,11 +21,9 @@ export const managerNav: NavItem[] = [
   { href: '/dashboard',  label: 'Inicio',       icon: 'dashboard', color: '#1B3461', exact: true },
   { href: '/projects',   label: 'Proyectos',    icon: 'projects',  color: '#1C5AD6', desc: 'Todos los proyectos' },
   { href: '/quotes',     label: 'Cotizaciones', icon: 'quotes',    color: '#0B9962', desc: 'Cotizaciones del equipo' },
-  { href: '/cobranza',   label: 'Cobranza',     icon: 'cobranza',  color: '#059669', desc: 'Ventas y cobros' },
-  { href: '/pagos',      label: 'Pagos',        icon: 'pagos',     color: '#0369A1', desc: 'Historial de pagos' },
   { href: '/customers',  label: 'Clientes',     icon: 'customers', color: '#D12C3C', desc: 'Directorio de clientes' },
   { href: '/plantillas', label: 'Plantillas',   icon: 'templates', color: '#7C3AED', desc: 'Plantillas de cotización' },
-  { href: '/catalog',    label: 'Catálogo',     icon: 'catalog',   color: '#C47F08', desc: 'Productos disponibles' },
+  { href: '/catalog',    label: 'Catálogo',     icon: 'catalog',   color: '#C47F08', desc: 'Vista de catálogo para el público' },
 ]
 
 export const adminNav: NavItem[] = [

@@ -1,0 +1,98 @@
+<svg width="200" height="52" viewBox="0 0 200 52" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Moon base: mostly white with subtle rocky tint -->
+    <radialGradient id="moonBase" cx="36%" cy="30%" r="66%">
+      <stop offset="0%"   stop-color="#FFFFFF"/>
+      <stop offset="45%"  stop-color="#E8EDF5"/>
+      <stop offset="78%"  stop-color="#B8C8D8"/>
+      <stop offset="100%" stop-color="#7090A8"/>
+    </radialGradient>
+    <!-- Blue glow ring -->
+    <radialGradient id="moonGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="55%" stop-color="#60A5FA" stop-opacity="0.35"/>
+      <stop offset="80%" stop-color="#0369A1" stop-opacity="0.15"/>
+      <stop offset="100%" stop-color="#0369A1" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="blurGlow" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+    <!-- Crater shadow -->
+    <radialGradient id="craterA" cx="40%" cy="35%" r="60%">
+      <stop offset="0%"   stop-color="#7A6650" stop-opacity="0.7"/>
+      <stop offset="100%" stop-color="#7A6650" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="craterB" cx="40%" cy="35%" r="60%">
+      <stop offset="0%"   stop-color="#8B7460" stop-opacity="0.65"/>
+      <stop offset="100%" stop-color="#8B7460" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="craterC" cx="40%" cy="35%" r="60%">
+      <stop offset="0%"   stop-color="#7A6650" stop-opacity="0.5"/>
+      <stop offset="100%" stop-color="#7A6650" stop-opacity="0"/>
+    </radialGradient>
+    <!-- LUMI text gradient (blue) -->
+    <linearGradient id="lumiGrad" x1="56" y1="18" x2="160" y2="40" gradientUnits="userSpaceOnUse">
+      <stop offset="0%"   stop-color="#0369A1"/>
+      <stop offset="100%" stop-color="#38BDF8"/>
+    </linearGradient>
+    <!-- PAYMENTS gradient -->
+    <linearGradient id="payGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%"   stop-color="#60A5FA"/>
+      <stop offset="100%" stop-color="#0369A1"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Blue blur glow ring -->
+  <circle cx="26" cy="26" r="26" fill="url(#moonGlow)" filter="url(#blurGlow)"/>
+
+  <!-- Moon body -->
+  <circle cx="26" cy="26" r="22" fill="url(#moonBase)"/>
+
+  <!-- Large crater (top-center) -->
+  <ellipse cx="22" cy="16" rx="5.5" ry="5" fill="url(#craterA)"/>
+  <ellipse cx="22" cy="16" rx="5.5" ry="5" fill="none" stroke="#F5EDD8" stroke-width="0.6" opacity="0.35"/>
+  <ellipse cx="20.5" cy="14.5" rx="1.5" ry="1" fill="#F5EDD8" opacity="0.3"/>
+
+  <!-- Medium crater (right) -->
+  <ellipse cx="33" cy="24" rx="4" ry="3.5" fill="url(#craterB)"/>
+  <ellipse cx="33" cy="24" rx="4" ry="3.5" fill="none" stroke="#F5EDD8" stroke-width="0.5" opacity="0.3"/>
+  <ellipse cx="31.8" cy="22.8" rx="1.1" ry="0.8" fill="#F5EDD8" opacity="0.25"/>
+
+  <!-- Small crater (bottom-left) -->
+  <ellipse cx="18" cy="34" rx="3.5" ry="3" fill="url(#craterC)"/>
+  <ellipse cx="18" cy="34" rx="3.5" ry="3" fill="none" stroke="#F5EDD8" stroke-width="0.4" opacity="0.25"/>
+  <ellipse cx="17" cy="33" rx="1" ry="0.7" fill="#F5EDD8" opacity="0.2"/>
+
+  <!-- Tiny craters (texture) -->
+  <circle cx="29" cy="36" r="1.8" fill="#7A6650" opacity="0.4"/>
+  <circle cx="14" cy="22" r="1.5" fill="#7A6650" opacity="0.35"/>
+  <circle cx="32" cy="14" r="1.3" fill="#7A6650" opacity="0.3"/>
+  <circle cx="24" cy="38" r="1.2" fill="#7A6650" opacity="0.3"/>
+  <circle cx="36" cy="33" r="1"   fill="#7A6650" opacity="0.3"/>
+
+  <!-- Surface highlight -->
+  <ellipse cx="18" cy="20" rx="7" ry="5" fill="#F5EDD8" opacity="0.1"/>
+
+  <!-- Moon edge highlight -->
+  <path d="M10 16 Q6 20 6 26 Q6 33 10 37" stroke="#F5F0E0" stroke-width="1" opacity="0.3" fill="none" stroke-linecap="round"/>
+
+  <!-- LUMI wordmark -->
+  <text
+    x="57" y="35"
+    font-family="system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif"
+    font-weight="900"
+    font-size="26"
+    letter-spacing="2"
+    fill="url(#lumiGrad)"
+  >LUMI</text>
+
+  <!-- PAYMENTS label -->
+  <text
+    x="59" y="47"
+    font-family="system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif"
+    font-weight="800"
+    font-size="9"
+    letter-spacing="3.5"
+    fill="url(#payGrad)"
+  >PAYMENTS</text>
+</svg>
