@@ -36,7 +36,7 @@ interface AuditEvent {
 }
 
 interface Props {
-  entity: 'project' | 'quote'
+  entity: 'project' | 'quote' | 'sale'
   entityId: string
 }
 

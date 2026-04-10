@@ -5,6 +5,7 @@ import { notFound } from 'next/navigation'
 import { sessionOptions, SessionData } from '@/lib/session'
 import { canViewOwnQuotesOnly, canAccessShowroomQuotes } from '@/lib/permissions'
 import { getQuote } from '@/lib/queries/quotes'
+import { getSaleByQuote } from '@/lib/queries/sales'
 import LineEditor from './_components/LineEditor'
 import QuoteActions from './_components/QuoteActions'
 import UnitCountEditor from './_components/UnitCountEditor'
@@ -23,6 +24,9 @@ export default async function QuotePage({ params }: { params: Promise<{ id: stri
   if (!canAccessShowroomQuotes(session.role) && !quote.project_id) notFound()
 
   const isShowroom = !quote.project_id
+
+  // Check for associated sale
+  const sale = quote.state === 'confirmed' ? await getSaleByQuote(id) : null
 
   return (
     <div>
@@ -89,6 +93,24 @@ export default async function QuotePage({ params }: { params: Promise<{ id: stri
           )}
         </div>
       </div>
+
+      {/* Sale link banner */}
+      {sale && (
+        <Link
+          href={`/ventas/${sale.id}`}
+          className="flex items-center gap-3 rounded-xl px-4 py-3 mb-5 transition-opacity hover:opacity-85"
+          style={{ background: '#ECFDF5', border: '1px solid #A7F3D0', color: '#059669' }}
+        >
+          <span className="text-lg">💰</span>
+          <span className="text-sm font-semibold">
+            Venta asociada: {sale.number}
+          </span>
+          <span className="text-xs ml-auto" style={{ color: '#047857' }}>
+            ${Number(sale.amount_paid).toLocaleString('es-MX', { minimumFractionDigits: 2 })} / ${Number(sale.amount_total).toLocaleString('es-MX', { minimumFractionDigits: 2 })}
+          </span>
+          <span className="text-xs">→</span>
+        </Link>
+      )}
 
       {/* Stats bar */}
       <div className={`grid grid-cols-2 ${isShowroom ? 'md:grid-cols-3' : 'md:grid-cols-4'} gap-3 mb-7`}>

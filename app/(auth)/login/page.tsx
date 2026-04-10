@@ -319,10 +319,10 @@ export default function LoginPage() {
           {/* Logo */}
           <div className="logo-wrap">
             <Image
-              src="/lumi-logo.svg"
-              alt="LUMI"
-              width={160}
-              height={46}
+              src="/lumi-logo-saas.svg"
+              alt="LUMI SAAS"
+              width={256}
+              height={74}
               className="object-contain"
               priority
             />
@@ -413,7 +413,7 @@ export default function LoginPage() {
         </div>
 
         {/* Footer */}
-        <p className="login-footer">© {year ?? ''} LUMI - QUOTES</p>
+        <p className="login-footer">© {year ?? ''} LUMI - SAAS</p>
       </div>
     </>
   )

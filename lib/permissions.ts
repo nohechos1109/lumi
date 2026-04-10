@@ -32,3 +32,37 @@ export function canAccessManagerSection(role: string) {
 export function canAccessShowroomQuotes(role: string) {
   return role !== 'sales'
 }
+
+// ── Cobranza (Ventas / Pagos) ─────────────────────────────────
+
+export function canViewOwnSalesOnly(role: string) {
+  return role === 'sales' || role === 'almacen' || role === 'soporte'
+}
+
+export function canRegisterPayments(role: string) {
+  return role === 'sales' || role === 'manager' || role === 'admin'
+}
+
+export function canConfirmPayments(role: string) {
+  return role === 'manager' || role === 'admin'
+}
+
+export function canCancelPayments(role: string) {
+  return role === 'manager' || role === 'admin'
+}
+
+export function canApplyPayments(role: string) {
+  return role === 'manager' || role === 'admin'
+}
+
+export function canCreateSaleNotes(role: string) {
+  return role === 'manager' || role === 'admin'
+}
+
+export function canManagePaymentSchedule(role: string) {
+  return role === 'manager' || role === 'admin'
+}
+
+export function canCancelSale(role: string) {
+  return role === 'admin'
+}

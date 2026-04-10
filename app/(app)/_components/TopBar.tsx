@@ -1,9 +1,8 @@
-import Image from 'next/image'
-import Link from 'next/link'
 import type { NavItem } from './nav-types'
 import AppLauncherButton from './AppLauncherButton'
 import UserMenu from './UserMenu'
 import NotificationBell from '@/components/ui/NotificationBell'
+import DynamicLogo from './DynamicLogo'
 
 interface Props {
   items: NavItem[]
@@ -23,10 +22,8 @@ export default function TopBar({ items, username, roleLabel, userInitial, homeHr
         boxShadow: '0 1px 8px rgba(27,52,97,0.06)',
       }}
     >
-      {/* Logo — links to role home */}
-      <Link href={homeHref} className="flex items-center shrink-0">
-        <Image src="/lumi-logo.svg" alt="LUMI" width={150} height={46} className="object-contain" priority />
-      </Link>
+      {/* Logo — client component that reacts to pathname changes */}
+      <DynamicLogo homeHref={homeHref} />
 
       {/* User menu (chip + dropdown with logout) */}
       <UserMenu username={username} roleLabel={roleLabel} userInitial={userInitial} />
