@@ -29,7 +29,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
     )
 
     if (decision === 'approved' && req2.entity === 'customer') {
-      await client.query('DELETE FROM customers WHERE id = $1', [req2.entity_id])
+      await client.query('DELETE FROM contacts WHERE id = $1', [req2.entity_id])
     }
 
     // Notify requester

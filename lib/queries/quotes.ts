@@ -36,7 +36,7 @@ export async function listQuotesByUser(userId: string): Promise<Quote[]> {
   const { rows } = await pool.query(
     `SELECT q.*, c.name as customer_name, pt.name as payment_term_name, u.username as executive_name, p.name as project_name
      FROM quotes q
-     LEFT JOIN customers c ON c.id = q.customer_id
+     LEFT JOIN contacts c ON c.id = q.customer_id
      LEFT JOIN payment_terms pt ON pt.id = q.payment_term_id
      LEFT JOIN users u ON u.id = q.user_id
      LEFT JOIN projects p ON p.id = q.project_id
@@ -51,7 +51,7 @@ export async function listProjectQuotesByUser(userId: string): Promise<Quote[]> 
   const { rows } = await pool.query(
     `SELECT q.*, c.name as customer_name, pt.name as payment_term_name, u.username as executive_name, p.name as project_name
      FROM quotes q
-     LEFT JOIN customers c ON c.id = q.customer_id
+     LEFT JOIN contacts c ON c.id = q.customer_id
      LEFT JOIN payment_terms pt ON pt.id = q.payment_term_id
      LEFT JOIN users u ON u.id = q.user_id
      LEFT JOIN projects p ON p.id = q.project_id
@@ -66,7 +66,7 @@ export async function listAllQuotes(): Promise<Quote[]> {
   const { rows } = await pool.query(
     `SELECT q.*, c.name as customer_name, pt.name as payment_term_name, u.username as executive_name, p.name as project_name
      FROM quotes q
-     LEFT JOIN customers c ON c.id = q.customer_id
+     LEFT JOIN contacts c ON c.id = q.customer_id
      LEFT JOIN payment_terms pt ON pt.id = q.payment_term_id
      LEFT JOIN users u ON u.id = q.user_id
      LEFT JOIN projects p ON p.id = q.project_id
@@ -79,7 +79,7 @@ export async function listQuotesByProject(projectId: string): Promise<Quote[]> {
   const { rows } = await pool.query(
     `SELECT q.*, c.name as customer_name, pt.name as payment_term_name, u.username as executive_name, p.name as project_name
      FROM quotes q
-     LEFT JOIN customers c ON c.id = q.customer_id
+     LEFT JOIN contacts c ON c.id = q.customer_id
      LEFT JOIN payment_terms pt ON pt.id = q.payment_term_id
      LEFT JOIN users u ON u.id = q.user_id
      LEFT JOIN projects p ON p.id = q.project_id
@@ -94,7 +94,7 @@ export async function getQuote(id: string): Promise<Quote | null> {
   const { rows } = await pool.query(
     `SELECT q.*, c.name as customer_name, pt.name as payment_term_name, u.username as executive_name, p.name as project_name
      FROM quotes q
-     LEFT JOIN customers c ON c.id = q.customer_id
+     LEFT JOIN contacts c ON c.id = q.customer_id
      LEFT JOIN payment_terms pt ON pt.id = q.payment_term_id
      LEFT JOIN users u ON u.id = q.user_id
      LEFT JOIN projects p ON p.id = q.project_id

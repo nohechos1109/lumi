@@ -15,12 +15,12 @@ INSERT INTO users (id, role) VALUES
   ('00000000-0001-0000-0000-000000000004', 'sales')
 ON CONFLICT (id) DO NOTHING;
 
--- ── CUSTOMERS ──────────────────────────────────────────────
-INSERT INTO customers (id, name) VALUES
-  ('00000000-0002-0000-0000-000000000001', 'Constructora Vértice S.A. de C.V.'),
-  ('00000000-0002-0000-0000-000000000002', 'Grupo Industrial Norteño'),
-  ('00000000-0002-0000-0000-000000000003', 'TechSoluciones del Bajío'),
-  ('00000000-0002-0000-0000-000000000004', 'Distribuidora Omega S.C.')
+-- ── CONTACTS (empresas) ────────────────────────────────────
+INSERT INTO contacts (id, type, name) VALUES
+  ('00000000-0002-0000-0000-000000000001', 'company', 'Constructora Vértice S.A. de C.V.'),
+  ('00000000-0002-0000-0000-000000000002', 'company', 'Grupo Industrial Norteño'),
+  ('00000000-0002-0000-0000-000000000003', 'company', 'TechSoluciones del Bajío'),
+  ('00000000-0002-0000-0000-000000000004', 'company', 'Distribuidora Omega S.C.')
 ON CONFLICT (id) DO NOTHING;
 
 -- ── PAYMENT_TERMS ──────────────────────────────────────────

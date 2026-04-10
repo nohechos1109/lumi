@@ -30,7 +30,7 @@ const SALE_SELECT = `
          q.number AS quote_number,
          u.username AS executive_name
   FROM sales s
-  LEFT JOIN customers c ON c.id = s.customer_id
+  LEFT JOIN contacts c ON c.id = s.customer_id
   LEFT JOIN projects  p ON p.id = s.project_id
   LEFT JOIN quotes    q ON q.id = s.quote_id
   LEFT JOIN users     u ON u.id = s.user_id
