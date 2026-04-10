@@ -4,26 +4,7 @@ import { useEffect } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import type { NavItem } from './nav-types'
-import {
-  IconDashboard, IconProjects, IconQuotes, IconCatalog,
-  IconCustomers, IconTemplates, IconTeam, IconUsers,
-  IconProducts, IconDiscounts, IconSettings, IconCobranza,
-} from './NavIcons'
-
-const ICON_MAP: Record<string, React.ReactNode> = {
-  dashboard:  <IconDashboard />,
-  projects:   <IconProjects />,
-  quotes:     <IconQuotes />,
-  catalog:    <IconCatalog />,
-  customers:  <IconCustomers />,
-  templates:  <IconTemplates />,
-  team:       <IconTeam />,
-  users:      <IconUsers />,
-  products:   <IconProducts />,
-  discounts:  <IconDiscounts />,
-  settings:   <IconSettings />,
-  cobranza:   <IconCobranza />,
-}
+import { ICON_MAP } from './icon-map'
 
 interface Props {
   items: NavItem[]

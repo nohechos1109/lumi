@@ -3,50 +3,12 @@ import { getIronSession } from 'iron-session'
 import { sessionOptions, SessionData } from '@/lib/session'
 import TopBar from './_components/TopBar'
 import Toaster from '@/components/ui/Toaster'
-import type { NavItem } from './_components/nav-types'
+import { NAV_BY_ROLE } from './_components/nav-config'
 
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
   const session = await getIronSession<SessionData>(await cookies(), sessionOptions)
 
-  const salesNav: NavItem[] = [
-    { href: '/dashboard',  label: 'Inicio',           icon: 'dashboard', color: '#1B3461', exact: true },
-    { href: '/projects',   label: 'Proyectos',        icon: 'projects',  color: '#1C5AD6' },
-    { href: '/quotes',     label: 'Mis Cotizaciones', icon: 'quotes',    color: '#0B9962' },
-    { href: '/ventas',     label: 'Cobranza',         icon: 'cobranza',  color: '#059669' },
-    { href: '/catalog',    label: 'Catálogo',         icon: 'catalog',   color: '#C47F08' },
-    { href: '/customers',  label: 'Clientes',         icon: 'customers', color: '#D12C3C' },
-    { href: '/plantillas', label: 'Plantillas',       icon: 'templates', color: '#7C3AED' },
-  ]
-
-  const navItems: Record<string, NavItem[]> = {
-    sales:   salesNav,
-    almacen: salesNav,
-    soporte: salesNav,
-    manager: [
-      { href: '/dashboard',  label: 'Inicio',       icon: 'dashboard', color: '#1B3461', exact: true },
-      { href: '/projects',   label: 'Proyectos',    icon: 'projects',  color: '#1C5AD6' },
-      { href: '/quotes',     label: 'Cotizaciones', icon: 'quotes',    color: '#0B9962' },
-      { href: '/ventas',     label: 'Cobranza',     icon: 'cobranza',  color: '#059669' },
-      { href: '/customers',  label: 'Clientes',     icon: 'customers', color: '#D12C3C' },
-      { href: '/plantillas', label: 'Plantillas',   icon: 'templates', color: '#7C3AED' },
-      { href: '/catalog',    label: 'Catálogo',     icon: 'catalog',   color: '#C47F08' },
-    ],
-    admin: [
-      { href: '/admin',                    label: 'Inicio',       icon: 'dashboard', color: '#1B3461', exact: true },
-      { href: '/projects',                 label: 'Proyectos',    icon: 'projects',  color: '#1C5AD6' },
-      { href: '/quotes',                   label: 'Cotizaciones', icon: 'quotes',    color: '#0B9962' },
-      { href: '/ventas',                   label: 'Cobranza',     icon: 'cobranza',  color: '#059669' },
-      { href: '/admin/users',              label: 'Usuarios',     icon: 'users',     color: '#1B3461' },
-      { href: '/admin/products',           label: 'Productos',    icon: 'products',  color: '#0B9962' },
-      { href: '/admin/discount-approvals', label: 'Descuentos',   icon: 'discounts', color: '#C47F08' },
-      { href: '/admin/plantillas',         label: 'Plantillas',   icon: 'templates', color: '#7C3AED' },
-      { href: '/admin/customers',          label: 'Clientes',     icon: 'customers', color: '#D12C3C' },
-      { href: '/catalog',                  label: 'Catálogo',     icon: 'catalog',   color: '#C47F08' },
-      { href: '/admin/settings',           label: 'Configuración',icon: 'settings',  color: '#445566' },
-    ],
-  }
-
-  const items = navItems[session.role as keyof typeof navItems] ?? []
+  const items = NAV_BY_ROLE[session.role as keyof typeof NAV_BY_ROLE] ?? []
 
   const roleLabel: Record<string, string> = {
     sales:   'Ventas',

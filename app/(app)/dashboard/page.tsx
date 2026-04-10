@@ -3,42 +3,8 @@ import { getIronSession } from 'iron-session'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { sessionOptions, SessionData } from '@/lib/session'
-import {
-  IconProjects, IconQuotes, IconCatalog,
-  IconCustomers, IconTemplates, IconCobranza,
-} from '../_components/NavIcons'
-
-interface Section {
-  href: string
-  label: string
-  desc: string
-  icon: React.ReactNode
-  color: string
-}
-
-const salesSections: Section[] = [
-  { href: '/projects',   label: 'Proyectos',        desc: 'Mis proyectos activos',          icon: <IconProjects />,  color: '#1C5AD6' },
-  { href: '/quotes',     label: 'Mis Cotizaciones', desc: 'Cotizaciones que he generado',   icon: <IconQuotes />,    color: '#0B9962' },
-  { href: '/ventas',     label: 'Cobranza',         desc: 'Ventas y cobros',                icon: <IconCobranza />, color: '#059669' },
-  { href: '/catalog',    label: 'Catálogo',         desc: 'Productos disponibles',          icon: <IconCatalog />,   color: '#C47F08' },
-  { href: '/customers',  label: 'Clientes',         desc: 'Directorio de clientes',         icon: <IconCustomers />, color: '#D12C3C' },
-  { href: '/plantillas', label: 'Plantillas',       desc: 'Plantillas de cotización',       icon: <IconTemplates />, color: '#7C3AED' },
-]
-
-const managerSections: Section[] = [
-  { href: '/projects',   label: 'Proyectos',    desc: 'Todos los proyectos',          icon: <IconProjects />,  color: '#1C5AD6' },
-  { href: '/quotes',     label: 'Cotizaciones', desc: 'Cotizaciones del equipo',      icon: <IconQuotes />,    color: '#0B9962' },
-  { href: '/ventas',     label: 'Cobranza',     desc: 'Ventas y cobros',              icon: <IconCobranza />, color: '#059669' },
-  { href: '/customers',  label: 'Clientes',     desc: 'Directorio de clientes',       icon: <IconCustomers />, color: '#D12C3C' },
-  { href: '/plantillas', label: 'Plantillas',   desc: 'Plantillas de cotización',     icon: <IconTemplates />, color: '#7C3AED' },
-  { href: '/catalog',    label: 'Catálogo',     desc: 'Productos disponibles',        icon: <IconCatalog />,   color: '#C47F08' },
-]
-
-const restrictedSections: Section[] = [
-  { href: '/quotes',  label: 'Cotizaciones', desc: 'Cotizaciones del sistema', icon: <IconQuotes />, color: '#0B9962' },
-  { href: '/ventas',  label: 'Cobranza',     desc: 'Ventas y cobros',          icon: <IconCobranza />, color: '#059669' },
-  { href: '/catalog', label: 'Catálogo',     desc: 'Productos disponibles',    icon: <IconCatalog />, color: '#C47F08' },
-]
+import { NAV_BY_ROLE } from '../_components/nav-config'
+import { ICON_MAP } from '../_components/icon-map'
 
 const roleLabel: Record<string, string> = {
   sales:   'Ventas',
@@ -50,8 +16,8 @@ export default async function DashboardPage() {
 
   if (session.role === 'admin') redirect('/admin')
 
-  const isRestricted = session.role === 'almacen' || session.role === 'soporte'
-  const sections = session.role === 'manager' ? managerSections : isRestricted ? restrictedSections : salesSections
+  const allItems = NAV_BY_ROLE[session.role as keyof typeof NAV_BY_ROLE] ?? []
+  const sections = allItems.filter(item => !item.exact)
 
   return (
     <div>
@@ -91,7 +57,7 @@ export default async function DashboardPage() {
                 boxShadow: `0 4px 14px ${s.color}44`,
               }}
             >
-              {s.icon}
+              {ICON_MAP[s.icon]}
             </div>
             <div className="text-center">
               <p className="text-sm font-semibold" style={{ color: 'var(--c-ink)', fontFamily: 'var(--font-montserrat)' }}>
