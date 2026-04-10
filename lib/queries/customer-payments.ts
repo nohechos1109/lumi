@@ -49,7 +49,7 @@ const CP_SELECT = `
     COALESCE(apl.applied, 0)::numeric(14,2)::text              AS amount_applied,
     (cp.amount - COALESCE(apl.applied, 0))::numeric(14,2)::text AS amount_available
   FROM customer_payments cp
-  JOIN customers c ON c.id = cp.customer_id
+  JOIN contacts c ON c.id = cp.customer_id
   LEFT JOIN users u ON u.id = cp.registered_by
   LEFT JOIN (
     SELECT payment_id, SUM(amount) AS applied

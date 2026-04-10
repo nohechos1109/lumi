@@ -3,7 +3,7 @@ import { revalidatePath } from 'next/cache'
 import { getSession, unauthorized, forbidden } from '@/lib/auth-guard'
 import { canApplyPayments } from '@/lib/permissions'
 import { getSale } from '@/lib/queries/sales'
-import { createPayment, confirmPayment } from '@/lib/queries/payments'
+import { createCustomerPayment } from '@/lib/queries/customer-payments'
 import { createAnticipo } from '@/lib/queries/anticipos'
 import { insertAuditEvent } from '@/lib/queries/audit'
 
@@ -31,16 +31,15 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'La venta está cancelada' }, { status: 400 })
   }
 
-  // Create confirmed payment (no applications yet)
-  const payment = await createPayment({
-    saleId,
+  // Create confirmed payment linked to the customer
+  const payment = await createCustomerPayment({
+    customerId: sale.customer_id,
     concept: concept ?? 'Anticipo',
     amount,
     paymentMethod,
     paymentDate,
     registeredBy: session.userId,
   })
-  await confirmPayment(payment.id, session.userId)
 
   // Register anticipo record
   const anticipo = await createAnticipo({

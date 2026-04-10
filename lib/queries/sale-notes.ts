@@ -210,7 +210,7 @@ export async function listAllNotesForCobranza(userId?: string): Promise<Cobranza
       COALESCE(crd.credit, 0)::text AS credit_disponible
     FROM sale_notes sn
     JOIN sales     s  ON s.id = sn.sale_id
-    JOIN customers c  ON c.id = s.customer_id
+    JOIN contacts c  ON c.id = s.customer_id
     LEFT JOIN users u ON u.id = s.user_id
     LEFT JOIN LATERAL (
       SELECT
