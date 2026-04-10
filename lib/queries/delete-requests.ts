@@ -38,7 +38,7 @@ export async function listPendingDeleteRequests(): Promise<DeleteRequest[]> {
        END as entity_name
      FROM delete_requests dr
      JOIN users u ON u.id = dr.requested_by
-     LEFT JOIN customers c ON c.id = dr.entity_id AND dr.entity = 'customer'
+     LEFT JOIN contacts c ON c.id = dr.entity_id AND dr.entity = 'customer'
      WHERE dr.status = 'pending'
      ORDER BY dr.created_at DESC`
   )

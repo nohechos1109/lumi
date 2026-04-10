@@ -10,10 +10,10 @@ INSERT INTO "users" ("id", "role", "username", "password_hash") VALUES
 ('00000000-0001-0000-0000-000000000005',	'almacen',	'almacen',	'$2a$10$DMk.G0ukxQGJ1bJFhlh0uOe2TpclY121LEAcYXSd6onBgNd2ZuWDe'),
 ('00000000-0001-0000-0000-000000000006',	'soporte',	'soporte',	'$2a$10$DMk.G0ukxQGJ1bJFhlh0uOe2TpclY121LEAcYXSd6onBgNd2ZuWDe');
 
-INSERT INTO "customers" ("id", "name", "email", "phone") VALUES
-('00000000-0002-0000-0000-000000000001',	'Constructora Vértice S.A. de C.V.',	NULL,	NULL),
-('00000000-0002-0000-0000-000000000002',	'Grupo Industrial Norteño',	NULL,	NULL),
-('00000000-0002-0000-0000-000000000003',	'TechSoluciones del Bajío',	NULL,	NULL);
+INSERT INTO "contacts" ("id", "type", "name", "email", "phone") VALUES
+('00000000-0002-0000-0000-000000000001',	'company',	'Constructora Vértice S.A. de C.V.',	NULL,	NULL),
+('00000000-0002-0000-0000-000000000002',	'company',	'Grupo Industrial Norteño',	NULL,	NULL),
+('00000000-0002-0000-0000-000000000003',	'company',	'TechSoluciones del Bajío',	NULL,	NULL);
 
 INSERT INTO "global_settings" ("id", "fx_mxn_per_usd") VALUES
 ('00000000-0004-0000-0000-000000000001',	20.000000);

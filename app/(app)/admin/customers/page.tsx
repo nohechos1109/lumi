@@ -1,24 +1,37 @@
 'use client'
 
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import ConfirmModal from '@/components/ui/ConfirmModal'
 import { notifyRefresh } from '@/lib/toast'
+import { CustomerFormModal, type ContactSaved } from '@/app/(app)/customers/_components/CustomerFormModal'
 
-interface Customer { id: string; name: string; email: string | null; phone: string | null }
+type Contact = ContactSaved
+
+function TypeBadge({ type }: { type: 'company' | 'person' }) {
+  const isCompany = type === 'company'
+  return (
+    <span
+      className="inline-flex items-center text-xs px-2 py-0.5 rounded-full font-medium"
+      style={{
+        background: isCompany ? 'var(--c-navy-bg)' : 'rgba(139,92,246,0.08)',
+        color: isCompany ? 'var(--c-navy)' : '#7c3aed',
+        border: `1px solid ${isCompany ? 'var(--c-navy-bd)' : 'rgba(139,92,246,0.2)'}`,
+      }}
+    >
+      {isCompany ? 'Empresa' : 'Persona'}
+    </span>
+  )
+}
 
 export default function AdminCustomersPage() {
-  const [customers, setCustomers] = useState<Customer[]>([])
-  const [name, setName] = useState('')
-  const [email, setEmail] = useState('')
-  const [phone, setPhone] = useState('')
+  const [contacts, setContacts] = useState<Contact[]>([])
   const [adding, setAdding] = useState(false)
-  const [editCustomer, setEditCustomer] = useState<Customer | null>(null)
-  const [editForm, setEditForm] = useState({ name: '', email: '', phone: '' })
-  const [editSaving, setEditSaving] = useState(false)
+  const [editContact, setEditContact] = useState<Contact | null>(null)
   const [deleteId, setDeleteId] = useState<string | null>(null)
   const [searchQuery, setSearchQuery] = useState('')
+  const [typeFilter, setTypeFilter] = useState<'all' | 'company' | 'person'>('all')
   const searchParams = useSearchParams()
   const highlightId = searchParams.get('highlight')
   const highlightRef = useRef<HTMLTableRowElement>(null)
@@ -27,56 +40,32 @@ export default function AdminCustomersPage() {
     if (highlightRef.current) {
       highlightRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' })
     }
-  }, [highlightId, customers])
+  }, [highlightId, contacts])
 
-  async function load() {
+  const load = useCallback(async () => {
     const r = await fetch('/api/admin/customers')
-    setCustomers(await r.json())
-  }
+    setContacts(await r.json())
+  }, [])
 
-  useEffect(() => { load() }, [])
+  useEffect(() => { load() }, [load])
 
-  const filteredCustomers = customers.filter(c => {
+  const filtered = contacts.filter(c => {
+    if (typeFilter !== 'all' && c.type !== typeFilter) return false
     const q = searchQuery.toLowerCase()
-    return c.name.toLowerCase().includes(q)
-      || (c.email && c.email.toLowerCase().includes(q))
-      || (c.phone && c.phone.toLowerCase().includes(q))
+    if (!q) return true
+    return (
+      c.name.toLowerCase().includes(q) ||
+      (c.email?.toLowerCase().includes(q) ?? false) ||
+      (c.phone?.toLowerCase().includes(q) ?? false) ||
+      (c.tax_id?.toLowerCase().includes(q) ?? false) ||
+      c.companies.some(co => co.name.toLowerCase().includes(q))
+    )
   })
-
-  async function handleAdd(e: React.FormEvent) {
-    e.preventDefault()
-    const res = await fetch('/api/admin/customers', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name, email: email || undefined, phone: phone || undefined }),
-    })
-    if (res.ok) notifyRefresh()
-    setName(''); setEmail(''); setPhone(''); setAdding(false); load()
-  }
-
-  function openEdit(c: Customer) {
-    setEditCustomer(c)
-    setEditForm({ name: c.name, email: c.email || '', phone: c.phone || '' })
-  }
-
-  async function handleEdit(e: React.FormEvent) {
-    e.preventDefault()
-    if (!editCustomer) return
-    setEditSaving(true)
-    const res = await fetch(`/api/admin/customers/${editCustomer.id}`, {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name: editForm.name, email: editForm.email || undefined, phone: editForm.phone || undefined }),
-    })
-    if (res.ok) notifyRefresh()
-    setEditCustomer(null)
-    setEditSaving(false)
-    load()
-  }
 
   async function handleDelete(id: string) {
     const res = await fetch(`/api/admin/customers/${id}`, { method: 'DELETE' })
     if (res.ok) notifyRefresh()
+    setDeleteId(null)
     load()
   }
 
@@ -98,211 +87,24 @@ export default function AdminCustomersPage() {
             className="font-heading text-3xl font-bold uppercase"
             style={{ color: 'var(--c-ink)', letterSpacing: '0.1em' }}
           >
-            Clientes
+            Contactos
           </h1>
           <p className="text-sm mt-1 font-mono" style={{ color: 'var(--c-ghost)' }}>
-            {customers.length} {customers.length === 1 ? 'cliente' : 'clientes'}
+            {contacts.length} {contacts.length === 1 ? 'contacto' : 'contactos'}
           </p>
         </div>
         <button
           onClick={() => setAdding(true)}
           className="text-sm px-5 py-2.5 rounded-xl font-bold uppercase tracking-wider transition-opacity hover:opacity-85"
-          style={{
-            background: 'var(--c-navy)',
-            color: '#fff',
-            letterSpacing: '0.08em',
-          }}
+          style={{ background: 'var(--c-navy)', color: '#fff', letterSpacing: '0.08em' }}
         >
-          + Nuevo Cliente
+          + Nuevo Contacto
         </button>
       </div>
 
-      {/* Modal editar cliente */}
-      {editCustomer && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center p-4"
-          style={{ background: 'rgba(9,11,16,0.45)', backdropFilter: 'blur(4px)' }}
-          onClick={() => setEditCustomer(null)}
-        >
-          <form
-            onSubmit={handleEdit}
-            onClick={(e) => e.stopPropagation()}
-            className="w-full max-w-md rounded-2xl p-6 flex flex-col gap-5 shadow-xl"
-            style={{ background: 'var(--c-card)', border: '1px solid var(--c-rim)' }}
-          >
-            <div className="flex items-center justify-between">
-              <h2 className="text-lg font-bold" style={{ color: 'var(--c-ink)' }}>Editar Cliente</h2>
-              <button
-                type="button"
-                onClick={() => setEditCustomer(null)}
-                className="flex items-center justify-center w-8 h-8 rounded-full transition-colors"
-                style={{ color: 'var(--c-ghost)' }}
-                onMouseEnter={(e) => { e.currentTarget.style.background = 'var(--c-rim)' }}
-                onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent' }}
-              >
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
-                  <line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/>
-                </svg>
-              </button>
-            </div>
-
-            <div>
-              <label className="block text-xs font-bold uppercase tracking-widest mb-2" style={{ color: 'var(--c-dim)', letterSpacing: '0.1em' }}>
-                Nombre del cliente *
-              </label>
-              <input
-                value={editForm.name}
-                onChange={e => setEditForm(f => ({ ...f, name: e.target.value }))}
-                required
-                placeholder="Empresa S.A. de C.V."
-                className="w-full px-3.5 py-2.5 rounded-lg outline-none text-sm transition-all"
-                style={{ background: 'var(--c-panel)', border: '1px solid var(--c-rim)', color: 'var(--c-ink)' }}
-                autoFocus
-              />
-            </div>
-            <div>
-              <label className="block text-xs font-bold uppercase tracking-widest mb-2" style={{ color: 'var(--c-dim)', letterSpacing: '0.1em' }}>
-                Email
-              </label>
-              <input
-                type="email"
-                value={editForm.email}
-                onChange={e => setEditForm(f => ({ ...f, email: e.target.value }))}
-                placeholder="contacto@empresa.com"
-                className="w-full px-3.5 py-2.5 rounded-lg outline-none text-sm transition-all"
-                style={{ background: 'var(--c-panel)', border: '1px solid var(--c-rim)', color: 'var(--c-ink)' }}
-              />
-            </div>
-            <div>
-              <label className="block text-xs font-bold uppercase tracking-widest mb-2" style={{ color: 'var(--c-dim)', letterSpacing: '0.1em' }}>
-                Teléfono
-              </label>
-              <input
-                type="tel"
-                value={editForm.phone}
-                onChange={e => setEditForm(f => ({ ...f, phone: e.target.value }))}
-                placeholder="(555) 123-4567"
-                className="w-full px-3.5 py-2.5 rounded-lg outline-none text-sm transition-all"
-                style={{ background: 'var(--c-panel)', border: '1px solid var(--c-rim)', color: 'var(--c-ink)' }}
-              />
-            </div>
-
-            <div className="flex gap-3 pt-2">
-              <button
-                type="button"
-                onClick={() => setEditCustomer(null)}
-                className="flex-1 px-4 py-2.5 rounded-xl text-sm font-semibold transition-opacity hover:opacity-80"
-                style={{ background: 'var(--c-rim)', color: 'var(--c-dim)' }}
-              >
-                Cancelar
-              </button>
-              <button
-                type="submit"
-                disabled={editSaving}
-                className="flex-1 px-4 py-2.5 rounded-xl text-sm font-bold uppercase tracking-wider transition-opacity hover:opacity-90"
-                style={{ background: 'var(--c-navy)', color: '#fff', letterSpacing: '0.08em', opacity: editSaving ? 0.6 : 1 }}
-              >
-                {editSaving ? 'Guardando...' : 'Guardar Cambios'}
-              </button>
-            </div>
-          </form>
-        </div>
-      )}
-
-      {/* Modal crear cliente */}
-      {adding && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center p-4"
-          style={{ background: 'rgba(9,11,16,0.45)', backdropFilter: 'blur(4px)' }}
-          onClick={() => setAdding(false)}
-        >
-          <form
-            onSubmit={handleAdd}
-            onClick={(e) => e.stopPropagation()}
-            className="w-full max-w-md rounded-2xl p-6 flex flex-col gap-5 shadow-xl"
-            style={{ background: 'var(--c-card)', border: '1px solid var(--c-rim)' }}
-          >
-            <div className="flex items-center justify-between">
-              <h2 className="text-lg font-bold" style={{ color: 'var(--c-ink)' }}>Nuevo Cliente</h2>
-              <button
-                type="button"
-                onClick={() => setAdding(false)}
-                className="flex items-center justify-center w-8 h-8 rounded-full transition-colors"
-                style={{ color: 'var(--c-ghost)' }}
-                onMouseEnter={(e) => { e.currentTarget.style.background = 'var(--c-rim)' }}
-                onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent' }}
-              >
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
-                  <line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/>
-                </svg>
-              </button>
-            </div>
-
-            <div>
-              <label className="block text-xs font-bold uppercase tracking-widest mb-2" style={{ color: 'var(--c-dim)', letterSpacing: '0.1em' }}>
-                Nombre del cliente *
-              </label>
-              <input
-                value={name}
-                onChange={e => setName(e.target.value)}
-                required
-                placeholder="Empresa S.A. de C.V."
-                className="w-full px-3.5 py-2.5 rounded-lg outline-none text-sm transition-all"
-                style={{ background: 'var(--c-panel)', border: '1px solid var(--c-rim)', color: 'var(--c-ink)' }}
-                autoFocus
-              />
-            </div>
-            <div>
-              <label className="block text-xs font-bold uppercase tracking-widest mb-2" style={{ color: 'var(--c-dim)', letterSpacing: '0.1em' }}>
-                Email
-              </label>
-              <input
-                type="email"
-                value={email}
-                onChange={e => setEmail(e.target.value)}
-                placeholder="contacto@empresa.com"
-                className="w-full px-3.5 py-2.5 rounded-lg outline-none text-sm transition-all"
-                style={{ background: 'var(--c-panel)', border: '1px solid var(--c-rim)', color: 'var(--c-ink)' }}
-              />
-            </div>
-            <div>
-              <label className="block text-xs font-bold uppercase tracking-widest mb-2" style={{ color: 'var(--c-dim)', letterSpacing: '0.1em' }}>
-                Teléfono
-              </label>
-              <input
-                type="tel"
-                value={phone}
-                onChange={e => setPhone(e.target.value)}
-                placeholder="(555) 123-4567"
-                className="w-full px-3.5 py-2.5 rounded-lg outline-none text-sm transition-all"
-                style={{ background: 'var(--c-panel)', border: '1px solid var(--c-rim)', color: 'var(--c-ink)' }}
-              />
-            </div>
-
-            <div className="flex gap-3 pt-2">
-              <button
-                type="button"
-                onClick={() => setAdding(false)}
-                className="flex-1 px-4 py-2.5 rounded-xl text-sm font-semibold transition-opacity hover:opacity-80"
-                style={{ background: 'var(--c-rim)', color: 'var(--c-dim)' }}
-              >
-                Cancelar
-              </button>
-              <button
-                type="submit"
-                className="flex-1 px-4 py-2.5 rounded-xl text-sm font-bold uppercase tracking-wider transition-opacity hover:opacity-90"
-                style={{ background: 'var(--c-navy)', color: '#fff', letterSpacing: '0.08em' }}
-              >
-                Guardar
-              </button>
-            </div>
-          </form>
-        </div>
-      )}
-
-      {/* Controls Bar */}
-      <div className="flex flex-col gap-4 mb-6">
-        <div style={{ maxWidth: '640px', margin: '0 auto', width: '100%' }}>
+      {/* Filters */}
+      <div className="flex flex-wrap items-center gap-3 mb-6">
+        <div style={{ maxWidth: '480px', flex: 1, minWidth: '200px' }}>
           <div
             className="flex items-center h-12 rounded-full transition-shadow"
             style={{
@@ -313,17 +115,17 @@ export default function AdminCustomersPage() {
                 : '0 1px 6px rgba(27,52,97,0.08)',
             }}
           >
-            <div className="flex items-center justify-center w-12 shrink-0" style={{ color: searchQuery ? 'var(--c-navy)' : 'var(--c-ghost)', opacity: searchQuery ? 0.85 : 0.5, transition: 'color 0.2s, opacity 0.2s' }}>
+            <div className="flex items-center justify-center w-12 shrink-0" style={{ color: searchQuery ? 'var(--c-navy)' : 'var(--c-ghost)', opacity: searchQuery ? 0.85 : 0.5 }}>
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                 <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
               </svg>
             </div>
             <input
               type="text"
-              placeholder="Buscar por nombre, email o teléfono..."
+              placeholder="Buscar por nombre, email, RFC..."
               className="flex-1 h-full bg-transparent outline-none text-sm font-medium"
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              onChange={e => setSearchQuery(e.target.value)}
               style={{ color: 'var(--c-ink)' }}
             />
             {searchQuery && (
@@ -331,8 +133,6 @@ export default function AdminCustomersPage() {
                 onClick={() => setSearchQuery('')}
                 className="flex items-center justify-center w-10 h-10 mr-1 rounded-full transition-colors"
                 style={{ color: 'var(--c-dim)' }}
-                onMouseEnter={(e) => { e.currentTarget.style.background = 'var(--c-rim)' }}
-                onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent' }}
                 aria-label="Limpiar búsqueda"
               >
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
@@ -342,12 +142,30 @@ export default function AdminCustomersPage() {
             )}
           </div>
         </div>
-        {searchQuery && (
-          <div className="text-center text-xs font-mono" style={{ color: 'var(--c-ghost)' }}>
-            {filteredCustomers.length} resultados
-          </div>
-        )}
+
+        {/* Type filter */}
+        <div className="flex rounded-xl overflow-hidden text-xs font-bold" style={{ border: '1px solid var(--c-rim)' }}>
+          {(['all', 'company', 'person'] as const).map(t => (
+            <button
+              key={t}
+              onClick={() => setTypeFilter(t)}
+              className="px-4 py-2.5 transition-colors uppercase tracking-wider"
+              style={{
+                background: typeFilter === t ? 'var(--c-navy)' : 'var(--c-card)',
+                color: typeFilter === t ? '#fff' : 'var(--c-dim)',
+              }}
+            >
+              {t === 'all' ? 'Todos' : t === 'company' ? 'Empresas' : 'Personas'}
+            </button>
+          ))}
+        </div>
       </div>
+
+      {(searchQuery || typeFilter !== 'all') && (
+        <div className="text-center text-xs font-mono mb-4" style={{ color: 'var(--c-ghost)' }}>
+          {filtered.length} resultados
+        </div>
+      )}
 
       <div
         className="rounded-2xl overflow-hidden"
@@ -356,20 +174,15 @@ export default function AdminCustomersPage() {
         <table className="w-full text-sm">
           <thead>
             <tr style={{ borderBottom: '1px solid var(--c-rim)' }}>
-              <th className="text-left px-5 py-4 text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--c-ghost)' }}>
-                Nombre
-              </th>
-              <th className="text-left px-5 py-4 text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--c-ghost)' }}>
-                Email
-              </th>
-              <th className="text-left px-5 py-4 text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--c-ghost)' }}>
-                Teléfono
-              </th>
-              <th className="px-5 py-4 w-36"></th>
+              {['Tipo', 'Nombre', 'Detalle', 'Email', 'Teléfono', ''].map(h => (
+                <th key={h} className="text-left px-5 py-4 text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--c-ghost)' }}>
+                  {h}
+                </th>
+              ))}
             </tr>
           </thead>
           <tbody>
-            {filteredCustomers.map(c => (
+            {filtered.map(c => (
               <tr
                 key={c.id}
                 ref={c.id === highlightId ? highlightRef : undefined}
@@ -380,21 +193,37 @@ export default function AdminCustomersPage() {
                   outline: c.id === highlightId ? '2px solid var(--c-navy-bd)' : undefined,
                 }}
               >
-                <td className="px-5 py-4" style={{ color: 'var(--c-ink)' }}>{c.name}</td>
                 <td className="px-5 py-4">
-                  <span style={{ color: c.email ? 'var(--c-ink)' : 'var(--c-ghost)' }}>
-                    {c.email || '—'}
-                  </span>
+                  <TypeBadge type={c.type} />
                 </td>
-                <td className="px-5 py-4">
-                  <span style={{ color: c.phone ? 'var(--c-ink)' : 'var(--c-ghost)' }}>
-                    {c.phone || '—'}
-                  </span>
+                <td className="px-5 py-4 font-semibold" style={{ color: 'var(--c-ink)' }}>
+                  {c.name}
+                </td>
+                <td className="px-5 py-4 text-xs" style={{ color: 'var(--c-dim)' }}>
+                  {c.type === 'company' && c.tax_id && <span>{c.tax_id}</span>}
+                  {c.type === 'person' && c.companies.length > 0 && (
+                    <span className="flex flex-col gap-1">
+                      {c.companies.map(co => (
+                        <span key={co.id} className="flex items-center gap-1.5">
+                          <span className="px-1.5 py-0.5 rounded" style={{ background: 'var(--c-panel)', color: 'var(--c-ghost)', border: '1px solid var(--c-rim)' }}>
+                            {co.name}
+                          </span>
+                          {co.role && <span style={{ color: 'var(--c-ghost)' }}>{co.role}</span>}
+                        </span>
+                      ))}
+                    </span>
+                  )}
+                </td>
+                <td className="px-5 py-4" style={{ color: c.email ? 'var(--c-ink)' : 'var(--c-ghost)' }}>
+                  {c.email || '—'}
+                </td>
+                <td className="px-5 py-4" style={{ color: c.phone ? 'var(--c-ink)' : 'var(--c-ghost)' }}>
+                  {c.phone || '—'}
                 </td>
                 <td className="px-5 py-4 text-right">
                   <div className="flex gap-3 justify-end">
                     <button
-                      onClick={() => openEdit(c)}
+                      onClick={() => setEditContact(c)}
                       className="text-xs font-semibold transition-opacity hover:opacity-70"
                       style={{ color: 'var(--c-navy)' }}
                     >
@@ -410,15 +239,40 @@ export default function AdminCustomersPage() {
                 </td>
               </tr>
             ))}
+            {filtered.length === 0 && (
+              <tr>
+                <td colSpan={6} className="px-5 py-12 text-center">
+                  <p className="font-mono text-sm uppercase tracking-widest" style={{ color: 'var(--c-ghost)' }}>
+                    No se encontraron contactos
+                  </p>
+                </td>
+              </tr>
+            )}
           </tbody>
         </table>
       </div>
 
+      {adding && (
+        <CustomerFormModal
+          customer={null}
+          onClose={() => setAdding(false)}
+          onSaved={() => { setAdding(false); load() }}
+        />
+      )}
+
+      {editContact && (
+        <CustomerFormModal
+          customer={editContact}
+          onClose={() => setEditContact(null)}
+          onSaved={() => { setEditContact(null); load() }}
+        />
+      )}
+
       {deleteId && (
         <ConfirmModal
-          message="¿Eliminar este cliente? Esta acción no se puede deshacer."
+          message="¿Eliminar este contacto? Esta acción no se puede deshacer."
           confirmLabel="Eliminar"
-          onConfirm={() => { handleDelete(deleteId); setDeleteId(null) }}
+          onConfirm={() => handleDelete(deleteId)}
           onCancel={() => setDeleteId(null)}
         />
       )}

@@ -20,7 +20,7 @@ CREATE TABLE customer_payments (
   CONSTRAINT customer_payments_state_check  CHECK (state IN ('confirmed','cancelled')),
   CONSTRAINT customer_payments_amount_check CHECK (amount > 0),
   CONSTRAINT customer_payments_method_check CHECK (payment_method IN ('efectivo','transferencia','cheque','tarjeta','otro')),
-  CONSTRAINT customer_payments_customer_fk  FOREIGN KEY (customer_id)  REFERENCES customers(id),
+  CONSTRAINT customer_payments_customer_fk  FOREIGN KEY (customer_id)  REFERENCES contacts(id),
   CONSTRAINT customer_payments_user_fk      FOREIGN KEY (registered_by) REFERENCES users(id)
 );
 

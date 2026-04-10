@@ -20,7 +20,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
   })
 
   const { rows: [customer] } = await pool.query(
-    `SELECT name FROM customers WHERE id = $1`, [id]
+    `SELECT name FROM contacts WHERE id = $1`, [id]
   )
   const customerName = customer?.name ?? 'Cliente desconocido'
 

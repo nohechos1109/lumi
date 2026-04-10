@@ -32,7 +32,7 @@ CREATE INDEX IF NOT EXISTS idx_sales_user              ON public.sales USING btr
 
 ALTER TABLE ONLY "public"."sales"
     ADD CONSTRAINT "sales_quote_id_fkey"    FOREIGN KEY (quote_id)    REFERENCES quotes(id),
-    ADD CONSTRAINT "sales_customer_id_fkey" FOREIGN KEY (customer_id) REFERENCES customers(id),
+    ADD CONSTRAINT "sales_customer_id_fkey" FOREIGN KEY (customer_id) REFERENCES contacts(id),
     ADD CONSTRAINT "sales_project_id_fkey"  FOREIGN KEY (project_id)  REFERENCES projects(id),
     ADD CONSTRAINT "sales_user_id_fkey"     FOREIGN KEY (user_id)     REFERENCES users(id);
 
@@ -52,6 +52,9 @@ CREATE TABLE IF NOT EXISTS "public"."sale_notes" (
     "amount_paid"     numeric(14,2) DEFAULT 0 NOT NULL,
     "amount_balance"  numeric(14,2) DEFAULT 0 NOT NULL,
     "created_at"      timestamptz   DEFAULT now() NOT NULL,
+    "ruta"            text,
+    "unidad"          text,
+    "observaciones"   text,
     CONSTRAINT "sale_notes_pkey"        PRIMARY KEY ("id"),
     CONSTRAINT "sale_notes_state_check" CHECK (state IN ('draft','confirmed','cancelled','paid'))
 ) WITH (oids = false);

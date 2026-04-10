@@ -22,7 +22,7 @@ export async function listProjectsByUser(userId: string): Promise<Project[]> {
     `SELECT p.*, c.name as customer_name, u.username as executive_name,
             COALESCE((SELECT COUNT(*) FROM quotes q WHERE q.project_id = p.id), 0)::int as quote_count
      FROM projects p
-     LEFT JOIN customers c ON c.id = p.customer_id
+     LEFT JOIN contacts c ON c.id = p.customer_id
      LEFT JOIN users u ON u.id = p.user_id
      WHERE p.user_id = $1
      ORDER BY p.date DESC, p.created_at DESC`,
@@ -36,7 +36,7 @@ export async function listAllProjects(): Promise<Project[]> {
     `SELECT p.*, c.name as customer_name, u.username as executive_name,
             COALESCE((SELECT COUNT(*) FROM quotes q WHERE q.project_id = p.id), 0)::int as quote_count
      FROM projects p
-     LEFT JOIN customers c ON c.id = p.customer_id
+     LEFT JOIN contacts c ON c.id = p.customer_id
      LEFT JOIN users u ON u.id = p.user_id
      ORDER BY p.date DESC, p.created_at DESC`
   );
@@ -47,7 +47,7 @@ export async function getProject(id: string): Promise<Project | null> {
   const { rows } = await pool.query(
     `SELECT p.*, c.name as customer_name, u.username as executive_name
      FROM projects p
-     LEFT JOIN customers c ON c.id = p.customer_id
+     LEFT JOIN contacts c ON c.id = p.customer_id
      LEFT JOIN users u ON u.id = p.user_id
      WHERE p.id = $1`,
     [id]

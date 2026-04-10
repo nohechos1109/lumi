@@ -17,7 +17,7 @@ export async function POST(req: Request) {
       CREATE TABLE IF NOT EXISTS projects (
           id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
           name TEXT NOT NULL,
-          customer_id UUID REFERENCES customers(id),
+          customer_id UUID REFERENCES contacts(id),
           date DATE NOT NULL DEFAULT CURRENT_DATE,
           status TEXT NOT NULL DEFAULT 'draft',
           description TEXT,

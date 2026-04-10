@@ -20,15 +20,41 @@ CREATE INDEX idx_audit_entity_id ON public.audit_events USING btree (entity_id);
 CREATE INDEX idx_audit_type ON public.audit_events USING btree (type);
 
 
-DROP TABLE IF EXISTS "customers";
-CREATE TABLE "public"."customers" (
+DROP TABLE IF EXISTS "contact_company_links";
+DROP TABLE IF EXISTS "contacts";
+CREATE TABLE "public"."contacts" (
     "id" uuid DEFAULT gen_random_uuid() NOT NULL,
+    "type" text NOT NULL DEFAULT 'company',
     "name" text NOT NULL,
     "email" text,
     "phone" text,
-    CONSTRAINT "customers_pkey" PRIMARY KEY ("id")
+    -- person-specific
+    "first_name" text,
+    "last_name" text,
+    "job_title" text,
+    -- company-specific
+    "website" text,
+    "tax_id" text,
+    "created_at" timestamptz DEFAULT now() NOT NULL,
+    CONSTRAINT "contacts_pkey" PRIMARY KEY ("id"),
+    CONSTRAINT "contacts_type_check" CHECK (("type" = ANY (ARRAY['company'::text, 'person'::text])))
 )
 WITH (oids = false);
+
+CREATE INDEX idx_contacts_type ON public.contacts USING btree (type);
+
+-- Vincula personas a empresas (many-to-many)
+CREATE TABLE "public"."contact_company_links" (
+    "contact_id" uuid NOT NULL,
+    "company_id" uuid NOT NULL,
+    "role" text,
+    "is_primary" boolean DEFAULT false NOT NULL,
+    CONSTRAINT "contact_company_links_pkey" PRIMARY KEY ("contact_id", "company_id"),
+    CONSTRAINT "contact_company_links_no_self" CHECK ("contact_id" <> "company_id")
+)
+WITH (oids = false);
+
+CREATE INDEX idx_ccl_company ON public.contact_company_links USING btree (company_id);
 
 
 DROP TABLE IF EXISTS "files";
@@ -273,13 +299,16 @@ CREATE INDEX idx_delete_requests_entity ON public.delete_requests USING btree (e
 ALTER TABLE ONLY "public"."plantilla_items" ADD CONSTRAINT "plantilla_items_plantilla_id_fkey" FOREIGN KEY (plantilla_id) REFERENCES plantillas(id) ON DELETE CASCADE;
 ALTER TABLE ONLY "public"."plantilla_items" ADD CONSTRAINT "plantilla_items_product_id_fkey" FOREIGN KEY (product_id) REFERENCES products(id);
 
-ALTER TABLE ONLY "public"."projects" ADD CONSTRAINT "projects_customer_id_fkey" FOREIGN KEY (customer_id) REFERENCES customers(id);
+ALTER TABLE ONLY "public"."contact_company_links" ADD CONSTRAINT "ccl_contact_id_fkey" FOREIGN KEY (contact_id) REFERENCES contacts(id) ON DELETE CASCADE;
+ALTER TABLE ONLY "public"."contact_company_links" ADD CONSTRAINT "ccl_company_id_fkey" FOREIGN KEY (company_id) REFERENCES contacts(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY "public"."projects" ADD CONSTRAINT "projects_customer_id_fkey" FOREIGN KEY (customer_id) REFERENCES contacts(id);
 ALTER TABLE ONLY "public"."projects" ADD CONSTRAINT "projects_user_id_fkey" FOREIGN KEY (user_id) REFERENCES users(id);
 
 ALTER TABLE ONLY "public"."quote_lines" ADD CONSTRAINT "quote_lines_product_id_fkey" FOREIGN KEY (product_id) REFERENCES products(id);
 ALTER TABLE ONLY "public"."quote_lines" ADD CONSTRAINT "quote_lines_quote_id_fkey" FOREIGN KEY (quote_id) REFERENCES quotes(id) ON DELETE CASCADE;
 
-ALTER TABLE ONLY "public"."quotes" ADD CONSTRAINT "quotes_customer_id_fkey" FOREIGN KEY (customer_id) REFERENCES customers(id);
+ALTER TABLE ONLY "public"."quotes" ADD CONSTRAINT "quotes_customer_id_fkey" FOREIGN KEY (customer_id) REFERENCES contacts(id);
 ALTER TABLE ONLY "public"."quotes" ADD CONSTRAINT "quotes_payment_term_id_fkey" FOREIGN KEY (payment_term_id) REFERENCES payment_terms(id);
 ALTER TABLE ONLY "public"."quotes" ADD CONSTRAINT "quotes_project_id_fkey" FOREIGN KEY (project_id) REFERENCES projects(id);
 ALTER TABLE ONLY "public"."quotes" ADD CONSTRAINT "quotes_renewed_from_id_fkey" FOREIGN KEY (renewed_from_id) REFERENCES quotes(id);
