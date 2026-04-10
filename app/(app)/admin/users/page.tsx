@@ -447,10 +447,10 @@ export default function AdminUsersPage() {
         >
           <div
             onClick={(e) => e.stopPropagation()}
-            className="w-full max-w-lg rounded-2xl p-6 flex flex-col gap-5 shadow-xl animate-in fade-in zoom-in-95"
+            className="w-full max-w-lg rounded-2xl p-6 flex flex-col gap-5 shadow-xl animate-in fade-in zoom-in-95 max-h-[90vh]"
             style={{ background: 'var(--c-card)', border: '1px solid var(--c-rim)' }}
           >
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between shrink-0">
               <h2 className="text-lg font-bold" style={{ color: 'var(--c-ink)' }}>Roles del sistema</h2>
               <button
                 onClick={() => setShowRoles(false)}
@@ -465,7 +465,7 @@ export default function AdminUsersPage() {
               </button>
             </div>
 
-            <div className="flex flex-col gap-4">
+            <div className="flex flex-col gap-4 overflow-y-auto">
               {[
                 {
                   label: 'Sales',
