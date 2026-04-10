@@ -65,6 +65,9 @@ export async function createSaleNote(data: {
   amountUntaxed: number
   amountTax: number
   amountTotal: number
+  ruta?: string
+  unidad?: string
+  observaciones?: string
   lines?: CreateSaleNoteLineInput[]
 }): Promise<SaleNote> {
   const client = await pool.connect()
@@ -86,10 +89,11 @@ export async function createSaleNote(data: {
 
     const { rows } = await client.query(
       `INSERT INTO sale_notes
-         (number, sale_id, state, concept, amount_untaxed, amount_tax, amount_total, amount_balance)
-       VALUES ($1, $2, 'draft', $3, $4, $5, $6, $6)
+         (number, sale_id, state, concept, amount_untaxed, amount_tax, amount_total, amount_balance, ruta, unidad, observaciones)
+       VALUES ($1, $2, 'draft', $3, $4, $5, $6, $6, $7, $8, $9)
        RETURNING *`,
-      [number, data.saleId, data.concept ?? null, data.amountUntaxed, data.amountTax, data.amountTotal]
+      [number, data.saleId, data.concept ?? null, data.amountUntaxed, data.amountTax, data.amountTotal,
+       data.ruta ?? null, data.unidad ?? null, data.observaciones ?? null]
     )
     const note: SaleNote = rows[0]
 
@@ -125,24 +129,141 @@ export async function updateSaleNoteState(id: string, state: string): Promise<vo
   await pool.query('UPDATE sale_notes SET state = $1 WHERE id = $2', [state, id])
 }
 
+export async function updateSaleNoteFields(
+  noteId: string,
+  fields: { ruta?: string | null; unidad?: string | null; observaciones?: string | null }
+): Promise<void> {
+  const sets: string[] = []
+  const values: (string | null)[] = []
+  let i = 1
+  if (fields.ruta !== undefined)          { sets.push(`ruta = $${i++}`);          values.push(fields.ruta) }
+  if (fields.unidad !== undefined)        { sets.push(`unidad = $${i++}`);        values.push(fields.unidad) }
+  if (fields.observaciones !== undefined) { sets.push(`observaciones = $${i++}`); values.push(fields.observaciones) }
+  if (sets.length === 0) return
+  values.push(noteId)
+  await pool.query(
+    `UPDATE sale_notes SET ${sets.join(', ')} WHERE id = $${i}`,
+    values
+  )
+}
+
 /**
  * Recalculate note paid/balance from confirmed payment applications.
  * Auto-mark as 'paid' if balance reaches 0.
  */
+// ── Cobranza view ────────────────────────────────────────────────────────────
+
+export interface CobranzaNote {
+  id: string
+  remision: string
+  state: 'draft' | 'confirmed' | 'paid' | 'cancelled'
+  concept: string | null
+  amount_total: string
+  amount_paid: string
+  amount_balance: string
+  fecha: string
+  ruta: string | null
+  unidad: string | null
+  observaciones: string | null
+  sale_id: string
+  orden_servicio: string
+  cliente: string
+  agente: string | null
+  abono1_fecha: string | null
+  abono1_monto: string | null
+  abono2_fecha: string | null
+  abono2_monto: string | null
+  abono3_fecha: string | null
+  abono3_monto: string | null
+  customer_id: string            // para multi-select cross-sale por cliente
+  credit_disponible: string      // crédito del cliente pendiente de aplicar
+}
+
+export async function listAllNotesForCobranza(userId?: string): Promise<CobranzaNote[]> {
+  const params: string[] = []
+  const where = userId ? `WHERE s.user_id = $${params.push(userId)}` : ''
+
+  const { rows } = await pool.query(`
+    SELECT
+      sn.id,
+      sn.number        AS remision,
+      sn.state,
+      sn.concept,
+      sn.amount_total,
+      sn.amount_paid,
+      sn.amount_balance,
+      TO_CHAR(sn.created_at, 'YYYY-MM-DD') AS fecha,
+      sn.ruta,
+      sn.unidad,
+      sn.observaciones,
+      s.id             AS sale_id,
+      s.number         AS orden_servicio,
+      c.name           AS cliente,
+      u.username       AS agente,
+      c.id             AS customer_id,
+      ab.p1_date       AS abono1_fecha,
+      ab.p1_amount     AS abono1_monto,
+      ab.p2_date       AS abono2_fecha,
+      ab.p2_amount     AS abono2_monto,
+      ab.p3_date       AS abono3_fecha,
+      ab.p3_amount     AS abono3_monto,
+      COALESCE(crd.credit, 0)::text AS credit_disponible
+    FROM sale_notes sn
+    JOIN sales     s  ON s.id = sn.sale_id
+    JOIN customers c  ON c.id = s.customer_id
+    LEFT JOIN users u ON u.id = s.user_id
+    LEFT JOIN LATERAL (
+      SELECT
+        MAX(CASE WHEN rn = 1 THEN payment_date::text END) AS p1_date,
+        MAX(CASE WHEN rn = 1 THEN amount::text       END) AS p1_amount,
+        MAX(CASE WHEN rn = 2 THEN payment_date::text END) AS p2_date,
+        MAX(CASE WHEN rn = 2 THEN amount::text       END) AS p2_amount,
+        MAX(CASE WHEN rn = 3 THEN payment_date::text END) AS p3_date,
+        MAX(CASE WHEN rn = 3 THEN amount::text       END) AS p3_amount
+      FROM (
+        SELECT pa.amount, cp.payment_date,
+               ROW_NUMBER() OVER (ORDER BY cp.payment_date ASC, pa.created_at ASC) AS rn
+        FROM payment_applications pa
+        JOIN customer_payments cp ON cp.id = pa.payment_id
+        WHERE pa.sale_note_id = sn.id AND cp.state = 'confirmed'
+        LIMIT 3
+      ) sub
+    ) ab ON true
+    LEFT JOIN LATERAL (
+      SELECT COALESCE(SUM(
+        cp_c.amount - COALESCE(apl_c.applied, 0)
+      ), 0)::numeric(14,2) AS credit
+      FROM customer_payments cp_c
+      LEFT JOIN (
+        SELECT payment_id, SUM(amount) AS applied
+        FROM payment_applications
+        GROUP BY payment_id
+      ) apl_c ON apl_c.payment_id = cp_c.id
+      WHERE cp_c.customer_id = s.customer_id
+        AND cp_c.state = 'confirmed'
+        AND (cp_c.amount - COALESCE(apl_c.applied, 0)) > 0.005
+    ) crd ON true
+    ${where}
+    ORDER BY sn.created_at DESC
+  `, params)
+
+  return rows
+}
+
 export async function updateSaleNoteTotals(noteId: string): Promise<void> {
   await pool.query(`
     UPDATE sale_notes
     SET amount_paid = COALESCE((
           SELECT SUM(pa.amount)
           FROM payment_applications pa
-          JOIN payments p ON p.id = pa.payment_id
-          WHERE pa.sale_note_id = sale_notes.id AND p.state = 'confirmed'
+          JOIN customer_payments cp ON cp.id = pa.payment_id
+          WHERE pa.sale_note_id = sale_notes.id AND cp.state = 'confirmed'
         ), 0),
         amount_balance = amount_total - COALESCE((
           SELECT SUM(pa.amount)
           FROM payment_applications pa
-          JOIN payments p ON p.id = pa.payment_id
-          WHERE pa.sale_note_id = sale_notes.id AND p.state = 'confirmed'
+          JOIN customer_payments cp ON cp.id = pa.payment_id
+          WHERE pa.sale_note_id = sale_notes.id AND cp.state = 'confirmed'
         ), 0)
     WHERE id = $1
   `, [noteId])
