@@ -52,7 +52,22 @@
       "Bash(cmd /c \"cd \\\\\"C:\\\\Users\\\\MARKETING & DISEÑO\\\\Documents\\\\cotizador-app\\\\\" && node_modules\\\\\\\\.bin\\\\\\\\tsc.cmd --noEmit\")",
       "Bash(powershell -Command \"Set-Location 'C:\\\\Users\\\\MARKETING & DISEÑO\\\\Documents\\\\cotizador-app'; node_modules\\\\\\\\.bin\\\\\\\\tsc --noEmit 2>&1 | Select-Object -First 30\")",
       "Bash(powershell -Command \"Set-Location 'C:\\\\Users\\\\MARKETING & DISEÑO\\\\Documents\\\\cotizador-app'; & '.\\\\node_modules\\\\.bin\\\\tsc.cmd' --noEmit 2>&1 | Select-Object -First 30\")",
-      "mcp__Claude_Preview__preview_start"
+      "mcp__Claude_Preview__preview_start",
+      "Bash(docker exec:*)",
+      "Bash(npm run:*)",
+      "Bash(npm install:*)",
+      "Bash(node -e \"const fs = require\\('fs'\\); const content = fs.readFileSync\\('app/\\(app\\)/_components/NavIcons.tsx', 'utf8'\\); console.log\\('File read successfully, length:', content.length\\); console.log\\('Exports found:', \\(content.match\\(/export function Icon/g\\) || []\\).length\\);\")",
+      "Bash(docker --version)",
+      "Bash(docker-compose --version)",
+      "Bash(docker-compose up:*)",
+      "Bash(docker-compose down:*)",
+      "Bash(docker-compose build:*)",
+      "Read(//c/Users/MARKETING & DISEÑO/AppData/Roaming/Claude/local-agent-mode-sessions/skills-plugin/238ad299-34a3-484d-ac16-5d9b22523afc/c3f679d8-712b-4c79-8649-0b4d9906ba77/skills/docx/**)",
+      "Bash(npm list:*)",
+      "Bash(node gen_manual.js)",
+      "Bash(node node_modules/next/dist/bin/next build)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:3000/login)",
+      "Bash(docker cp:*)"
     ]
   }
 }
