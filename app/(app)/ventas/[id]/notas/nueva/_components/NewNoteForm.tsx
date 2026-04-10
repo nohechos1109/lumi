@@ -63,8 +63,15 @@ export default function NewNoteForm({ sale, quoteLines = [] }: Props) {
   }
 
   function selectProduct(idx: number, product: ProductSuggestion) {
+    // Prefer quote line price if available, fall back to public_price
+    const quoteMatch = quoteLines.find(ql => ql.product_id === product.id)
+    const price = quoteMatch
+      ? String(parseFloat(quoteMatch.unit_price_mxn_effective))
+      : product.public_price
+        ? String(parseFloat(product.public_price))
+        : ''
     setLines(prev => prev.map((l, i) => i === idx
-      ? { ...l, productId: product.id, name: product.name, unitPrice: product.public_price }
+      ? { ...l, productId: product.id, name: product.name, unitPrice: price }
       : l
     ))
     setSuggestions([])
