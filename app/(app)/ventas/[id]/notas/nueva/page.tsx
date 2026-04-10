@@ -5,6 +5,7 @@ import { notFound } from 'next/navigation'
 import { sessionOptions, SessionData } from '@/lib/session'
 import { canCreateSaleNotes } from '@/lib/permissions'
 import { getSale } from '@/lib/queries/sales'
+import { listLines } from '@/lib/queries/quote_lines'
 import NewNoteForm from './_components/NewNoteForm'
 
 export default async function NewNotePage({ params }: { params: Promise<{ id: string }> }) {
@@ -16,6 +17,10 @@ export default async function NewNotePage({ params }: { params: Promise<{ id: st
   const sale = await getSale(id)
   if (!sale) notFound()
   if (sale.state !== 'active') notFound()
+
+  const quoteLines = sale.quote_id
+    ? (await listLines(sale.quote_id)).filter(l => l.display_type === 'product' && Number(l.qty) > 0)
+    : []
 
   return (
     <div>
@@ -38,7 +43,7 @@ export default async function NewNotePage({ params }: { params: Promise<{ id: st
         </p>
       </div>
 
-      <NewNoteForm sale={sale} role={session.role} />
+      <NewNoteForm sale={sale} role={session.role} quoteLines={quoteLines} />
     </div>
   )
 }
