@@ -6,7 +6,7 @@ import { sessionOptions, SessionData } from '@/lib/session'
 import { canViewOwnSalesOnly } from '@/lib/permissions'
 import { getSale } from '@/lib/queries/sales'
 import { listNotesBySale } from '@/lib/queries/sale-notes'
-import { listPaymentsBySale } from '@/lib/queries/payments'
+import { listPaymentsBySale, listApplicationsBySalePayments } from '@/lib/queries/customer-payments'
 import { listScheduleItems } from '@/lib/queries/payment-schedule'
 import SaleDetail from './_components/SaleDetail'
 import ActivityLog from '@/components/ActivityLog'
@@ -19,10 +19,11 @@ export default async function SaleDetailPage({ params }: { params: Promise<{ id:
   if (!sale) notFound()
   if (canViewOwnSalesOnly(session.role) && sale.user_id !== session.userId) notFound()
 
-  const [notes, payments, schedule] = await Promise.all([
+  const [notes, payments, schedule, applications] = await Promise.all([
     listNotesBySale(id),
     listPaymentsBySale(id),
     listScheduleItems(id),
+    listApplicationsBySalePayments(id),
   ])
 
   return (
@@ -30,11 +31,11 @@ export default async function SaleDetailPage({ params }: { params: Promise<{ id:
       {/* Back navigation */}
       <div className="mb-5">
         <Link
-          href="/ventas"
+          href="/cobranza"
           className="text-xs font-bold uppercase tracking-widest transition-colors hover:opacity-75"
           style={{ color: 'var(--c-ghost)' }}
         >
-          ← Volver a Ventas
+          ← Volver a Cobranza
         </Link>
       </div>
 
@@ -91,6 +92,7 @@ export default async function SaleDetailPage({ params }: { params: Promise<{ id:
         notes={notes}
         payments={payments}
         schedule={schedule}
+        applications={applications}
         role={session.role}
       />
 

@@ -1,0 +1,43 @@
+import { NextRequest, NextResponse } from 'next/server'
+import { getSession, unauthorized } from '@/lib/auth-guard'
+import { getCustomerPayment } from '@/lib/queries/customer-payments'
+import pool from '@/lib/db'
+
+export interface ApplicableNote {
+  id: string
+  number: string
+  sale_number: string
+  sale_id: string
+  amount_balance: string
+  amount_total: string
+}
+
+export async function GET(
+  _req: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  const session = await getSession()
+  if (!session) return unauthorized()
+
+  const { id } = await params
+  const payment = await getCustomerPayment(id)
+  if (!payment) return NextResponse.json({ error: 'Pago no encontrado' }, { status: 404 })
+
+  const { rows } = await pool.query<ApplicableNote>(`
+    SELECT
+      sn.id,
+      sn.number,
+      sn.amount_balance::text,
+      sn.amount_total::text,
+      s.number  AS sale_number,
+      s.id      AS sale_id
+    FROM sale_notes sn
+    JOIN sales s ON s.id = sn.sale_id
+    WHERE s.customer_id = $1
+      AND sn.state NOT IN ('cancelled', 'paid')
+      AND sn.amount_balance > 0.005
+    ORDER BY sn.created_at ASC
+  `, [payment.customer_id])
+
+  return NextResponse.json(rows)
+}

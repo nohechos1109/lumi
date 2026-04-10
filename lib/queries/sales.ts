@@ -151,14 +151,16 @@ export async function updateSaleTotals(id: string): Promise<void> {
     SET amount_paid = COALESCE((
           SELECT SUM(pa.amount)
           FROM payment_applications pa
-          JOIN payments p ON p.id = pa.payment_id
-          WHERE p.sale_id = sales.id AND p.state = 'confirmed'
+          JOIN customer_payments cp ON cp.id = pa.payment_id
+          JOIN sale_notes sn ON sn.id = pa.sale_note_id
+          WHERE sn.sale_id = sales.id AND cp.state = 'confirmed'
         ), 0),
         amount_balance = amount_total - COALESCE((
           SELECT SUM(pa.amount)
           FROM payment_applications pa
-          JOIN payments p ON p.id = pa.payment_id
-          WHERE p.sale_id = sales.id AND p.state = 'confirmed'
+          JOIN customer_payments cp ON cp.id = pa.payment_id
+          JOIN sale_notes sn ON sn.id = pa.sale_note_id
+          WHERE sn.sale_id = sales.id AND cp.state = 'confirmed'
         ), 0)
     WHERE id = $1
   `, [id])
