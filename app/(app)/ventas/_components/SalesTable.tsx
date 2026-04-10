@@ -198,11 +198,21 @@ export default function SalesTable({ sales, role }: { sales: Sale[]; role: strin
                         <button
                           onClick={() => handleArchive(s.id, !s.archived_at)}
                           disabled={archivingId === s.id}
-                          className="text-xs px-2 py-1 rounded transition-opacity hover:opacity-70"
+                          className="p-1.5 rounded-lg transition-colors"
                           style={{ color: 'var(--c-ghost)' }}
                           title={s.archived_at ? 'Desarchivar' : 'Archivar'}
+                          onMouseEnter={(e) => { e.currentTarget.style.background = 'var(--c-rim)' }}
+                          onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent' }}
                         >
-                          {s.archived_at ? '↩' : '📦'}
+                          {s.archived_at ? (
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                              <polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/><polyline points="10 14 12 12 14 14"/><line x1="12" y1="12" x2="12" y2="17"/>
+                            </svg>
+                          ) : (
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                              <polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/><line x1="10" y1="12" x2="14" y2="12"/>
+                            </svg>
+                          )}
                         </button>
                       )}
                     </td>

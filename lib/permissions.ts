@@ -56,7 +56,7 @@ export function canApplyPayments(role: string) {
 }
 
 export function canCreateSaleNotes(role: string) {
-  return role === 'manager' || role === 'admin'
+  return role === 'manager' || role === 'admin' || role === 'sales'
 }
 
 export function canManagePaymentSchedule(role: string) {

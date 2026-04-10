@@ -7,12 +7,14 @@ export interface PaymentScheduleItem {
   amount: string
   label: string | null
   sequence: number
+  state: 'pending' | 'paid'
   created_at: string
 }
 
 export async function listScheduleItems(saleId: string): Promise<PaymentScheduleItem[]> {
   const { rows } = await pool.query(
-    'SELECT * FROM payment_schedule_items WHERE sale_id = $1 ORDER BY sequence',
+    `SELECT id, sale_id, TO_CHAR(due_date, 'YYYY-MM-DD') AS due_date, amount, label, sequence, state, created_at
+     FROM payment_schedule_items WHERE sale_id = $1 ORDER BY sequence`,
     [saleId]
   )
   return rows
@@ -50,4 +52,11 @@ export async function upsertSchedule(
 
 export async function deleteSchedule(saleId: string): Promise<void> {
   await pool.query('DELETE FROM payment_schedule_items WHERE sale_id = $1', [saleId])
+}
+
+export async function markScheduleItemPaid(itemId: string): Promise<void> {
+  await pool.query(
+    "UPDATE payment_schedule_items SET state = 'paid' WHERE id = $1",
+    [itemId]
+  )
 }

@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { toast, notifyRefresh } from '@/lib/toast'
 import RegisterPaymentModal from '@/components/ui/RegisterPaymentModal'
@@ -50,6 +51,7 @@ interface ScheduleItem {
   amount: string
   label: string | null
   sequence: number
+  state: 'pending' | 'paid'
 }
 
 interface Props {
@@ -88,6 +90,7 @@ export default function SaleDetail({ sale, notes, payments, schedule, role }: Pr
   const [showPaymentModal, setShowPaymentModal] = useState(false)
   const [showScheduleModal, setShowScheduleModal] = useState(false)
   const [applyPaymentId, setApplyPaymentId] = useState<string | null>(null)
+  const [deletingNoteId, setDeletingNoteId] = useState<string | null>(null)
   const [loading, setLoading] = useState<string | null>(null)
 
   const canManage = role === 'manager' || role === 'admin'
@@ -100,7 +103,8 @@ export default function SaleDetail({ sale, notes, payments, schedule, role }: Pr
 
   // Next due date from schedule
   const today = new Date().toISOString().slice(0, 10)
-  const nextDue = schedule.find(s => s.due_date >= today)
+  const normDate = (d: string | Date) => d instanceof Date ? d.toISOString().slice(0, 10) : String(d).slice(0, 10)
+  const nextDue = schedule.find(s => normDate(s.due_date as string | Date) >= today && s.state !== 'paid')
 
   async function confirmPayment(paymentId: string) {
     setLoading(paymentId)
@@ -159,6 +163,24 @@ export default function SaleDetail({ sale, notes, payments, schedule, role }: Pr
     }
   }
 
+  async function handleDeleteNote(noteId: string) {
+    if (!confirm('¿Eliminar esta nota? Esta acción no se puede deshacer.')) return
+    setDeletingNoteId(noteId)
+    try {
+      const res = await fetch(`/api/sales/${sale.id}/notes/${noteId}`, { method: 'DELETE' })
+      if (res.ok) {
+        toast('Nota eliminada')
+        notifyRefresh()
+        router.refresh()
+      } else {
+        const d = await res.json()
+        toast(d.error ?? 'Error', 'error')
+      }
+    } finally {
+      setDeletingNoteId(null)
+    }
+  }
+
   const cardStyle = {
     background: 'var(--c-card)',
     border: '1px solid var(--c-rim)',
@@ -176,7 +198,7 @@ export default function SaleDetail({ sale, notes, payments, schedule, role }: Pr
         <StatCard
           label="Saldo"
           value={`$${fmt(sale.amount_balance)}`}
-          sub={nextDue ? `Próximo: ${new Date(nextDue.due_date + 'T12:00:00').toLocaleDateString('es-MX')}` : undefined}
+          sub={nextDue ? `Próximo: ${new Date(normDate(nextDue.due_date as string | Date) + 'T12:00:00').toLocaleDateString('es-MX')}` : undefined}
           alert={Number(sale.amount_balance) > 0}
         />
       </div>
@@ -216,7 +238,20 @@ export default function SaleDetail({ sale, notes, payments, schedule, role }: Pr
       )}
 
       {/* ═══ NOTAS SECTION ═══ */}
-      <Section title="Notas">
+      <div className="rounded-xl mb-6 overflow-hidden" style={{ background: 'var(--c-card)', border: '1px solid var(--c-rim)', boxShadow: '0 1px 3px rgba(27,52,97,0.05)' }}>
+        <div className="px-4 py-3 flex items-center justify-between" style={{ borderBottom: '1px solid var(--c-rim)' }}>
+          <h2 className="text-sm font-bold uppercase tracking-wider" style={{ color: 'var(--c-ghost)' }}>Notas</h2>
+          {isActive && (canManage || role === 'sales') && (
+            <Link
+              href={`/ventas/${sale.id}/notas/nueva`}
+              className="text-xs px-3 py-1 rounded-lg font-semibold transition-opacity hover:opacity-85"
+              style={{ background: 'var(--c-navy)', color: '#fff' }}
+            >
+              + Crear Nota
+            </Link>
+          )}
+        </div>
+        <div className="p-0">
         {notes.length === 0 ? (
           <p className="text-sm py-4 text-center" style={{ color: 'var(--c-ghost)' }}>Sin notas</p>
         ) : (
@@ -230,6 +265,7 @@ export default function SaleDetail({ sale, notes, payments, schedule, role }: Pr
                   <th className="text-right px-3 py-2 font-semibold" style={{ color: 'var(--c-ghost)' }}>Total</th>
                   <th className="text-right px-3 py-2 font-semibold" style={{ color: 'var(--c-ghost)' }}>Pagado</th>
                   <th className="text-right px-3 py-2 font-semibold" style={{ color: 'var(--c-ghost)' }}>Saldo</th>
+                  <th className="px-3 py-2" />
                 </tr>
               </thead>
               <tbody>
@@ -249,6 +285,21 @@ export default function SaleDetail({ sale, notes, payments, schedule, role }: Pr
                       <td className="px-3 py-2.5 text-right font-mono font-semibold" style={{ color: Number(n.amount_balance) > 0 ? '#B45309' : '#15803D' }}>
                         ${fmt(n.amount_balance)}
                       </td>
+                      <td className="px-3 py-2.5" onClick={e => e.stopPropagation()}>
+                        {n.state === 'draft' && canManage && (
+                          <button
+                            onClick={() => handleDeleteNote(n.id)}
+                            disabled={deletingNoteId === n.id}
+                            className="p-1 rounded transition-opacity hover:opacity-70"
+                            style={{ color: '#BE123C' }}
+                            title="Eliminar nota"
+                          >
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                              <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/>
+                            </svg>
+                          </button>
+                        )}
+                      </td>
                     </tr>
                   )
                 })}
@@ -256,7 +307,8 @@ export default function SaleDetail({ sale, notes, payments, schedule, role }: Pr
             </table>
           </div>
         )}
-      </Section>
+        </div>
+      </div>
 
       {/* ═══ PAGOS SECTION ═══ */}
       <Section title="Pagos">
@@ -367,17 +419,19 @@ export default function SaleDetail({ sale, notes, payments, schedule, role }: Pr
               </thead>
               <tbody>
                 {schedule.map(s => {
-                  const overdue = s.due_date < today
+                  const overdue = normDate(s.due_date as string | Date) < today
                   return (
                     <tr key={s.id} style={{ borderBottom: '1px solid var(--c-rim)' }}>
                       <td className="px-3 py-2.5" style={{ color: 'var(--c-ghost)' }}>{s.sequence}</td>
                       <td className="px-3 py-2.5 font-mono" style={{ color: overdue ? '#BE123C' : 'var(--c-ink)' }}>
-                        {new Date(s.due_date + 'T12:00:00').toLocaleDateString('es-MX')}
+                        {new Date(normDate(s.due_date as string | Date) + 'T12:00:00').toLocaleDateString('es-MX')}
                       </td>
                       <td className="px-3 py-2.5 text-right font-mono font-semibold" style={{ color: 'var(--c-ink)' }}>${fmt(s.amount)}</td>
                       <td className="px-3 py-2.5" style={{ color: 'var(--c-dim)' }}>{s.label || '—'}</td>
                       <td className="px-3 py-2.5">
-                        {overdue ? (
+                        {s.state === 'paid' ? (
+                          <span className="text-xs font-semibold px-2 py-0.5 rounded-full" style={{ background: '#DCFCE7', color: '#15803D' }}>Pagado</span>
+                        ) : overdue ? (
                           <span className="text-xs font-semibold px-2 py-0.5 rounded-full" style={{ background: '#FFE4E6', color: '#BE123C' }}>Vencido</span>
                         ) : (
                           <span className="text-xs font-semibold px-2 py-0.5 rounded-full" style={{ background: '#E0F2FE', color: '#0369A1' }}>Pendiente</span>

@@ -39,6 +39,7 @@ export async function POST(
     amountUntaxed: Number(body.amount_untaxed ?? 0),
     amountTax: Number(body.amount_tax ?? 0),
     amountTotal: Number(body.amount_total ?? 0),
+    lines: body.lines ?? undefined,
   })
 
   revalidatePath(`/ventas/${id}`)

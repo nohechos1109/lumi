@@ -120,40 +120,11 @@ export async function createSaleFromQuote(quoteId: string, userId: string): Prom
        untaxed, tax, total, quote.unit_count]
     )
 
-    // 5. Generate NTA number and create initial note
-    const ntaNumber = await generateNumber('NTA', 'sale_notes', client)
-    const { rows: [note] } = await client.query(
-      `INSERT INTO sale_notes
-         (number, sale_id, state, concept, amount_untaxed, amount_tax, amount_total, amount_balance)
-       VALUES ($1, $2, 'confirmed', $3, $4, $5, $6, $6)
-       RETURNING *`,
-      [ntaNumber, sale.id, `Nota inicial — ${quote.number}`, untaxed, tax, total]
-    )
-
-    // 6. Copy quote lines into note lines
-    const { rows: lines } = await client.query(
-      `SELECT sequence, display_type, product_id, name, qty,
-              unit_price_mxn_effective, subtotal, tax_amount, total
-       FROM quote_lines WHERE quote_id = $1 ORDER BY sequence`,
-      [quoteId]
-    )
-
-    for (const line of lines) {
-      await client.query(
-        `INSERT INTO sale_note_lines
-           (sale_note_id, sequence, display_type, product_id, name, qty,
-            unit_price_mxn, subtotal, tax_amount, total)
-         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)`,
-        [note.id, line.sequence, line.display_type, line.product_id, line.name,
-         line.qty, line.unit_price_mxn_effective, line.subtotal, line.tax_amount, line.total]
-      )
-    }
-
-    // 7. Audit event
+    // 5. Audit event
     await client.query(
       `INSERT INTO audit_events (entity, entity_id, type, payload)
        VALUES ('sale', $1, 'sale_created', $2)`,
-      [sale.id, JSON.stringify({ quote_id: quoteId, quote_number: quote.number, note_number: ntaNumber })]
+      [sale.id, JSON.stringify({ quote_id: quoteId, quote_number: quote.number })]
     )
 
     await client.query('COMMIT')
