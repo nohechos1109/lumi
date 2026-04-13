@@ -13,19 +13,24 @@ interface Props {
 export default function UnitCountEditor({ quoteId, unitCount, isLocked }: Props) {
   const router = useRouter()
   const [editing, setEditing] = useState(false)
-  const [value, setValue] = useState(unitCount)
+  const [value, setValue] = useState(String(unitCount))
   const [saving, setSaving] = useState(false)
 
-  async function save(newVal: number) {
-    const v = Math.floor(Math.max(1, newVal))
+  async function save(raw: string) {
+    const parsed = Math.floor(Number(raw))
+    if (!raw || isNaN(parsed) || parsed < 1) {
+      setValue(String(unitCount))
+      setEditing(false)
+      return
+    }
     setEditing(false)
-    if (v === unitCount) return
+    if (parsed === unitCount) return
     setSaving(true)
     try {
       const r = await fetch(`/api/quotes/${quoteId}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ unit_count: v }),
+        body: JSON.stringify({ unit_count: parsed }),
       })
       if (!r.ok) throw new Error()
       notifyRefresh()
@@ -44,11 +49,11 @@ export default function UnitCountEditor({ quoteId, unitCount, isLocked }: Props)
         min="1"
         step="1"
         value={value}
-        onChange={e => setValue(Math.max(1, Math.floor(Number(e.target.value) || 1)))}
+        onChange={e => setValue(e.target.value)}
         onBlur={() => save(value)}
         onKeyDown={e => {
           if (e.key === 'Enter') (e.target as HTMLInputElement).blur()
-          if (e.key === 'Escape') { setEditing(false); setValue(unitCount) }
+          if (e.key === 'Escape') { setValue(String(unitCount)); setEditing(false) }
         }}
         autoFocus
         className="font-heading text-2xl font-bold w-20 text-center outline-none rounded-lg"
@@ -65,7 +70,7 @@ export default function UnitCountEditor({ quoteId, unitCount, isLocked }: Props)
     <button
       title={isLocked ? undefined : 'Haz clic para editar'}
       disabled={isLocked || saving}
-      onClick={() => { setValue(unitCount); setEditing(true) }}
+      onClick={() => { setValue(String(unitCount)); setEditing(true) }}
       className={`group flex items-baseline gap-1.5 ${isLocked ? 'cursor-default' : ''}`}
       style={{ opacity: saving ? 0.5 : 1 }}
     >

@@ -10,7 +10,6 @@ export interface ContactSaved {
   email: string | null
   phone: string | null
   first_name: string | null
-  last_name: string | null
   job_title: string | null
   website: string | null
   tax_id: string | null
@@ -49,7 +48,6 @@ export function CustomerFormModal({ customer, onClose, onSaved }: Props) {
   const [type, setType] = useState<'company' | 'person'>(customer?.type ?? 'company')
   const [name, setName] = useState(customer?.name ?? '')
   const [firstName, setFirstName] = useState(customer?.first_name ?? '')
-  const [lastName, setLastName] = useState(customer?.last_name ?? '')
   const [email, setEmail] = useState(customer?.email ?? '')
   const [phone, setPhone] = useState(customer?.phone ?? '')
   const [jobTitle, setJobTitle] = useState(customer?.job_title ?? '')
@@ -82,13 +80,10 @@ export function CustomerFormModal({ customer, onClose, onSaved }: Props) {
     }
   }, [type])
 
-  // Auto-fill name from first+last for persons
+  // Auto-fill name from firstName for persons
   useEffect(() => {
-    if (type === 'person') {
-      const full = [firstName.trim(), lastName.trim()].filter(Boolean).join(' ')
-      if (full) setName(full)
-    }
-  }, [type, firstName, lastName])
+    if (type === 'person' && firstName.trim()) setName(firstName.trim())
+  }, [type, firstName])
 
   // Close dropdown on outside click
   useEffect(() => {
@@ -117,19 +112,17 @@ export function CustomerFormModal({ customer, onClose, onSaved }: Props) {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    const finalName = type === 'person'
-      ? [firstName.trim(), lastName.trim()].filter(Boolean).join(' ') || name.trim()
-      : name.trim()
+    const finalName = type === 'person' ? firstName.trim() || name.trim() : name.trim()
     if (!finalName) return
+    if (!phone.trim()) { toast('El teléfono es requerido', 'error'); return }
     setSaving(true)
     try {
       const payload = {
         type,
         name: finalName,
         email: email.trim() || null,
-        phone: phone.trim() || null,
+        phone: phone.trim(),
         first_name: type === 'person' ? firstName.trim() || null : null,
-        last_name: type === 'person' ? lastName.trim() || null : null,
         job_title: type === 'person' ? jobTitle.trim() || null : null,
         website: type === 'company' ? website.trim() || null : null,
         tax_id: type === 'company' ? taxId.trim() || null : null,
@@ -258,28 +251,15 @@ export function CustomerFormModal({ customer, onClose, onSaved }: Props) {
               </div>
             </>
           ) : (
-            <>
-              <div className="grid grid-cols-2 gap-3">
-                <Field label="Nombre" required>
-                  <input
-                    className={inputClass} style={inputStyle}
-                    value={firstName} onChange={e => setFirstName(e.target.value)}
-                    placeholder="Juan" required={!lastName.trim()} autoFocus
-                    onFocus={e => { e.currentTarget.style.border = focusStyle }}
-                    onBlur={e => { e.currentTarget.style.border = blurStyle }}
-                  />
-                </Field>
-                <Field label="Apellido">
-                  <input
-                    className={inputClass} style={inputStyle}
-                    value={lastName} onChange={e => setLastName(e.target.value)}
-                    placeholder="Pérez"
-                    onFocus={e => { e.currentTarget.style.border = focusStyle }}
-                    onBlur={e => { e.currentTarget.style.border = blurStyle }}
-                  />
-                </Field>
-              </div>
-            </>
+            <Field label="Nombre" required>
+              <input
+                className={inputClass} style={inputStyle}
+                value={firstName} onChange={e => setFirstName(e.target.value)}
+                placeholder="Juan Pérez" required autoFocus
+                onFocus={e => { e.currentTarget.style.border = focusStyle }}
+                onBlur={e => { e.currentTarget.style.border = blurStyle }}
+              />
+            </Field>
           )}
 
           <div className="grid grid-cols-2 gap-3">
@@ -292,11 +272,11 @@ export function CustomerFormModal({ customer, onClose, onSaved }: Props) {
                 onBlur={e => { e.currentTarget.style.border = blurStyle }}
               />
             </Field>
-            <Field label="Teléfono">
+            <Field label="Teléfono" required>
               <input
                 type="tel" className={inputClass} style={inputStyle}
                 value={phone} onChange={e => setPhone(e.target.value)}
-                placeholder="+52 55 0000 0000"
+                placeholder="+52 55 0000 0000" required
                 onFocus={e => { e.currentTarget.style.border = focusStyle }}
                 onBlur={e => { e.currentTarget.style.border = blurStyle }}
               />

@@ -1,7 +1,8 @@
 'use client'
 
-import { useState, useMemo } from 'react'
+import { useState } from 'react'
 import type { Customer } from '@/lib/queries/customers'
+import CustomerSearchSelect from '@/components/ui/CustomerSearchSelect'
 
 const METHODS = [
   { value: 'transferencia', label: 'Transferencia' },
@@ -21,7 +22,6 @@ export default function RegistrarPagoModal({ customers, onClose, onCreated }: Pr
   const today = new Date().toISOString().slice(0, 10)
 
   const [customerId, setCustomerId] = useState('')
-  const [customerSearch, setCustomerSearch] = useState('')
   const [amount, setAmount] = useState('')
   const [method, setMethod] = useState('transferencia')
   const [date, setDate] = useState(today)
@@ -29,14 +29,6 @@ export default function RegistrarPagoModal({ customers, onClose, onCreated }: Pr
   const [reference, setReference] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
-
-  const filteredCustomers = useMemo(() => {
-    if (!customerSearch) return customers.slice(0, 10)
-    const q = customerSearch.toLowerCase()
-    return customers.filter(c => c.name.toLowerCase().includes(q)).slice(0, 10)
-  }, [customers, customerSearch])
-
-  const selectedCustomer = customers.find(c => c.id === customerId)
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -101,43 +93,11 @@ export default function RegistrarPagoModal({ customers, onClose, onCreated }: Pr
             <label className="text-xs font-semibold mb-1 block" style={{ color: 'var(--c-ghost)' }}>
               CLIENTE <span style={{ color: '#BE123C' }}>*</span>
             </label>
-            {selectedCustomer ? (
-              <div className="flex items-center justify-between rounded-lg px-3 py-2"
-                style={{ background: '#EFF6FF', border: '1px solid #BFDBFE' }}>
-                <span className="text-sm font-medium" style={{ color: '#1D4ED8' }}>
-                  {selectedCustomer.name}
-                </span>
-                <button type="button" onClick={() => { setCustomerId(''); setCustomerSearch('') }}
-                  className="text-xs hover:opacity-70" style={{ color: '#6B7280' }}>✕</button>
-              </div>
-            ) : (
-              <div className="relative">
-                <input
-                  type="text"
-                  placeholder="Buscar cliente..."
-                  value={customerSearch}
-                  onChange={e => setCustomerSearch(e.target.value)}
-                  autoFocus
-                  className="w-full rounded-lg px-3 py-2 text-sm"
-                  style={inputStyle}
-                />
-                {customerSearch && filteredCustomers.length > 0 && (
-                  <div className="absolute z-10 w-full mt-1 rounded-lg overflow-hidden"
-                    style={{ background: 'var(--c-card)', border: '1px solid var(--c-rim)', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}>
-                    {filteredCustomers.map(c => (
-                      <button
-                        key={c.id}
-                        type="button"
-                        className="w-full text-left px-3 py-2 text-sm hover:opacity-75 transition-opacity"
-                        style={{ borderBottom: '1px solid var(--c-rim)', color: 'var(--c-ink)' }}
-                        onClick={() => { setCustomerId(c.id); setCustomerSearch('') }}>
-                        {c.name}
-                      </button>
-                    ))}
-                  </div>
-                )}
-              </div>
-            )}
+            <CustomerSearchSelect
+              customers={customers}
+              value={customerId}
+              onChange={setCustomerId}
+            />
           </div>
 
           {/* Amount + Method */}
