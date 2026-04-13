@@ -3,9 +3,16 @@
 import { useState, useEffect, FormEvent, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { CustomerFormModal, CustomerSaved } from '@/app/(app)/customers/_components/CustomerFormModal'
+import CustomerSearchSelect from '@/components/ui/CustomerSearchSelect'
 import { notifyRefresh } from '@/lib/toast'
 
-interface Customer { id: string; name: string; email: string | null; phone: string | null }
+interface Customer {
+  id: string
+  name: string
+  email: string | null
+  phone: string | null
+  companies: { id: string; name: string }[]
+}
 
 const labelCls = 'block text-xs font-semibold mb-1.5'
 const labelStyle = { color: 'var(--c-dim)' }
@@ -114,7 +121,7 @@ function NewQuoteForm() {
           />
         </div>
 
-        <div className="grid grid-cols-2 gap-4 items-end">
+        <div className="flex flex-col gap-4">
           {/* ── Cliente ─────────────────────────────── */}
           <div>
             <div className="flex items-center justify-between mb-1.5">
@@ -133,18 +140,12 @@ function NewQuoteForm() {
               )}
             </div>
 
-            <select
-              required={!initialCustomerId}
+            <CustomerSearchSelect
+              customers={customers}
               value={selectedCustomerId}
-              onChange={e => setSelectedCustomerId(e.target.value)}
-              className="w-full disabled:bg-slate-50 disabled:text-slate-500"
+              onChange={setSelectedCustomerId}
               disabled={!!initialCustomerId}
-            >
-              <option value="">Seleccionar...</option>
-              {customers.map(c => (
-                <option key={c.id} value={c.id}>{c.name}</option>
-              ))}
-            </select>
+            />
             {initialCustomerId && (
               <input type="hidden" name="customer_id" value={initialCustomerId} />
             )}

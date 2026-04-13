@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { toast, notifyRefresh } from '@/lib/toast'
+import CustomerSearchSelect from '@/components/ui/CustomerSearchSelect'
 
 interface Project {
   id: string
@@ -12,6 +13,7 @@ interface Project {
 interface Customer {
   id: string
   name: string
+  companies: { id: string; name: string }[]
 }
 
 interface Props {
@@ -197,22 +199,12 @@ export default function DuplicateQuoteModal({
                   </span>
                 )}
               </p>
-              <select
+              <CustomerSearchSelect
+                customers={customers}
                 value={selectedCustomerId}
-                onChange={e => setSelectedCustomerId(e.target.value)}
+                onChange={setSelectedCustomerId}
                 disabled={locked}
-                className="text-sm rounded-lg px-3 py-2"
-                style={{
-                  ...selectStyle,
-                  opacity: locked ? 0.5 : 1,
-                  cursor: locked ? 'not-allowed' : 'default',
-                }}
-              >
-                <option value="">— Seleccionar cliente —</option>
-                {customers.map(c => (
-                  <option key={c.id} value={c.id}>{c.name}</option>
-                ))}
-              </select>
+              />
             </div>
           )
         })()}

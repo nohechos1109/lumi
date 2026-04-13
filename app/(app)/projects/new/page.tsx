@@ -3,9 +3,14 @@
 import { useState, useEffect, FormEvent } from 'react'
 import { useRouter } from 'next/navigation'
 import { CustomerFormModal, CustomerSaved } from '@/app/(app)/customers/_components/CustomerFormModal'
+import CustomerSearchSelect from '@/components/ui/CustomerSearchSelect'
 import { notifyRefresh } from '@/lib/toast'
 
-interface Customer { id: string; name: string }
+interface Customer {
+  id: string
+  name: string
+  companies: { id: string; name: string }[]
+}
 
 const labelCls = 'block text-xs font-semibold mb-1.5'
 const labelStyle = { color: 'var(--c-dim)' }
@@ -22,7 +27,7 @@ export default function NewProjectPage() {
   }, [])
 
   function handleCustomerSaved(customer: CustomerSaved) {
-    setCustomers(prev => [...prev, { id: customer.id, name: customer.name }])
+    setCustomers(prev => [...prev, { id: customer.id, name: customer.name, companies: [] }])
     setSelectedCustomerId(customer.id)
     setShowNewCustomerModal(false)
   }
@@ -110,17 +115,11 @@ export default function NewProjectPage() {
             </button>
           </div>
 
-          <select
-            required
+          <CustomerSearchSelect
+            customers={customers}
             value={selectedCustomerId}
-            onChange={e => setSelectedCustomerId(e.target.value)}
-            className="w-full"
-          >
-            <option value="">Seleccionar...</option>
-            {customers.map(c => (
-              <option key={c.id} value={c.id}>{c.name}</option>
-            ))}
-          </select>
+            onChange={setSelectedCustomerId}
+          />
         </div>
 
         <div>
