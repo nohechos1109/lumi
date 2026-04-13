@@ -1,7 +1,7 @@
 export const PAYMENT_METHODS = [
   { value: 'transferencia', label: 'Transferencia' },
   { value: 'efectivo',      label: 'Efectivo' },
-  { value: 'cheque',        label: 'Cheque' },
+  { value: 'deposito',      label: 'Depósito' },
   { value: 'tarjeta',       label: 'Tarjeta' },
   { value: 'otro',          label: 'Otro' },
 ] as const

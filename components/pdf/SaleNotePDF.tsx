@@ -92,7 +92,7 @@ interface PaymentHistoryItem {
 const METHOD_LABELS: Record<string, string> = {
   transferencia: 'Transferencia',
   efectivo: 'Efectivo',
-  cheque: 'Cheque',
+  deposito: 'Depósito',
   tarjeta: 'Tarjeta',
   otro: 'Otro',
 }
@@ -160,7 +160,7 @@ export default function SaleNotePDF({ note, lines, sale, logoPath, paymentHistor
                 <Text style={[styles.itemText, styles.colDesc]}>{line.name}</Text>
                 <Text style={[styles.itemText, styles.colQty]}>{line.qty ? parseFloat(line.qty).toLocaleString('es-MX') : '—'}</Text>
                 <Text style={[styles.itemText, styles.colPrice]}>${fmt(line.unit_price_mxn)}</Text>
-                <Text style={[styles.itemText, styles.colTotal]}>${fmt(line.total)}</Text>
+                <Text style={[styles.itemText, styles.colTotal]}>${fmt(line.subtotal)}</Text>
               </View>
             ))}
           </View>
