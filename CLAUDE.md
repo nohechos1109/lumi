@@ -4,6 +4,13 @@
 
 This project runs exclusively via Docker on port 3000. The preview tool cannot attach to the running Docker container. **Verification is complete when `docker-compose up --build -d` exits successfully** — do not attempt `preview_start` as it will always fail with a port conflict.
 
+# db
+`@db/01_schema.sql` y `@db/02_seed.sql` representan el estado actual de la base de datos en producción. **No modificar estos archivos.**
+
+Para cualquier cambio de base de datos requerido durante el desarrollo, crear un archivo de migración con el patrón `@db/.*migration.*\.sql` (ej. `db/20260413_nombre_migration.sql`) que contenga únicamente el DDL incremental necesario (`ALTER TABLE`, `CREATE TABLE`, `CREATE INDEX`, etc.).
+
+Estos archivos de migración se aplican sobre producción en el momento del deploy.
+
 # Bug Fixes Log
 
 ## Hydration Error #418 (Resuelto)
