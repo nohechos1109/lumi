@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, FormEvent } from 'react'
+import { useState, useEffect, useMemo, FormEvent } from 'react'
 import { useRouter } from 'next/navigation'
 import { CustomerFormModal, CustomerSaved } from '@/app/(app)/customers/_components/CustomerFormModal'
 import CustomerSearchSelect from '@/components/ui/CustomerSearchSelect'
@@ -12,19 +12,42 @@ interface Customer {
   companies: { id: string; name: string }[]
 }
 
+interface Ruta {
+  id: string
+  name: string
+  cliente_id: string | null
+}
+
 const labelCls = 'block text-xs font-semibold mb-1.5'
 const labelStyle = { color: 'var(--c-dim)' }
+const inp = { background: 'var(--c-panel)', border: '1px solid var(--c-rim)', color: 'var(--c-ink)', outline: 'none' }
 
 export default function NewProjectPage() {
   const router = useRouter()
   const [customers, setCustomers] = useState<Customer[]>([])
+  const [rutas, setRutas] = useState<Ruta[]>([])
   const [loading, setLoading] = useState(false)
   const [selectedCustomerId, setSelectedCustomerId] = useState('')
+  const [selectedRutaId, setSelectedRutaId] = useState('')
   const [showNewCustomerModal, setShowNewCustomerModal] = useState(false)
 
   useEffect(() => {
     fetch('/api/customers').then(r => r.json()).then(setCustomers)
+    fetch('/api/rutas').then(r => r.json()).then(setRutas)
   }, [])
+
+  const availableRutas = useMemo(() => {
+    if (!selectedCustomerId) return []
+    const customer = customers.find(c => c.id === selectedCustomerId)
+    if (!customer) return []
+    const relatedIds = new Set([selectedCustomerId, ...customer.companies.map(co => co.id)])
+    return rutas.filter(r => r.cliente_id && relatedIds.has(r.cliente_id))
+  }, [selectedCustomerId, customers, rutas])
+
+  function handleCustomerChange(id: string) {
+    setSelectedCustomerId(id)
+    setSelectedRutaId('')
+  }
 
   function handleCustomerSaved(customer: CustomerSaved) {
     setCustomers(prev => [...prev, { id: customer.id, name: customer.name, companies: [] }])
@@ -46,6 +69,7 @@ export default function NewProjectPage() {
         status: 'follow_up',
         date: new Date().toISOString().split('T')[0],
         description: form.get('description'),
+        ruta_id: selectedRutaId || null,
       }),
     })
 
@@ -118,9 +142,30 @@ export default function NewProjectPage() {
           <CustomerSearchSelect
             customers={customers}
             value={selectedCustomerId}
-            onChange={setSelectedCustomerId}
+            onChange={handleCustomerChange}
           />
         </div>
+
+        {selectedCustomerId && (
+          <div>
+            <label className={labelCls} style={labelStyle}>
+              Ruta {availableRutas.length === 0 ? '(sin rutas disponibles para este cliente)' : '(opcional)'}
+            </label>
+            {availableRutas.length > 0 && (
+              <select
+                className="w-full text-sm rounded-xl px-4 py-2.5"
+                style={inp}
+                value={selectedRutaId}
+                onChange={e => setSelectedRutaId(e.target.value)}
+              >
+                <option value="">Sin ruta</option>
+                {availableRutas.map(r => (
+                  <option key={r.id} value={r.id}>{r.name}</option>
+                ))}
+              </select>
+            )}
+          </div>
+        )}
 
         <div>
           <label className={labelCls} style={labelStyle}>

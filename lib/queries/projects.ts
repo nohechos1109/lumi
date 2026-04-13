@@ -15,15 +15,19 @@ export interface Project {
   created_at: string;
   archived_at: string | null;
   quote_count?: number;  // Number of associated quotes
+  ruta_id: string | null;
+  ruta_name?: string;
 }
 
 export async function listProjectsByUser(userId: string): Promise<Project[]> {
   const { rows } = await pool.query(
     `SELECT p.*, c.name as customer_name, u.username as executive_name,
+            r.name as ruta_name,
             COALESCE((SELECT COUNT(*) FROM quotes q WHERE q.project_id = p.id), 0)::int as quote_count
      FROM projects p
      LEFT JOIN contacts c ON c.id = p.customer_id
      LEFT JOIN users u ON u.id = p.user_id
+     LEFT JOIN rutas r ON r.id = p.ruta_id
      WHERE p.user_id = $1
      ORDER BY p.date DESC, p.created_at DESC`,
     [userId]
@@ -34,10 +38,12 @@ export async function listProjectsByUser(userId: string): Promise<Project[]> {
 export async function listAllProjects(): Promise<Project[]> {
   const { rows } = await pool.query(
     `SELECT p.*, c.name as customer_name, u.username as executive_name,
+            r.name as ruta_name,
             COALESCE((SELECT COUNT(*) FROM quotes q WHERE q.project_id = p.id), 0)::int as quote_count
      FROM projects p
      LEFT JOIN contacts c ON c.id = p.customer_id
      LEFT JOIN users u ON u.id = p.user_id
+     LEFT JOIN rutas r ON r.id = p.ruta_id
      ORDER BY p.date DESC, p.created_at DESC`
   );
   return rows;
@@ -45,10 +51,12 @@ export async function listAllProjects(): Promise<Project[]> {
 
 export async function getProject(id: string): Promise<Project | null> {
   const { rows } = await pool.query(
-    `SELECT p.*, c.name as customer_name, u.username as executive_name
+    `SELECT p.*, c.name as customer_name, u.username as executive_name,
+            r.name as ruta_name
      FROM projects p
      LEFT JOIN contacts c ON c.id = p.customer_id
      LEFT JOIN users u ON u.id = p.user_id
+     LEFT JOIN rutas r ON r.id = p.ruta_id
      WHERE p.id = $1`,
     [id]
   );
@@ -62,21 +70,23 @@ export interface CreateProjectInput {
   status?: ProjectStatus;
   description?: string;
   user_id: string;
+  ruta_id?: string | null;
 }
 
 export async function createProject(data: CreateProjectInput): Promise<Project> {
   const { rows } = await pool.query(
     `INSERT INTO projects
-       (name, customer_id, date, status, description, user_id)
-     VALUES ($1, $2, $3, $4, $5, $6)
+       (name, customer_id, date, status, description, user_id, ruta_id)
+     VALUES ($1, $2, $3, $4, $5, $6, $7)
      RETURNING *`,
     [
-      data.name, 
-      data.customer_id, 
-      data.date || new Date().toISOString().split('T')[0], 
-      data.status || 'draft', 
-      data.description || null, 
-      data.user_id
+      data.name,
+      data.customer_id,
+      data.date || new Date().toISOString().split('T')[0],
+      data.status || 'draft',
+      data.description || null,
+      data.user_id,
+      data.ruta_id ?? null,
     ]
   );
   return rows[0];
@@ -92,6 +102,7 @@ export async function updateProject(id: string, data: Partial<CreateProjectInput
   if (data.date !== undefined) { fields.push(`date = $${i++}`); values.push(data.date); }
   if (data.status !== undefined) { fields.push(`status = $${i++}`); values.push(data.status); }
   if (data.description !== undefined) { fields.push(`description = $${i++}`); values.push(data.description); }
+  if (data.ruta_id !== undefined) { fields.push(`ruta_id = $${i++}`); values.push(data.ruta_id ?? null); }
 
   if (fields.length === 0) return;
 

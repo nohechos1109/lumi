@@ -18,12 +18,13 @@ export const restrictedNav: NavItem[] = [
 ]
 
 export const managerNav: NavItem[] = [
-  { href: '/dashboard',  label: 'Inicio',       icon: 'dashboard', color: '#1B3461', exact: true },
-  { href: '/projects',   label: 'Proyectos',    icon: 'projects',  color: '#1C5AD6', desc: 'Todos los proyectos' },
-  { href: '/quotes',     label: 'Cotizaciones', icon: 'quotes',    color: '#0B9962', desc: 'Cotizaciones del equipo' },
-  { href: '/customers',  label: 'Clientes',     icon: 'customers', color: '#D12C3C', desc: 'Directorio de clientes' },
-  { href: '/plantillas', label: 'Plantillas',   icon: 'templates', color: '#7C3AED', desc: 'Plantillas de cotización' },
-  { href: '/catalog',    label: 'Catálogo',     icon: 'catalog',   color: '#C47F08', desc: 'Vista de catálogo para el público' },
+  { href: '/dashboard',       label: 'Inicio',       icon: 'dashboard', color: '#1B3461', exact: true },
+  { href: '/projects',        label: 'Proyectos',    icon: 'projects',  color: '#1C5AD6', desc: 'Todos los proyectos' },
+  { href: '/quotes',          label: 'Cotizaciones', icon: 'quotes',    color: '#0B9962', desc: 'Cotizaciones del equipo' },
+  { href: '/customers',       label: 'Clientes',     icon: 'customers', color: '#D12C3C', desc: 'Directorio de clientes' },
+  { href: '/plantillas',      label: 'Plantillas',   icon: 'templates', color: '#7C3AED', desc: 'Plantillas de cotización' },
+  { href: '/catalog',         label: 'Catálogo',     icon: 'catalog',   color: '#C47F08', desc: 'Vista de catálogo para el público' },
+  { href: '/admin/unidades',  label: 'Unidades',     icon: 'unidades',  color: '#0B7A8E', desc: 'Flota de unidades, rutas y grupos' },
 ]
 
 export const adminNav: NavItem[] = [
@@ -39,6 +40,7 @@ export const adminNav: NavItem[] = [
   { href: '/admin/customers',          label: 'Clientes',      icon: 'customers', color: '#D12C3C', desc: 'Base de datos de clientes' },
   { href: '/catalog',                  label: 'Catálogo',      icon: 'catalog',   color: '#C47F08', desc: 'Vista de catálogo para el público' },
   { href: '/admin/settings',           label: 'Configuración', icon: 'settings',  color: '#445566', desc: 'Tipo de cambio e impuestos' },
+  { href: '/admin/unidades',           label: 'Unidades',      icon: 'unidades',  color: '#0B7A8E', desc: 'Flota de unidades, rutas y grupos' },
 ]
 
 export const NAV_BY_ROLE: Record<string, NavItem[]> = {

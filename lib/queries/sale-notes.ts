@@ -51,6 +51,7 @@ export async function listNoteLines(noteId: string): Promise<SaleNoteLine[]> {
 
 export interface CreateSaleNoteLineInput {
   product_id?: string | null
+  quote_line_id?: string | null
   name: string
   qty: number
   unit_price_mxn: number
@@ -65,6 +66,7 @@ export async function createSaleNote(data: {
   amountUntaxed: number
   amountTax: number
   amountTotal: number
+  unitId?: string | null
   ruta?: string
   unidad?: string
   observaciones?: string
@@ -89,11 +91,12 @@ export async function createSaleNote(data: {
 
     const { rows } = await client.query(
       `INSERT INTO sale_notes
-         (number, sale_id, state, concept, amount_untaxed, amount_tax, amount_total, amount_balance, ruta, unidad, observaciones)
-       VALUES ($1, $2, 'draft', $3, $4, $5, $6, $6, $7, $8, $9)
+         (number, sale_id, state, concept, amount_untaxed, amount_tax, amount_total, amount_balance,
+          unit_id, ruta, unidad, observaciones)
+       VALUES ($1, $2, 'draft', $3, $4, $5, $6, $6, $7, $8, $9, $10)
        RETURNING *`,
       [number, data.saleId, data.concept ?? null, data.amountUntaxed, data.amountTax, data.amountTotal,
-       data.ruta ?? null, data.unidad ?? null, data.observaciones ?? null]
+       data.unitId ?? null, data.ruta ?? null, data.unidad ?? null, data.observaciones ?? null]
     )
     const note: SaleNote = rows[0]
 
@@ -102,10 +105,10 @@ export async function createSaleNote(data: {
         const line = data.lines[i]
         await client.query(
           `INSERT INTO sale_note_lines
-             (sale_note_id, sequence, display_type, product_id, name, qty,
+             (sale_note_id, sequence, display_type, product_id, quote_line_id, name, qty,
               unit_price_mxn, subtotal, tax_amount, total)
-           VALUES ($1, $2, 'product', $3, $4, $5, $6, $7, $8, $9)`,
-          [note.id, i + 1, line.product_id ?? null, line.name, line.qty,
+           VALUES ($1, $2, 'product', $3, $4, $5, $6, $7, $8, $9, $10)`,
+          [note.id, i + 1, line.product_id ?? null, line.quote_line_id ?? null, line.name, line.qty,
            line.unit_price_mxn, line.subtotal, line.tax_amount, line.total]
         )
       }
