@@ -21,6 +21,6 @@ export async function POST(
     await unarchiveSale(id)
   }
 
-  revalidatePath('/ventas')
+  revalidatePath('/cobranza')
   return NextResponse.json({ ok: true })
 }

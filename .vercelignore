@@ -1,0 +1,11 @@
+node_modules
+docs/
+temp/
+prompts/
+scripts/
+db/
+.claude/
+*.sql
+*.exe
+*.docx
+*.jsonl

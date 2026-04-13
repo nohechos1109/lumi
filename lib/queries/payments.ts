@@ -33,7 +33,9 @@ export interface PaymentApplication {
 }
 
 const PAYMENT_SELECT = `
-  SELECT p.*,
+  SELECT p.id, p.number, p.sale_id, p.state, p.concept, p.amount, p.payment_method,
+         TO_CHAR(p.payment_date, 'YYYY-MM-DD') AS payment_date,
+         p.reference, p.notes, p.registered_by, p.confirmed_by, p.confirmed_at, p.created_at,
          u1.username AS registered_by_name,
          u2.username AS confirmed_by_name
   FROM payments p

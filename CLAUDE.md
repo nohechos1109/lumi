@@ -1,5 +1,9 @@
 @AGENTS.md
 
+# Dev Server
+
+This project runs exclusively via Docker on port 3000. The preview tool cannot attach to the running Docker container. **Verification is complete when `docker-compose up --build -d` exits successfully** — do not attempt `preview_start` as it will always fail with a port conflict.
+
 # Bug Fixes Log
 
 ## Hydration Error #418 (Resuelto)

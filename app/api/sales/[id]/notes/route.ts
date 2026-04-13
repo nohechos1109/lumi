@@ -39,9 +39,13 @@ export async function POST(
     amountUntaxed: Number(body.amount_untaxed ?? 0),
     amountTax: Number(body.amount_tax ?? 0),
     amountTotal: Number(body.amount_total ?? 0),
+    ruta: body.ruta ?? undefined,
+    unidad: body.unidad ?? undefined,
+    observaciones: body.observaciones ?? undefined,
     lines: body.lines ?? undefined,
   })
 
   revalidatePath(`/ventas/${id}`)
+  revalidatePath('/cobranza')
   return NextResponse.json(note, { status: 201 })
 }

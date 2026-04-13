@@ -54,7 +54,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
             entity_id: sale.id,
           })
         }
-        revalidatePath('/ventas')
+        revalidatePath('/cobranza')
       }
     } catch (err) {
       console.error('Error creating sale from quote:', err)

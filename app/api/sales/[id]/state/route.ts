@@ -34,7 +34,7 @@ export async function PATCH(
     by: session.userId,
   })
 
-  revalidatePath('/ventas')
+  revalidatePath('/cobranza')
   revalidatePath(`/ventas/${id}`)
   return NextResponse.json({ ok: true })
 }

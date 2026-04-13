@@ -11,6 +11,7 @@ interface QuoteLine {
   name: string
   qty: string | null
   unit_price_mxn_effective: string
+  discount_percent: string
 }
 
 interface Props {
@@ -39,6 +40,9 @@ const fmt = (n: number) => n.toLocaleString('es-MX', { minimumFractionDigits: 2,
 export default function NewNoteForm({ sale, quoteLines = [] }: Props) {
   const router = useRouter()
   const [concept, setConcept] = useState('')
+  const [ruta, setRuta] = useState('')
+  const [unidad, setUnidad] = useState('')
+  const [observaciones, setObservaciones] = useState('')
   const [lines, setLines] = useState<ProductLine[]>([{ productId: null, name: '', qty: '1', unitPrice: '' }])
   const [suggestions, setSuggestions] = useState<ProductSuggestion[]>([])
   const [activeLineIdx, setActiveLineIdx] = useState<number | null>(null)
@@ -66,7 +70,7 @@ export default function NewNoteForm({ sale, quoteLines = [] }: Props) {
     // Prefer quote line price if available, fall back to public_price
     const quoteMatch = quoteLines.find(ql => ql.product_id === product.id)
     const price = quoteMatch
-      ? String(parseFloat(quoteMatch.unit_price_mxn_effective))
+      ? String(parseFloat(quoteMatch.unit_price_mxn_effective) * (1 - (parseFloat(quoteMatch.discount_percent) || 0) / 100))
       : product.public_price
         ? String(parseFloat(product.public_price))
         : ''
@@ -87,7 +91,8 @@ export default function NewNoteForm({ sale, quoteLines = [] }: Props) {
   }
 
   function addFromQuote(ql: QuoteLine) {
-    const unitPrice = String(parseFloat(ql.unit_price_mxn_effective))
+    const discount = parseFloat(ql.discount_percent) || 0
+    const unitPrice = String(parseFloat(ql.unit_price_mxn_effective) * (1 - discount / 100))
     setLines(prev => {
       // If there's already a line from this quote product, increment qty by 1
       const existingIdx = prev.findIndex(l => l.quoteLineId === ql.id)
@@ -121,9 +126,9 @@ export default function NewNoteForm({ sale, quoteLines = [] }: Props) {
   function computeAmounts(): { untaxed: number; tax: number; total: number } | null {
     const validLines = lines.filter(l => l.name && Number(l.qty) > 0 && Number(l.unitPrice) > 0)
     if (validLines.length === 0) return null
-    const total = validLines.reduce((sum, l) => sum + Number(l.qty) * Number(l.unitPrice), 0)
-    const u = total / (1 + IVA)
-    return { untaxed: u, tax: total - u, total }
+    const untaxed = validLines.reduce((sum, l) => sum + Number(l.qty) * Number(l.unitPrice), 0)
+    const tax = untaxed * IVA
+    return { untaxed, tax, total: untaxed + tax }
   }
 
   const amounts = computeAmounts()
@@ -135,16 +140,16 @@ export default function NewNoteForm({ sale, quoteLines = [] }: Props) {
     const apiLines = lines
       .filter(l => l.name && Number(l.qty) > 0 && Number(l.unitPrice) > 0)
       .map(l => {
-        const lineTotal = Number(l.qty) * Number(l.unitPrice)
-        const lineUntaxed = lineTotal / (1 + IVA)
+        const lineUntaxed = Number(l.qty) * Number(l.unitPrice)
+        const lineTax = lineUntaxed * IVA
         return {
           product_id: l.productId,
           name: l.name,
           qty: Number(l.qty),
           unit_price_mxn: Number(l.unitPrice),
           subtotal: lineUntaxed,
-          tax_amount: lineTotal - lineUntaxed,
-          total: lineTotal,
+          tax_amount: lineTax,
+          total: lineUntaxed + lineTax,
         }
       })
 
@@ -155,6 +160,9 @@ export default function NewNoteForm({ sale, quoteLines = [] }: Props) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           concept: concept || null,
+          ruta: ruta || null,
+          unidad: unidad || null,
+          observaciones: observaciones || null,
           amount_untaxed: amounts.untaxed,
           amount_tax: amounts.tax,
           amount_total: amounts.total,
@@ -185,21 +193,56 @@ export default function NewNoteForm({ sale, quoteLines = [] }: Props) {
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-5">
 
-      {/* Concepto */}
+      {/* Datos de la nota */}
       <div
         className="rounded-xl p-4"
         style={{ background: 'var(--c-card)', border: '1px solid var(--c-rim)' }}
       >
-        <div className="flex flex-col gap-1.5">
-          <label className="text-xs font-semibold uppercase tracking-wider" style={{ color: 'var(--c-ghost)' }}>Concepto</label>
-          <input
-            type="text"
-            value={concept}
-            onChange={e => setConcept(e.target.value)}
-            className="text-sm rounded-lg px-3 py-2.5"
-            style={inputStyle}
-            placeholder="Ej: Anticipo, Segunda entrega, Saldo final..."
-          />
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
+          <div className="flex flex-col gap-1.5 md:col-span-1">
+            <label className="text-xs font-semibold uppercase tracking-wider" style={{ color: 'var(--c-ghost)' }}>Ruta</label>
+            <input
+              type="text"
+              value={ruta}
+              onChange={e => setRuta(e.target.value)}
+              className="text-sm rounded-lg px-3 py-2.5"
+              style={inputStyle}
+              placeholder="Ej: C113"
+            />
+          </div>
+          <div className="flex flex-col gap-1.5 md:col-span-1">
+            <label className="text-xs font-semibold uppercase tracking-wider" style={{ color: 'var(--c-ghost)' }}>Unidad</label>
+            <input
+              type="text"
+              value={unidad}
+              onChange={e => setUnidad(e.target.value)}
+              className="text-sm rounded-lg px-3 py-2.5"
+              style={inputStyle}
+              placeholder="Ej: C113U37"
+            />
+          </div>
+          <div className="flex flex-col gap-1.5 md:col-span-2">
+            <label className="text-xs font-semibold uppercase tracking-wider" style={{ color: 'var(--c-ghost)' }}>Concepto</label>
+            <input
+              type="text"
+              value={concept}
+              onChange={e => setConcept(e.target.value)}
+              className="text-sm rounded-lg px-3 py-2.5"
+              style={inputStyle}
+              placeholder="Ej: Anticipo, Segunda entrega, Saldo final..."
+            />
+          </div>
+          <div className="flex flex-col gap-1.5 md:col-span-4">
+            <label className="text-xs font-semibold uppercase tracking-wider" style={{ color: 'var(--c-ghost)' }}>Observaciones</label>
+            <textarea
+              value={observaciones}
+              onChange={e => setObservaciones(e.target.value)}
+              rows={2}
+              className="text-sm rounded-lg px-3 py-2.5 resize-none"
+              style={inputStyle}
+              placeholder="Notas internas sobre esta nota..."
+            />
+          </div>
         </div>
       </div>
 
@@ -237,7 +280,7 @@ export default function NewNoteForm({ sale, quoteLines = [] }: Props) {
                     <div className="flex-1 min-w-0">
                       <p className="text-xs font-medium leading-tight truncate" style={{ color: 'var(--c-ink)' }}>{ql.name}</p>
                       <p className="text-xs mt-0.5 font-mono" style={{ color: 'var(--c-ghost)' }}>
-                        ×{maxQty.toLocaleString('es-MX')} · ${Number(ql.unit_price_mxn_effective).toLocaleString('es-MX', { minimumFractionDigits: 2 })}
+                        ×{maxQty.toLocaleString('es-MX')} · ${(Number(ql.unit_price_mxn_effective) * (1 - (parseFloat(ql.discount_percent) || 0) / 100)).toLocaleString('es-MX', { minimumFractionDigits: 2 })}
                         {usedQty > 0 && !exhausted && (
                           <span style={{ color: 'var(--c-navy)', marginLeft: 6 }}>({usedQty} agregado{usedQty !== 1 ? 's' : ''})</span>
                         )}

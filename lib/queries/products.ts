@@ -25,7 +25,8 @@ export async function listProducts(): Promise<Product[]> {
 
 export async function searchProducts(q: string): Promise<Product[]> {
   const { rows } = await pool.query(
-    `SELECT id, sku, name, description, currency, cost_base, utility_fixed, utility_factor, codigo_sat, codigo_proveedor, image_url, category, public_price
+    `SELECT id, sku, name, description, currency, cost_base, utility_fixed, utility_factor, codigo_sat, codigo_proveedor, image_url, category,
+            COALESCE(public_price, cost_base * utility_factor + utility_fixed) AS public_price
      FROM products
      WHERE name ILIKE $1 OR sku ILIKE $1 OR description ILIKE $1
      ORDER BY name LIMIT 20`,
