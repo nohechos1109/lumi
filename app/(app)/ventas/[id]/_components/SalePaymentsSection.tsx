@@ -30,12 +30,13 @@ interface NoteOption {
 }
 
 interface Props {
+  saleId: string
   payments: Payment[]
   applications: SalePaymentApplication[]
   notes: NoteOption[]
 }
 
-export default function SalePaymentsSection({ payments, applications, notes }: Props) {
+export default function SalePaymentsSection({ saleId, payments, applications, notes }: Props) {
   const [filterNote, setFilterNote] = useState('')
 
   // Group applications by payment_id
@@ -57,37 +58,56 @@ export default function SalePaymentsSection({ payments, applications, notes }: P
     return payments.filter(p => matchingPaymentIds.has(p.id))
   }, [payments, applications, filterNote])
 
+  const pdfUrl = filterNote
+    ? `/api/pdf/sale-payments/${saleId}?noteId=${filterNote}`
+    : `/api/pdf/sale-payments/${saleId}`
+
   return (
     <>
-      {/* Filter bar */}
-      {notes.length > 1 && (
-        <div className="px-4 py-2 flex items-center gap-3" style={{ borderBottom: '1px solid var(--c-rim)' }}>
-          <label className="text-xs font-semibold" style={{ color: 'var(--c-ghost)' }}>Nota</label>
-          <select
-            value={filterNote}
-            onChange={e => setFilterNote(e.target.value)}
-            className="rounded-lg px-2.5 py-1.5 text-xs"
-            style={{ background: 'var(--c-rim)', border: '1px solid var(--c-rim)', color: 'var(--c-ink)', outline: 'none' }}
-          >
-            <option value="">Todas</option>
-            {notes.map(n => (
-              <option key={n.id} value={n.id}>{n.number}</option>
-            ))}
-          </select>
-          {filterNote && (
-            <button
-              onClick={() => setFilterNote('')}
-              className="text-xs font-semibold px-2 py-1 rounded-lg hover:opacity-75 transition-opacity"
-              style={{ background: '#FFE4E6', color: '#BE123C' }}
+      {/* Toolbar: filter + PDF button */}
+      <div className="px-4 py-2 flex items-center gap-3" style={{ borderBottom: '1px solid var(--c-rim)' }}>
+        {notes.length > 1 && (
+          <>
+            <label className="text-xs font-semibold" style={{ color: 'var(--c-ghost)' }}>Nota</label>
+            <select
+              value={filterNote}
+              onChange={e => setFilterNote(e.target.value)}
+              className="rounded-lg px-2.5 py-1.5 text-xs"
+              style={{ background: 'var(--c-rim)', border: '1px solid var(--c-rim)', color: 'var(--c-ink)', outline: 'none' }}
             >
-              Limpiar
-            </button>
-          )}
-          <span className="text-xs ml-auto" style={{ color: 'var(--c-ghost)' }}>
-            {filteredPayments.length} / {payments.length}
-          </span>
-        </div>
-      )}
+              <option value="">Todas</option>
+              {notes.map(n => (
+                <option key={n.id} value={n.id}>{n.number}</option>
+              ))}
+            </select>
+            {filterNote && (
+              <button
+                onClick={() => setFilterNote('')}
+                className="text-xs font-semibold px-2 py-1 rounded-lg hover:opacity-75 transition-opacity"
+                style={{ background: '#FFE4E6', color: '#BE123C' }}
+              >
+                Limpiar
+              </button>
+            )}
+          </>
+        )}
+        <span className="text-xs" style={{ color: 'var(--c-ghost)', marginLeft: notes.length > 1 ? 0 : 'auto' }}>
+          {filteredPayments.length} / {payments.length}
+        </span>
+        <a
+          href={pdfUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg font-semibold transition-opacity hover:opacity-80 ml-auto"
+          style={{ background: '#0369A1', color: '#fff' }}
+          title="Descargar PDF de pagos"
+        >
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/>
+          </svg>
+          PDF
+        </a>
+      </div>
 
       {/* Table */}
       {filteredPayments.length === 0 ? (

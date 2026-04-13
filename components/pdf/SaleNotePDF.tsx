@@ -32,6 +32,19 @@ const styles = StyleSheet.create({
 
   footerText: { fontSize: 7, color: '#9CA3AF', textAlign: 'center', marginTop: 10 },
   website: { fontSize: 13, color: '#1B3461', fontWeight: 'bold', marginBottom: 4 },
+
+  // Payment history
+  payHistTitle: { fontSize: 10, fontWeight: 'bold', color: '#1B3461', marginBottom: 8, marginTop: 30, borderBottom: '1 solid #E5E7EB', paddingBottom: 4 },
+  payHistHeader: { flexDirection: 'row', backgroundColor: '#F3F7FA', padding: '5 8', borderRadius: 2, borderBottom: '1 solid #D1E1EF' },
+  payHistHeaderText: { fontSize: 7.5, fontWeight: 'bold', color: '#6B7280' },
+  payHistRow: { flexDirection: 'row', padding: '5 8', borderBottom: '1 solid #F3F4F6', alignItems: 'center' },
+  payHistText: { fontSize: 8 },
+  payHistColSeq: { width: '6%' },
+  payHistColDate: { width: '16%' },
+  payHistColMethod: { width: '18%' },
+  payHistColRef: { width: '24%' },
+  payHistColAmount: { width: '18%', textAlign: 'right' },
+  payHistColAccum: { width: '18%', textAlign: 'right' },
 })
 
 const fmt = (n: string | number) =>
@@ -68,14 +81,31 @@ interface SaleData {
   customer_name?: string
 }
 
+interface PaymentHistoryItem {
+  seq: number
+  payment_date: string
+  amount: string
+  payment_method: string
+  reference: string | null
+}
+
+const METHOD_LABELS: Record<string, string> = {
+  transferencia: 'Transferencia',
+  efectivo: 'Efectivo',
+  cheque: 'Cheque',
+  tarjeta: 'Tarjeta',
+  otro: 'Otro',
+}
+
 interface Props {
   note: NoteData
   lines: NoteLine[]
   sale: SaleData
   logoPath: string
+  paymentHistory?: PaymentHistoryItem[]
 }
 
-export default function SaleNotePDF({ note, lines, sale, logoPath }: Props) {
+export default function SaleNotePDF({ note, lines, sale, logoPath, paymentHistory }: Props) {
   const balance = Number(note.amount_balance)
   const paid = Number(note.amount_paid)
 
@@ -165,6 +195,41 @@ export default function SaleNotePDF({ note, lines, sale, logoPath }: Props) {
             </View>
           </View>
         </View>
+
+        {/* Payment history */}
+        {paymentHistory && paymentHistory.length > 0 && (
+          <View wrap={false} style={{ marginTop: 25 }}>
+            <Text style={styles.payHistTitle}>HISTORIAL DE ABONOS</Text>
+            <View style={styles.payHistHeader}>
+              <Text style={[styles.payHistHeaderText, styles.payHistColSeq]}>#</Text>
+              <Text style={[styles.payHistHeaderText, styles.payHistColDate]}>FECHA</Text>
+              <Text style={[styles.payHistHeaderText, styles.payHistColMethod]}>MÉTODO</Text>
+              <Text style={[styles.payHistHeaderText, styles.payHistColRef]}>REFERENCIA</Text>
+              <Text style={[styles.payHistHeaderText, styles.payHistColAmount]}>MONTO</Text>
+              <Text style={[styles.payHistHeaderText, styles.payHistColAccum]}>ACUMULADO</Text>
+            </View>
+            {(() => {
+              let accum = 0
+              return paymentHistory.map(p => {
+                accum += Number(p.amount)
+                return (
+                  <View key={p.seq} style={styles.payHistRow}>
+                    <Text style={[styles.payHistText, styles.payHistColSeq, { color: '#6B7280' }]}>{p.seq}</Text>
+                    <Text style={[styles.payHistText, styles.payHistColDate]}>{fmtDate(p.payment_date)}</Text>
+                    <Text style={[styles.payHistText, styles.payHistColMethod]}>{METHOD_LABELS[p.payment_method] ?? p.payment_method}</Text>
+                    <Text style={[styles.payHistText, styles.payHistColRef, { color: '#6B7280' }]}>{p.reference || '—'}</Text>
+                    <Text style={[styles.payHistText, styles.payHistColAmount, { fontWeight: 'bold' }]}>${fmt(p.amount)}</Text>
+                    <Text style={[styles.payHistText, styles.payHistColAccum, { color: '#0369A1' }]}>${fmt(accum)}</Text>
+                  </View>
+                )
+              })
+            })()}
+            <View style={{ flexDirection: 'row', justifyContent: 'flex-end', marginTop: 6, paddingRight: 8 }}>
+              <Text style={{ fontSize: 8, color: '#6B7280' }}>Total abonado: </Text>
+              <Text style={{ fontSize: 9, fontWeight: 'bold', color: '#15803D' }}>${fmt(note.amount_paid)} MXN</Text>
+            </View>
+          </View>
+        )}
 
         {/* SVG Footer */}
         <View style={styles.footerContainer} fixed>

@@ -150,21 +150,38 @@ export default function SaleDetail({ sale, notes, payments, schedule, applicatio
                         ${fmt(n.amount_balance)}
                       </td>
                       <td className="px-3 py-2.5 text-right">
-                        {(n.state === 'confirmed' || n.state === 'paid') && (
-                          <a
-                            href={`/api/pdf/sale-note/${n.id}`}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="inline-flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg font-semibold transition-opacity hover:opacity-80"
-                            style={{ background: 'var(--c-navy)', color: '#fff' }}
-                            title="Generar Nota de Cobro PDF"
-                          >
-                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/>
-                            </svg>
-                            Generar Nota
-                          </a>
-                        )}
+                        <div className="inline-flex gap-2">
+                          {(n.state === 'confirmed' || n.state === 'paid') && (
+                            <a
+                              href={`/api/pdf/sale-note/${n.id}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="inline-flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg font-semibold transition-opacity hover:opacity-80"
+                              style={{ background: 'var(--c-navy)', color: '#fff' }}
+                              title="Generar Nota de Cobro PDF"
+                            >
+                              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/>
+                              </svg>
+                              Nota
+                            </a>
+                          )}
+                          {(n.state === 'confirmed' || n.state === 'paid') && Number(n.amount_paid) > 0 && (
+                            <a
+                              href={`/api/pdf/sale-note/${n.id}/payments`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="inline-flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg font-semibold transition-opacity hover:opacity-80"
+                              style={{ background: '#0369A1', color: '#fff' }}
+                              title="Historial de pagos PDF"
+                            >
+                              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                                <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+                              </svg>
+                              Pagos
+                            </a>
+                          )}
+                        </div>
                       </td>
                     </tr>
                   )
@@ -178,6 +195,7 @@ export default function SaleDetail({ sale, notes, payments, schedule, applicatio
       {/* ═══ PAGOS SECTION ═══ */}
       <Section title="Pagos">
         <SalePaymentsSection
+          saleId={sale.id}
           payments={payments}
           applications={applications}
           notes={notes.map(n => ({ id: n.id, number: n.number }))}

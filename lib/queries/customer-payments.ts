@@ -363,6 +363,37 @@ export async function applyPaymentToNote(
   }
 }
 
+// ── Note payment history (for PDFs) ──────────────────────────────────────────
+
+export interface NotePaymentHistoryItem {
+  seq: number
+  payment_number: string
+  payment_date: string
+  amount: string
+  payment_method: string
+  reference: string | null
+  registered_by_name: string | null
+}
+
+export async function listPaymentHistoryByNote(noteId: string): Promise<NotePaymentHistoryItem[]> {
+  const { rows } = await pool.query(`
+    SELECT
+      ROW_NUMBER() OVER (ORDER BY cp.payment_date ASC, pa.created_at ASC)::int AS seq,
+      cp.number AS payment_number,
+      TO_CHAR(cp.payment_date, 'YYYY-MM-DD') AS payment_date,
+      pa.amount::text,
+      cp.payment_method,
+      cp.reference,
+      u.username AS registered_by_name
+    FROM payment_applications pa
+    JOIN customer_payments cp ON cp.id = pa.payment_id
+    LEFT JOIN users u ON u.id = cp.registered_by
+    WHERE pa.sale_note_id = $1 AND cp.state = 'confirmed'
+    ORDER BY cp.payment_date ASC, pa.created_at ASC
+  `, [noteId])
+  return rows
+}
+
 // ── Applications ──────────────────────────────────────────────────────────────
 
 export async function listApplicationsByPayment(paymentId: string): Promise<PaymentApplication[]> {
