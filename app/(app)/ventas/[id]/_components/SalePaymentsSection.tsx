@@ -125,30 +125,30 @@ export default function SalePaymentsSection({ payments, applications, notes }: P
                       </span>
                     </td>
                     <td className="px-3 py-2.5">
-                      {appsForPayment.length === 0 ? (
-                        <span style={{ color: 'var(--c-ghost)', fontSize: '0.75rem' }}>—</span>
-                      ) : (
-                        <div className="flex flex-wrap gap-1">
-                          {appsForPayment.map((a, i) => {
-                            const active = filterNote === a.note_id
-                            return (
+                      {(() => {
+                        const visible = filterNote
+                          ? appsForPayment.filter(a => a.note_id === filterNote)
+                          : appsForPayment
+                        if (visible.length === 0) {
+                          return <span style={{ color: 'var(--c-ghost)', fontSize: '0.75rem' }}>—</span>
+                        }
+                        return (
+                          <div className="flex flex-wrap gap-1">
+                            {visible.map((a, i) => (
                               <span
                                 key={i}
                                 className="inline-flex items-center gap-1 text-xs font-mono px-2 py-0.5 rounded-full font-semibold"
-                                style={{
-                                  background: active ? '#1D4ED8' : '#EFF6FF',
-                                  color: active ? '#fff' : '#1D4ED8',
-                                }}
+                                style={{ background: '#EFF6FF', color: '#1D4ED8' }}
                               >
                                 {a.note_number}
-                                <span style={{ color: active ? 'rgba(255,255,255,0.7)' : '#3B82F6', fontWeight: 400 }}>
+                                <span style={{ color: '#3B82F6', fontWeight: 400 }}>
                                   ${fmtMXN(a.amount)}
                                 </span>
                               </span>
-                            )
-                          })}
-                        </div>
-                      )}
+                            ))}
+                          </div>
+                        )
+                      })()}
                     </td>
                   </tr>
                 )
