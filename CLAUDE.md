@@ -1,11 +1,14 @@
 @AGENTS.md
 
 # db
-`@db/01_schema.sql` y `@db/02_seed.sql` representan el estado actual de la base de datos en producción. **No modificar estos archivos.**
+
+`@db/01_schema.sql` y `@db/02_seed.sql` son la fuente de verdad del estado actual de producción. **No modificar estos archivos.**
 
 Para cualquier cambio de base de datos requerido durante el desarrollo, crear un archivo de migración con el patrón `@db/.*migration.*\.sql` (ej. `db/20260413_nombre_migration.sql`) que contenga únicamente el DDL incremental necesario (`ALTER TABLE`, `CREATE TABLE`, `CREATE INDEX`, etc.).
 
-Estos archivos de migración se aplican sobre producción en el momento del deploy.
+Estos archivos de migración son los deltas pendientes y se aplican sobre producción en el momento del deploy. No asumir que un cambio está en producción hasta que se haga el deploy. Las migraciones deben ser seguras para datos existentes: usar `IF NOT EXISTS`, `IF EXISTS`, o equivalentes según corresponda.
+
+Durante el desarrollo se corre Docker localmente para pruebas — esto **no es un deploy real**. No confundir el entorno local con producción.
 
 
 # Bug Fixes Log
