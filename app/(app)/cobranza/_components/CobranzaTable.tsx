@@ -11,20 +11,7 @@ import NewNoteSaleSelector from './NewNoteSaleSelector'
 import MultiAbonoModal from './MultiAbonoModal'
 import AplicarCreditoModal from './AplicarCreditoModal'
 import AplicarCreditoClienteModal from './AplicarCreditoClienteModal'
-
-// ── Formatters ────────────────────────────────────────────────────────────────
-
-const fmtMXN = (v: string | null) =>
-  v ? Number(v).toLocaleString('es-MX', { minimumFractionDigits: 2 }) : '—'
-
-const fmtDate = (v: string | null) => {
-  if (!v) return '—'
-  // Parse as pure YYYY-MM-DD to avoid timezone shift between SSR and client
-  const s = String(v).slice(0, 10)
-  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(s)
-  if (!m) return s
-  return `${m[3]}/${m[2]}/${m[1]}`
-}
+import { fmtMXN, fmtDate } from '@/lib/formatters'
 
 // ── State badges ─────────────────────────────────────────────────────────────
 

@@ -1,6 +1,9 @@
 // Server Component — read-only view
 // All write actions live in /cobranza now.
 
+import { METHOD_LABELS } from '@/lib/constants/payments'
+import SalePaymentsSection from './SalePaymentsSection'
+
 interface Sale {
   id: string
   number: string
@@ -40,6 +43,7 @@ interface Payment {
 
 interface SalePaymentApplication {
   payment_id: string
+  note_id: string
   note_number: string
   amount: string
 }
@@ -64,14 +68,6 @@ interface Props {
 
 const fmt = (v: string | number) => Number(v).toLocaleString('es-MX', { minimumFractionDigits: 2 })
 
-const METHOD_LABELS: Record<string, string> = {
-  efectivo: 'Efectivo',
-  transferencia: 'Transferencia',
-  cheque: 'Cheque',
-  tarjeta: 'Tarjeta',
-  otro: 'Otro',
-}
-
 const NOTE_STATE: Record<string, { label: string; bg: string; text: string }> = {
   draft:     { label: 'Borrador',   bg: '#FEF9EC', text: '#B45309' },
   confirmed: { label: 'Confirmada', bg: '#E0F2FE', text: '#0369A1' },
@@ -79,19 +75,7 @@ const NOTE_STATE: Record<string, { label: string; bg: string; text: string }> = 
   cancelled: { label: 'Cancelada',  bg: '#FFE4E6', text: '#BE123C' },
 }
 
-const PAY_STATE: Record<string, { label: string; bg: string; text: string }> = {
-  draft:     { label: 'Borrador',   bg: '#FEF9EC', text: '#B45309' },
-  confirmed: { label: 'Confirmado', bg: '#DCFCE7', text: '#15803D' },
-  cancelled: { label: 'Cancelado',  bg: '#FFE4E6', text: '#BE123C' },
-}
-
 export default function SaleDetail({ sale, notes, payments, schedule, applications }: Props) {
-  // Group applications by payment_id for quick lookup
-  const appsByPayment: Record<string, SalePaymentApplication[]> = {}
-  for (const app of applications) {
-    if (!appsByPayment[app.payment_id]) appsByPayment[app.payment_id] = []
-    appsByPayment[app.payment_id].push(app)
-  }
   const paidPct = Number(sale.amount_total) > 0
     ? Math.min(100, (Number(sale.amount_paid) / Number(sale.amount_total)) * 100)
     : 0
@@ -193,68 +177,11 @@ export default function SaleDetail({ sale, notes, payments, schedule, applicatio
 
       {/* ═══ PAGOS SECTION ═══ */}
       <Section title="Pagos">
-        {payments.length === 0 ? (
-          <p className="text-sm py-4 text-center" style={{ color: 'var(--c-ghost)' }}>Sin pagos registrados</p>
-        ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm" style={{ borderCollapse: 'collapse' }}>
-              <thead>
-                <tr style={{ borderBottom: '1px solid var(--c-rim)' }}>
-                  <th className="text-left px-3 py-2 font-semibold" style={{ color: 'var(--c-ghost)' }}>Número</th>
-                  <th className="text-left px-3 py-2 font-semibold" style={{ color: 'var(--c-ghost)' }}>Fecha</th>
-                  <th className="text-left px-3 py-2 font-semibold" style={{ color: 'var(--c-ghost)' }}>Concepto</th>
-                  <th className="text-left px-3 py-2 font-semibold" style={{ color: 'var(--c-ghost)' }}>Método</th>
-                  <th className="text-right px-3 py-2 font-semibold" style={{ color: 'var(--c-ghost)' }}>Importe</th>
-                  <th className="text-left px-3 py-2 font-semibold" style={{ color: 'var(--c-ghost)' }}>Estado</th>
-                  <th className="text-left px-3 py-2 font-semibold" style={{ color: 'var(--c-ghost)' }}>Aplicado a</th>
-                </tr>
-              </thead>
-              <tbody>
-                {payments.map(p => {
-                  const ps = PAY_STATE[p.state] ?? PAY_STATE.draft
-                  const dateStr = String(p.payment_date).slice(0, 10)
-                  const dateObj = new Date(dateStr + 'T12:00:00')
-                  const dateLabel = isNaN(dateObj.getTime()) ? dateStr : dateObj.toLocaleDateString('es-MX')
-                  const appsForPayment = appsByPayment[p.id] ?? []
-                  return (
-                    <tr key={p.id} style={{ borderBottom: '1px solid var(--c-rim)' }}>
-                      <td className="px-3 py-2.5 font-mono font-medium" style={{ color: 'var(--c-ink)' }}>{p.number}</td>
-                      <td className="px-3 py-2.5" style={{ color: 'var(--c-dim)' }}>{dateLabel}</td>
-                      <td className="px-3 py-2.5" style={{ color: 'var(--c-dim)' }}>{p.concept || '—'}</td>
-                      <td className="px-3 py-2.5" style={{ color: 'var(--c-dim)' }}>{METHOD_LABELS[p.payment_method] ?? p.payment_method}</td>
-                      <td className="px-3 py-2.5 text-right font-mono font-semibold" style={{ color: 'var(--c-ink)' }}>${fmt(p.amount)}</td>
-                      <td className="px-3 py-2.5">
-                        <span className="text-xs font-semibold px-2 py-0.5 rounded-full" style={{ background: ps.bg, color: ps.text }}>
-                          {ps.label}
-                        </span>
-                      </td>
-                      <td className="px-3 py-2.5">
-                        {appsForPayment.length === 0 ? (
-                          <span style={{ color: 'var(--c-ghost)', fontSize: '0.75rem' }}>—</span>
-                        ) : (
-                          <div className="flex flex-wrap gap-1">
-                            {appsForPayment.map((a, i) => (
-                              <span
-                                key={i}
-                                className="inline-flex items-center gap-1 text-xs font-mono px-2 py-0.5 rounded-full font-semibold"
-                                style={{ background: '#EFF6FF', color: '#1D4ED8' }}
-                              >
-                                {a.note_number}
-                                <span style={{ color: '#3B82F6', fontWeight: 400 }}>
-                                  ${fmt(a.amount)}
-                                </span>
-                              </span>
-                            ))}
-                          </div>
-                        )}
-                      </td>
-                    </tr>
-                  )
-                })}
-              </tbody>
-            </table>
-          </div>
-        )}
+        <SalePaymentsSection
+          payments={payments}
+          applications={applications}
+          notes={notes.map(n => ({ id: n.id, number: n.number }))}
+        />
       </Section>
 
       {/* ═══ CONVENIO SECTION ═══ */}

@@ -53,7 +53,7 @@ export async function POST(
 
   let paymentId: string
   try {
-    // Create and immediately confirm a customer-level payment
+    // Create and immediately confirm a customer-level payment (cobranza flow skips draft)
     const payment = await createCustomerPayment({
       customerId: sale.customer_id,
       concept: body.concept ?? undefined,
@@ -61,6 +61,7 @@ export async function POST(
       paymentMethod: body.payment_method,
       paymentDate: body.payment_date,
       registeredBy: session.userId,
+      confirmed: true,
     })
     paymentId = payment.id
 

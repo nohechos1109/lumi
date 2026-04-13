@@ -4,8 +4,7 @@ import { useState, useEffect, useMemo, useCallback } from 'react'
 import type { CustomerPayment } from '@/lib/queries/customer-payments'
 import type { ApplicableNote } from '@/app/api/pagos/[id]/applicable-notes/route'
 
-const fmtMXN = (n: number) =>
-  n.toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+import { fmtMXN } from '@/lib/formatters'
 
 interface Props {
   payment: CustomerPayment

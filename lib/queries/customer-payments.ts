@@ -8,7 +8,7 @@ export interface CustomerPayment {
   id: string
   number: string
   customer_id: string
-  state: 'confirmed' | 'cancelled'
+  state: 'draft' | 'confirmed' | 'cancelled'
   concept: string | null
   amount: string
   payment_method: string
@@ -77,6 +77,7 @@ export async function listPaymentsByCustomer(customerId: string): Promise<Custom
 
 export interface SalePaymentApplication {
   payment_id: string
+  note_id: string
   note_number: string
   amount: string
 }
@@ -88,6 +89,7 @@ export interface SalePaymentApplication {
 export async function listApplicationsBySalePayments(saleId: string): Promise<SalePaymentApplication[]> {
   const { rows } = await pool.query(`
     SELECT pa.payment_id,
+           pa.sale_note_id AS note_id,
            sn.number AS note_number,
            pa.amount::text
     FROM payment_applications pa
@@ -178,8 +180,9 @@ export async function getAvailablePaymentsByCustomer(
 // ── Write ─────────────────────────────────────────────────────────────────────
 
 /**
- * Create and immediately confirm a customer payment.
- * No draft/confirm two-step — payments are always registered as confirmed.
+ * Create a customer payment as draft.
+ * Must be confirmed via confirmCustomerPayment() before it can be applied.
+ * If `confirmed` is true, creates directly as confirmed (used by cobranza/abono flow).
  */
 export async function createCustomerPayment(data: {
   customerId: string
@@ -189,27 +192,91 @@ export async function createCustomerPayment(data: {
   paymentDate: string
   reference?: string
   registeredBy: string
+  confirmed?: boolean
 }): Promise<CustomerPayment> {
   const dateStr = new Date().toISOString().slice(0, 10).replace(/-/g, '')
-  const { rows: last } = await pool.query(
-    "SELECT number FROM customer_payments WHERE number LIKE $1 ORDER BY number DESC LIMIT 1",
-    [`PAG-${dateStr}-%`]
-  )
-  let seq = 1
-  if (last.length > 0) {
-    const parts = last[0].number.split('-')
-    seq = parseInt(parts[parts.length - 1], 10) + 1
-  }
-  const number = `PAG-${dateStr}-${String(seq).padStart(4, '0')}`
+  const prefix = `PAG-${dateStr}-`
+  const state = data.confirmed ? 'confirmed' : 'draft'
 
-  const { rows } = await pool.query(
-    `INSERT INTO customer_payments
-       (number, customer_id, state, concept, amount, payment_method, payment_date, reference, registered_by)
-     VALUES ($1, $2, 'confirmed', $3, $4, $5, $6, $7, $8)
-     RETURNING *`,
-    [number, data.customerId, data.concept ?? null, data.amount, data.paymentMethod,
-     data.paymentDate, data.reference ?? null, data.registeredBy]
+  const client = await pool.connect()
+  try {
+    await client.query('BEGIN')
+    // Advisory lock keyed on the date integer — serializes number generation per day
+    await client.query('SELECT pg_advisory_xact_lock($1)', [parseInt(dateStr, 10)])
+
+    const { rows: last } = await client.query(
+      "SELECT number FROM customer_payments WHERE number LIKE $1 ORDER BY number DESC LIMIT 1",
+      [`${prefix}%`]
+    )
+    let seq = 1
+    if (last.length > 0) {
+      const parts = last[0].number.split('-')
+      seq = parseInt(parts[parts.length - 1], 10) + 1
+    }
+    const number = `${prefix}${String(seq).padStart(4, '0')}`
+
+    const { rows } = await client.query(
+      `INSERT INTO customer_payments
+         (number, customer_id, state, concept, amount, payment_method, payment_date, reference, registered_by)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+       RETURNING *`,
+      [number, data.customerId, state, data.concept ?? null, data.amount, data.paymentMethod,
+       data.paymentDate, data.reference ?? null, data.registeredBy]
+    )
+
+    await client.query('COMMIT')
+    return rows[0]
+  } catch (err) {
+    await client.query('ROLLBACK')
+    throw err
+  } finally {
+    client.release()
+  }
+}
+
+/**
+ * Confirm a draft payment, changing its state to 'confirmed'.
+ */
+export async function confirmCustomerPayment(id: string): Promise<void> {
+  const { rowCount } = await pool.query(
+    "UPDATE customer_payments SET state = 'confirmed' WHERE id = $1 AND state = 'draft'",
+    [id]
   )
+  if (!rowCount) throw new Error('El pago no está en borrador o no existe')
+}
+
+/**
+ * Update a draft payment. Only drafts can be edited.
+ */
+export async function updateCustomerPayment(
+  id: string,
+  data: { concept?: string | null; amount?: number; paymentMethod?: string; paymentDate?: string; reference?: string | null }
+): Promise<CustomerPayment> {
+  const fields: string[] = []
+  const values: unknown[] = []
+  let idx = 1
+
+  if (data.amount !== undefined)        { fields.push(`amount = $${idx++}`);         values.push(data.amount) }
+  if (data.paymentMethod !== undefined)  { fields.push(`payment_method = $${idx++}`); values.push(data.paymentMethod) }
+  if (data.paymentDate !== undefined)    { fields.push(`payment_date = $${idx++}`);   values.push(data.paymentDate) }
+  if (data.concept !== undefined)        { fields.push(`concept = $${idx++}`);        values.push(data.concept) }
+  if (data.reference !== undefined)      { fields.push(`reference = $${idx++}`);      values.push(data.reference) }
+
+  if (fields.length === 0) throw new Error('Nada que actualizar')
+
+  values.push(id)
+  const { rows } = await pool.query(
+    `UPDATE customer_payments SET ${fields.join(', ')} WHERE id = $${idx} AND state = 'draft' RETURNING *`,
+    values
+  )
+  if (rows.length === 0) {
+    const { rows: check } = await pool.query(
+      'SELECT state FROM customer_payments WHERE id = $1',
+      [id]
+    )
+    if (check.length === 0) throw new Error('Pago no encontrado')
+    throw new Error(`El pago no se puede editar (estado: ${check[0].state})`)
+  }
   return rows[0]
 }
 
@@ -233,18 +300,10 @@ export async function cancelCustomerPayment(id: string): Promise<void> {
     [id]
   )
 
-  const seenNotes = new Set<string>()
-  const seenSales = new Set<string>()
-  for (const { sale_note_id, sale_id } of apps) {
-    if (!seenNotes.has(sale_note_id)) {
-      seenNotes.add(sale_note_id)
-      await updateSaleNoteTotals(sale_note_id)
-    }
-    seenSales.add(sale_id)
-  }
-  for (const saleId of seenSales) {
-    await updateSaleTotals(saleId)
-  }
+  const noteIds = [...new Set(apps.map(a => a.sale_note_id))]
+  const saleIds = [...new Set(apps.map(a => a.sale_id))]
+  await Promise.all(noteIds.map(nid => updateSaleNoteTotals(nid)))
+  await Promise.all(saleIds.map(sid => updateSaleTotals(sid)))
 }
 
 /**

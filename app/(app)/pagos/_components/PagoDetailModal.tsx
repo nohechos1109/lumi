@@ -3,24 +3,8 @@
 import { useState, useEffect } from 'react'
 import type { CustomerPayment, PaymentApplication } from '@/lib/queries/customer-payments'
 
-const fmtMXN = (v: string | number | null | undefined) =>
-  v != null ? Number(v).toLocaleString('es-MX', { minimumFractionDigits: 2 }) : '—'
-
-const fmtDate = (v: string | null) => {
-  if (!v) return '—'
-  const s = String(v).slice(0, 10)
-  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(s)
-  if (!m) return s
-  return `${m[3]}/${m[2]}/${m[1]}`
-}
-
-const METHOD_LABELS: Record<string, string> = {
-  efectivo:      'Efectivo',
-  transferencia: 'Transferencia',
-  cheque:        'Cheque',
-  tarjeta:       'Tarjeta',
-  otro:          'Otro',
-}
+import { fmtMXN, fmtDate } from '@/lib/formatters'
+import { METHOD_LABELS, PAYMENT_STATE_BADGE } from '@/lib/constants/payments'
 
 interface Props {
   payment: CustomerPayment
@@ -39,7 +23,7 @@ export default function PagoDetailModal({ payment, onClose }: Props) {
       .finally(() => setLoading(false))
   }, [payment.id])
 
-  const isCancelled = payment.state === 'cancelled'
+  const stateBadge = PAYMENT_STATE_BADGE[payment.state] ?? PAYMENT_STATE_BADGE.confirmed
 
   return (
     <div
@@ -79,8 +63,7 @@ export default function PagoDetailModal({ payment, onClose }: Props) {
           style={{ background: 'var(--c-rim)' }}>
           <MetaRow label="Fecha" value={fmtDate(payment.payment_date)} />
           <MetaRow label="Método" value={METHOD_LABELS[payment.payment_method] ?? payment.payment_method} />
-          <MetaRow label="Estado" value={isCancelled ? 'Cancelado' : 'Confirmado'}
-            valueColor={isCancelled ? '#BE123C' : '#15803D'} />
+          <MetaRow label="Estado" value={stateBadge.label} valueColor={stateBadge.color} />
           <MetaRow label="Registrado por" value={payment.registered_by_name ?? '—'} />
           {payment.reference && <MetaRow label="Referencia" value={payment.reference} />}
           {payment.concept && <MetaRow label="Concepto" value={payment.concept} />}

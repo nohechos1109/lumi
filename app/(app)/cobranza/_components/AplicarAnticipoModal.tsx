@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { fmtMXN } from '@/lib/formatters'
 
 interface Props {
   saleId: string
@@ -11,9 +12,6 @@ interface Props {
   onClose: () => void
   onApplied: () => void
 }
-
-const fmtMXN = (n: number) =>
-  n.toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
 
 export default function AplicarAnticipoModal({
   saleId, noteId, remision, noteBalance, anticipoDisponible, onClose, onApplied,

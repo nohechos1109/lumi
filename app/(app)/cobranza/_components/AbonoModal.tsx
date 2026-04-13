@@ -2,13 +2,7 @@
 
 import { useState } from 'react'
 
-const METHODS = [
-  { value: 'transferencia', label: 'Transferencia' },
-  { value: 'efectivo',      label: 'Efectivo' },
-  { value: 'cheque',        label: 'Cheque' },
-  { value: 'tarjeta',       label: 'Tarjeta' },
-  { value: 'otro',          label: 'Otro' },
-]
+import { PAYMENT_METHODS } from '@/lib/constants/payments'
 
 interface Props {
   noteId: string
@@ -106,7 +100,7 @@ export default function AbonoModal({ noteId, remision, balance, onClose, onCreat
               className="w-full rounded-lg px-3 py-2 text-sm"
               style={{ background: 'var(--c-rim)', border: '1px solid var(--c-rim)', color: 'var(--c-ink)', outline: 'none' }}
             >
-              {METHODS.map(m => <option key={m.value} value={m.value}>{m.label}</option>)}
+              {PAYMENT_METHODS.map(m => <option key={m.value} value={m.value}>{m.label}</option>)}
             </select>
           </div>
 

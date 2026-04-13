@@ -6,30 +6,13 @@ import type { CustomerPayment } from '@/lib/queries/customer-payments'
 import type { Customer } from '@/lib/queries/customers'
 import { toast } from '@/lib/toast'
 import RegistrarPagoModal from './RegistrarPagoModal'
+import EditarPagoModal from './EditarPagoModal'
 import PagoDetailModal from './PagoDetailModal'
 import CancelarPagoModal from './CancelarPagoModal'
 import AplicarPagoANotasModal from './AplicarPagoANotasModal'
 
-// ── Formatters ────────────────────────────────────────────────────────────────
-
-const fmtMXN = (v: string | number | null | undefined) =>
-  v != null ? Number(v).toLocaleString('es-MX', { minimumFractionDigits: 2 }) : '—'
-
-const fmtDate = (v: string | null) => {
-  if (!v) return '—'
-  const s = String(v).slice(0, 10)
-  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(s)
-  if (!m) return s
-  return `${m[3]}/${m[2]}/${m[1]}`
-}
-
-const METHOD_LABELS: Record<string, string> = {
-  efectivo:      'Efectivo',
-  transferencia: 'Transferencia',
-  cheque:        'Cheque',
-  tarjeta:       'Tarjeta',
-  otro:          'Otro',
-}
+import { fmtMXN, fmtDate } from '@/lib/formatters'
+import { METHOD_LABELS, PAYMENT_STATE_BADGE } from '@/lib/constants/payments'
 
 // ── Interfaces ────────────────────────────────────────────────────────────────
 
@@ -56,10 +39,28 @@ export default function PagosTable({ payments, customers, role }: Props) {
   const [filters, setFilters] = useState<Filters>(EMPTY)
   const [showRegister, setShowRegister] = useState(false)
   const [detailPayment, setDetailPayment]   = useState<CustomerPayment | null>(null)
+  const [editPayment,   setEditPayment]     = useState<CustomerPayment | null>(null)
   const [cancelPayment, setCancelPayment]   = useState<CustomerPayment | null>(null)
   const [applyPayment,  setApplyPayment]    = useState<CustomerPayment | null>(null)
+  const [confirmingId,  setConfirmingId]    = useState<string | null>(null)
 
   const canManage = role === 'manager' || role === 'admin'
+
+  const handleConfirm = useCallback(async (paymentId: string) => {
+    setConfirmingId(paymentId)
+    try {
+      const res = await fetch(`/api/pagos/${paymentId}/confirm`, { method: 'POST' })
+      if (res.ok) {
+        toast('Pago confirmado')
+        router.refresh()
+      } else {
+        const d = await res.json()
+        toast(d.error ?? 'Error al confirmar')
+      }
+    } finally {
+      setConfirmingId(null)
+    }
+  }, [router])
 
   const setF = useCallback(<K extends keyof Filters>(key: K, val: string) =>
     setFilters(prev => ({ ...prev, [key]: val })), [])
@@ -78,12 +79,18 @@ export default function PagosTable({ payments, customers, role }: Props) {
     return true
   }), [payments, filters])
 
-  const totals = useMemo(() => ({
-    received:  filtered.filter(p => p.state === 'confirmed').reduce((s, p) => s + Number(p.amount), 0),
-    available: filtered.filter(p => p.state === 'confirmed').reduce((s, p) => s + Number(p.amount_available ?? 0), 0),
-  }), [filtered])
+  const totals = useMemo(() => {
+    let received = 0, available = 0
+    for (const p of filtered) {
+      if (p.state === 'confirmed') {
+        received  += Number(p.amount)
+        available += Number(p.amount_available ?? 0)
+      }
+    }
+    return { received, available }
+  }, [filtered])
 
-  const hasFilters = JSON.stringify(filters) !== JSON.stringify(EMPTY)
+  const hasFilters = !!(filters.search || filters.dateFrom || filters.dateTo || filters.method || filters.estado)
 
   return (
     <div>
@@ -128,6 +135,7 @@ export default function PagosTable({ payments, customers, role }: Props) {
           <select value={filters.estado} onChange={e => setF('estado', e.target.value)}
             className="rounded-lg px-2.5 py-1.5 text-xs w-36" style={inputStyle}>
             <option value="">Todos</option>
+            <option value="draft">Borrador</option>
             <option value="confirmed">Confirmado</option>
             <option value="cancelled">Cancelado</option>
           </select>
@@ -175,13 +183,15 @@ export default function PagosTable({ payments, customers, role }: Props) {
             <tbody>
               {filtered.length === 0 ? (
                 <tr>
-                  <td colSpan={11} className="text-center py-10 text-sm" style={{ color: 'var(--c-ghost)' }}>
+                  <td colSpan={10} className="text-center py-10 text-sm" style={{ color: 'var(--c-ghost)' }}>
                     Sin pagos registrados
                   </td>
                 </tr>
               ) : filtered.map(p => {
                 const isCancelled = p.state === 'cancelled'
+                const isDraft = p.state === 'draft'
                 const available = Number(p.amount_available ?? 0)
+                const stateBadge = PAYMENT_STATE_BADGE[p.state] ?? PAYMENT_STATE_BADGE.confirmed
                 return (
                   <tr key={p.id}
                     style={{ borderBottom: '1px solid var(--c-rim)', opacity: isCancelled ? 0.55 : 1 }}
@@ -210,16 +220,14 @@ export default function PagosTable({ payments, customers, role }: Props) {
                     </td>
                     <td className="px-3 py-2.5 text-right">
                       <span className="font-mono text-xs font-semibold"
-                        style={{ color: available > 0.005 ? '#D97706' : '#15803D' }}>
-                        ${fmtMXN(p.amount_available)}
+                        style={{ color: isDraft ? 'var(--c-ghost)' : available > 0.005 ? '#D97706' : '#15803D' }}>
+                        {isDraft ? '—' : `$${fmtMXN(p.amount_available)}`}
                       </span>
                     </td>
                     <td className="px-3 py-2.5">
                       <span className="text-xs font-semibold px-2 py-0.5 rounded-full"
-                        style={isCancelled
-                          ? { background: '#FFE4E6', color: '#BE123C' }
-                          : { background: '#DCFCE7', color: '#15803D' }}>
-                        {isCancelled ? 'Cancelado' : 'Confirmado'}
+                        style={{ background: stateBadge.bg, color: stateBadge.color }}>
+                        {stateBadge.label}
                       </span>
                     </td>
                     <td className="px-3 py-2.5 text-xs" style={{ color: 'var(--c-dim)' }}>
@@ -227,13 +235,32 @@ export default function PagosTable({ payments, customers, role }: Props) {
                     </td>
                     <td className="px-3 py-2.5 whitespace-nowrap" onClick={e => e.stopPropagation()}>
                       <div className="flex items-center gap-1.5">
-                        {canManage && !isCancelled && available > 0.005 && (
+                        {canManage && isDraft && (
+                          <button
+                            onClick={() => setEditPayment(p)}
+                            className="text-xs px-2.5 py-1 rounded-lg font-semibold transition-opacity hover:opacity-80"
+                            style={{ background: '#DBEAFE', color: '#1D4ED8' }}
+                            title="Editar borrador">
+                            Editar
+                          </button>
+                        )}
+                        {canManage && isDraft && (
+                          <button
+                            onClick={() => handleConfirm(p.id)}
+                            disabled={confirmingId === p.id}
+                            className="text-xs px-2.5 py-1 rounded-lg font-semibold transition-opacity hover:opacity-80 disabled:opacity-40"
+                            style={{ background: '#DCFCE7', color: '#15803D' }}
+                            title="Confirmar pago">
+                            {confirmingId === p.id ? '...' : 'Confirmar'}
+                          </button>
+                        )}
+                        {canManage && p.state === 'confirmed' && available > 0.005 && (
                           <button
                             onClick={() => setApplyPayment(p)}
                             className="text-xs px-2.5 py-1 rounded-lg font-semibold transition-opacity hover:opacity-80"
                             style={{ background: '#DCFCE7', color: '#15803D' }}
                             title="Aplicar crédito a notas">
-                            💰 Aplicar
+                            Aplicar
                           </button>
                         )}
                         {canManage && !isCancelled && (
@@ -270,6 +297,18 @@ export default function PagosTable({ payments, customers, role }: Props) {
           onCreated={() => {
             setShowRegister(false)
             toast('Pago registrado')
+            router.refresh()
+          }}
+        />
+      )}
+
+      {editPayment && (
+        <EditarPagoModal
+          payment={editPayment}
+          onClose={() => setEditPayment(null)}
+          onUpdated={() => {
+            setEditPayment(null)
+            toast('Pago actualizado')
             router.refresh()
           }}
         />

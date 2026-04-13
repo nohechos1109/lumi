@@ -2,13 +2,8 @@
 
 import { useState, useMemo, useCallback, useEffect } from 'react'
 
-const METHODS = [
-  { value: 'transferencia', label: 'Transferencia' },
-  { value: 'efectivo',      label: 'Efectivo' },
-  { value: 'cheque',        label: 'Cheque' },
-  { value: 'tarjeta',       label: 'Tarjeta' },
-  { value: 'otro',          label: 'Otro' },
-]
+import { PAYMENT_METHODS } from '@/lib/constants/payments'
+import { fmtMXN } from '@/lib/formatters'
 
 export interface SelectedNote {
   id: string
@@ -23,9 +18,6 @@ interface Props {
   onClose: () => void
   onCreated: () => void
 }
-
-const fmtMXN = (n: number) =>
-  n.toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
 
 /**
  * Distribute `total` evenly across notes.
@@ -245,7 +237,7 @@ export default function MultiAbonoModal({ customerId, customerName, notes, onClo
                 className="w-full rounded-lg px-3 py-2 text-sm"
                 style={inputStyle}
               >
-                {METHODS.map(m => <option key={m.value} value={m.value}>{m.label}</option>)}
+                {PAYMENT_METHODS.map(m => <option key={m.value} value={m.value}>{m.label}</option>)}
               </select>
             </div>
             <div>

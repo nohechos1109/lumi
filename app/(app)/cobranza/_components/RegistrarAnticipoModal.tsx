@@ -2,13 +2,7 @@
 
 import { useState, useMemo } from 'react'
 
-const METHODS = [
-  { value: 'transferencia', label: 'Transferencia' },
-  { value: 'efectivo',      label: 'Efectivo' },
-  { value: 'cheque',        label: 'Cheque' },
-  { value: 'tarjeta',       label: 'Tarjeta' },
-  { value: 'otro',          label: 'Otro' },
-]
+import { PAYMENT_METHODS } from '@/lib/constants/payments'
 
 interface SaleOption {
   id: string
@@ -206,7 +200,7 @@ export default function RegistrarAnticipoModal({ sales, onClose, onCreated }: Pr
                 className="w-full rounded-lg px-3 py-2 text-sm"
                 style={inputStyle}
               >
-                {METHODS.map(m => <option key={m.value} value={m.value}>{m.label}</option>)}
+                {PAYMENT_METHODS.map(m => <option key={m.value} value={m.value}>{m.label}</option>)}
               </select>
             </div>
             <div>

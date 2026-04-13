@@ -3,8 +3,7 @@
 import { useState } from 'react'
 import type { CustomerPayment } from '@/lib/queries/customer-payments'
 
-const fmtMXN = (v: string | number | null | undefined) =>
-  v != null ? Number(v).toLocaleString('es-MX', { minimumFractionDigits: 2 }) : '—'
+import { fmtMXN } from '@/lib/formatters'
 
 interface Props {
   payment: CustomerPayment
