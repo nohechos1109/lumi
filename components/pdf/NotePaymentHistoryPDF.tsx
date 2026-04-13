@@ -1,4 +1,5 @@
 import { Document, Page, Text, View, StyleSheet, Image, Svg, Path } from '@react-pdf/renderer'
+import { METHOD_LABELS } from '@/lib/constants/payments'
 
 const styles = StyleSheet.create({
   page: { padding: '120 40 85 40', fontFamily: 'Helvetica', fontSize: 9, color: '#262626' },
@@ -44,14 +45,6 @@ const fmt = (n: string | number) =>
 const fmtDate = (s: string) => {
   const d = new Date(s + (s.length === 10 ? 'T12:00:00' : ''))
   return isNaN(d.getTime()) ? s : d.toLocaleDateString('es-MX')
-}
-
-const METHOD_LABELS: Record<string, string> = {
-  transferencia: 'Transferencia',
-  efectivo: 'Efectivo',
-  cheque: 'Cheque',
-  tarjeta: 'Tarjeta',
-  otro: 'Otro',
 }
 
 interface NoteData {
