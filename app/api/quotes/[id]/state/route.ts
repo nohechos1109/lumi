@@ -6,6 +6,7 @@ import { getQuote, updateQuoteState, QuoteState } from '@/lib/queries/quotes'
 import { insertAuditEvent } from '@/lib/queries/audit'
 import { getSaleByQuote, createSaleFromQuote } from '@/lib/queries/sales'
 import { createNotification } from '@/lib/queries/notifications'
+import { getProject } from '@/lib/queries/projects'
 
 const VALID_TRANSITIONS: Record<string, QuoteState[]> = {
   sales:   ['sent', 'cancelled'],
@@ -29,6 +30,17 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
 
   const allowed = VALID_TRANSITIONS[session.role] ?? []
   if (!allowed.includes(state)) return forbidden()
+
+  // Check route requirement BEFORE confirming
+  if (state === 'confirmed' && quote.project_id) {
+    const project = await getProject(quote.project_id)
+    if (project && !project.ruta_id) {
+      return NextResponse.json(
+        { error: 'RUTA_REQUIRED', projectId: quote.project_id, projectName: project.name, customerId: project.customer_id },
+        { status: 422 }
+      )
+    }
+  }
 
   await updateQuoteState(id, state)
   await insertAuditEvent('quote', id, 'status_change', {

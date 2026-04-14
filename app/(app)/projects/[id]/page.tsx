@@ -10,6 +10,7 @@ import { listSalesByProject } from '@/lib/queries/sales'
 import QuotesTable from '@/app/(app)/quotes/_components/QuotesTable'
 import ProjectStatusEditor from './_components/ProjectStatusEditor'
 import ProjectDescriptionEditor from './_components/ProjectDescriptionEditor'
+import ProjectRutaEditor from './_components/ProjectRutaEditor'
 import ActivityLog from '@/components/ActivityLog'
 
 export default async function ProjectDetailPage({ params }: { params: Promise<{ id: string }> }) {
@@ -55,6 +56,7 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
             <span suppressHydrationWarning>Creado el {new Date(project.created_at).toLocaleDateString('es-MX')}</span>
           </p>
           <ProjectDescriptionEditor projectId={id} description={project.description ?? null} />
+          <ProjectRutaEditor projectId={id} customerId={project.customer_id} currentRutaId={project.ruta_id ?? null} currentRutaName={project.ruta_name ?? null} />
         </div>
         
         <div className="flex flex-col items-end gap-3">

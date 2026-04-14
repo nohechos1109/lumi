@@ -39,10 +39,14 @@ export async function POST(
     amountUntaxed: Number(body.amount_untaxed ?? 0),
     amountTax: Number(body.amount_tax ?? 0),
     amountTotal: Number(body.amount_total ?? 0),
+    unitId: body.unit_id ?? null,
     ruta: body.ruta ?? undefined,
     unidad: body.unidad ?? undefined,
     observaciones: body.observaciones ?? undefined,
-    lines: body.lines ?? undefined,
+    lines: (body.lines ?? []).map((l: Record<string, unknown>) => ({
+      ...l,
+      quote_line_id: l.quote_line_id ?? null,
+    })),
   })
 
   revalidatePath(`/ventas/${id}`)

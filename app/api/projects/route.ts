@@ -29,6 +29,7 @@ export async function POST(req: NextRequest) {
       status: body.status,
       description: body.description,
       user_id: session.userId,
+      ruta_id: body.ruta_id ?? null,
     })
 
     revalidatePath('/projects')
