@@ -62,7 +62,7 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
         
         <div className="flex flex-col items-end gap-3">
           <ProjectStatusEditor projectId={id} currentStatus={project.status} />
-          <NewQuoteButton projectId={id} customerId={project.customer_id} />
+          <NewQuoteButton projectId={id} customerId={project.customer_id} customerName={project.customer_name ?? ''} />
         </div>
       </div>
 

@@ -6,6 +6,7 @@ export interface SaleNote {
   sale_id: string
   state: 'draft' | 'confirmed' | 'cancelled' | 'paid'
   concept: string | null
+  unit_id: string | null
   unit_name: string | null
   amount_untaxed: string
   amount_tax: string
@@ -44,6 +45,17 @@ export async function listNotesBySale(saleId: string): Promise<SaleNote[]> {
 
 export async function getSaleNote(id: string): Promise<SaleNote | null> {
   const { rows } = await pool.query('SELECT * FROM sale_notes WHERE id = $1', [id])
+  return rows[0] ?? null
+}
+
+export async function getSaleNoteWithUnit(id: string): Promise<SaleNote | null> {
+  const { rows } = await pool.query(
+    `SELECT sn.*, u.name AS unit_name
+     FROM sale_notes sn
+     LEFT JOIN unidades u ON u.id = sn.unit_id
+     WHERE sn.id = $1`,
+    [id]
+  )
   return rows[0] ?? null
 }
 
@@ -128,6 +140,47 @@ export async function createSaleNote(data: {
   }
 }
 
+export async function updateDraftSaleNote(noteId: string, data: {
+  concept?: string | null
+  unit_id?: string | null
+  observaciones?: string | null
+  amount_untaxed: number
+  amount_tax: number
+  amount_total: number
+  lines: CreateSaleNoteLineInput[]
+}): Promise<void> {
+  const client = await pool.connect()
+  try {
+    await client.query('BEGIN')
+    await client.query(
+      `UPDATE sale_notes SET
+         concept = $1, unit_id = $2, observaciones = $3,
+         amount_untaxed = $4, amount_tax = $5, amount_total = $6, amount_balance = $6
+       WHERE id = $7 AND state = 'draft'`,
+      [data.concept ?? null, data.unit_id ?? null, data.observaciones ?? null,
+       data.amount_untaxed, data.amount_tax, data.amount_total, noteId]
+    )
+    await client.query('DELETE FROM sale_note_lines WHERE sale_note_id = $1', [noteId])
+    for (let i = 0; i < data.lines.length; i++) {
+      const line = data.lines[i]
+      await client.query(
+        `INSERT INTO sale_note_lines
+           (sale_note_id, sequence, display_type, product_id, quote_line_id, name, qty,
+            unit_price_mxn, subtotal, tax_amount, total)
+         VALUES ($1, $2, 'product', $3, $4, $5, $6, $7, $8, $9, $10)`,
+        [noteId, i + 1, line.product_id ?? null, line.quote_line_id ?? null, line.name,
+         line.qty, line.unit_price_mxn, line.subtotal, line.tax_amount, line.total]
+      )
+    }
+    await client.query('COMMIT')
+  } catch (err) {
+    await client.query('ROLLBACK')
+    throw err
+  } finally {
+    client.release()
+  }
+}
+
 export async function deleteSaleNote(noteId: string): Promise<void> {
   await pool.query('DELETE FROM sale_notes WHERE id = $1 AND state = $2', [noteId, 'draft'])
 }
@@ -138,12 +191,29 @@ export async function updateSaleNoteState(id: string, state: string): Promise<vo
 
 export async function updateSaleNoteFields(
   noteId: string,
-  fields: { observaciones?: string | null }
+  fields: { observaciones?: string | null; concept?: string | null; unit_id?: string | null }
 ): Promise<void> {
-  if (fields.observaciones === undefined) return
+  const setClauses: string[] = []
+  const values: unknown[] = []
+
+  if (fields.observaciones !== undefined) {
+    values.push(fields.observaciones)
+    setClauses.push(`observaciones = $${values.length}`)
+  }
+  if (fields.concept !== undefined) {
+    values.push(fields.concept)
+    setClauses.push(`concept = $${values.length}`)
+  }
+  if (fields.unit_id !== undefined) {
+    values.push(fields.unit_id)
+    setClauses.push(`unit_id = $${values.length}`)
+  }
+
+  if (setClauses.length === 0) return
+  values.push(noteId)
   await pool.query(
-    `UPDATE sale_notes SET observaciones = $1 WHERE id = $2`,
-    [fields.observaciones, noteId]
+    `UPDATE sale_notes SET ${setClauses.join(', ')} WHERE id = $${values.length}`,
+    values
   )
 }
 

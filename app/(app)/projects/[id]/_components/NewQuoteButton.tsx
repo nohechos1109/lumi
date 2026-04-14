@@ -6,9 +6,10 @@ import NewQuoteModal from '@/app/(app)/quotes/_components/NewQuoteModal'
 interface Props {
   projectId: string
   customerId: string
+  customerName: string
 }
 
-export default function NewQuoteButton({ projectId, customerId }: Props) {
+export default function NewQuoteButton({ projectId, customerId, customerName }: Props) {
   const [open, setOpen] = useState(false)
 
   return (
@@ -27,6 +28,7 @@ export default function NewQuoteButton({ projectId, customerId }: Props) {
           onClose={() => setOpen(false)}
           projectId={projectId}
           customerId={customerId}
+          customerName={customerName}
         />
       )}
     </>

@@ -18,14 +18,19 @@ interface Props {
   onClose: () => void
   projectId?: string
   customerId?: string
+  customerName?: string
 }
 
 const labelCls = 'block text-xs font-semibold mb-1.5'
 const labelStyle = { color: 'var(--c-dim)' }
 
-export default function NewQuoteModal({ onClose, projectId, customerId }: Props) {
+export default function NewQuoteModal({ onClose, projectId, customerId, customerName }: Props) {
   const router = useRouter()
-  const [customers, setCustomers] = useState<Customer[]>([])
+  const [customers, setCustomers] = useState<Customer[]>(
+    customerId && customerName
+      ? [{ id: customerId, name: customerName, email: null, phone: null, companies: [] }]
+      : []
+  )
   const [loading, setLoading] = useState(false)
   const [selectedCustomerId, setSelectedCustomerId] = useState(customerId ?? '')
   const [showNewCustomerModal, setShowNewCustomerModal] = useState(false)

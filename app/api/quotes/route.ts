@@ -27,9 +27,8 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
   }
 
-  const settings = await getSettings()
-
   try {
+    const settings = await getSettings()
     const quote = await createQuote({
       customer_id: body.customer_id,
       payment_term_id: body.payment_term_id,
