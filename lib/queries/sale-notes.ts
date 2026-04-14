@@ -6,11 +6,13 @@ export interface SaleNote {
   sale_id: string
   state: 'draft' | 'confirmed' | 'cancelled' | 'paid'
   concept: string | null
+  unit_name: string | null
   amount_untaxed: string
   amount_tax: string
   amount_total: string
   amount_paid: string
   amount_balance: string
+  observaciones: string | null
   created_at: string
 }
 
@@ -30,7 +32,11 @@ export interface SaleNoteLine {
 
 export async function listNotesBySale(saleId: string): Promise<SaleNote[]> {
   const { rows } = await pool.query(
-    'SELECT * FROM sale_notes WHERE sale_id = $1 ORDER BY created_at',
+    `SELECT sn.*, u.name AS unit_name
+     FROM sale_notes sn
+     LEFT JOIN unidades u ON u.id = sn.unit_id
+     WHERE sn.sale_id = $1
+     ORDER BY sn.created_at`,
     [saleId]
   )
   return rows
@@ -67,8 +73,6 @@ export async function createSaleNote(data: {
   amountTax: number
   amountTotal: number
   unitId?: string | null
-  ruta?: string
-  unidad?: string
   observaciones?: string
   lines?: CreateSaleNoteLineInput[]
 }): Promise<SaleNote> {
@@ -92,11 +96,11 @@ export async function createSaleNote(data: {
     const { rows } = await client.query(
       `INSERT INTO sale_notes
          (number, sale_id, state, concept, amount_untaxed, amount_tax, amount_total, amount_balance,
-          unit_id, ruta, unidad, observaciones)
-       VALUES ($1, $2, 'draft', $3, $4, $5, $6, $6, $7, $8, $9, $10)
+          unit_id, observaciones)
+       VALUES ($1, $2, 'draft', $3, $4, $5, $6, $6, $7, $8)
        RETURNING *`,
       [number, data.saleId, data.concept ?? null, data.amountUntaxed, data.amountTax, data.amountTotal,
-       data.unitId ?? null, data.ruta ?? null, data.unidad ?? null, data.observaciones ?? null]
+       data.unitId ?? null, data.observaciones ?? null]
     )
     const note: SaleNote = rows[0]
 
@@ -134,19 +138,12 @@ export async function updateSaleNoteState(id: string, state: string): Promise<vo
 
 export async function updateSaleNoteFields(
   noteId: string,
-  fields: { ruta?: string | null; unidad?: string | null; observaciones?: string | null }
+  fields: { observaciones?: string | null }
 ): Promise<void> {
-  const sets: string[] = []
-  const values: (string | null)[] = []
-  let i = 1
-  if (fields.ruta !== undefined)          { sets.push(`ruta = $${i++}`);          values.push(fields.ruta) }
-  if (fields.unidad !== undefined)        { sets.push(`unidad = $${i++}`);        values.push(fields.unidad) }
-  if (fields.observaciones !== undefined) { sets.push(`observaciones = $${i++}`); values.push(fields.observaciones) }
-  if (sets.length === 0) return
-  values.push(noteId)
+  if (fields.observaciones === undefined) return
   await pool.query(
-    `UPDATE sale_notes SET ${sets.join(', ')} WHERE id = $${i}`,
-    values
+    `UPDATE sale_notes SET observaciones = $1 WHERE id = $2`,
+    [fields.observaciones, noteId]
   )
 }
 
@@ -165,8 +162,7 @@ export interface CobranzaNote {
   amount_paid: string
   amount_balance: string
   fecha: string
-  ruta: string | null
-  unidad: string | null
+  unit_name: string | null
   observaciones: string | null
   sale_id: string
   orden_servicio: string
@@ -196,8 +192,7 @@ export async function listAllNotesForCobranza(userId?: string): Promise<Cobranza
       sn.amount_paid,
       sn.amount_balance,
       TO_CHAR(sn.created_at, 'YYYY-MM-DD') AS fecha,
-      sn.ruta,
-      sn.unidad,
+      un.name          AS unit_name,
       sn.observaciones,
       s.id             AS sale_id,
       s.number         AS orden_servicio,
@@ -214,7 +209,8 @@ export async function listAllNotesForCobranza(userId?: string): Promise<Cobranza
     FROM sale_notes sn
     JOIN sales     s  ON s.id = sn.sale_id
     JOIN contacts c  ON c.id = s.customer_id
-    LEFT JOIN users u ON u.id = s.user_id
+    LEFT JOIN users u    ON u.id  = s.user_id
+    LEFT JOIN unidades un ON un.id = sn.unit_id
     LEFT JOIN LATERAL (
       SELECT
         MAX(CASE WHEN rn = 1 THEN payment_date::text END) AS p1_date,

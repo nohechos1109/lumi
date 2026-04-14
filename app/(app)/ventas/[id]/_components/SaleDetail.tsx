@@ -21,6 +21,7 @@ interface SaleNote {
   number: string
   state: string
   concept: string | null
+  unit_name: string | null
   amount_total: string
   amount_paid: string
   amount_balance: string
@@ -124,6 +125,7 @@ export default function SaleDetail({ sale, notes, payments, schedule, applicatio
               <thead>
                 <tr style={{ borderBottom: '1px solid var(--c-rim)' }}>
                   <th className="text-left px-3 py-2 font-semibold" style={{ color: 'var(--c-ghost)' }}>Número</th>
+                  <th className="text-left px-3 py-2 font-semibold" style={{ color: 'var(--c-ghost)' }}>Unidad</th>
                   <th className="text-left px-3 py-2 font-semibold" style={{ color: 'var(--c-ghost)' }}>Concepto</th>
                   <th className="text-left px-3 py-2 font-semibold" style={{ color: 'var(--c-ghost)' }}>Estado</th>
                   <th className="text-right px-3 py-2 font-semibold" style={{ color: 'var(--c-ghost)' }}>Total</th>
@@ -138,6 +140,7 @@ export default function SaleDetail({ sale, notes, payments, schedule, applicatio
                   return (
                     <tr key={n.id} style={{ borderBottom: '1px solid var(--c-rim)' }}>
                       <td className="px-3 py-2.5 font-mono font-medium" style={{ color: 'var(--c-ink)' }}>{n.number}</td>
+                      <td className="px-3 py-2.5" style={{ color: 'var(--c-dim)' }}>{n.unit_name || '—'}</td>
                       <td className="px-3 py-2.5" style={{ color: 'var(--c-dim)' }}>{n.concept || '—'}</td>
                       <td className="px-3 py-2.5">
                         <span className="text-xs font-semibold px-2 py-0.5 rounded-full" style={{ background: ns.bg, color: ns.text }}>

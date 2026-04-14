@@ -40,15 +40,13 @@ interface Filters {
   search: string
   dateFrom: string
   dateTo: string
-  ruta: string
   cliente: string
-  unidad: string
   estado: string
   agente: string
 }
 
 const EMPTY: Filters = {
-  search: '', dateFrom: '', dateTo: '', ruta: '', cliente: '', unidad: '', estado: '', agente: '',
+  search: '', dateFrom: '', dateTo: '', cliente: '', estado: '', agente: '',
 }
 
 // ── Main Component ────────────────────────────────────────────────────────────
@@ -69,8 +67,6 @@ export default function CobranzaTable({ notes, role, activeSales }: Props) {
     setFilters(prev => ({ ...prev, [key]: val })), [])
 
   // Unique values for dropdowns
-  const uniqueRutas    = useMemo(() => [...new Set(notes.map(n => n.ruta   ?? '').filter(Boolean))].sort(), [notes])
-  const uniqueUnidades = useMemo(() => [...new Set(notes.map(n => n.unidad ?? '').filter(Boolean))].sort(), [notes])
   const uniqueAgentes  = useMemo(() => [...new Set(notes.map(n => n.agente ?? '').filter(Boolean))].sort(), [notes])
 
   // Filtered rows
@@ -79,9 +75,7 @@ export default function CobranzaTable({ notes, role, activeSales }: Props) {
                             !n.orden_servicio.toLowerCase().includes(filters.search.toLowerCase())) return false
     if (filters.dateFrom && n.fecha.slice(0, 10) < filters.dateFrom) return false
     if (filters.dateTo   && n.fecha.slice(0, 10) > filters.dateTo)   return false
-    if (filters.ruta     && (n.ruta   ?? '') !== filters.ruta)    return false
     if (filters.cliente  && !n.cliente.toLowerCase().includes(filters.cliente.toLowerCase())) return false
-    if (filters.unidad   && (n.unidad ?? '') !== filters.unidad)  return false
     if (filters.estado   && n.state !== filters.estado)           return false
     if (filters.agente   && (n.agente ?? '') !== filters.agente)  return false
     return true
@@ -178,22 +172,6 @@ export default function CobranzaTable({ notes, role, activeSales }: Props) {
             className="rounded-lg px-2.5 py-1.5 text-xs w-36" style={inputStyle} />
         </FilterField>
 
-        {/* Ruta */}
-        {uniqueRutas.length > 0 && (
-          <FilterField label="Ruta">
-            <SelectFilter value={filters.ruta} onChange={v => setF('ruta', v)}
-              placeholder="Todas" options={uniqueRutas} />
-          </FilterField>
-        )}
-
-        {/* Unidad */}
-        {uniqueUnidades.length > 0 && (
-          <FilterField label="Unidad">
-            <SelectFilter value={filters.unidad} onChange={v => setF('unidad', v)}
-              placeholder="Todas" options={uniqueUnidades} />
-          </FilterField>
-        )}
-
         {/* Estado */}
         <FilterField label="Estado">
           <SelectFilter value={filters.estado} onChange={v => setF('estado', v)}
@@ -279,7 +257,6 @@ export default function CobranzaTable({ notes, role, activeSales }: Props) {
               <tr style={{ borderBottom: '2px solid var(--c-rim)' }}>
                 {canAbono && <th className="px-3 py-2.5 w-8" />}
                 <Th>FECHA</Th>
-                <Th>RUTA</Th>
                 <Th>CLIENTE</Th>
                 <Th>UNIDAD</Th>
                 <Th>O.S.</Th>
@@ -298,7 +275,7 @@ export default function CobranzaTable({ notes, role, activeSales }: Props) {
             <tbody>
               {filtered.length === 0 ? (
                 <tr>
-                  <td colSpan={canAbono ? 16 : 15} className="text-center py-10 text-sm" style={{ color: 'var(--c-ghost)' }}>
+                  <td colSpan={canAbono ? 15 : 14} className="text-center py-10 text-sm" style={{ color: 'var(--c-ghost)' }}>
                     Sin notas
                   </td>
                 </tr>
@@ -335,14 +312,11 @@ export default function CobranzaTable({ notes, role, activeSales }: Props) {
                     <td className="px-3 py-2.5 whitespace-nowrap font-mono text-xs" style={{ color: 'var(--c-dim)' }}>
                       {fmtDate(n.fecha)}
                     </td>
-                    <td className="px-3 py-2.5 text-xs" style={{ color: 'var(--c-ink)' }}>
-                      {n.ruta || <span style={{ color: 'var(--c-ghost)' }}>—</span>}
-                    </td>
                     <td className="px-3 py-2.5 text-xs font-medium" style={{ color: 'var(--c-ink)', maxWidth: 180 }}>
                       <span className="block truncate" title={n.cliente}>{n.cliente}</span>
                     </td>
                     <td className="px-3 py-2.5 text-xs" style={{ color: 'var(--c-ink)' }}>
-                      {n.unidad || <span style={{ color: 'var(--c-ghost)' }}>—</span>}
+                      {n.unit_name || <span style={{ color: 'var(--c-ghost)' }}>—</span>}
                     </td>
                     <td className="px-3 py-2.5 whitespace-nowrap" onClick={e => e.stopPropagation()}>
                       <Link href={`/ventas/${n.sale_id}`}
@@ -396,7 +370,7 @@ export default function CobranzaTable({ notes, role, activeSales }: Props) {
                           onClick={() => setEditNote(n)}
                           className="p-1.5 rounded-lg transition-opacity hover:opacity-70"
                           style={{ color: 'var(--c-ghost)' }}
-                          title="Editar ruta / unidad / obs"
+                          title="Editar observaciones"
                         >
                           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                             <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
@@ -454,8 +428,6 @@ export default function CobranzaTable({ notes, role, activeSales }: Props) {
           saleId={editNote.sale_id}
           noteId={editNote.id}
           remision={editNote.remision}
-          initialRuta={editNote.ruta}
-          initialUnidad={editNote.unidad}
           initialObservaciones={editNote.observaciones}
           onClose={() => setEditNote(null)}
           onSaved={() => { setEditNote(null); toast('Datos actualizados'); router.refresh() }}

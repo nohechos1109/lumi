@@ -6,8 +6,6 @@ interface Props {
   saleId: string
   noteId: string
   remision: string
-  initialRuta: string | null
-  initialUnidad: string | null
   initialObservaciones: string | null
   onClose: () => void
   onSaved: () => void
@@ -15,11 +13,9 @@ interface Props {
 
 export default function EditFieldsModal({
   saleId, noteId, remision,
-  initialRuta, initialUnidad, initialObservaciones,
+  initialObservaciones,
   onClose, onSaved,
 }: Props) {
-  const [ruta, setRuta]                   = useState(initialRuta ?? '')
-  const [unidad, setUnidad]               = useState(initialUnidad ?? '')
   const [observaciones, setObservaciones] = useState(initialObservaciones ?? '')
   const [loading, setLoading]             = useState(false)
   const [error, setError]                 = useState<string | null>(null)
@@ -32,7 +28,7 @@ export default function EditFieldsModal({
       const res = await fetch(`/api/sales/${saleId}/notes/${noteId}/fields`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ruta, unidad, observaciones }),
+        body: JSON.stringify({ observaciones }),
       })
       if (res.ok) {
         onSaved()
@@ -66,30 +62,6 @@ export default function EditFieldsModal({
         </div>
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-          <div>
-            <label className="text-xs font-semibold mb-1 block" style={{ color: 'var(--c-ghost)' }}>RUTA</label>
-            <input
-              type="text"
-              value={ruta}
-              onChange={e => setRuta(e.target.value)}
-              placeholder="Ej. C113"
-              className="w-full rounded-lg px-3 py-2 text-sm"
-              style={{ background: 'var(--c-rim)', border: '1px solid var(--c-rim)', color: 'var(--c-ink)', outline: 'none' }}
-            />
-          </div>
-
-          <div>
-            <label className="text-xs font-semibold mb-1 block" style={{ color: 'var(--c-ghost)' }}>UNIDAD</label>
-            <input
-              type="text"
-              value={unidad}
-              onChange={e => setUnidad(e.target.value)}
-              placeholder="Ej. C113U37"
-              className="w-full rounded-lg px-3 py-2 text-sm"
-              style={{ background: 'var(--c-rim)', border: '1px solid var(--c-rim)', color: 'var(--c-ink)', outline: 'none' }}
-            />
-          </div>
-
           <div>
             <label className="text-xs font-semibold mb-1 block" style={{ color: 'var(--c-ghost)' }}>OBSERVACIONES</label>
             <textarea

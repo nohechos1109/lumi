@@ -40,8 +40,6 @@ export async function POST(
     amountTax: Number(body.amount_tax ?? 0),
     amountTotal: Number(body.amount_total ?? 0),
     unitId: body.unit_id ?? null,
-    ruta: body.ruta ?? undefined,
-    unidad: body.unidad ?? undefined,
     observaciones: body.observaciones ?? undefined,
     lines: (body.lines ?? []).map((l: Record<string, unknown>) => ({
       ...l,

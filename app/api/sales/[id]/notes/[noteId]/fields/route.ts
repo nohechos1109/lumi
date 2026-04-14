@@ -17,9 +17,7 @@ export async function PATCH(
   if (!note) return NextResponse.json({ error: 'Nota no encontrada' }, { status: 404 })
 
   const body = await req.json()
-  const fields: { ruta?: string | null; unidad?: string | null; observaciones?: string | null } = {}
-  if ('ruta' in body)          fields.ruta          = body.ruta === '' ? null : body.ruta
-  if ('unidad' in body)        fields.unidad        = body.unidad === '' ? null : body.unidad
+  const fields: { observaciones?: string | null } = {}
   if ('observaciones' in body) fields.observaciones = body.observaciones === '' ? null : body.observaciones
 
   if (Object.keys(fields).length === 0) {
