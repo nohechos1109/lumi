@@ -1,10 +1,10 @@
-import Link from 'next/link'
 import { cookies } from 'next/headers'
 import { getIronSession } from 'iron-session'
 import { sessionOptions, SessionData } from '@/lib/session'
 import { canViewOwnQuotesOnly, canAccessShowroomQuotes } from '@/lib/permissions'
 import { listQuotesByUser, listProjectQuotesByUser, listAllQuotes } from '@/lib/queries/quotes'
 import QuotesTable from './_components/QuotesTable'
+import ShowroomButton from './_components/ShowroomButton'
 
 export default async function QuotesPage() {
   const session = await getIronSession<SessionData>(await cookies(), sessionOptions)
@@ -30,20 +30,7 @@ export default async function QuotesPage() {
             {quotes.length} {quotes.length === 1 ? 'registro' : 'registros'}
           </p>
         </div>
-        {canAccessShowroomQuotes(session.role) && (
-          <Link
-            href="/quotes/new"
-            className="inline-flex items-center gap-2 text-sm px-5 py-2.5 rounded-xl font-bold uppercase tracking-wider transition-opacity hover:opacity-85 self-start"
-            style={{ background: '#0B9962', color: '#FFFFFF', letterSpacing: '0.08em' }}
-          >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
-              <line x1="3" y1="6" x2="21" y2="6"/>
-              <path d="M16 10a4 4 0 0 1-8 0"/>
-            </svg>
-            Venta de Mostrador
-          </Link>
-        )}
+        {canAccessShowroomQuotes(session.role) && <ShowroomButton />}
       </div>
 
       <QuotesTable quotes={quotes} role={session.role} />

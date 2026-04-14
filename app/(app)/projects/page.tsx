@@ -1,10 +1,10 @@
-import Link from 'next/link'
 import { cookies } from 'next/headers'
 import { getIronSession } from 'iron-session'
 import { sessionOptions, SessionData } from '@/lib/session'
 import { canViewOwnProjectsOnly } from '@/lib/permissions'
 import { listProjectsByUser, listAllProjects } from '@/lib/queries/projects'
 import ProjectsTable from './_components/ProjectsTable'
+import NewProjectButton from './_components/NewProjectButton'
 
 export default async function ProjectsPage() {
   const session = await getIronSession<SessionData>(await cookies(), sessionOptions)
@@ -26,16 +26,7 @@ export default async function ProjectsPage() {
             {projects.length} {projects.length === 1 ? 'proyecto' : 'proyectos'} activos
           </p>
         </div>
-        <Link
-          href="/projects/new"
-          className="text-sm px-5 py-2.5 rounded-lg font-semibold transition-opacity hover:opacity-85"
-          style={{
-            background: 'var(--c-navy)',
-            color: '#FFFFFF',
-          }}
-        >
-          + Nuevo Proyecto
-        </Link>
+        <NewProjectButton />
       </div>
 
       <ProjectsTable projects={projects} role={session.role} />
