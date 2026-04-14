@@ -8,7 +8,7 @@ This project runs exclusively via Docker on port 3000. The preview tool cannot a
 
 `@db/01_schema.sql` y `@db/02_seed.sql` son la fuente de verdad del estado actual de producción. **No modificar estos archivos.**
 
-Para cualquier cambio de base de datos requerido durante el desarrollo, crear un archivo de migración con el patrón `@db/.*migration.*\.sql` (ej. `db/20260413_nombre_migration.sql`) que contenga únicamente el DDL incremental necesario (`ALTER TABLE`, `CREATE TABLE`, `CREATE INDEX`, etc.).
+Para cualquier cambio de base de datos requerido durante el desarrollo, crear un archivo de migración con el patrón `@db/NN_migration_nombre.sql` donde `NN` es el número consecutivo siguiente al último archivo existente en `db/` (ej. si el último es `13_migration_unidades_rutas.sql`, el siguiente es `14_migration_nombre.sql`). El archivo debe contener únicamente el DDL incremental necesario (`ALTER TABLE`, `CREATE TABLE`, `CREATE INDEX`, etc.). **No usar nombres basados en fechas** — el orden alfabético de los archivos determina el orden de ejecución en Docker.
 
 Estos archivos de migración son los deltas pendientes y se aplican sobre producción en el momento del deploy. No asumir que un cambio está en producción hasta que se haga el deploy. Las migraciones deben ser seguras para datos existentes: usar `IF NOT EXISTS`, `IF EXISTS`, o equivalentes según corresponda.
 
