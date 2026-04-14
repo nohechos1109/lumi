@@ -35,7 +35,7 @@ const DEFAULT_STYLE: LogoStyle = {
   glowInner: '#60A5FA',
   glowOuter: '#1B3461',
   lumiStart: '#1B3461',
-  lumiEnd: '#60A5FA',
+  lumiEnd: '#3B82F6',
 }
 
 function getLabelProps(label: string): { fontSize: number; letterSpacing: number } {
@@ -66,26 +66,25 @@ export default function DynamicLogo({ homeHref }: { homeHref: string }) {
         xmlns="http://www.w3.org/2000/svg"
       >
         <defs>
-          {/* Mark gradient — L shape fill */}
-          <linearGradient id="lg-markFill" x1="10" y1="7" x2="36" y2="38" gradientUnits="userSpaceOnUse">
+          {/* Rounded square fill — section color */}
+          <linearGradient id="lg-boxGrad" x1="2" y1="2" x2="44" y2="44" gradientUnits="userSpaceOnUse">
             <stop offset="0%"   stopColor={style.lumiStart} />
             <stop offset="100%" stopColor={style.lumiEnd} />
           </linearGradient>
 
-          {/* Soft area glow behind the whole mark */}
-          <radialGradient id="lg-areaGlow" cx="50%" cy="50%" r="50%">
-            <stop offset="0%"   stopColor={style.glowInner} stopOpacity="0.14" />
-            <stop offset="100%" stopColor={style.glowInner} stopOpacity="0" />
+          {/* Glass inner highlight */}
+          <radialGradient id="lg-innerLight" cx="30%" cy="22%" r="55%">
+            <stop offset="0%"   stopColor="white" stopOpacity="0.16" />
+            <stop offset="100%" stopColor="white" stopOpacity="0" />
           </radialGradient>
 
-          {/* Dot halo */}
-          <radialGradient id="lg-dotHalo" cx="50%" cy="50%" r="50%">
-            <stop offset="0%"   stopColor={style.glowInner} stopOpacity="0.45" />
-            <stop offset="100%" stopColor={style.glowInner} stopOpacity="0" />
-          </radialGradient>
+          {/* Drop shadow */}
+          <filter id="lg-shadow" x="-20%" y="-20%" width="140%" height="140%">
+            <feDropShadow dx="0" dy="2" stdDeviation="4" floodColor={style.glowOuter} floodOpacity="0.32" />
+          </filter>
 
-          {/* LUMI text gradient */}
-          <linearGradient id="lg-lumiGrad" x1="50" y1="12" x2="148" y2="38" gradientUnits="userSpaceOnUse">
+          {/* LUMI wordmark gradient */}
+          <linearGradient id="lg-lumiGrad" x1="52" y1="12" x2="148" y2="38" gradientUnits="userSpaceOnUse">
             <stop offset="0%"   stopColor={style.lumiStart} />
             <stop offset="100%" stopColor={style.lumiEnd} />
           </linearGradient>
@@ -97,34 +96,36 @@ export default function DynamicLogo({ homeHref }: { homeHref: string }) {
           </linearGradient>
         </defs>
 
-        {/* ── Mark: L anagram + lumen dot ─────────────────── */}
+        {/* ── Mark: L inside rounded square ─────────────── */}
 
-        {/* Soft background glow */}
-        <circle cx="23" cy="23" r="22" fill="url(#lg-areaGlow)" />
+        {/* Card */}
+        <rect x="2" y="2" width="42" height="42" rx="11" fill="url(#lg-boxGrad)" filter="url(#lg-shadow)" />
+
+        {/* Border highlight */}
+        <rect x="2" y="2" width="42" height="42" rx="11" fill="none" stroke="white" strokeWidth="1" opacity="0.2" />
+
+        {/* Glass inner reflection */}
+        <rect x="2" y="2" width="42" height="42" rx="11" fill="url(#lg-innerLight)" />
 
         {/* L — vertical bar */}
-        <rect x="10" y="7" width="9.5" height="32" rx="3.5" fill="url(#lg-markFill)" />
+        <rect x="12" y="9" width="8.5" height="27" rx="3" fill="white" opacity="0.96" />
 
         {/* L — horizontal bar */}
-        <rect x="10" y="29.5" width="26" height="9.5" rx="3.5" fill="url(#lg-markFill)" />
+        <rect x="12" y="29" width="22" height="8.5" rx="3" fill="white" opacity="0.96" />
 
-        {/* Lumen dot — halo ring (outer) */}
-        <circle cx="32" cy="13" r="9" fill="url(#lg-dotHalo)" />
+        {/* Lumen dot — soft outer glow */}
+        <circle cx="33" cy="12" r="5.5" fill="white" opacity="0.10" />
 
-        {/* Lumen dot — mid ring */}
-        <circle cx="32" cy="13" r="5.5" fill={style.glowInner} opacity="0.28" />
+        {/* Lumen dot — core */}
+        <circle cx="33" cy="12" r="2.8" fill="white" opacity="0.52" />
 
-        {/* Lumen dot — bright core */}
-        <circle cx="32" cy="13" r="3.5" fill={style.glowInner} opacity="0.9" />
+        {/* Lumen dot — specular */}
+        <circle cx="32.2" cy="11.3" r="1.1" fill="white" opacity="0.78" />
 
-        {/* Lumen dot — specular highlight */}
-        <circle cx="31" cy="12" r="1.2" fill="#ffffff" opacity="0.85" />
+        {/* ── Wordmark ──────────────────────────────────── */}
 
-        {/* ── Wordmark ─────────────────────────────────────── */}
-
-        {/* LUMI */}
         <text
-          x="50" y="30"
+          x="52" y="30"
           fontFamily="system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif"
           fontWeight="900"
           fontSize="23"
@@ -132,10 +133,9 @@ export default function DynamicLogo({ homeHref }: { homeHref: string }) {
           fill="url(#lg-lumiGrad)"
         >LUMI</text>
 
-        {/* Sub-label (hidden on home / dashboard / admin root) */}
         {style.sublabel && (
           <text
-            x="52" y="41"
+            x="54" y="41"
             fontFamily="system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif"
             fontWeight="800"
             fontSize={fontSize}

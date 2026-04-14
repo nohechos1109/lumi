@@ -318,14 +318,58 @@ export default function LoginPage() {
         <div className="login-card">
           {/* Logo */}
           <div className="logo-wrap">
-            <Image
-              src="/lumi-logo-saas.svg"
-              alt="LUMI SAAS"
-              width={256}
-              height={74}
-              className="object-contain"
-              priority
-            />
+            <svg width="200" height="148" viewBox="0 0 200 148" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <linearGradient id="lgi-boxGrad" x1="56" y1="0" x2="144" y2="90" gradientUnits="userSpaceOnUse">
+                  <stop offset="0%"   stopColor="#0EA5E9" />
+                  <stop offset="100%" stopColor="#10B981" />
+                </linearGradient>
+<radialGradient id="lgi-innerLight" cx="25%" cy="20%" r="60%">
+                  <stop offset="0%"   stopColor="white" stopOpacity="0.18" />
+                  <stop offset="100%" stopColor="white" stopOpacity="0" />
+                </radialGradient>
+                <linearGradient id="lgi-lumiGrad" x1="40" y1="108" x2="160" y2="148" gradientUnits="userSpaceOnUse">
+                  <stop offset="0%"   stopColor="#0EA5E9" />
+                  <stop offset="100%" stopColor="#10B981" />
+                </linearGradient>
+                <filter id="lgi-shadow" x="-20%" y="-20%" width="140%" height="140%">
+                  <feDropShadow dx="0" dy="6" stdDeviation="12" floodColor="#0EA5E9" floodOpacity="0.28" />
+                </filter>
+              </defs>
+
+              {/* Rounded square card */}
+              <rect x="56" y="0" width="88" height="88" rx="22" fill="url(#lgi-boxGrad)" filter="url(#lgi-shadow)" />
+
+              {/* Inner highlight (glass effect) */}
+              <rect x="56" y="0" width="88" height="88" rx="22" fill="url(#lgi-innerLight)" />
+              <rect x="56" y="0" width="88" height="88" rx="22" fill="none" stroke="white" strokeWidth="1" opacity="0.2" />
+
+              {/* L — vertical bar */}
+              <rect x="78" y="16" width="14" height="54" rx="4.5" fill="white" opacity="0.96" />
+
+              {/* L — horizontal bar */}
+              <rect x="78" y="56" width="42" height="14" rx="4.5" fill="white" opacity="0.96" />
+
+              {/* Lumen dot — soft outer glow */}
+              <circle cx="116" cy="24" r="8"   fill="white" opacity="0.09" />
+
+              {/* Lumen dot — core */}
+              <circle cx="116" cy="24" r="4"   fill="white" opacity="0.48" />
+
+              {/* Lumen dot — specular */}
+              <circle cx="114.8" cy="22.8" r="1.6" fill="white" opacity="0.78" />
+
+              {/* LUMI wordmark */}
+              <text
+                x="100" y="126"
+                textAnchor="middle"
+                fontFamily="'Montserrat', system-ui, -apple-system, sans-serif"
+                fontWeight="900"
+                fontSize="40"
+                letterSpacing="8"
+                fill="url(#lgi-lumiGrad)"
+              >LUMI</text>
+            </svg>
           </div>
 
           {/* Headline */}
