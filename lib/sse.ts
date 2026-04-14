@@ -33,3 +33,10 @@ export function broadcastToUser(userId: string, event: string, payload: unknown)
 export function broadcastToUsers(userIds: string[], event: string, payload: unknown): void {
   for (const userId of userIds) broadcastToUser(userId, event, payload)
 }
+
+export function broadcastToAll(event: string, payload: unknown): void {
+  const data = `event: ${event}\ndata: ${JSON.stringify(payload)}\n\n`
+  for (const set of listeners.values()) {
+    for (const controller of set) sendToController(controller, data)
+  }
+}

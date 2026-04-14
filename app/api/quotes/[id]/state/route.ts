@@ -7,6 +7,7 @@ import { insertAuditEvent } from '@/lib/queries/audit'
 import { getSaleByQuote, createSaleFromQuote } from '@/lib/queries/sales'
 import { createNotification } from '@/lib/queries/notifications'
 import { getProject } from '@/lib/queries/projects'
+import { broadcastToAll } from '@/lib/sse'
 
 const VALID_TRANSITIONS: Record<string, QuoteState[]> = {
   sales:   ['sent', 'cancelled'],
@@ -75,5 +76,6 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
   }
 
   revalidatePath('/quotes')
+  broadcastToAll('quotes_updated', { quoteId: id })
   return NextResponse.json({ ok: true })
 }

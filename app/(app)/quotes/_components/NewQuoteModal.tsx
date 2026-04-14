@@ -16,16 +16,18 @@ interface Customer {
 
 interface Props {
   onClose: () => void
+  projectId?: string
+  customerId?: string
 }
 
 const labelCls = 'block text-xs font-semibold mb-1.5'
 const labelStyle = { color: 'var(--c-dim)' }
 
-export default function NewQuoteModal({ onClose }: Props) {
+export default function NewQuoteModal({ onClose, projectId, customerId }: Props) {
   const router = useRouter()
   const [customers, setCustomers] = useState<Customer[]>([])
   const [loading, setLoading] = useState(false)
-  const [selectedCustomerId, setSelectedCustomerId] = useState('')
+  const [selectedCustomerId, setSelectedCustomerId] = useState(customerId ?? '')
   const [showNewCustomerModal, setShowNewCustomerModal] = useState(false)
   const [today, setToday] = useState('')
 
@@ -63,7 +65,7 @@ export default function NewQuoteModal({ onClose }: Props) {
           unit_count: Number(form.get('unit_count')),
           quotation_date: new Date().toISOString(),
           expiration_date: form.get('expiration_date') || null,
-          project_id: null,
+          project_id: projectId ?? null,
         }),
       })
       const result = await res.json()
@@ -148,19 +150,21 @@ export default function NewQuoteModal({ onClose }: Props) {
               <label className={labelCls} style={{ ...labelStyle, marginBottom: 0 }}>
                 Cliente *
               </label>
-              <button
-                type="button"
-                className="flex items-center gap-1 rounded-md px-3 py-1 text-xs font-semibold text-white transition-opacity hover:opacity-85"
-                style={{ backgroundColor: 'var(--c-navy)', cursor: 'pointer' }}
-                onClick={() => setShowNewCustomerModal(true)}
-              >
-                + Nuevo cliente
-              </button>
+              {!customerId && (
+                <button
+                  type="button"
+                  className="flex items-center gap-1 rounded-md px-3 py-1 text-xs font-semibold text-white transition-opacity hover:opacity-85"
+                  style={{ backgroundColor: 'var(--c-navy)', cursor: 'pointer' }}
+                  onClick={() => setShowNewCustomerModal(true)}
+                >
+                  + Nuevo cliente
+                </button>
+              )}
             </div>
             <CustomerSearchSelect
               customers={customers}
               value={selectedCustomerId}
-              onChange={setSelectedCustomerId}
+              onChange={customerId ? () => {} : setSelectedCustomerId}
             />
           </div>
 

@@ -12,6 +12,7 @@ import ProjectStatusEditor from './_components/ProjectStatusEditor'
 import ProjectDescriptionEditor from './_components/ProjectDescriptionEditor'
 import ProjectRutaEditor from './_components/ProjectRutaEditor'
 import ActivityLog from '@/components/ActivityLog'
+import NewQuoteButton from './_components/NewQuoteButton'
 
 export default async function ProjectDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
@@ -61,16 +62,7 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
         
         <div className="flex flex-col items-end gap-3">
           <ProjectStatusEditor projectId={id} currentStatus={project.status} />
-          <Link
-            href={`/quotes/new?project_id=${id}&customer_id=${project.customer_id}`}
-            className="text-sm px-5 py-2.5 rounded-lg font-semibold transition-opacity hover:opacity-85"
-            style={{
-              background: 'var(--c-navy)',
-              color: '#FFFFFF',
-            }}
-          >
-            + Nueva Cotización
-          </Link>
+          <NewQuoteButton projectId={id} customerId={project.customer_id} />
         </div>
       </div>
 

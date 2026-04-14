@@ -4,6 +4,7 @@ import { getSession, unauthorized } from '@/lib/auth-guard'
 import { canViewOwnQuotesOnly, canAccessShowroomQuotes } from '@/lib/permissions'
 import { listQuotesByUser, listAllQuotes, createQuote } from '@/lib/queries/quotes'
 import { getSettings } from '@/lib/queries/settings'
+import { broadcastToAll } from '@/lib/sse'
 
 export async function GET() {
   const session = await getSession()
@@ -46,6 +47,7 @@ export async function POST(req: NextRequest) {
 
     revalidatePath('/quotes')
     revalidatePath('/projects')
+    broadcastToAll('quotes_updated', { quoteId: quote.id })
     return NextResponse.json(quote, { status: 201 })
   } catch (error) {
     console.error('POST /api/quotes ERROR:', error)

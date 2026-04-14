@@ -3,6 +3,7 @@ import { revalidatePath } from 'next/cache'
 import { getSession, unauthorized, forbidden } from '@/lib/auth-guard'
 import { canViewOwnQuotesOnly } from '@/lib/permissions'
 import { getQuote, archiveQuote, unarchiveQuote } from '@/lib/queries/quotes'
+import { broadcastToAll } from '@/lib/sse'
 
 export async function POST(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const session = await getSession()
@@ -24,5 +25,6 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
 
   revalidatePath('/quotes')
   revalidatePath('/projects')
+  broadcastToAll('quotes_updated', { quoteId: id })
   return NextResponse.json({ ok: true })
 }

@@ -1,11 +1,12 @@
 'use client'
 
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useCallback } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import ConfirmModal from '@/components/ui/ConfirmModal'
 import { notifyRefresh } from '@/lib/toast'
 import { canViewOwnQuotesOnly } from '@/lib/permissions'
+import { useSSE } from '@/hooks/useSSE'
 
 interface Quote {
   id: string
@@ -64,6 +65,9 @@ export default function QuotesTable({
 }) {
   const router = useRouter()
   const [deleteId, setDeleteId] = useState<string | null>(null)
+
+  const handleQuotesUpdated = useCallback(() => { router.refresh() }, [router])
+  useSSE({ quotes_updated: handleQuotesUpdated })
   
   // Filtering state
   const [searchQuery, setSearchQuery] = useState('')
