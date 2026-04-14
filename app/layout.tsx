@@ -17,8 +17,8 @@ const firaCode = Fira_Code({
 });
 
 export const metadata: Metadata = {
-  title: "LUMI - QUOTES",
-  description: "Cotizador Empresarial LUMI",
+  title: "LUMI - SAAS",
+  description: "Plataforma de gestión empresarial LUMI",
   icons: {
     icon: "/favicon.svg",
   },
