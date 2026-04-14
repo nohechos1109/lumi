@@ -398,13 +398,18 @@ export default function QuotesTable({
                     style={{ opacity: q.archived_at ? 0.5 : 1 }}
                   >
                     <td className="px-5 py-4 font-mono text-xs font-bold" style={{ color: 'var(--c-navy)', letterSpacing: '0.08em' }}>
-                      <div className="flex items-center gap-2">
-                        <span>{q.number}</span>
-                        {q.archived_at && (
-                          <span className="badge" style={{ background: 'var(--c-panel)', color: 'var(--c-ghost)', border: '1px solid var(--c-rim)', fontSize: '10px' }}>
-                            Archivado
-                          </span>
+                      <div className="flex flex-col gap-1 items-start">
+                        {!q.project_id && (
+                          <span className="badge" style={{ fontSize: '0.55rem', padding: '1px 5px', background: '#fef3c7', color: '#92400e', border: '1px solid #fde68a' }}>Mostrador</span>
                         )}
+                        <div className="flex items-center gap-2">
+                          <span>{q.number}</span>
+                          {q.archived_at && (
+                            <span className="badge" style={{ background: 'var(--c-panel)', color: 'var(--c-ghost)', border: '1px solid var(--c-rim)', fontSize: '10px' }}>
+                              Archivado
+                            </span>
+                          )}
+                        </div>
                       </div>
                     </td>
                     {!hideCustomer && (
@@ -428,10 +433,7 @@ export default function QuotesTable({
                       </td>
                     )}
                     <td className="px-5 py-4">
-                      {!q.project_id
-                        ? <span className="badge" style={{ background: '#fef3c7', color: '#92400e', border: '1px solid #fde68a' }}>Mostrador</span>
-                        : <span className={s.cls}>{s.label}</span>
-                      }
+                      <span className={s.cls}>{s.label}</span>
                     </td>
                     <td className="px-5 py-4 text-right font-mono font-bold" style={{ color: 'var(--c-navy)' }}>
                       ${(Number(q.amount_total) * (q.unit_count ?? 1)).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
