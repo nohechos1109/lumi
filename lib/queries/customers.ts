@@ -17,7 +17,6 @@ export interface Contact {
   phone: string | null
   first_name: string | null
   job_title: string | null
-  website: string | null
   tax_id: string | null
   created_at: string
   companies: ContactCompanyLink[]
@@ -30,7 +29,7 @@ const SELECT_CONTACTS = `
   SELECT
     c.id, c.type, c.name, c.email, c.phone,
     c.first_name, c.job_title,
-    c.website, c.tax_id, c.created_at,
+    c.tax_id, c.created_at,
     COALESCE(
       jsonb_agg(
         jsonb_build_object('id', co.id, 'name', co.name, 'role', ccl.role, 'is_primary', ccl.is_primary)
@@ -75,12 +74,11 @@ export async function createContact(data: {
   phone?: string | null
   first_name?: string | null
   job_title?: string | null
-  website?: string | null
   tax_id?: string | null
 }): Promise<Contact> {
   const { rows } = await pool.query(
-    `INSERT INTO contacts (type, name, email, phone, first_name, job_title, website, tax_id)
-     VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+    `INSERT INTO contacts (type, name, email, phone, first_name, job_title, tax_id)
+     VALUES ($1, $2, $3, $4, $5, $6, $7)
      RETURNING *`,
     [
       data.type,
@@ -89,7 +87,6 @@ export async function createContact(data: {
       data.phone ?? null,
       data.first_name ?? null,
       data.job_title ?? null,
-      data.website ?? null,
       data.tax_id ?? null,
     ]
   )
@@ -109,7 +106,6 @@ export async function updateContact(id: string, data: {
   phone?: string | null
   first_name?: string | null
   job_title?: string | null
-  website?: string | null
   tax_id?: string | null
 }): Promise<void> {
   const fields: string[] = []
@@ -121,7 +117,6 @@ export async function updateContact(id: string, data: {
   if (data.phone !== undefined)      { fields.push(`phone = $${i++}`);      values.push(data.phone) }
   if (data.first_name !== undefined) { fields.push(`first_name = $${i++}`); values.push(data.first_name) }
   if (data.job_title !== undefined)  { fields.push(`job_title = $${i++}`);  values.push(data.job_title) }
-  if (data.website !== undefined)    { fields.push(`website = $${i++}`);    values.push(data.website) }
   if (data.tax_id !== undefined)     { fields.push(`tax_id = $${i++}`);     values.push(data.tax_id) }
 
   if (fields.length === 0) return

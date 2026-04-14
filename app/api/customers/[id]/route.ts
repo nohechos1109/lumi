@@ -10,7 +10,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
 
   const { id } = await params
   const body = await req.json()
-  const { name, email, phone, first_name, job_title, website, tax_id } = body
+  const { name, email, phone, first_name, job_title, tax_id } = body
   if (!name?.trim()) return NextResponse.json({ error: 'Nombre requerido' }, { status: 400 })
   await updateContact(id, {
     name: name.trim(),
@@ -18,7 +18,6 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
     phone: phone?.trim() || null,
     first_name: first_name?.trim() || null,
     job_title: job_title?.trim() || null,
-    website: website?.trim() || null,
     tax_id: tax_id?.trim() || null,
   })
   revalidatePath('/customers')

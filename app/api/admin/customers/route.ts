@@ -14,7 +14,7 @@ export async function POST(req: NextRequest) {
   if (!session) return unauthorized()
   if (session.role !== 'admin') return forbidden()
   const body = await req.json()
-  const { type = 'company', name, email, phone, first_name, job_title, website, tax_id } = body
+  const { type = 'company', name, email, phone, first_name, job_title, tax_id } = body
   if (!name?.trim()) return NextResponse.json({ error: 'Nombre requerido' }, { status: 400 })
-  return NextResponse.json(await createContact({ type, name, email, phone, first_name, job_title, website, tax_id }), { status: 201 })
+  return NextResponse.json(await createContact({ type, name, email, phone, first_name, job_title, tax_id }), { status: 201 })
 }

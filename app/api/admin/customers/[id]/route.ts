@@ -7,9 +7,9 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
   if (!session) return unauthorized()
   if (session.role !== 'admin') return forbidden()
   const { id } = await params
-  const { name, email, phone, first_name, job_title, website, tax_id } = await req.json()
+  const { name, email, phone, first_name, job_title, tax_id } = await req.json()
   if (!name?.trim()) return NextResponse.json({ error: 'Nombre requerido' }, { status: 400 })
-  await updateContact(id, { name, email: email || null, phone: phone || null, first_name: first_name || null, job_title: job_title || null, website: website || null, tax_id: tax_id || null })
+  await updateContact(id, { name, email: email || null, phone: phone || null, first_name: first_name || null, job_title: job_title || null, tax_id: tax_id || null })
   return NextResponse.json({ ok: true })
 }
 
