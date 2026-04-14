@@ -1,15 +1,19 @@
 import pool from '@/lib/db'
 
-export interface GlobalSettings { id: string; fx_mxn_per_usd: string }
+export interface GlobalSettings { id: string; fx_mxn_per_usd: string; show_margin: boolean }
 export interface PaymentTerm { id: string; name: string }
 
 export async function getSettings(): Promise<GlobalSettings | null> {
-  const { rows } = await pool.query('SELECT id, fx_mxn_per_usd FROM global_settings LIMIT 1')
+  const { rows } = await pool.query('SELECT id, fx_mxn_per_usd, show_margin FROM global_settings LIMIT 1')
   return rows[0] ?? null
 }
 
 export async function updateFx(fx: number): Promise<void> {
   await pool.query('UPDATE global_settings SET fx_mxn_per_usd = $1', [fx])
+}
+
+export async function updateShowMargin(showMargin: boolean): Promise<void> {
+  await pool.query('UPDATE global_settings SET show_margin = $1', [showMargin])
 }
 
 export async function listPaymentTerms(): Promise<PaymentTerm[]> {

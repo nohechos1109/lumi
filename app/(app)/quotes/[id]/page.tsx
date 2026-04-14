@@ -6,6 +6,7 @@ import { sessionOptions, SessionData } from '@/lib/session'
 import { canViewOwnQuotesOnly, canAccessShowroomQuotes } from '@/lib/permissions'
 import { getQuote } from '@/lib/queries/quotes'
 import { getSaleByQuote } from '@/lib/queries/sales'
+import { getSettings } from '@/lib/queries/settings'
 import LineEditor from './_components/LineEditor'
 import QuoteActions from './_components/QuoteActions'
 import UnitCountEditor from './_components/UnitCountEditor'
@@ -27,6 +28,8 @@ export default async function QuotePage({ params }: { params: Promise<{ id: stri
 
   // Check for associated sale
   const sale = quote.state === 'confirmed' ? await getSaleByQuote(id) : null
+  const settings = await getSettings()
+  const showMargin = settings?.show_margin ?? true
 
   return (
     <div>
@@ -176,6 +179,7 @@ export default async function QuotePage({ params }: { params: Promise<{ id: stri
         isLocked={quote.state !== 'draft'}
         quoteState={quote.state}
         isShowroom={isShowroom}
+        showMargin={showMargin}
       />
 
       {(session.role === 'manager' || session.role === 'admin') && (

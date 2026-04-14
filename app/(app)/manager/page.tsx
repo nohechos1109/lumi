@@ -1,8 +1,11 @@
 import { listAllQuotes } from '@/lib/queries/quotes'
+import { getSettings } from '@/lib/queries/settings'
 import ManagerQuotesTable from './_components/ManagerQuotesTable'
 
 export default async function ManagerPage() {
   const quotes = await listAllQuotes()
+  const settings = await getSettings()
+  const showMargin = settings?.show_margin ?? true
 
   const totals = {
     draft:     quotes.filter(q => q.state === 'draft').length,
@@ -41,7 +44,7 @@ export default async function ManagerPage() {
       </div>
 
       {/* Table */}
-      <ManagerQuotesTable quotes={quotes} />
+      <ManagerQuotesTable quotes={quotes} showMargin={showMargin} />
     </div>
   )
 }

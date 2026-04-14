@@ -23,7 +23,7 @@ const STATE_LABELS: Record<string, { label: string; cls: string }> = {
   expired:   { label: 'Expirada',   cls: 'badge badge-expired' },
 }
 
-export default function ManagerQuotesTable({ quotes }: { quotes: Quote[] }) {
+export default function ManagerQuotesTable({ quotes, showMargin = true }: { quotes: Quote[]; showMargin?: boolean }) {
   const router = useRouter()
   
   // Filtering state
@@ -201,7 +201,7 @@ export default function ManagerQuotesTable({ quotes }: { quotes: Quote[] }) {
                 <th className="text-left px-5 py-4 text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--c-ghost)' }}>Fecha</th>
                 <th className="text-left px-5 py-4 text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--c-ghost)' }}>Estado</th>
                 <th className="text-right px-5 py-4 text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--c-ghost)' }}>Total</th>
-                <th className="text-right px-5 py-4 text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--c-ghost)' }}>Margen</th>
+                {showMargin && <th className="text-right px-5 py-4 text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--c-ghost)' }}>Margen</th>}
               </tr>
             </thead>
             <tbody className="divide-y divide-[var(--c-rim)]">
@@ -229,11 +229,13 @@ export default function ManagerQuotesTable({ quotes }: { quotes: Quote[] }) {
                   <td className="px-5 py-4 text-right font-mono font-bold" style={{ color: 'var(--c-navy)' }}>
                     ${(Number(q.amount_total) * (q.unit_count ?? 1)).toLocaleString('es-MX', { minimumFractionDigits: 2 })}
                   </td>
-                  <td className="px-5 py-4 text-right">
-                    <span className="text-xs font-mono font-bold" style={{ color: Number(q.margin_amount) >= 0 ? 'var(--c-mint)' : 'var(--c-rose)' }}>
-                      ${Number(q.margin_amount).toLocaleString('es-MX', { minimumFractionDigits: 0 })}
-                    </span>
-                  </td>
+                  {showMargin && (
+                    <td className="px-5 py-4 text-right">
+                      <span className="text-xs font-mono font-bold" style={{ color: Number(q.margin_amount) >= 0 ? 'var(--c-mint)' : 'var(--c-rose)' }}>
+                        ${Number(q.margin_amount).toLocaleString('es-MX', { minimumFractionDigits: 0 })}
+                      </span>
+                    </td>
+                  )}
                 </tr>
               )
             })}

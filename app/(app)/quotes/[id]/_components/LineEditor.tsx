@@ -29,6 +29,7 @@ interface Props {
   isLocked?: boolean
   quoteState?: string
   isShowroom?: boolean
+  showMargin?: boolean
 }
 
 const inputCls = 'text-right rounded-lg px-2 py-1.5 text-sm font-mono outline-none transition-colors'
@@ -38,7 +39,7 @@ const inputStyle = {
   color: 'var(--c-ink)',
 }
 
-export default function LineEditor({ quoteId, fxSnapshot, unitCount, role, isLocked, quoteState, isShowroom }: Props) {
+export default function LineEditor({ quoteId, fxSnapshot, unitCount, role, isLocked, quoteState, isShowroom, showMargin = true }: Props) {
   const router = useRouter()
   const [lines, setLines] = useState<QuoteLine[]>([])
   const [totals, setTotals] = useState({ untaxed: 0, tax: 0, total: 0, margin: 0, marginPct: 0 })
@@ -379,7 +380,7 @@ export default function LineEditor({ quoteId, fxSnapshot, unitCount, role, isLoc
                   <th className="text-right px-4 py-3.5 text-xs font-bold uppercase tracking-widest w-28" style={{ color: 'var(--c-ghost)' }}>Precio Unit.</th>
                   <th className="text-right px-4 py-3.5 text-xs font-bold uppercase tracking-widest w-20" style={{ color: 'var(--c-ghost)' }}>Desc %</th>
                   <th className="text-right px-4 py-3.5 text-xs font-bold uppercase tracking-widest w-28" style={{ color: 'var(--c-ghost)' }}>Subtotal</th>
-                  {role === 'admin' && (
+                  {role === 'admin' && showMargin && (
                     <th className="text-right px-4 py-3.5 text-xs font-bold uppercase tracking-widest w-24" style={{ color: 'var(--c-ghost)' }}>Margen</th>
                   )}
                   {!isLocked && <th className="w-10 px-2 py-3.5"></th>}
@@ -615,7 +616,7 @@ export default function LineEditor({ quoteId, fxSnapshot, unitCount, role, isLoc
                       <td className="px-4 py-3 text-right font-mono font-medium" style={{ color: 'var(--c-ink)' }}>
                         ${sub.toLocaleString('es-MX', { minimumFractionDigits: 2 })}
                       </td>
-                      {role === 'admin' && (
+                      {role === 'admin' && showMargin && (
                         <td className="px-4 py-3 text-right">
                           <span className="text-xs font-mono font-medium" style={{ color: margin >= 0 ? 'var(--c-mint)' : 'var(--c-rose)' }}>
                             ${margin.toLocaleString('es-MX', { minimumFractionDigits: 0 })}
@@ -678,7 +679,7 @@ export default function LineEditor({ quoteId, fxSnapshot, unitCount, role, isLoc
                     </div>
                   </div>
                 )}
-                {role === 'admin' && (
+                {role === 'admin' && showMargin && (
                   <div className="flex justify-end">
                     <span className="text-xs font-mono" style={{ color: totals.margin >= 0 ? 'var(--c-mint)' : 'var(--c-rose)' }}>
                       {isShowroom

@@ -8,11 +8,15 @@ interface Props {
 
 export default function SettingsModal({ onClose }: Props) {
   const [fx, setFx] = useState('')
+  const [showMargin, setShowMargin] = useState(true)
   const [saved, setSaved] = useState(false)
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   useEffect(() => {
-    fetch('/api/admin/settings').then(r => r.json()).then(s => setFx(s?.fx_mxn_per_usd ?? ''))
+    fetch('/api/admin/settings').then(r => r.json()).then(s => {
+      setFx(s?.fx_mxn_per_usd ?? '')
+      setShowMargin(s?.show_margin ?? true)
+    })
   }, [])
 
   useEffect(() => {
@@ -34,7 +38,7 @@ export default function SettingsModal({ onClose }: Props) {
     const res = await fetch('/api/admin/settings', {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ fx_mxn_per_usd: Number(fx) }),
+      body: JSON.stringify({ fx_mxn_per_usd: Number(fx), show_margin: showMargin }),
     })
     if (!res.ok) {
       const result = await res.json().catch(() => ({}))
@@ -97,6 +101,7 @@ export default function SettingsModal({ onClose }: Props) {
 
         {/* Body */}
         <form onSubmit={handleSave} className="flex flex-col gap-5 px-6 py-5">
+          {/* FX Rate */}
           <div>
             <label
               className="block text-xs font-bold uppercase tracking-widest mb-2"
@@ -119,6 +124,49 @@ export default function SettingsModal({ onClose }: Props) {
             </p>
           </div>
 
+          {/* Show Margin Toggle */}
+          <div style={{ borderTop: '1px solid var(--c-rim)', paddingTop: '1.25rem' }}>
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--c-dim)', letterSpacing: '0.1em' }}>
+                  Mostrar margen de ganancia
+                </p>
+                <p className="text-xs mt-1" style={{ color: 'var(--c-ghost)' }}>
+                  Visible en cotizaciones y vistas de manager.
+                </p>
+              </div>
+              <button
+                type="button"
+                role="switch"
+                aria-checked={showMargin}
+                onClick={() => setShowMargin(v => !v)}
+                className="relative flex-shrink-0 rounded-full transition-colors"
+                style={{
+                  width: '44px',
+                  height: '24px',
+                  background: showMargin ? 'var(--c-navy)' : 'var(--c-rim)',
+                  border: 'none',
+                  cursor: 'pointer',
+                  padding: 0,
+                }}
+              >
+                <span
+                  className="absolute rounded-full transition-transform"
+                  style={{
+                    width: '18px',
+                    height: '18px',
+                    background: '#fff',
+                    top: '3px',
+                    left: '3px',
+                    transform: showMargin ? 'translateX(20px)' : 'translateX(0)',
+                    boxShadow: '0 1px 3px rgba(0,0,0,0.2)',
+                  }}
+                />
+              </button>
+            </div>
+          </div>
+
+          {/* Save */}
           <div style={{ borderTop: '1px solid var(--c-rim)', paddingTop: '1.25rem' }}>
             <button
               type="submit"

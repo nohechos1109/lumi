@@ -3,12 +3,15 @@ import { getQuote } from '@/lib/queries/quotes'
 import { listLines } from '@/lib/queries/quote_lines'
 import Link from 'next/link'
 import QuoteActions from '@/app/(app)/quotes/[id]/_components/QuoteActions'
+import { getSettings } from '@/lib/queries/settings'
 
 export default async function ManagerQuotePage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
   const quote = await getQuote(id)
   if (!quote) notFound()
   const lines = await listLines(id)
+  const settings = await getSettings()
+  const showMargin = settings?.show_margin ?? true
 
   return (
     <div>
@@ -49,7 +52,9 @@ export default async function ManagerQuotePage({ params }: { params: Promise<{ i
               <th className="text-right px-5 py-4 text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--c-ghost)' }}>Cantidad</th>
               <th className="text-right px-5 py-4 text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--c-ghost)' }}>Precio</th>
               <th className="text-right px-5 py-4 text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--c-ghost)' }}>Subtotal</th>
-              <th className="text-right px-5 py-4 text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--c-ghost)' }}>Margen</th>
+              {showMargin && (
+                <th className="text-right px-5 py-4 text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--c-ghost)' }}>Margen</th>
+              )}
             </tr>
           </thead>
           <tbody>
@@ -69,18 +74,20 @@ export default async function ManagerQuotePage({ params }: { params: Promise<{ i
                 <td className="px-5 py-4 text-right font-mono font-medium" style={{ color: 'var(--c-ink)' }}>
                   ${Number(line.subtotal).toLocaleString('es-MX', { minimumFractionDigits: 2 })}
                 </td>
-                <td className="px-5 py-4 text-right">
-                  {line.display_type === 'product' ? (
-                    <span className="text-xs font-mono font-medium" style={{ color: Number(line.margin_amount) >= 0 ? 'var(--c-mint)' : 'var(--c-rose)' }}>
-                      ${Number(line.margin_amount).toLocaleString('es-MX', { minimumFractionDigits: 0 })}
-                      {Number(line.subtotal) > 0 && (
-                        <span className="ml-1" style={{ color: 'var(--c-ghost)' }}>
-                          ({((Number(line.margin_amount) / Number(line.subtotal)) * 100).toFixed(1)}%)
-                        </span>
-                      )}
-                    </span>
-                  ) : '—'}
-                </td>
+                {showMargin && (
+                  <td className="px-5 py-4 text-right">
+                    {line.display_type === 'product' ? (
+                      <span className="text-xs font-mono font-medium" style={{ color: Number(line.margin_amount) >= 0 ? 'var(--c-mint)' : 'var(--c-rose)' }}>
+                        ${Number(line.margin_amount).toLocaleString('es-MX', { minimumFractionDigits: 0 })}
+                        {Number(line.subtotal) > 0 && (
+                          <span className="ml-1" style={{ color: 'var(--c-ghost)' }}>
+                            ({((Number(line.margin_amount) / Number(line.subtotal)) * 100).toFixed(1)}%)
+                          </span>
+                        )}
+                      </span>
+                    ) : '—'}
+                  </td>
+                )}
               </tr>
             ))}
           </tbody>
@@ -113,12 +120,14 @@ export default async function ManagerQuotePage({ params }: { params: Promise<{ i
           >
             Total: ${(Number(quote.amount_total) * quote.unit_count).toLocaleString('es-MX', { minimumFractionDigits: 2 })} MXN
           </span>
-          <span className="text-xs font-mono" style={{ color: Number(quote.margin_amount) >= 0 ? 'var(--c-mint)' : 'var(--c-rose)' }}>
-            Margen: ${Number(quote.margin_amount).toLocaleString('es-MX', { minimumFractionDigits: 0 })}
-            {Number(quote.amount_untaxed) > 0 && (
-              <> ({((Number(quote.margin_amount) / Number(quote.amount_untaxed)) * 100).toFixed(1)}%)</>  
-            )}
-          </span>
+          {showMargin && (
+            <span className="text-xs font-mono" style={{ color: Number(quote.margin_amount) >= 0 ? 'var(--c-mint)' : 'var(--c-rose)' }}>
+              Margen: ${Number(quote.margin_amount).toLocaleString('es-MX', { minimumFractionDigits: 0 })}
+              {Number(quote.amount_untaxed) > 0 && (
+                <> ({((Number(quote.margin_amount) / Number(quote.amount_untaxed)) * 100).toFixed(1)}%)</>
+              )}
+            </span>
+          )}
         </div>
       </div>
     </div>
