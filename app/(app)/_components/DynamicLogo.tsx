@@ -9,7 +9,6 @@ interface LogoStyle {
   glowOuter: string
   lumiStart: string
   lumiEnd: string
-  exact?: boolean
 }
 
 // Ordered most-specific → least-specific
@@ -60,90 +59,70 @@ export default function DynamicLogo({ homeHref }: { homeHref: string }) {
   return (
     <Link key={sectionKey} href={homeHref} className="flex items-center shrink-0 animate-fade-in">
       <svg
-        width="170"
+        width="168"
         height="46"
-        viewBox="0 0 170 46"
+        viewBox="0 0 168 46"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
       >
         <defs>
-          {/* Moon base */}
-          <radialGradient id="lg-moonBase" cx="36%" cy="30%" r="66%">
-            <stop offset="0%"   stopColor="#FFFFFF" />
-            <stop offset="45%"  stopColor="#E8EDF5" />
-            <stop offset="78%"  stopColor="#B8C8D8" />
-            <stop offset="100%" stopColor="#7090A8" />
-          </radialGradient>
-          {/* Dynamic glow ring */}
-          <radialGradient id="lg-moonGlow" cx="50%" cy="50%" r="50%">
-            <stop offset="55%"  stopColor={style.glowInner} stopOpacity="0.35" />
-            <stop offset="80%"  stopColor={style.glowOuter} stopOpacity="0.15" />
-            <stop offset="100%" stopColor={style.glowOuter} stopOpacity="0" />
-          </radialGradient>
-          <filter id="lg-blurGlow" x="-40%" y="-40%" width="180%" height="180%">
-            <feGaussianBlur stdDeviation="3" result="blur" />
-            <feComposite in="SourceGraphic" in2="blur" operator="over" />
-          </filter>
-          {/* Crater shadows */}
-          <radialGradient id="lg-craterA" cx="40%" cy="35%" r="60%">
-            <stop offset="0%"   stopColor="#7A6650" stopOpacity="0.7" />
-            <stop offset="100%" stopColor="#7A6650" stopOpacity="0" />
-          </radialGradient>
-          <radialGradient id="lg-craterB" cx="40%" cy="35%" r="60%">
-            <stop offset="0%"   stopColor="#8B7460" stopOpacity="0.65" />
-            <stop offset="100%" stopColor="#8B7460" stopOpacity="0" />
-          </radialGradient>
-          <radialGradient id="lg-craterC" cx="40%" cy="35%" r="60%">
-            <stop offset="0%"   stopColor="#7A6650" stopOpacity="0.5" />
-            <stop offset="100%" stopColor="#7A6650" stopOpacity="0" />
-          </radialGradient>
-          {/* Dynamic LUMI gradient */}
-          <linearGradient id="lg-lumiGrad" x1="50" y1="14" x2="140" y2="36" gradientUnits="userSpaceOnUse">
+          {/* Mark gradient — L shape fill */}
+          <linearGradient id="lg-markFill" x1="10" y1="7" x2="36" y2="38" gradientUnits="userSpaceOnUse">
             <stop offset="0%"   stopColor={style.lumiStart} />
             <stop offset="100%" stopColor={style.lumiEnd} />
           </linearGradient>
-          {/* Dynamic sub-label gradient */}
+
+          {/* Soft area glow behind the whole mark */}
+          <radialGradient id="lg-areaGlow" cx="50%" cy="50%" r="50%">
+            <stop offset="0%"   stopColor={style.glowInner} stopOpacity="0.14" />
+            <stop offset="100%" stopColor={style.glowInner} stopOpacity="0" />
+          </radialGradient>
+
+          {/* Dot halo */}
+          <radialGradient id="lg-dotHalo" cx="50%" cy="50%" r="50%">
+            <stop offset="0%"   stopColor={style.glowInner} stopOpacity="0.45" />
+            <stop offset="100%" stopColor={style.glowInner} stopOpacity="0" />
+          </radialGradient>
+
+          {/* LUMI text gradient */}
+          <linearGradient id="lg-lumiGrad" x1="50" y1="12" x2="148" y2="38" gradientUnits="userSpaceOnUse">
+            <stop offset="0%"   stopColor={style.lumiStart} />
+            <stop offset="100%" stopColor={style.lumiEnd} />
+          </linearGradient>
+
+          {/* Sub-label gradient */}
           <linearGradient id="lg-labelGrad" x1="0%" y1="0%" x2="100%" y2="0%">
             <stop offset="0%"   stopColor={style.glowInner} />
             <stop offset="100%" stopColor={style.glowOuter} />
           </linearGradient>
         </defs>
 
-        {/* Glow ring */}
-        <circle cx="23" cy="23" r="23" fill="url(#lg-moonGlow)" filter="url(#lg-blurGlow)" />
+        {/* ── Mark: L anagram + lumen dot ─────────────────── */}
 
-        {/* Moon body */}
-        <circle cx="23" cy="23" r="19" fill="url(#lg-moonBase)" />
+        {/* Soft background glow */}
+        <circle cx="23" cy="23" r="22" fill="url(#lg-areaGlow)" />
 
-        {/* Large crater */}
-        <ellipse cx="19" cy="13" rx="5" ry="4.5" fill="url(#lg-craterA)" />
-        <ellipse cx="19" cy="13" rx="5" ry="4.5" fill="none" stroke="#F5EDD8" strokeWidth="0.6" opacity="0.35" />
-        <ellipse cx="17.5" cy="11.5" rx="1.3" ry="0.9" fill="#F5EDD8" opacity="0.3" />
+        {/* L — vertical bar */}
+        <rect x="10" y="7" width="9.5" height="32" rx="3.5" fill="url(#lg-markFill)" />
 
-        {/* Medium crater */}
-        <ellipse cx="29" cy="21" rx="3.5" ry="3" fill="url(#lg-craterB)" />
-        <ellipse cx="29" cy="21" rx="3.5" ry="3" fill="none" stroke="#F5EDD8" strokeWidth="0.5" opacity="0.3" />
-        <ellipse cx="27.8" cy="19.8" rx="1" ry="0.7" fill="#F5EDD8" opacity="0.25" />
+        {/* L — horizontal bar */}
+        <rect x="10" y="29.5" width="26" height="9.5" rx="3.5" fill="url(#lg-markFill)" />
 
-        {/* Small crater */}
-        <ellipse cx="15" cy="30" rx="3" ry="2.5" fill="url(#lg-craterC)" />
-        <ellipse cx="15" cy="30" rx="3" ry="2.5" fill="none" stroke="#F5EDD8" strokeWidth="0.4" opacity="0.25" />
-        <ellipse cx="14" cy="29" rx="0.9" ry="0.6" fill="#F5EDD8" opacity="0.2" />
+        {/* Lumen dot — halo ring (outer) */}
+        <circle cx="32" cy="13" r="9" fill="url(#lg-dotHalo)" />
 
-        {/* Tiny craters */}
-        <circle cx="25" cy="32" r="1.6" fill="#7A6650" opacity="0.4" />
-        <circle cx="11" cy="19" r="1.3" fill="#7A6650" opacity="0.35" />
-        <circle cx="28" cy="12" r="1.1" fill="#7A6650" opacity="0.3" />
-        <circle cx="21" cy="34" r="1"   fill="#7A6650" opacity="0.3" />
-        <circle cx="32" cy="29" r="0.9" fill="#7A6650" opacity="0.3" />
+        {/* Lumen dot — mid ring */}
+        <circle cx="32" cy="13" r="5.5" fill={style.glowInner} opacity="0.28" />
 
-        {/* Surface highlight */}
-        <ellipse cx="15" cy="17" rx="6" ry="4.5" fill="#F5EDD8" opacity="0.1" />
+        {/* Lumen dot — bright core */}
+        <circle cx="32" cy="13" r="3.5" fill={style.glowInner} opacity="0.9" />
 
-        {/* Edge highlight */}
-        <path d="M8 13 Q5 17 5 23 Q5 29 8 33" stroke="#F5F0E0" strokeWidth="1" opacity="0.3" fill="none" strokeLinecap="round" />
+        {/* Lumen dot — specular highlight */}
+        <circle cx="31" cy="12" r="1.2" fill="#ffffff" opacity="0.85" />
 
-        {/* LUMI wordmark */}
+        {/* ── Wordmark ─────────────────────────────────────── */}
+
+        {/* LUMI */}
         <text
           x="50" y="30"
           fontFamily="system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif"
@@ -153,7 +132,7 @@ export default function DynamicLogo({ homeHref }: { homeHref: string }) {
           fill="url(#lg-lumiGrad)"
         >LUMI</text>
 
-        {/* Sub-label (hidden on home/dashboard) */}
+        {/* Sub-label (hidden on home / dashboard / admin root) */}
         {style.sublabel && (
           <text
             x="52" y="41"

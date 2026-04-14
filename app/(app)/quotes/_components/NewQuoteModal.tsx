@@ -33,8 +33,10 @@ export default function NewQuoteModal({ onClose, projectId, customerId }: Props)
 
   useEffect(() => {
     setToday(new Date().toISOString().split('T')[0])
-    fetch('/api/customers').then(r => r.json()).then(setCustomers).catch(() => {})
-  }, [])
+    if (!customerId) {
+      fetch('/api/customers').then(r => r.json()).then(setCustomers).catch(() => {})
+    }
+  }, [customerId])
 
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
@@ -164,7 +166,8 @@ export default function NewQuoteModal({ onClose, projectId, customerId }: Props)
             <CustomerSearchSelect
               customers={customers}
               value={selectedCustomerId}
-              onChange={customerId ? () => {} : setSelectedCustomerId}
+              onChange={setSelectedCustomerId}
+              disabled={!!customerId}
             />
           </div>
 

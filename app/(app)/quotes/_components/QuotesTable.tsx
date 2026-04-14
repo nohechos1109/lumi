@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useMemo, useCallback } from 'react'
+import { useState, useMemo, useCallback, useRef } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import ConfirmModal from '@/components/ui/ConfirmModal'
@@ -66,7 +66,11 @@ export default function QuotesTable({
   const router = useRouter()
   const [deleteId, setDeleteId] = useState<string | null>(null)
 
-  const handleQuotesUpdated = useCallback(() => { router.refresh() }, [router])
+  const refreshTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const handleQuotesUpdated = useCallback(() => {
+    if (refreshTimerRef.current) clearTimeout(refreshTimerRef.current)
+    refreshTimerRef.current = setTimeout(() => { router.refresh() }, 150)
+  }, [router])
   useSSE({ quotes_updated: handleQuotesUpdated })
   
   // Filtering state
