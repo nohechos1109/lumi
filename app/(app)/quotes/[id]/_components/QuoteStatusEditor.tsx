@@ -31,6 +31,7 @@ export default function QuoteStatusEditor({ quoteId, currentStatus, role, isShow
   const [customers, setCustomers] = useState<Customer[]>([])
   const [selectedRuta, setSelectedRuta] = useState('')
   const [savingRuta, setSavingRuta] = useState(false)
+  const [confirmAction, setConfirmAction] = useState<'confirmed' | 'cancelled' | null>(null)
 
   useEffect(() => {
     if (rutaDialog) {
@@ -119,6 +120,38 @@ export default function QuoteStatusEditor({ quoteId, currentStatus, role, isShow
 
   return (
     <>
+    {/* Confirm / Cancel dialog */}
+    {confirmAction && (
+      <div className="fixed inset-0 z-50 flex items-center justify-center" style={{ background: 'rgba(0,0,0,0.45)' }}>
+        <div className="rounded-2xl p-6 w-full max-w-sm flex flex-col gap-4 shadow-xl" style={{ background: 'var(--c-card)', border: '1px solid var(--c-rim)' }}>
+          <div>
+            <h3 className="font-heading text-lg font-bold" style={{ color: 'var(--c-ink)' }}>
+              {confirmAction === 'confirmed' ? 'Confirmar cotización' : 'Cancelar cotización'}
+            </h3>
+            <p className="text-sm mt-1" style={{ color: 'var(--c-ghost)' }}>
+              {confirmAction === 'confirmed'
+                ? '¿Confirmar esta cotización? Se generará una venta automáticamente.'
+                : '¿Seguro que deseas cancelar esta cotización?'}
+            </p>
+          </div>
+          <div className="flex gap-3">
+            <button
+              onClick={() => setConfirmAction(null)}
+              className="flex-1 py-2.5 rounded-xl text-sm font-semibold"
+              style={{ border: '1px solid var(--c-rim)', color: 'var(--c-ghost)' }}
+            >Cancelar</button>
+            <button
+              onClick={() => { const a = confirmAction!; setConfirmAction(null); handleChange(a) }}
+              className="flex-1 py-2.5 rounded-xl text-sm font-semibold"
+              style={{
+                background: confirmAction === 'confirmed' ? '#059669' : 'var(--c-rose)',
+                color: '#fff',
+              }}
+            >{confirmAction === 'confirmed' ? 'Confirmar' : 'Sí, cancelar'}</button>
+          </div>
+        </div>
+      </div>
+    )}
     {/* Ruta required dialog */}
     {rutaDialog && (
       <div className="fixed inset-0 z-50 flex items-center justify-center" style={{ background: 'rgba(0,0,0,0.45)' }}>
@@ -205,9 +238,7 @@ export default function QuoteStatusEditor({ quoteId, currentStatus, role, isShow
       {canConfirm && (
         <button
           disabled={loading}
-          onClick={() => {
-            if (confirm('¿Confirmar esta cotización? Se generará una venta automáticamente.')) handleChange('confirmed')
-          }}
+          onClick={() => setConfirmAction('confirmed')}
           className="flex items-center gap-2 px-4 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider transition-all hover:opacity-85 shadow-sm active:scale-95 disabled:opacity-50"
           style={{ background: '#059669', color: '#FFFFFF' }}
         >
@@ -218,9 +249,7 @@ export default function QuoteStatusEditor({ quoteId, currentStatus, role, isShow
       {canCancel && (
         <button
           disabled={loading}
-          onClick={() => {
-            if (confirm('¿Seguro que deseas cancelar esta cotización?')) handleChange('cancelled')
-          }}
+          onClick={() => setConfirmAction('cancelled')}
           className="flex items-center gap-2 px-4 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider transition-all hover:bg-rose-50 active:scale-95 disabled:opacity-50"
           style={{ color: 'var(--c-rose)', border: '1px solid var(--c-rose-bg)', background: 'transparent' }}
         >
