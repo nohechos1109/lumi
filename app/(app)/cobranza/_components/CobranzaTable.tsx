@@ -43,10 +43,12 @@ interface Filters {
   cliente: string
   estado: string
   agente: string
+  unidad: string
+  observaciones: string
 }
 
 const EMPTY: Filters = {
-  search: '', dateFrom: '', dateTo: '', cliente: '', estado: '', agente: '',
+  search: '', dateFrom: '', dateTo: '', cliente: '', estado: '', agente: '', unidad: '', observaciones: '',
 }
 
 // ── Main Component ────────────────────────────────────────────────────────────
@@ -78,6 +80,8 @@ export default function CobranzaTable({ notes, role, activeSales }: Props) {
     if (filters.cliente  && !n.cliente.toLowerCase().includes(filters.cliente.toLowerCase())) return false
     if (filters.estado   && n.state !== filters.estado)           return false
     if (filters.agente   && (n.agente ?? '') !== filters.agente)  return false
+    if (filters.unidad   && !(n.unit_name ?? '').toLowerCase().includes(filters.unidad.toLowerCase())) return false
+    if (filters.observaciones && !(n.observaciones ?? '').toLowerCase().includes(filters.observaciones.toLowerCase())) return false
     return true
   }), [notes, filters])
 
@@ -142,7 +146,7 @@ export default function CobranzaTable({ notes, role, activeSales }: Props) {
         style={{ background: 'var(--c-card)', border: '1px solid var(--c-rim)' }}>
 
         {/* Búsqueda global */}
-        <FilterField label="Remisión / O.S.">
+        <FilterField label="Remisión / Ord. Servicio">
           <div className="relative">
             <svg className="absolute left-2.5 top-1/2 -translate-y-1/2" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: 'var(--c-ghost)' }}>
               <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
@@ -187,6 +191,20 @@ export default function CobranzaTable({ notes, role, activeSales }: Props) {
               placeholder="Todos" options={uniqueAgentes} />
           </FilterField>
         )}
+
+        {/* Unidad */}
+        <FilterField label="Unidad">
+          <input type="text" placeholder="Buscar..." value={filters.unidad}
+            onChange={e => setF('unidad', e.target.value)}
+            className="rounded-lg px-2.5 py-1.5 text-xs w-32" style={inputStyle} />
+        </FilterField>
+
+        {/* Observaciones */}
+        <FilterField label="Observaciones">
+          <input type="text" placeholder="Buscar..." value={filters.observaciones}
+            onChange={e => setF('observaciones', e.target.value)}
+            className="rounded-lg px-2.5 py-1.5 text-xs w-36" style={inputStyle} />
+        </FilterField>
 
         {/* Limpiar + contador + nueva nota */}
         <div className="flex items-end gap-3 ml-auto">
@@ -259,7 +277,7 @@ export default function CobranzaTable({ notes, role, activeSales }: Props) {
                 <Th>FECHA</Th>
                 <Th>CLIENTE</Th>
                 <Th>UNIDAD</Th>
-                <Th>O.S.</Th>
+                <Th>ORD. SERVICIO</Th>
                 <Th>REMISIÓN</Th>
                 <Th right>TOTAL</Th>
                 <Th right>SALDO</Th>
