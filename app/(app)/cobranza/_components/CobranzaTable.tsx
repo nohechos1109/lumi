@@ -266,7 +266,7 @@ export default function CobranzaTable({ notes, role, activeSales }: Props) {
                 <Th>STATUS</Th>
                 <Th>OBSERVACIONES</Th>
                 <Th>AGENTE</Th>
-                <Th>APLICAR CRÉDITO</Th>
+                <Th />
                 <Th />
                 <Th>1° ABONO</Th>
                 <Th>2° ABONO</Th>
@@ -366,7 +366,7 @@ export default function CobranzaTable({ notes, role, activeSales }: Props) {
                       )}
                     </td>
                     <td className="px-3 py-2.5 whitespace-nowrap" onClick={e => e.stopPropagation()}>
-                      {canAbono && n.state !== 'cancelled' && n.state !== 'draft' && (
+                      {canAbono && n.state !== 'cancelled' && n.state !== 'draft' && n.state !== 'paid' && (
                         <button onClick={() => setAbonoNote(n)}
                           className="text-xs px-2.5 py-1 rounded-lg font-semibold transition-all hover:scale-105 hover:shadow-md cursor-pointer"
                           style={{ background: '#059669', color: '#fff' }}>
