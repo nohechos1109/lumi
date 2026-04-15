@@ -57,6 +57,14 @@ export async function listSalesByProject(projectId: string): Promise<Sale[]> {
   return rows
 }
 
+export async function listSalesByCustomer(customerId: string): Promise<Sale[]> {
+  const { rows } = await pool.query(
+    `${SALE_SELECT} WHERE s.customer_id = $1 ORDER BY s.created_at DESC`,
+    [customerId]
+  )
+  return rows
+}
+
 export async function getSale(id: string): Promise<Sale | null> {
   const { rows } = await pool.query(`${SALE_SELECT} WHERE s.id = $1`, [id])
   return rows[0] ?? null

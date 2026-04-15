@@ -57,6 +57,7 @@ interface ScheduleItem {
   label: string | null
   sequence: number
   state: 'pending' | 'paid'
+  overdue: boolean
 }
 
 interface Props {

@@ -5,7 +5,8 @@ import { canApplyPayments } from '@/lib/permissions'
 import { getCustomerPayment, applyPaymentToNote } from '@/lib/queries/customer-payments'
 import { getSaleNote, updateSaleNoteState } from '@/lib/queries/sale-notes'
 import { getSale } from '@/lib/queries/sales'
-import { listScheduleItems, markScheduleItemPaid } from '@/lib/queries/payment-schedule'
+import { autoMarkScheduleItems } from '@/lib/queries/payment-schedule'
+import { broadcastToAll } from '@/lib/sse'
 import { insertAuditEvent } from '@/lib/queries/audit'
 
 interface Application {
@@ -90,22 +91,10 @@ export async function POST(
     return NextResponse.json({ error: String(err) }, { status: 400 })
   }
 
-  // Auto-mark schedule items per sale
+  // Auto-mark schedule items per sale (FIFO)
   const uniqueSaleIds = [...new Set(saleIds)]
-  for (const saleId of uniqueSaleIds) {
-    const updatedSale = await getSale(saleId)
-    if (updatedSale) {
-      const amountPaid   = Number(updatedSale.amount_paid)
-      const scheduleItems = await listScheduleItems(saleId)
-      let runningSum = 0
-      for (const item of scheduleItems) {
-        runningSum += Number(item.amount)
-        if (item.state === 'pending' && runningSum <= amountPaid + 0.005) {
-          await markScheduleItemPaid(item.id)
-        }
-      }
-    }
-  }
+  await Promise.all(uniqueSaleIds.map(saleId => autoMarkScheduleItems(saleId)))
+  broadcastToAll('schedule:updated', {})
 
   await insertAuditEvent('payment', id, 'payment_applied', {
     applications: applications.map((a, i) => ({ note_id: a.note_id, sale_id: saleIds[i], amount: a.amount })),
@@ -116,5 +105,6 @@ export async function POST(
 
   revalidatePath('/pagos')
   revalidatePath('/cobranza')
+  revalidatePath('/convenios')
   return NextResponse.json({ ok: true })
 }

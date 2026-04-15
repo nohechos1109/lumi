@@ -1,33 +1,57 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
+import { fmtMXN, fmtDate } from '@/lib/formatters'
 
 interface ScheduleItem {
   due_date: string
   amount: string
   label: string
+  overdue: boolean
+}
+
+interface InitialItem {
+  due_date: string
+  amount: string
+  label: string | null
+  state: string
+  overdue: boolean
 }
 
 interface Props {
   saleId: string
-  initialItems: { due_date: string; amount: string; label: string | null; state: string }[]
+  initialItems: InitialItem[]
 }
 
 const inputClass = 'px-2.5 py-1.5 rounded-lg text-xs outline-none'
 const inputStyle = { background: 'var(--c-card)', border: '1px solid var(--c-rim)', color: 'var(--c-ink)' }
 
+function StateBadge({ state, overdue }: { state: string; overdue: boolean }) {
+  if (state === 'paid') {
+    return <span className="text-xs font-semibold px-2 py-0.5 rounded-full" style={{ background: '#DCFCE7', color: '#15803D' }}>Pagado</span>
+  }
+  if (overdue) {
+    return <span className="text-xs font-semibold px-2 py-0.5 rounded-full" style={{ background: '#FFE4E6', color: '#BE123C' }}>Vencido</span>
+  }
+  return <span className="text-xs font-semibold px-2 py-0.5 rounded-full" style={{ background: '#E0F2FE', color: '#0369A1' }}>Vigente</span>
+}
+
 export default function ScheduleModal({ saleId, initialItems }: Props) {
   const router = useRouter()
   const [open, setOpen] = useState(false)
+
+  const paidItems = useMemo(() => initialItems.filter(i => i.state === 'paid'), [initialItems])
   const [items, setItems] = useState<ScheduleItem[]>(
-    initialItems.map(i => ({ due_date: i.due_date.slice(0, 10), amount: i.amount, label: i.label ?? '' }))
+    initialItems
+      .filter(i => i.state !== 'paid')
+      .map(i => ({ due_date: i.due_date.slice(0, 10), amount: i.amount, label: i.label ?? '', overdue: i.overdue }))
   )
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
   function addItem() {
-    setItems(prev => [...prev, { due_date: '', amount: '', label: '' }])
+    setItems(prev => [...prev, { due_date: '', amount: '', label: '', overdue: false }])
   }
 
   function removeItem(idx: number) {
@@ -65,6 +89,8 @@ export default function ScheduleModal({ saleId, initialItems }: Props) {
     }
   }
 
+  const hasContent = paidItems.length > 0 || items.length > 0
+
   return (
     <>
       <button
@@ -95,57 +121,78 @@ export default function ScheduleModal({ saleId, initialItems }: Props) {
               <button onClick={() => setOpen(false)} className="text-lg leading-none opacity-50 hover:opacity-100" style={{ color: 'var(--c-ghost)' }}>✕</button>
             </div>
 
-            {/* Table header */}
             <div className="flex flex-col gap-2">
-              <div className="grid gap-2" style={{ gridTemplateColumns: '1fr 1fr 1fr auto' }}>
-                <span className="text-xs font-semibold uppercase tracking-wider" style={{ color: 'var(--c-ghost)' }}>Fecha</span>
-                <span className="text-xs font-semibold uppercase tracking-wider" style={{ color: 'var(--c-ghost)' }}>Importe</span>
-                <span className="text-xs font-semibold uppercase tracking-wider" style={{ color: 'var(--c-ghost)' }}>Etiqueta</span>
-                <span />
-              </div>
+              {/* Column headers */}
+              {hasContent && (
+                <div className="grid gap-2" style={{ gridTemplateColumns: '1fr 1fr 1fr 80px auto' }}>
+                  <span className="text-xs font-semibold uppercase tracking-wider" style={{ color: 'var(--c-ghost)' }}>Fecha</span>
+                  <span className="text-xs font-semibold uppercase tracking-wider" style={{ color: 'var(--c-ghost)' }}>Importe</span>
+                  <span className="text-xs font-semibold uppercase tracking-wider" style={{ color: 'var(--c-ghost)' }}>Etiqueta</span>
+                  <span className="text-xs font-semibold uppercase tracking-wider" style={{ color: 'var(--c-ghost)' }}>Estado</span>
+                  <span />
+                </div>
+              )}
 
-              {items.length === 0 && (
+              {/* Paid items — read-only */}
+              {paidItems.map((item, idx) => (
+                <div key={`paid-${idx}`} className="grid gap-2 items-center opacity-60" style={{ gridTemplateColumns: '1fr 1fr 1fr 80px auto' }}>
+                  <span className="text-xs px-2.5 py-1.5" style={{ color: 'var(--c-ink)' }}>{fmtDate(item.due_date)}</span>
+                  <span className="text-xs px-2.5 py-1.5 font-mono" style={{ color: 'var(--c-ink)' }}>${fmtMXN(item.amount)}</span>
+                  <span className="text-xs px-2.5 py-1.5" style={{ color: 'var(--c-dim)' }}>{item.label || '—'}</span>
+                  <StateBadge state="paid" overdue={false} />
+                  <span />
+                </div>
+              ))}
+
+              {/* Divider between paid and editable */}
+              {paidItems.length > 0 && items.length > 0 && (
+                <div style={{ borderTop: '1px dashed var(--c-rim)', margin: '2px 0' }} />
+              )}
+
+              {/* Editable pending items */}
+              {items.length === 0 && paidItems.length === 0 && (
                 <p className="text-sm py-3 text-center" style={{ color: 'var(--c-ghost)' }}>Sin ítems. Agrega el primer pago.</p>
               )}
 
               {items.map((item, idx) => (
-                <div key={idx} className="grid gap-2 items-center" style={{ gridTemplateColumns: '1fr 1fr 1fr auto' }}>
-                  <input
-                    type="date"
-                    className={inputClass + ' w-full'}
-                    style={inputStyle}
-                    value={item.due_date}
-                    onChange={e => update(idx, 'due_date', e.target.value)}
-                  />
-                  <input
-                    type="number"
-                    min="0"
-                    step="0.01"
-                    className={inputClass + ' w-full'}
-                    style={inputStyle}
-                    placeholder="0.00"
-                    value={item.amount}
-                    onChange={e => update(idx, 'amount', e.target.value)}
-                  />
-                  <input
-                    type="text"
-                    className={inputClass + ' w-full'}
-                    style={inputStyle}
-                    placeholder="Enganche, mensualidad…"
-                    value={item.label}
-                    onChange={e => update(idx, 'label', e.target.value)}
-                  />
-                  <button
-                    type="button"
-                    onClick={() => removeItem(idx)}
-                    className="opacity-40 hover:opacity-100 transition-opacity"
-                    style={{ color: 'var(--c-rose)' }}
-                  >
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
-                      <line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/>
-                    </svg>
-                  </button>
-                </div>
+                  <div key={idx} className="grid gap-2 items-center" style={{ gridTemplateColumns: '1fr 1fr 1fr 80px auto' }}>
+                    <input
+                      type="date"
+                      className={inputClass + ' w-full'}
+                      style={inputStyle}
+                      value={item.due_date}
+                      onChange={e => update(idx, 'due_date', e.target.value)}
+                    />
+                    <input
+                      type="number"
+                      min="0"
+                      step="0.01"
+                      className={inputClass + ' w-full'}
+                      style={inputStyle}
+                      placeholder="0.00"
+                      value={item.amount}
+                      onChange={e => update(idx, 'amount', e.target.value)}
+                    />
+                    <input
+                      type="text"
+                      className={inputClass + ' w-full'}
+                      style={inputStyle}
+                      placeholder="Enganche, mensualidad…"
+                      value={item.label}
+                      onChange={e => update(idx, 'label', e.target.value)}
+                    />
+                    <StateBadge state="pending" overdue={item.overdue} />
+                    <button
+                      type="button"
+                      onClick={() => removeItem(idx)}
+                      className="opacity-40 hover:opacity-100 transition-opacity"
+                      style={{ color: 'var(--c-rose)' }}
+                    >
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+                        <line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/>
+                      </svg>
+                    </button>
+                  </div>
               ))}
             </div>
 

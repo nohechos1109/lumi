@@ -27,6 +27,7 @@ const LOGO_CONFIG: Array<[string, LogoStyle]> = [
   ['/projects',   { sublabel: 'PROJECTS',   glowInner: '#93C5FD', glowOuter: '#1C5AD6', lumiStart: '#1C5AD6', lumiEnd: '#60A5FA' }],
   ['/catalog',    { sublabel: 'CATALOG',    glowInner: '#FCD34D', glowOuter: '#C47F08', lumiStart: '#C47F08', lumiEnd: '#FCD34D' }],
   ['/customers',  { sublabel: 'CUSTOMERS',  glowInner: '#F87171', glowOuter: '#D12C3C', lumiStart: '#D12C3C', lumiEnd: '#F87171' }],
+  ['/convenios',  { sublabel: 'AGREEMENTS', glowInner: '#A78BFA', glowOuter: '#7C3AED', lumiStart: '#7C3AED', lumiEnd: '#A78BFA' }],
   ['/plantillas', { sublabel: 'TEMPLATES',  glowInner: '#A78BFA', glowOuter: '#7C3AED', lumiStart: '#7C3AED', lumiEnd: '#A78BFA' }],
 ]
 

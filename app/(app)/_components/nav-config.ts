@@ -25,6 +25,7 @@ export const managerNav: NavItem[] = [
   { href: '/plantillas',      label: 'Plantillas',   icon: 'templates', color: '#7C3AED', desc: 'Plantillas de cotización' },
   { href: '/catalog',         label: 'Catálogo',     icon: 'catalog',   color: '#C47F08', desc: 'Vista de catálogo para el público' },
   { href: '/admin/unidades',  label: 'Unidades',     icon: 'unidades',  color: '#0B7A8E', desc: 'Flota de unidades, rutas y grupos' },
+  { href: '/convenios',       label: 'Convenios',    icon: 'convenios', color: '#7C3AED', desc: 'Calendario de pagos acordados' },
 ]
 
 export const adminNav: NavItem[] = [
@@ -33,6 +34,7 @@ export const adminNav: NavItem[] = [
   { href: '/quotes',                   label: 'Cotizaciones',  icon: 'quotes',    color: '#0B9962', desc: 'Todas las cotizaciones del equipo' },
   { href: '/cobranza',                 label: 'Cobranza',      icon: 'cobranza',  color: '#059669', desc: 'Ventas y cobros' },
   { href: '/pagos',                    label: 'Pagos',         icon: 'pagos',     color: '#0369A1', desc: 'Historial de pagos' },
+  { href: '/convenios',                label: 'Convenios',     icon: 'convenios', color: '#7C3AED', desc: 'Calendario de pagos acordados' },
   { href: '/admin/users',              label: 'Usuarios',      icon: 'users',     color: '#1B3461', desc: 'Cuentas y roles de acceso' },
   { href: '/admin/products',           label: 'Productos',     icon: 'products',  color: '#0B9962', desc: 'Catálogo, precios y costos' },
   { href: '/admin/discount-approvals', label: 'Descuentos',    icon: 'discounts', color: '#C47F08', desc: 'Aprobación de descuentos' },
