@@ -173,11 +173,32 @@ export default function AdminUnidadesPage() {
 
         <div className="flex items-center gap-3">
           {/* Tab switcher */}
-          <div className="flex rounded-xl overflow-hidden text-xs font-bold" style={{ border: '1px solid var(--c-rim)' }}>
+          <div className="relative flex rounded-full p-1 text-xs font-bold" style={{ background: 'var(--c-base)', border: '1px solid var(--c-rim)' }}>
+            <div
+              className="absolute top-1 bottom-1 rounded-full transition-all duration-200"
+              style={{
+                width: 'calc(50% - 2px)',
+                left: tab === 'unidades' ? '4px' : 'calc(50% - 2px)',
+                background: 'var(--c-navy)',
+                boxShadow: '0 2px 8px rgba(27,52,97,0.25)',
+              }}
+            />
             {(['unidades', 'rutas'] as Tab[]).map(t => (
-              <button key={t} onClick={() => { setTab(t); setEditRuta(null) }}
-                className="px-4 py-2.5 transition-colors uppercase tracking-wider"
-                style={{ background: tab === t ? 'var(--c-navy)' : 'var(--c-card)', color: tab === t ? '#fff' : 'var(--c-dim)' }}>
+              <button
+                key={t}
+                onClick={() => { setTab(t); setEditRuta(null) }}
+                className="relative z-10 flex items-center gap-1.5 px-5 py-2 rounded-full uppercase tracking-wider transition-colors duration-200"
+                style={{ color: tab === t ? '#fff' : 'var(--c-ghost)', minWidth: 96 }}
+              >
+                {t === 'unidades' ? (
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/><circle cx="7" cy="21" r="1"/><circle cx="17" cy="21" r="1"/>
+                  </svg>
+                ) : (
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M3 12h18M3 6l9-3 9 3M3 18l9 3 9-3"/>
+                  </svg>
+                )}
                 {t === 'unidades' ? 'Unidades' : 'Rutas'}
               </button>
             ))}
