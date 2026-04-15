@@ -271,7 +271,6 @@ export default function CobranzaTable({ notes, role, activeSales }: Props) {
                 <Th>1° ABONO</Th>
                 <Th>2° ABONO</Th>
                 <Th>3° ABONO</Th>
-                <Th>OBS.</Th>
               </tr>
             </thead>
             <tbody>
@@ -378,11 +377,6 @@ export default function CobranzaTable({ notes, role, activeSales }: Props) {
                     <AbonoCell fecha={n.abono1_fecha} monto={n.abono1_monto} />
                     <AbonoCell fecha={n.abono2_fecha} monto={n.abono2_monto} />
                     <AbonoCell fecha={n.abono3_fecha} monto={n.abono3_monto} />
-                    <td className="px-3 py-2.5 text-xs" style={{ color: 'var(--c-dim)', maxWidth: 160 }}>
-                      {n.observaciones
-                        ? <span className="block truncate" title={n.observaciones}>{n.observaciones}</span>
-                        : <span style={{ color: 'var(--c-ghost)' }}>—</span>}
-                    </td>
                   </tr>
                 )
               })}
