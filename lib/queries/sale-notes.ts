@@ -223,6 +223,11 @@ export async function updateSaleNoteFields(
  */
 // ── Cobranza view ────────────────────────────────────────────────────────────
 
+export interface CobranzaAbono {
+  fecha: string
+  monto: string
+}
+
 export interface CobranzaNote {
   id: string
   remision: string
@@ -238,12 +243,7 @@ export interface CobranzaNote {
   orden_servicio: string
   cliente: string
   agente: string | null
-  abono1_fecha: string | null
-  abono1_monto: string | null
-  abono2_fecha: string | null
-  abono2_monto: string | null
-  abono3_fecha: string | null
-  abono3_monto: string | null
+  abonos: CobranzaAbono[]
   customer_id: string            // para multi-select cross-sale por cliente
   credit_disponible: string      // crédito del cliente pendiente de aplicar
 }
@@ -269,12 +269,7 @@ export async function listAllNotesForCobranza(userId?: string): Promise<Cobranza
       c.name           AS cliente,
       u.username       AS agente,
       c.id             AS customer_id,
-      ab.p1_date       AS abono1_fecha,
-      ab.p1_amount     AS abono1_monto,
-      ab.p2_date       AS abono2_fecha,
-      ab.p2_amount     AS abono2_monto,
-      ab.p3_date       AS abono3_fecha,
-      ab.p3_amount     AS abono3_monto,
+      COALESCE(ab.abonos, '[]'::json) AS abonos,
       COALESCE(crd.credit, 0)::text AS credit_disponible
     FROM sale_notes sn
     JOIN sales     s  ON s.id = sn.sale_id
@@ -282,21 +277,13 @@ export async function listAllNotesForCobranza(userId?: string): Promise<Cobranza
     LEFT JOIN users u    ON u.id  = s.user_id
     LEFT JOIN unidades un ON un.id = sn.unit_id
     LEFT JOIN LATERAL (
-      SELECT
-        MAX(CASE WHEN rn = 1 THEN payment_date::text END) AS p1_date,
-        MAX(CASE WHEN rn = 1 THEN amount::text       END) AS p1_amount,
-        MAX(CASE WHEN rn = 2 THEN payment_date::text END) AS p2_date,
-        MAX(CASE WHEN rn = 2 THEN amount::text       END) AS p2_amount,
-        MAX(CASE WHEN rn = 3 THEN payment_date::text END) AS p3_date,
-        MAX(CASE WHEN rn = 3 THEN amount::text       END) AS p3_amount
-      FROM (
-        SELECT pa.amount, cp.payment_date,
-               ROW_NUMBER() OVER (ORDER BY cp.payment_date ASC, pa.created_at ASC) AS rn
-        FROM payment_applications pa
-        JOIN customer_payments cp ON cp.id = pa.payment_id
-        WHERE pa.sale_note_id = sn.id AND cp.state = 'confirmed'
-        LIMIT 3
-      ) sub
+      SELECT json_agg(
+        json_build_object('fecha', cp.payment_date::text, 'monto', pa.amount::text)
+        ORDER BY cp.payment_date ASC, pa.created_at ASC
+      ) AS abonos
+      FROM payment_applications pa
+      JOIN customer_payments cp ON cp.id = pa.payment_id
+      WHERE pa.sale_note_id = sn.id AND cp.state = 'confirmed'
     ) ab ON true
     LEFT JOIN LATERAL (
       SELECT COALESCE(SUM(

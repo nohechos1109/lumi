@@ -168,6 +168,8 @@ input[type="number"] {
 }
 .dropdown-item:hover { background: var(--c-hover) !important; }
 
+.cobranza-row:hover { background: var(--c-hover); }
+
 .btn-logout {
   color: var(--c-ghost);
   background: transparent;
