@@ -6,6 +6,7 @@ import { sessionOptions, SessionData } from '@/lib/session'
 import { canCreateSaleNotes } from '@/lib/permissions'
 import { getSale } from '@/lib/queries/sales'
 import { listLines } from '@/lib/queries/quote_lines'
+import { getSettings } from '@/lib/queries/settings'
 import NewNoteForm from './_components/NewNoteForm'
 import NewNoteActions from './_components/NewNoteActions'
 
@@ -17,9 +18,13 @@ export default async function NewNotePage({ params }: { params: Promise<{ id: st
 
   const sale = await getSale(id)
   if (!sale) notFound()
-  if (sale.state !== 'active') notFound()
+  if (sale.state === 'finished' || sale.state === 'cancelled') notFound()
 
-  const rawQuoteLines = sale.quote_id ? await listLines(sale.quote_id) : []
+  const [rawQuoteLines, settings] = await Promise.all([
+    sale.quote_id ? listLines(sale.quote_id) : Promise.resolve([]),
+    getSettings(),
+  ])
+  const fxRate = Number(settings?.fx_mxn_per_usd ?? 17.85)
   const globalDiscountLine = rawQuoteLines.find(l => l.display_type === 'discount')
   const globalDiscount = globalDiscountLine ? parseFloat(globalDiscountLine.discount_percent) : 0
   const quoteLines = rawQuoteLines.filter(l => l.display_type === 'product' && Number(l.qty) > 0)
@@ -48,7 +53,7 @@ export default async function NewNotePage({ params }: { params: Promise<{ id: st
         <NewNoteActions saleId={id} />
       </div>
 
-      <NewNoteForm sale={sale} role={session.role} quoteLines={quoteLines} globalDiscount={globalDiscount} />
+      <NewNoteForm sale={sale} role={session.role} quoteLines={quoteLines} globalDiscount={globalDiscount} fxRate={fxRate} />
     </div>
   )
 }

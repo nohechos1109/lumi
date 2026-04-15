@@ -23,6 +23,8 @@ interface SaleNote {
   state: string
   concept: string | null
   unit_name: string | null
+  amount_untaxed: string
+  amount_tax: string
   amount_total: string
   amount_paid: string
   amount_balance: string
@@ -72,8 +74,15 @@ interface Props {
 const fmt = (v: string | number) => Number(v).toLocaleString('es-MX', { minimumFractionDigits: 2 })
 
 export default function SaleDetail({ sale, notes, payments, schedule, applications, role }: Props) {
-  const paidPct = Number(sale.amount_total) > 0
-    ? Math.min(100, (Number(sale.amount_paid) / Number(sale.amount_total)) * 100)
+  const activeNotes = notes.filter(n => n.state !== 'cancelled')
+  const notesUntaxed = activeNotes.reduce((s, n) => s + Number(n.amount_untaxed), 0)
+  const notesTax     = activeNotes.reduce((s, n) => s + Number(n.amount_tax), 0)
+  const notesTotal   = activeNotes.reduce((s, n) => s + Number(n.amount_total), 0)
+  const notesPaid    = activeNotes.reduce((s, n) => s + Number(n.amount_paid), 0)
+  const notesBalance = activeNotes.reduce((s, n) => s + Number(n.amount_balance), 0)
+
+  const paidPct = notesTotal > 0
+    ? Math.min(100, (notesPaid / notesTotal) * 100)
     : 0
 
   const today = new Date().toISOString().slice(0, 10)
@@ -84,21 +93,21 @@ export default function SaleDetail({ sale, notes, payments, schedule, applicatio
     <>
       {/* Stats bar */}
       <div className="grid grid-cols-2 md:grid-cols-5 gap-3 mb-7">
-        <StatCard label="Subtotal" value={`$${fmt(sale.amount_untaxed)}`} />
-        <StatCard label="IVA" value={`$${fmt(sale.amount_tax)}`} />
-        <StatCard label="Total" value={`$${fmt(sale.amount_total)}`} highlight />
-        <StatCard label="Pagado" value={`$${fmt(sale.amount_paid)}`} sub={`${paidPct.toFixed(0)}%`} progress={paidPct} />
+        <StatCard label="Subtotal" value={`$${fmt(notesUntaxed)}`} />
+        <StatCard label="IVA" value={`$${fmt(notesTax)}`} />
+        <StatCard label="Total" value={`$${fmt(notesTotal)}`} highlight />
+        <StatCard label="Pagado" value={`$${fmt(notesPaid)}`} sub={`${paidPct.toFixed(0)}%`} progress={paidPct} />
         <StatCard
           label="Saldo"
-          value={`$${fmt(sale.amount_balance)}`}
+          value={`$${fmt(notesBalance)}`}
           sub={nextDue ? `Próximo: ${new Date(normDate(nextDue.due_date) + 'T12:00:00').toLocaleDateString('es-MX')}` : undefined}
-          alert={Number(sale.amount_balance) > 0}
+          alert={notesBalance > 0}
         />
       </div>
 
       {/* ═══ NOTAS SECTION ═══ */}
       <Section title="Notas" action={
-        canCreateSaleNotes(role) && sale.state === 'active' ? (
+        canCreateSaleNotes(role) && (sale.state === 'active' || sale.state === 'paid') ? (
           <Link
             href={`/ventas/${sale.id}/notas/nueva`}
             className="inline-flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg font-semibold transition-opacity hover:opacity-80"

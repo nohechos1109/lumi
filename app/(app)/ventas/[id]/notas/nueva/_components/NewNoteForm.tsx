@@ -18,6 +18,7 @@ interface Props {
   sale: Sale
   role: string
   globalDiscount?: number
+  fxRate?: number
   quoteLines?: {
     id: string
     product_id: string | null
@@ -201,7 +202,7 @@ function NoteProductSearch({ onSelect }: { onSelect: (p: Product) => void }) {
 
 // ── Main form ────────────────────────────────────────────────────────────────
 
-export default function NewNoteForm({ sale, quoteLines = [], globalDiscount = 0 }: Props) {
+export default function NewNoteForm({ sale, quoteLines = [], globalDiscount = 0, fxRate = 17.85 }: Props) {
   const router = useRouter()
   const [concept, setConcept] = useState('')
   const [observaciones, setObservaciones] = useState('')
@@ -230,11 +231,12 @@ export default function NewNoteForm({ sale, quoteLines = [], globalDiscount = 0 
 
   function addProductFromSearch(product: Product) {
     // Search bar: always use public_price — quote discounts only apply to quote-picker items
-    const price = product.public_price
-      ? String(parseFloat(product.public_price))
-      : String(parseFloat(product.cost_base) * parseFloat(product.utility_factor) + parseFloat(product.utility_fixed))
+    const rawPrice = product.public_price
+      ? parseFloat(product.public_price)
+      : parseFloat(product.cost_base) * parseFloat(product.utility_factor) + parseFloat(product.utility_fixed)
+    const priceMxn = product.currency === 'USD' ? rawPrice * fxRate : rawPrice
     const finalName = product.description ? `${product.name} - ${product.description}` : product.name
-    setLines(prev => [...prev, { productId: product.id, name: finalName, qty: 1, unitPrice: price }])
+    setLines(prev => [...prev, { productId: product.id, name: finalName, qty: 1, unitPrice: String(priceMxn) }])
   }
 
   // ── Remove line ─────────────────────────────────────────────────────────────

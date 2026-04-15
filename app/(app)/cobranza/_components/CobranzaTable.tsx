@@ -266,16 +266,18 @@ export default function CobranzaTable({ notes, role, activeSales }: Props) {
                 <Th>STATUS</Th>
                 <Th>OBSERVACIONES</Th>
                 <Th>AGENTE</Th>
+                <Th>APLICAR CRÉDITO</Th>
+                <Th />
                 <Th>1° ABONO</Th>
                 <Th>2° ABONO</Th>
                 <Th>3° ABONO</Th>
-                <Th />
+                <Th>OBS.</Th>
               </tr>
             </thead>
             <tbody>
               {filtered.length === 0 ? (
                 <tr>
-                  <td colSpan={canAbono ? 15 : 14} className="text-center py-10 text-sm" style={{ color: 'var(--c-ghost)' }}>
+                  <td colSpan={canAbono ? 17 : 16} className="text-center py-10 text-sm" style={{ color: 'var(--c-ghost)' }}>
                     Sin notas
                   </td>
                 </tr>
@@ -336,16 +338,6 @@ export default function CobranzaTable({ notes, role, activeSales }: Props) {
                         style={{ color: saldo <= 0 ? '#15803D' : '#B45309' }}>
                         ${fmtMXN(n.amount_balance)}
                       </span>
-                      {canAbono && Number(n.credit_disponible) > 0.005 && (
-                        <button
-                          type="button"
-                          onClick={e => { e.stopPropagation(); setCreditClienteNote(n) }}
-                          className="inline-block mt-0.5 text-xs font-semibold px-1.5 py-0.5 rounded-full transition-opacity hover:opacity-75"
-                          style={{ background: '#DCFCE7', color: '#15803D' }}
-                          title="Descontar crédito del cliente a notas pendientes">
-                          💰 ${fmtMXN(n.credit_disponible)}
-                        </button>
-                      )}
                     </td>
                     <td className="px-3 py-2.5 whitespace-nowrap">
                       <span className="text-xs font-semibold px-2 py-0.5 rounded-full"
@@ -361,41 +353,35 @@ export default function CobranzaTable({ notes, role, activeSales }: Props) {
                     <td className="px-3 py-2.5 text-xs" style={{ color: 'var(--c-dim)' }}>
                       {n.agente || <span style={{ color: 'var(--c-ghost)' }}>—</span>}
                     </td>
+                    <td className="px-3 py-2.5 whitespace-nowrap" onClick={e => e.stopPropagation()}>
+                      {canAbono && n.state !== 'cancelled' && n.state !== 'draft' && Number(n.amount_balance) > 0.005 &&
+                        Number(n.credit_disponible) > 0.005 && (
+                        <button
+                          type="button"
+                          onClick={() => setCreditClienteNote(n)}
+                          className="text-xs font-semibold px-1.5 py-1 rounded-lg transition-all hover:scale-105 hover:shadow-md cursor-pointer"
+                          style={{ background: '#DCFCE7', color: '#15803D' }}
+                          title="Descontar crédito del cliente">
+                          💰 ${fmtMXN(n.credit_disponible)}
+                        </button>
+                      )}
+                    </td>
+                    <td className="px-3 py-2.5 whitespace-nowrap" onClick={e => e.stopPropagation()}>
+                      {canAbono && n.state !== 'cancelled' && n.state !== 'draft' && (
+                        <button onClick={() => setAbonoNote(n)}
+                          className="text-xs px-2.5 py-1 rounded-lg font-semibold transition-all hover:scale-105 hover:shadow-md cursor-pointer"
+                          style={{ background: '#059669', color: '#fff' }}>
+                          + Abono
+                        </button>
+                      )}
+                    </td>
                     <AbonoCell fecha={n.abono1_fecha} monto={n.abono1_monto} />
                     <AbonoCell fecha={n.abono2_fecha} monto={n.abono2_monto} />
                     <AbonoCell fecha={n.abono3_fecha} monto={n.abono3_monto} />
-                    <td className="px-3 py-2.5 whitespace-nowrap" onClick={e => e.stopPropagation()}>
-                      <div className="flex items-center gap-1">
-                        <button
-                          onClick={() => setEditNote(n)}
-                          className="p-1.5 rounded-lg transition-opacity hover:opacity-70"
-                          style={{ color: 'var(--c-ghost)' }}
-                          title="Editar observaciones"
-                        >
-                          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
-                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
-                          </svg>
-                        </button>
-                        {canAbono && n.state !== 'cancelled' && Number(n.amount_balance) > 0.005 &&
-                          Number(n.credit_disponible) > 0.005 && (
-                          <button
-                            onClick={() => setCreditNote(n)}
-                            className="p-1.5 rounded-lg transition-opacity hover:opacity-70"
-                            title="Aplicar crédito disponible del cliente"
-                            style={{ color: '#15803D', background: '#DCFCE7' }}
-                          >
-                            💰
-                          </button>
-                        )}
-                        {canAbono && n.state !== 'cancelled' && (
-                          <button onClick={() => setAbonoNote(n)}
-                            className="text-xs px-2.5 py-1 rounded-lg font-semibold transition-opacity hover:opacity-80"
-                            style={{ background: '#059669', color: '#fff' }}>
-                            + Abono
-                          </button>
-                        )}
-                      </div>
+                    <td className="px-3 py-2.5 text-xs" style={{ color: 'var(--c-dim)', maxWidth: 160 }}>
+                      {n.observaciones
+                        ? <span className="block truncate" title={n.observaciones}>{n.observaciones}</span>
+                        : <span style={{ color: 'var(--c-ghost)' }}>—</span>}
                     </td>
                   </tr>
                 )

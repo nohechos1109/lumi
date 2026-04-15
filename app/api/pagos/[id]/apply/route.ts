@@ -64,6 +64,9 @@ export async function POST(
     if (note.state === 'cancelled') {
       return NextResponse.json({ error: `La nota ${note.number} está cancelada` }, { status: 400 })
     }
+    if (note.state === 'draft') {
+      return NextResponse.json({ error: `La nota ${note.number} está en borrador` }, { status: 400 })
+    }
     const sale = await getSale(note.sale_id)
     if (!sale || sale.customer_id !== payment.customer_id) {
       return NextResponse.json({ error: `La nota ${note.number} no pertenece al cliente` }, { status: 400 })
@@ -74,13 +77,6 @@ export async function POST(
       }, { status: 400 })
     }
     saleIds.push(note.sale_id)
-  }
-
-  // Auto-confirm draft notes
-  for (const note of notes) {
-    if (note && note.state === 'draft') {
-      await updateSaleNoteState(note.id, 'confirmed')
-    }
   }
 
   try {
