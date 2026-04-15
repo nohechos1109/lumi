@@ -7,7 +7,7 @@ export interface Sale {
   customer_id: string
   project_id: string | null
   user_id: string | null
-  state: 'active' | 'paid' | 'cancelled'
+  state: 'active' | 'paid' | 'cancelled' | 'finished'
   amount_untaxed: string
   amount_tax: string
   amount_total: string
@@ -142,20 +142,41 @@ export async function updateSaleState(id: string, state: string): Promise<void> 
 }
 
 /**
- * Recalculate amount_paid and amount_balance from confirmed payment applications.
- * Auto-sets state to 'paid' if balance reaches 0.
+ * Recalculate totals from active notes and confirmed payment applications.
+ * active → paid  when balance reaches 0.
+ * paid   → active when balance > 0 (new note added after full payment).
+ * 'finished' state is never touched here — it is terminal.
  */
 export async function updateSaleTotals(id: string): Promise<void> {
   await pool.query(`
     UPDATE sales
-    SET amount_paid = COALESCE((
+    SET amount_untaxed = COALESCE((
+          SELECT SUM(sn.amount_untaxed)
+          FROM sale_notes sn
+          WHERE sn.sale_id = sales.id AND sn.state != 'cancelled'
+        ), 0),
+        amount_tax = COALESCE((
+          SELECT SUM(sn.amount_tax)
+          FROM sale_notes sn
+          WHERE sn.sale_id = sales.id AND sn.state != 'cancelled'
+        ), 0),
+        amount_total = COALESCE((
+          SELECT SUM(sn.amount_total)
+          FROM sale_notes sn
+          WHERE sn.sale_id = sales.id AND sn.state != 'cancelled'
+        ), 0),
+        amount_paid = COALESCE((
           SELECT SUM(pa.amount)
           FROM payment_applications pa
           JOIN customer_payments cp ON cp.id = pa.payment_id
           JOIN sale_notes sn ON sn.id = pa.sale_note_id
           WHERE sn.sale_id = sales.id AND cp.state = 'confirmed'
         ), 0),
-        amount_balance = amount_total - COALESCE((
+        amount_balance = COALESCE((
+          SELECT SUM(sn.amount_total)
+          FROM sale_notes sn
+          WHERE sn.sale_id = sales.id AND sn.state != 'cancelled'
+        ), 0) - COALESCE((
           SELECT SUM(pa.amount)
           FROM payment_applications pa
           JOIN customer_payments cp ON cp.id = pa.payment_id
@@ -165,10 +186,16 @@ export async function updateSaleTotals(id: string): Promise<void> {
     WHERE id = $1
   `, [id])
 
-  // Auto-mark as paid
+  // active → paid when fully paid
   await pool.query(`
     UPDATE sales SET state = 'paid'
     WHERE id = $1 AND state = 'active' AND amount_balance <= 0
+  `, [id])
+
+  // paid → active when new notes increase balance
+  await pool.query(`
+    UPDATE sales SET state = 'active'
+    WHERE id = $1 AND state = 'paid' AND amount_balance > 0
   `, [id])
 }
 

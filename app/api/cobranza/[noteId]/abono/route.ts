@@ -22,6 +22,9 @@ export async function POST(
   if (note.state === 'cancelled') {
     return NextResponse.json({ error: 'No se puede abonar a una nota cancelada' }, { status: 400 })
   }
+  if (note.state === 'draft') {
+    return NextResponse.json({ error: 'No se puede abonar a una nota en borrador' }, { status: 400 })
+  }
 
   const body = await req.json()
   const amount = Number(body.amount)
@@ -45,11 +48,6 @@ export async function POST(
   // Resolve customer_id from sale
   const sale = await getSale(note.sale_id)
   if (!sale) return NextResponse.json({ error: 'Venta no encontrada' }, { status: 404 })
-
-  // Auto-confirm the note if it's still draft (so it can receive payments)
-  if (note.state === 'draft') {
-    await updateSaleNoteState(note.id, 'confirmed')
-  }
 
   let paymentId: string
   try {

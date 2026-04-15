@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { revalidatePath } from 'next/cache'
 import { getSession, unauthorized, forbidden } from '@/lib/auth-guard'
 import { canCreateSaleNotes } from '@/lib/permissions'
-import { getSale } from '@/lib/queries/sales'
+import { getSale, updateSaleTotals } from '@/lib/queries/sales'
 import { listNotesBySale, createSaleNote } from '@/lib/queries/sale-notes'
 
 export async function GET(
@@ -28,8 +28,11 @@ export async function POST(
 
   const sale = await getSale(id)
   if (!sale) return NextResponse.json({ error: 'No encontrado' }, { status: 404 })
-  if (sale.state !== 'active') {
-    return NextResponse.json({ error: 'La venta no está activa' }, { status: 400 })
+  if (sale.state === 'finished') {
+    return NextResponse.json({ error: 'La venta está finalizada y no acepta nuevas notas' }, { status: 400 })
+  }
+  if (sale.state === 'cancelled') {
+    return NextResponse.json({ error: 'La venta está cancelada' }, { status: 400 })
   }
 
   const body = await req.json()
@@ -46,6 +49,8 @@ export async function POST(
       quote_line_id: l.quote_line_id ?? null,
     })),
   })
+
+  await updateSaleTotals(id)
 
   revalidatePath(`/ventas/${id}`)
   revalidatePath('/cobranza')

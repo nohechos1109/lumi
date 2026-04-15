@@ -31,6 +31,9 @@ export async function POST(req: NextRequest) {
   if (note.state === 'cancelled') {
     return NextResponse.json({ error: 'No se puede aplicar crédito a una nota cancelada' }, { status: 400 })
   }
+  if (note.state === 'draft') {
+    return NextResponse.json({ error: 'No se puede aplicar crédito a una nota en borrador' }, { status: 400 })
+  }
   if (amount > Number(note.amount_balance) + 0.005) {
     return NextResponse.json({
       error: `El monto excede el saldo de la nota ($${Number(note.amount_balance).toFixed(2)})`

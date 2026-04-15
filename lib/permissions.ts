@@ -66,3 +66,7 @@ export function canManagePaymentSchedule(role: string) {
 export function canCancelSale(role: string) {
   return role === 'admin'
 }
+
+export function canMarkSaleAsPaid(role: string) {
+  return role === 'manager' || role === 'admin'
+}

@@ -165,10 +165,11 @@ export default function AplicarPagoANotasModal({ payment, onClose, onApplied }: 
                 <tbody>
                   {notes.map(n => {
                     const bal = Number(n.amount_balance)
+                    const isDraft = n.state === 'draft'
                     const amt = parsedAmounts[n.id] || 0
                     const tooMuch = amt > bal + 0.005
                     return (
-                      <tr key={n.id} style={{ borderTop: '1px solid var(--c-rim)' }}>
+                      <tr key={n.id} style={{ borderTop: '1px solid var(--c-rim)', opacity: isDraft ? 0.7 : 1 }}>
                         <td className="px-3 py-2 font-mono font-medium" style={{ color: 'var(--c-ink)' }}>
                           {n.number}
                         </td>
@@ -179,33 +180,39 @@ export default function AplicarPagoANotasModal({ payment, onClose, onApplied }: 
                           ${fmtMXN(bal)}
                         </td>
                         <td className="px-3 py-2 text-right">
-                          <div className="flex items-center justify-end gap-1.5">
-                            <button
-                              type="button"
-                              onClick={() => fillNote(n)}
-                              className="text-xs px-1.5 py-0.5 rounded font-semibold hover:opacity-75 transition-opacity"
-                              style={{ background: '#EFF6FF', color: '#1D4ED8' }}
-                              title="Rellenar con máximo aplicable"
-                            >
-                              Max
-                            </button>
-                            <input
-                              type="number"
-                              step="0.01"
-                              min="0"
-                              max={bal}
-                              value={amounts[n.id] ?? ''}
-                              placeholder="0.00"
-                              onChange={e => setAmount(n.id, e.target.value)}
-                              className="w-24 rounded px-2 py-1 text-xs font-mono text-right"
-                              style={{
-                                background: 'var(--c-rim)',
-                                border: `1px solid ${tooMuch ? '#BE123C' : 'var(--c-rim)'}`,
-                                color: tooMuch ? '#BE123C' : 'var(--c-ink)',
-                                outline: 'none',
-                              }}
-                            />
-                          </div>
+                          {isDraft ? (
+                            <span className="text-xs font-semibold px-2 py-0.5 rounded-full" style={{ background: '#FEF9EC', color: '#B45309' }}>
+                              Borrador
+                            </span>
+                          ) : (
+                            <div className="flex items-center justify-end gap-1.5">
+                              <button
+                                type="button"
+                                onClick={() => fillNote(n)}
+                                className="text-xs px-1.5 py-0.5 rounded font-semibold hover:opacity-75 transition-opacity"
+                                style={{ background: '#EFF6FF', color: '#1D4ED8' }}
+                                title="Rellenar con máximo aplicable"
+                              >
+                                Max
+                              </button>
+                              <input
+                                type="number"
+                                step="0.01"
+                                min="0"
+                                max={bal}
+                                value={amounts[n.id] ?? ''}
+                                placeholder="0.00"
+                                onChange={e => setAmount(n.id, e.target.value)}
+                                className="w-24 rounded px-2 py-1 text-xs font-mono text-right"
+                                style={{
+                                  background: 'var(--c-rim)',
+                                  border: `1px solid ${tooMuch ? '#BE123C' : 'var(--c-rim)'}`,
+                                  color: tooMuch ? '#BE123C' : 'var(--c-ink)',
+                                  outline: 'none',
+                                }}
+                              />
+                            </div>
+                          )}
                         </td>
                       </tr>
                     )

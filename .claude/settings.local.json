@@ -78,5 +78,8 @@
       "Bash(node -e ':*)",
       "Bash(claude plugins:*)"
     ]
+  },
+  "enabledPlugins": {
+    "caveman@caveman": true
   }
 }

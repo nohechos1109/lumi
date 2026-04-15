@@ -3,6 +3,7 @@ import { revalidatePath } from 'next/cache'
 import { getSession, unauthorized, forbidden } from '@/lib/auth-guard'
 import { canCreateSaleNotes } from '@/lib/permissions'
 import { getSaleNote, updateSaleNoteState } from '@/lib/queries/sale-notes'
+import { updateSaleTotals } from '@/lib/queries/sales'
 
 export async function PATCH(
   req: NextRequest,
@@ -28,6 +29,8 @@ export async function PATCH(
   }
 
   await updateSaleNoteState(noteId, state)
+  await updateSaleTotals(id)
   revalidatePath(`/ventas/${id}`)
+  revalidatePath('/cobranza')
   return NextResponse.json({ ok: true })
 }

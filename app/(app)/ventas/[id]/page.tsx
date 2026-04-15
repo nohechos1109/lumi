@@ -3,13 +3,14 @@ import { cookies } from 'next/headers'
 import { getIronSession } from 'iron-session'
 import { notFound } from 'next/navigation'
 import { sessionOptions, SessionData } from '@/lib/session'
-import { canViewOwnSalesOnly } from '@/lib/permissions'
+import { canViewOwnSalesOnly, canMarkSaleAsPaid } from '@/lib/permissions'
 import { getSale } from '@/lib/queries/sales'
 import { listNotesBySale } from '@/lib/queries/sale-notes'
 import { listPaymentsBySale, listApplicationsBySalePayments } from '@/lib/queries/customer-payments'
 import { listScheduleItems } from '@/lib/queries/payment-schedule'
 import SaleDetail from './_components/SaleDetail'
 import ActivityLog from '@/components/ActivityLog'
+import MarkAsPaidButton from './_components/MarkAsPaidButton'
 
 export default async function SaleDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
@@ -84,6 +85,12 @@ export default async function SaleDetailPage({ params }: { params: Promise<{ id:
             )}
           </div>
         </div>
+
+        {sale.state === 'paid' && canMarkSaleAsPaid(session.role) && (
+          <div className="sm:self-start">
+            <MarkAsPaidButton saleId={sale.id} />
+          </div>
+        )}
       </div>
 
       {/* Client component handles all interactive sections */}
@@ -109,10 +116,11 @@ function SaleBadge({ state }: { state: string }) {
   const colors: Record<string, { bg: string; text: string }> = {
     active:    { bg: '#E0F2FE', text: '#0369A1' },
     paid:      { bg: '#DCFCE7', text: '#15803D' },
+    finished:  { bg: '#F0FDF4', text: '#166534' },
     cancelled: { bg: '#FFE4E6', text: '#BE123C' },
   }
   const c = colors[state] ?? colors.active
-  const labels: Record<string, string> = { active: 'ACTIVA', paid: 'PAGADA', cancelled: 'CANCELADA' }
+  const labels: Record<string, string> = { active: 'ACTIVA', paid: 'PAGADA', finished: 'TERMINADA', cancelled: 'CANCELADA' }
   return (
     <span
       className="text-xs font-bold px-3 py-1 rounded-full tracking-wide"

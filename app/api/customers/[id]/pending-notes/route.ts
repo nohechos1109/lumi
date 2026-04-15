@@ -9,6 +9,7 @@ export interface PendingNote {
   sale_id: string
   amount_balance: string
   amount_total: string
+  state: string
 }
 
 export async function GET(
@@ -23,6 +24,7 @@ export async function GET(
     SELECT
       sn.id,
       sn.number,
+      sn.state,
       sn.amount_balance::text,
       sn.amount_total::text,
       s.number AS sale_number,
