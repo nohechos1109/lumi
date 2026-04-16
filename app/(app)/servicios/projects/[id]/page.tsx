@@ -6,6 +6,7 @@ import { sessionOptions, SessionData } from '@/lib/session'
 import {
   canAccessServicios,
   canCreateServiceOrder,
+  canViewOwnServicesOnly,
 } from '@/lib/permissions'
 import {
   getServiceProject,
@@ -18,17 +19,18 @@ export default async function ServiceProjectDetailPage({ params }: { params: Pro
   const session = await getIronSession<SessionData>(await cookies(), sessionOptions)
   if (!session.userId) redirect('/login')
   if (!canAccessServicios(session.role)) redirect('/dashboard')
+  if (canViewOwnServicesOnly(session.role)) redirect('/servicios')
 
   const project = await getServiceProject(id)
   if (!project) notFound()
 
   const orders = await listServiceOrdersByProject(id)
 
-  const STATUS_MAP: Record<string, { label: string; bg: string; text: string }> = {
-    open:        { label: 'Abierto',    bg: '#E0F2FE', text: '#0369A1' },
-    in_progress: { label: 'En Proceso', bg: '#FEF3C7', text: '#B45309' },
-    completed:   { label: 'Completado', bg: '#DCFCE7', text: '#15803D' },
-    cancelled:   { label: 'Cancelado',  bg: '#FFE4E6', text: '#BE123C' },
+  const STATUS_MAP: Record<string, { label: string; cls: string }> = {
+    open:        { label: 'Abierto',    cls: 'badge badge-scheduled' },
+    in_progress: { label: 'En Proceso', cls: 'badge badge-in-progress' },
+    completed:   { label: 'Completado', cls: 'badge badge-attended' },
+    cancelled:   { label: 'Cancelado',  cls: 'badge badge-cancelled' },
   }
   const st = STATUS_MAP[project.status] ?? STATUS_MAP.open
 
@@ -50,9 +52,7 @@ export default async function ServiceProjectDetailPage({ params }: { params: Pro
             <h1 className="font-heading text-3xl font-bold" style={{ color: 'var(--c-ink)', letterSpacing: '0.02em' }}>
               {project.name}
             </h1>
-            <span className="text-xs font-semibold px-2 py-0.5 rounded-full" style={{ background: st.bg, color: st.text }}>
-              {st.label}
-            </span>
+            <span className={st.cls}>{st.label}</span>
           </div>
           <p className="text-sm flex items-center gap-2" style={{ color: 'var(--c-dim)' }}>
             <span className="font-mono">{project.number}</span>

@@ -5,11 +5,11 @@ import { useRouter } from 'next/navigation'
 import type { ServiceRequest } from '@/lib/queries/servicios'
 import { notifyRefresh, toast } from '@/lib/toast'
 
-const STATUS_MAP: Record<string, { label: string; bg: string; text: string }> = {
-  pending:    { label: 'Pendiente',  bg: '#FEF3C7', text: '#B45309' },
-  approved:   { label: 'Aprobada',   bg: '#DCFCE7', text: '#15803D' },
-  rejected:   { label: 'Rechazada',  bg: '#FEE2E2', text: '#991B1B' },
-  cancelled:  { label: 'Cancelada',  bg: '#F1F5F9', text: '#475569' },
+const STATUS_MAP: Record<string, { label: string; cls: string }> = {
+  pending:   { label: 'Pendiente', cls: 'badge badge-in-progress' },
+  approved:  { label: 'Aprobada',  cls: 'badge badge-approved' },
+  rejected:  { label: 'Rechazada', cls: 'badge badge-rejected' },
+  cancelled: { label: 'Cancelada', cls: 'badge badge-cancelled' },
 }
 
 export default function ServiceRequestsTable({ requests, canApprove }: { requests: ServiceRequest[]; canApprove: boolean }) {
@@ -45,67 +45,70 @@ export default function ServiceRequestsTable({ requests, canApprove }: { request
   }
 
   return (
-    <div className="overflow-x-auto rounded-xl" style={{ border: '1px solid var(--c-rim)' }}>
-      <table className="w-full text-sm" style={{ borderCollapse: 'collapse' }}>
-        <thead>
-          <tr style={{ background: 'var(--c-panel)', borderBottom: '1px solid var(--c-rim)' }}>
-            <th className="text-left px-4 py-2.5 font-semibold" style={{ color: 'var(--c-ghost)' }}>Motivo</th>
-            <th className="text-left px-4 py-2.5 font-semibold" style={{ color: 'var(--c-ghost)' }}>Cliente</th>
-            <th className="text-left px-4 py-2.5 font-semibold" style={{ color: 'var(--c-ghost)' }}>Solicitante</th>
-            <th className="text-left px-4 py-2.5 font-semibold" style={{ color: 'var(--c-ghost)' }}>Asignado</th>
-            <th className="text-left px-4 py-2.5 font-semibold" style={{ color: 'var(--c-ghost)' }}>Estado</th>
-            <th className="text-left px-4 py-2.5 font-semibold" style={{ color: 'var(--c-ghost)' }}>Creada</th>
-            <th className="text-right px-4 py-2.5 font-semibold" style={{ color: 'var(--c-ghost)' }}>Acciones</th>
-          </tr>
-        </thead>
-        <tbody>
-          {requests.map(r => {
-            const s = STATUS_MAP[r.status] ?? STATUS_MAP.pending
-            return (
-              <tr key={r.id} style={{ borderBottom: '1px solid var(--c-rim)' }}>
-                <td className="px-4 py-2.5" style={{ color: 'var(--c-ink)' }}>{r.motivo}</td>
-                <td className="px-4 py-2.5" style={{ color: 'var(--c-dim)' }}>{r.customer_name ?? '—'}</td>
-                <td className="px-4 py-2.5" style={{ color: 'var(--c-dim)' }}>{r.requested_by_username ?? '—'}</td>
-                <td className="px-4 py-2.5" style={{ color: 'var(--c-dim)' }}>{r.assigned_to_username ?? 'Sin asignar'}</td>
-                <td className="px-4 py-2.5">
-                  <span className="text-xs font-semibold px-2 py-0.5 rounded-full" style={{ background: s.bg, color: s.text }}>
-                    {s.label}
-                  </span>
-                </td>
-                <td className="px-4 py-2.5" style={{ color: 'var(--c-dim)' }} suppressHydrationWarning>
-                  {new Date(r.created_at).toLocaleDateString('es-MX')}
-                </td>
-                <td className="px-4 py-2.5 text-right">
-                  {canApprove && r.status === 'pending' ? (
-                    <div className="flex gap-1 justify-end">
-                      <button
-                        onClick={() => handleAction(r.id, 'approve')}
-                        disabled={busy === r.id}
-                        className="px-3 py-1 rounded text-xs font-semibold text-white"
-                        style={{ background: '#15803D', cursor: busy === r.id ? 'not-allowed' : 'pointer', border: 'none', opacity: busy === r.id ? 0.6 : 1 }}
-                      >
-                        Aprobar
-                      </button>
-                      <button
-                        onClick={() => handleAction(r.id, 'reject')}
-                        disabled={busy === r.id}
-                        className="px-3 py-1 rounded text-xs font-semibold text-white"
-                        style={{ background: 'var(--c-rose)', cursor: busy === r.id ? 'not-allowed' : 'pointer', border: 'none', opacity: busy === r.id ? 0.6 : 1 }}
-                      >
-                        Rechazar
-                      </button>
-                    </div>
-                  ) : r.resolved_project_number ? (
-                    <span className="text-xs font-mono" style={{ color: 'var(--c-dim)' }}>{r.resolved_project_number}</span>
-                  ) : (
-                    <span className="text-xs" style={{ color: 'var(--c-ghost)' }}>—</span>
-                  )}
-                </td>
-              </tr>
-            )
-          })}
-        </tbody>
-      </table>
+    <div
+      className="rounded-xl overflow-hidden shadow-sm"
+      style={{ border: '1px solid var(--c-rim)', background: 'var(--c-card)', boxShadow: '0 1px 3px rgba(15,23,42,0.04)' }}
+    >
+      <div className="overflow-x-auto">
+        <table className="w-full text-sm min-w-[800px]">
+          <thead>
+            <tr style={{ background: 'var(--c-panel)', borderBottom: '1px solid var(--c-rim)' }}>
+              <th className="text-left px-5 py-4 text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--c-ghost)', letterSpacing: '0.1em' }}>Motivo</th>
+              <th className="text-left px-5 py-4 text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--c-ghost)', letterSpacing: '0.1em' }}>Cliente</th>
+              <th className="text-left px-5 py-4 text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--c-ghost)', letterSpacing: '0.1em' }}>Solicitante</th>
+              <th className="text-left px-5 py-4 text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--c-ghost)', letterSpacing: '0.1em' }}>Asignado</th>
+              <th className="text-left px-5 py-4 text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--c-ghost)', letterSpacing: '0.1em' }}>Estado</th>
+              <th className="text-left px-5 py-4 text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--c-ghost)', letterSpacing: '0.1em' }}>Creada</th>
+              <th className="text-right px-5 py-4 text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--c-ghost)', letterSpacing: '0.1em' }}>Acciones</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-[var(--c-rim)]">
+            {requests.map(r => {
+              const s = STATUS_MAP[r.status] ?? STATUS_MAP.pending
+              return (
+                <tr key={r.id} className="tr-hover transition-colors">
+                  <td className="px-5 py-4" style={{ color: 'var(--c-ink)' }}>{r.motivo}</td>
+                  <td className="px-5 py-4" style={{ color: 'var(--c-dim)' }}>{r.customer_name ?? '—'}</td>
+                  <td className="px-5 py-4" style={{ color: 'var(--c-dim)' }}>{r.requested_by_username ?? '—'}</td>
+                  <td className="px-5 py-4" style={{ color: 'var(--c-dim)' }}>{r.assigned_to_username ?? 'Sin asignar'}</td>
+                  <td className="px-5 py-4">
+                    <span className={s.cls}>{s.label}</span>
+                  </td>
+                  <td className="px-5 py-4" style={{ color: 'var(--c-dim)' }} suppressHydrationWarning>
+                    {new Date(r.created_at).toLocaleDateString('es-MX')}
+                  </td>
+                  <td className="px-5 py-4 text-right">
+                    {canApprove && r.status === 'pending' ? (
+                      <div className="flex gap-1.5 justify-end">
+                        <button
+                          onClick={() => handleAction(r.id, 'approve')}
+                          disabled={busy === r.id}
+                          className="px-3 py-1.5 rounded-full text-xs font-semibold transition-opacity hover:opacity-80"
+                          style={{ background: 'var(--c-mint-bg)', color: 'var(--c-mint)', border: '1px solid rgba(11,153,98,0.25)', cursor: busy === r.id ? 'not-allowed' : 'pointer', opacity: busy === r.id ? 0.6 : 1 }}
+                        >
+                          Aprobar
+                        </button>
+                        <button
+                          onClick={() => handleAction(r.id, 'reject')}
+                          disabled={busy === r.id}
+                          className="px-3 py-1.5 rounded-full text-xs font-semibold transition-opacity hover:opacity-80"
+                          style={{ background: 'var(--c-rose-bg)', color: 'var(--c-rose)', border: '1px solid rgba(220,38,38,0.20)', cursor: busy === r.id ? 'not-allowed' : 'pointer', opacity: busy === r.id ? 0.6 : 1 }}
+                        >
+                          Rechazar
+                        </button>
+                      </div>
+                    ) : r.resolved_project_number ? (
+                      <span className="text-xs font-mono" style={{ color: 'var(--c-dim)' }}>{r.resolved_project_number}</span>
+                    ) : (
+                      <span className="text-xs" style={{ color: 'var(--c-ghost)' }}>—</span>
+                    )}
+                  </td>
+                </tr>
+              )
+            })}
+          </tbody>
+        </table>
+      </div>
     </div>
   )
 }

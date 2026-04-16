@@ -133,10 +133,11 @@ export default function PromoteServiceModal({ serviceId, serviceNumber, motivo, 
               disabled={loading}
               className="flex-1 py-2.5 rounded-lg text-sm font-semibold transition-all text-white"
               style={{
-                background: loading ? 'var(--c-rim-hi)' : '#B45309',
+                background: loading ? 'var(--c-rim-hi)' : 'var(--c-navy)',
                 cursor: loading ? 'not-allowed' : 'pointer',
                 border: 'none',
                 opacity: loading ? 0.75 : 1,
+                boxShadow: loading ? 'none' : '0 2px 8px rgba(37,99,235,0.25)',
               }}
             >
               {loading ? 'Creando...' : 'Crear Proyecto y Orden'}

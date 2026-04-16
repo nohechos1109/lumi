@@ -13,6 +13,7 @@ import {
 import {
   listServiceProjects,
   listServiceOrders,
+  listServiceOrdersByTechnician,
   listServices,
   listServicesByTechnician,
   listServiceRequests,
@@ -30,7 +31,7 @@ export default async function ServiciosPage() {
 
   const [projects, orders, services, requests] = await Promise.all([
     isTecnico ? Promise.resolve([]) : listServiceProjects(),
-    isTecnico ? Promise.resolve([]) : listServiceOrders(),
+    isTecnico ? listServiceOrdersByTechnician(session.userId) : listServiceOrders(),
     isTecnico ? listServicesByTechnician(session.userId) : listServices(),
     canApproveServiceRequest(session.role)
       ? listServiceRequests()
@@ -49,7 +50,8 @@ export default async function ServiciosPage() {
       requests={requests}
       perms={{
         createProject: canCreateServiceProject(session.role),
-        createService: canCreateServiceManual(session.role),
+        // Tecnico puede crear servicio sólo desde dentro de una orden — botón global oculto.
+        createService: canCreateServiceManual(session.role) && !isTecnico,
         createRequest: canCreateServiceRequest(session.role),
         approveRequest: canApproveServiceRequest(session.role),
         tecnicoOnly: isTecnico,

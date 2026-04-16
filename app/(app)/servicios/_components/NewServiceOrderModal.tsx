@@ -17,6 +17,7 @@ export default function NewServiceOrderModal({ onClose, projectId }: Props) {
   const router = useRouter()
   const [loading, setLoading] = useState(false)
   const [tecnicos, setTecnicos] = useState<Array<{ id: string; username: string }>>([])
+  const [assignAll, setAssignAll] = useState(false)
   const [selectedTechs, setSelectedTechs] = useState<string[]>([])
 
   useEffect(() => {
@@ -46,8 +47,8 @@ export default function NewServiceOrderModal({ onClose, projectId }: Props) {
           motivo_del_servicio: form.get('motivo_del_servicio') || null,
           ubicacion: form.get('ubicacion') || null,
           comentarios_de_soporte: form.get('comentarios_de_soporte') || null,
-          encargados: form.get('encargados') || null,
           tipo_lugar: form.get('tipo_lugar') || null,
+          assign_all_technicians: assignAll,
           technician_ids: selectedTechs,
           fecha_hora_agendada: form.get('fecha_hora_agendada') || null,
           fecha_hora_limite: form.get('fecha_hora_limite') || null,
@@ -115,48 +116,51 @@ export default function NewServiceOrderModal({ onClose, projectId }: Props) {
             <input name="ubicacion" type="text" className="w-full text-sm rounded-xl px-4 py-2.5" style={inp} />
           </div>
 
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <label className={labelCls} style={labelStyle}>Encargados</label>
-              <input name="encargados" type="text" className="w-full text-sm rounded-xl px-4 py-2.5" style={inp} />
-            </div>
-            <div>
-              <label className={labelCls} style={labelStyle}>Tipo de lugar</label>
-              <select name="tipo_lugar" className="w-full text-sm rounded-xl px-4 py-2.5" style={inp}>
-                <option value="">— Seleccionar —</option>
-                <option value="calle">Calle</option>
-                <option value="taller">Taller</option>
-              </select>
-            </div>
+          <div>
+            <label className={labelCls} style={labelStyle}>Tipo de lugar</label>
+            <select name="tipo_lugar" className="w-full text-sm rounded-xl px-4 py-2.5" style={inp}>
+              <option value="">— Seleccionar —</option>
+              <option value="calle">Calle</option>
+              <option value="taller">Taller</option>
+            </select>
           </div>
 
           <div>
             <label className={labelCls} style={labelStyle}>Técnicos asignados</label>
-            {tecnicos.length === 0 ? (
-              <p className="text-xs" style={{ color: 'var(--c-ghost)' }}>No hay técnicos registrados.</p>
-            ) : (
-              <div className="flex flex-wrap gap-2">
-                {tecnicos.map(t => {
-                  const active = selectedTechs.includes(t.id)
-                  return (
-                    <button
-                      key={t.id}
-                      type="button"
-                      onClick={() => toggleTech(t.id)}
-                      className="px-3 py-1.5 rounded-full text-xs font-semibold transition-colors"
-                      style={{
-                        background: active ? '#B45309' : 'var(--c-panel)',
-                        color: active ? '#fff' : 'var(--c-ink)',
-                        border: active ? '1px solid #B45309' : '1px solid var(--c-rim)',
-                        cursor: 'pointer',
-                      }}
-                    >
-                      {t.username}
-                    </button>
-                  )
-                })}
-              </div>
-            )}
+            <div className="flex flex-wrap gap-2">
+              <button
+                type="button"
+                onClick={() => setAssignAll(v => !v)}
+                className="px-3 py-1.5 rounded-full text-xs font-semibold transition-colors"
+                style={{
+                  background: assignAll ? 'var(--c-navy)' : 'var(--c-panel)',
+                  color: assignAll ? '#fff' : 'var(--c-ink)',
+                  border: assignAll ? '1px solid var(--c-navy)' : '1px solid var(--c-rim)',
+                  cursor: 'pointer',
+                }}
+              >
+                Todos
+              </button>
+              {tecnicos.map(t => {
+                const active = selectedTechs.includes(t.id)
+                return (
+                  <button
+                    key={t.id}
+                    type="button"
+                    onClick={() => toggleTech(t.id)}
+                    className="px-3 py-1.5 rounded-full text-xs font-semibold transition-colors"
+                    style={{
+                      background: active ? 'var(--c-navy)' : 'var(--c-panel)',
+                      color: active ? '#fff' : 'var(--c-ink)',
+                      border: active ? '1px solid var(--c-navy)' : '1px solid var(--c-rim)',
+                      cursor: 'pointer',
+                    }}
+                  >
+                    {t.username}
+                  </button>
+                )
+              })}
+            </div>
             {selectedTechs.length > 0 && (
               <p className="text-xs mt-1" style={{ color: 'var(--c-ghost)' }}>
                 {selectedTechs.length} seleccionado{selectedTechs.length > 1 ? 's' : ''} — se asignarán a cada servicio creado en esta orden.

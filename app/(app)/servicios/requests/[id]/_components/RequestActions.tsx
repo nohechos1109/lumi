@@ -34,16 +34,28 @@ export default function RequestActions({ requestId }: { requestId: string }) {
       <button
         onClick={() => act('approve')}
         disabled={busy}
-        className="px-5 py-2.5 rounded-lg text-sm font-semibold text-white"
-        style={{ background: '#15803D', cursor: busy ? 'not-allowed' : 'pointer', border: 'none', opacity: busy ? 0.6 : 1 }}
+        className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold text-white transition-all hover:opacity-90 active:scale-95"
+        style={{
+          background: busy ? 'var(--c-rim-hi)' : 'var(--c-mint)',
+          cursor: busy ? 'not-allowed' : 'pointer',
+          border: 'none',
+          opacity: busy ? 0.6 : 1,
+          boxShadow: busy ? 'none' : '0 2px 8px rgba(5,150,105,0.20)',
+        }}
       >
         Aprobar y crear proyecto
       </button>
       <button
         onClick={() => act('reject')}
         disabled={busy}
-        className="px-5 py-2.5 rounded-lg text-sm font-semibold text-white"
-        style={{ background: '#991B1B', cursor: busy ? 'not-allowed' : 'pointer', border: 'none', opacity: busy ? 0.6 : 1 }}
+        className="px-5 py-2.5 rounded-xl text-sm font-semibold transition-all hover:opacity-90 active:scale-95"
+        style={{
+          background: 'var(--c-rose-bg)',
+          color: 'var(--c-rose)',
+          border: '1px solid rgba(220,38,38,0.20)',
+          cursor: busy ? 'not-allowed' : 'pointer',
+          opacity: busy ? 0.6 : 1,
+        }}
       >
         Rechazar
       </button>

@@ -86,6 +86,11 @@ export function canCreateServiceOrder(role: string) {
 }
 
 export function canCreateServiceManual(role: string) {
+  return role === 'soporte' || role === 'almacen' || role === 'admin' || role === 'manager' || role === 'tecnico'
+}
+
+// Walk-in = service without parent order. Tecnico restringido a crear sólo dentro de orden.
+export function canCreateServiceWalkIn(role: string) {
   return role === 'soporte' || role === 'almacen' || role === 'admin' || role === 'manager'
 }
 

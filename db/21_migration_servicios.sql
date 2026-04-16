@@ -46,7 +46,6 @@ CREATE TABLE IF NOT EXISTS service_orders (
   referencias            text,
   foja_de_ruta           text,
   comentarios_de_soporte text,
-  encargados             text,
   fecha_hora_agendada    timestamptz,
   fecha_hora_limite      timestamptz,
   fecha_llegada          timestamptz,

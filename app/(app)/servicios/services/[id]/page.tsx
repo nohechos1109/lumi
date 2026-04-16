@@ -29,12 +29,13 @@ export default async function ServiceDetailPage({ params }: { params: Promise<{ 
   if (!service) notFound()
 
   if (canViewOwnServicesOnly(session.role)) {
-    const assigned = service.technicians?.some(t => t.user_id === session.userId)
-    if (!assigned) notFound()
+    const allowed = service.assign_all_technicians || service.technicians?.some(t => t.user_id === session.userId)
+    if (!allowed) notFound()
   }
 
   const canEdit = canEditService(session.role)
-  const canManageTech = canEdit && session.role !== 'tecnico'
+  const isOrphan = !service.service_order_id
+  const canManageTech = canEdit && session.role !== 'tecnico' && isOrphan
 
   const [tecnicos, files, materials] = await Promise.all([
     canManageTech ? listTechnicianUsers() : Promise.resolve([]),
@@ -57,7 +58,7 @@ export default async function ServiceDetailPage({ params }: { params: Promise<{ 
           <Link
             href={`/servicios/orders/${service.service_order_id}`}
             className="text-xs font-mono hover:underline"
-            style={{ color: '#B45309' }}
+            style={{ color: 'var(--c-navy)' }}
           >
             Orden {service.order_number}
           </Link>

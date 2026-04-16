@@ -17,8 +17,8 @@ export async function GET(_req: NextRequest, { params }: { params: Promise<{ id:
 
   if (canViewOwnServicesOnly(session.role)) {
     const srv = await getService(id)
-    const assigned = srv?.technicians?.some(t => t.user_id === session.userId)
-    if (!assigned) return forbidden()
+    const allowed = srv?.assign_all_technicians || srv?.technicians?.some(t => t.user_id === session.userId)
+    if (!allowed) return forbidden()
   }
 
   const materials = await listServiceMaterials(id)

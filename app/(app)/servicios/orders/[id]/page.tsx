@@ -3,11 +3,12 @@ import { getIronSession } from 'iron-session'
 import { notFound, redirect } from 'next/navigation'
 import Link from 'next/link'
 import { sessionOptions, SessionData } from '@/lib/session'
-import { canAccessServicios, canCreateServiceManual, canEditService } from '@/lib/permissions'
+import { canAccessServicios, canCreateServiceManual, canEditService, canViewOwnServicesOnly } from '@/lib/permissions'
 import {
   getServiceOrder,
   listServicesByOrder,
   listOrderTechnicians,
+  isTechnicianOnOrder,
 } from '@/lib/queries/servicios'
 import { listFilesByEntity } from '@/lib/queries/files'
 import OrderServicesList from './_components/OrderServicesList'
@@ -22,18 +23,24 @@ export default async function ServiceOrderDetailPage({ params }: { params: Promi
   const order = await getServiceOrder(id)
   if (!order) notFound()
 
+  // Tecnico sólo accede a órdenes donde está asignado (directo o vía servicio).
+  if (canViewOwnServicesOnly(session.role)) {
+    const allowed = await isTechnicianOnOrder(id, session.userId)
+    if (!allowed) redirect('/servicios')
+  }
+
   const [services, files, orderTechs] = await Promise.all([
     listServicesByOrder(id),
     listFilesByEntity('service_order', id),
     listOrderTechnicians(id),
   ])
 
-  const ESTATUS_MAP: Record<string, { label: string; bg: string; text: string }> = {
-    pendiente: { label: 'Pendiente', bg: '#F1F5F9', text: '#475569' },
-    agendado:  { label: 'Agendado',  bg: '#E0F2FE', text: '#0369A1' },
-    en_curso:  { label: 'En curso',  bg: '#FEF3C7', text: '#B45309' },
-    atendido:  { label: 'Atendido',  bg: '#DCFCE7', text: '#15803D' },
-    cancelado: { label: 'Cancelado', bg: '#FFE4E6', text: '#BE123C' },
+  const ESTATUS_MAP: Record<string, { label: string; cls: string }> = {
+    pendiente: { label: 'Pendiente', cls: 'badge badge-pending' },
+    agendado:  { label: 'Agendado',  cls: 'badge badge-scheduled' },
+    en_curso:  { label: 'En curso',  cls: 'badge badge-in-progress' },
+    atendido:  { label: 'Atendido',  cls: 'badge badge-attended' },
+    cancelado: { label: 'Cancelado', cls: 'badge badge-cancelled' },
   }
   const e = ESTATUS_MAP[order.estatus] ?? ESTATUS_MAP.pendiente
 
@@ -51,7 +58,7 @@ export default async function ServiceOrderDetailPage({ params }: { params: Promi
           <Link
             href={`/servicios/projects/${order.service_project_id}`}
             className="text-xs font-mono hover:underline"
-            style={{ color: '#B45309' }}
+            style={{ color: 'var(--c-navy)' }}
           >
             {order.project_number} — {order.project_name}
           </Link>
@@ -64,9 +71,7 @@ export default async function ServiceOrderDetailPage({ params }: { params: Promi
             <h1 className="font-heading text-3xl font-bold font-mono" style={{ color: 'var(--c-ink)' }}>
               {order.number}
             </h1>
-            <span className="text-xs font-semibold px-2 py-0.5 rounded-full" style={{ background: e.bg, color: e.text }}>
-              {e.label}
-            </span>
+            <span className={e.cls}>{e.label}</span>
           </div>
           {order.motivo_del_servicio && (
             <p className="text-sm" style={{ color: 'var(--c-ink)' }}>{order.motivo_del_servicio}</p>
@@ -76,17 +81,19 @@ export default async function ServiceOrderDetailPage({ params }: { params: Promi
             {order.tipo_lugar && (
               <div>
                 <span style={{ color: 'var(--c-ghost)' }}>Lugar:</span>{' '}
-                <span className="text-xs font-semibold px-2 py-0.5 rounded-full" style={{
-                  background: order.tipo_lugar === 'taller' ? '#E0F2FE' : '#FEF3C7',
-                  color: order.tipo_lugar === 'taller' ? '#0369A1' : '#B45309',
-                }}>{order.tipo_lugar === 'taller' ? 'Taller' : 'Calle'}</span>
+                <span className={`badge badge-${order.tipo_lugar}`}>{order.tipo_lugar === 'taller' ? 'Taller' : 'Calle'}</span>
               </div>
             )}
             {order.ubicacion && <div><span style={{ color: 'var(--c-ghost)' }}>Ubicación:</span> {order.ubicacion}</div>}
-            {order.encargados && <div><span style={{ color: 'var(--c-ghost)' }}>Encargados:</span> {order.encargados}</div>}
-            {orderTechs.length > 0 && (
+            {(order.assign_all_technicians || orderTechs.length > 0) && (
               <div className="flex items-center gap-2 flex-wrap">
                 <span style={{ color: 'var(--c-ghost)' }}>Técnicos:</span>
+                {order.assign_all_technicians && (
+                  <span className="text-xs font-semibold px-2 py-0.5 rounded-full"
+                    style={{ background: 'var(--c-panel)', border: '1px solid var(--c-rim)', color: 'var(--c-ink)' }}>
+                    Todos
+                  </span>
+                )}
                 {orderTechs.map(t => (
                   <span key={t.user_id} className="text-xs font-semibold px-2 py-0.5 rounded-full"
                     style={{ background: 'var(--c-panel)', border: '1px solid var(--c-rim)', color: 'var(--c-ink)' }}>

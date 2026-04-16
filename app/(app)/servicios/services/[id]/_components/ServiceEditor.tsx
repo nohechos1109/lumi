@@ -14,13 +14,13 @@ const ESTATUS_OPTIONS: { value: ServiceEstatus; label: string }[] = [
   { value: 'rechazado', label: 'Rechazado' },
 ]
 
-const ESTATUS_MAP: Record<string, { bg: string; text: string }> = {
-  pendiente: { bg: '#F1F5F9', text: '#475569' },
-  agendado:  { bg: '#E0F2FE', text: '#0369A1' },
-  en_curso:  { bg: '#FEF3C7', text: '#B45309' },
-  atendido:  { bg: '#DCFCE7', text: '#15803D' },
-  cancelado: { bg: '#FFE4E6', text: '#BE123C' },
-  rechazado: { bg: '#FEE2E2', text: '#991B1B' },
+const ESTATUS_MAP: Record<string, string> = {
+  pendiente: 'badge badge-pending',
+  agendado:  'badge badge-scheduled',
+  en_curso:  'badge badge-in-progress',
+  atendido:  'badge badge-attended',
+  cancelado: 'badge badge-cancelled',
+  rechazado: 'badge badge-rejected',
 }
 
 const labelCls = 'block text-xs font-semibold mb-1.5'
@@ -42,8 +42,8 @@ export default function ServiceEditor({ service, canEdit, canManageTech, canAppr
   const [reporte, setReporte] = useState(service.reporte_tecnico ?? '')
   const [comentariosReporte, setComentariosReporte] = useState(service.comentarios_reporte ?? '')
   const [saving, setSaving] = useState(false)
-  const [newTechId, setNewTechId] = useState('')
   const [approving, setApproving] = useState(false)
+  const [showTechModal, setShowTechModal] = useState(false)
 
   async function saveField(field: string, value: string | null) {
     setSaving(true)
@@ -71,34 +71,6 @@ export default function ServiceEditor({ service, canEdit, canManageTech, canAppr
     await saveField('estatus', s)
   }
 
-  async function assignTech() {
-    if (!newTechId) return
-    const res = await fetch(`/api/servicios/services/${service.id}/technicians`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ user_id: newTechId }),
-    })
-    if (!res.ok) {
-      toast('Error al asignar técnico', 'error')
-      return
-    }
-    toast('Técnico asignado', 'success')
-    setNewTechId('')
-    router.refresh()
-  }
-
-  async function removeTech(userId: string) {
-    const res = await fetch(`/api/servicios/services/${service.id}/technicians?user_id=${userId}`, {
-      method: 'DELETE',
-    })
-    if (!res.ok) {
-      toast('Error al remover técnico', 'error')
-      return
-    }
-    toast('Técnico removido', 'success')
-    router.refresh()
-  }
-
   async function handleApprove() {
     setApproving(true)
     try {
@@ -118,10 +90,8 @@ export default function ServiceEditor({ service, canEdit, canManageTech, canAppr
 
   const isApproved = !!service.approved_at
   const showApproveBtn = canApprove && estatus === 'atendido' && !isApproved && hasMaterials
-
-  const st = ESTATUS_MAP[estatus] ?? ESTATUS_MAP.pendiente
-  const assignedIds = new Set((service.technicians ?? []).map(t => t.user_id))
-  const available = tecnicos.filter(t => !assignedIds.has(t.id))
+  const stCls = ESTATUS_MAP[estatus] ?? ESTATUS_MAP.pendiente
+  const techs = service.technicians ?? []
 
   return (
     <div>
@@ -131,7 +101,7 @@ export default function ServiceEditor({ service, canEdit, canManageTech, canAppr
             <h1 className="font-heading text-3xl font-bold font-mono" style={{ color: 'var(--c-ink)' }}>
               {service.number}
             </h1>
-            <span className="text-xs font-semibold px-2 py-0.5 rounded-full" style={{ background: st.bg, color: st.text }}>
+            <span className={stCls}>
               {ESTATUS_OPTIONS.find(o => o.value === estatus)?.label ?? estatus}
             </span>
           </div>
@@ -142,12 +112,39 @@ export default function ServiceEditor({ service, canEdit, canManageTech, canAppr
             {service.tipo_lugar && (
               <div>
                 <span style={{ color: 'var(--c-ghost)' }}>Lugar:</span>{' '}
-                <span className="text-xs font-semibold px-2 py-0.5 rounded-full" style={{
-                  background: service.tipo_lugar === 'taller' ? '#E0F2FE' : '#FEF3C7',
-                  color: service.tipo_lugar === 'taller' ? '#0369A1' : '#B45309',
-                }}>{service.tipo_lugar === 'taller' ? 'Taller' : 'Calle'}</span>
+                <span className={`badge badge-${service.tipo_lugar}`}>{service.tipo_lugar === 'taller' ? 'Taller' : 'Calle'}</span>
               </div>
             )}
+            <div className="flex items-center gap-2 flex-wrap">
+              <span style={{ color: 'var(--c-ghost)' }}>Técnicos:</span>
+              {!service.assign_all_technicians && techs.length === 0 && (
+                <span style={{ color: 'var(--c-ghost)', fontStyle: 'italic' }}>Sin asignar</span>
+              )}
+              {service.assign_all_technicians && (
+                <span className="text-xs font-semibold px-2 py-0.5 rounded-full"
+                  style={{ background: 'var(--c-panel)', border: '1px solid var(--c-rim)', color: 'var(--c-ink)' }}>
+                  Todos
+                </span>
+              )}
+              {techs.map(t => (
+                <span
+                  key={t.user_id}
+                  className="text-xs font-semibold px-2 py-0.5 rounded-full"
+                  style={{ background: 'var(--c-panel)', border: '1px solid var(--c-rim)', color: 'var(--c-ink)' }}
+                >
+                  {t.username}
+                </span>
+              ))}
+              {canManageTech && (
+                <button
+                  onClick={() => setShowTechModal(true)}
+                  className="text-xs transition-opacity hover:opacity-70"
+                  style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: 'var(--c-navy)', fontWeight: 600, padding: 0 }}
+                >
+                  Modificar
+                </button>
+              )}
+            </div>
             {service.fecha_hora_agendada && (
               <div suppressHydrationWarning>
                 <span style={{ color: 'var(--c-ghost)' }}>Agendado:</span>{' '}
@@ -203,65 +200,12 @@ export default function ServiceEditor({ service, canEdit, canManageTech, canAppr
         </div>
       )}
 
-      <div className="mt-8">
-        <h2 className="text-sm font-bold uppercase tracking-widest mb-3" style={{ color: 'var(--c-ghost)' }}>
-          Técnicos asignados
-        </h2>
-        {(service.technicians ?? []).length === 0 ? (
-          <p className="text-sm" style={{ color: 'var(--c-dim)' }}>Sin técnicos asignados.</p>
-        ) : (
-          <ul className="flex flex-wrap gap-2">
-            {service.technicians!.map(t => (
-              <li
-                key={t.user_id}
-                className="flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold"
-                style={{ background: 'var(--c-panel)', color: 'var(--c-ink)', border: '1px solid var(--c-rim)' }}
-              >
-                {t.username}
-                {canManageTech && (
-                  <button
-                    onClick={() => removeTech(t.user_id)}
-                    className="opacity-50 hover:opacity-100 transition-opacity"
-                    style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: 'var(--c-rose)' }}
-                    aria-label="Quitar técnico"
-                  >
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg>
-                  </button>
-                )}
-              </li>
-            ))}
-          </ul>
-        )}
-        {canManageTech && available.length > 0 && (
-          <div className="flex gap-2 mt-4">
-            <select
-              value={newTechId}
-              onChange={e => setNewTechId(e.target.value)}
-              className="text-sm rounded-lg px-3 py-2"
-              style={inp}
-            >
-              <option value="">Seleccionar técnico...</option>
-              {available.map(t => <option key={t.id} value={t.id}>{t.username}</option>)}
-            </select>
-            <button
-              onClick={assignTech}
-              disabled={!newTechId}
-              className="px-4 py-2 rounded-lg text-sm font-semibold text-white"
-              style={{ background: newTechId ? 'var(--c-navy)' : 'var(--c-rim-hi)', cursor: newTechId ? 'pointer' : 'not-allowed', border: 'none' }}
-            >
-              Asignar
-            </button>
-          </div>
-        )}
-      </div>
-
-      {/* Approval section */}
       {isApproved && (
-        <div className="mt-8 rounded-xl p-4" style={{ background: '#DCFCE7', border: '1px solid #BBF7D0' }}>
-          <p className="text-sm font-semibold" style={{ color: '#15803D' }}>
+        <div className="mt-8 rounded-xl p-4" style={{ background: 'var(--c-mint-bg)', border: '1px solid rgba(11,153,98,0.25)' }}>
+          <p className="text-sm font-semibold" style={{ color: 'var(--c-mint)' }}>
             Servicio aprobado
             {service.sale_note_id && (
-              <span className="ml-2 font-normal" style={{ color: '#166534' }}>
+              <span className="ml-2 font-normal" style={{ opacity: 0.85 }}>
                 — Nota generada
               </span>
             )}
@@ -278,8 +222,8 @@ export default function ServiceEditor({ service, canEdit, canManageTech, canAppr
           <button
             onClick={handleApprove}
             disabled={approving}
-            className="px-5 py-2.5 rounded-lg text-sm font-semibold text-white"
-            style={{ background: approving ? 'var(--c-rim-hi)' : '#15803D', cursor: approving ? 'not-allowed' : 'pointer', border: 'none', opacity: approving ? 0.6 : 1 }}
+            className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold text-white transition-all hover:opacity-90 active:scale-95"
+            style={{ background: approving ? 'var(--c-rim-hi)' : 'var(--c-mint)', cursor: approving ? 'not-allowed' : 'pointer', border: 'none', opacity: approving ? 0.6 : 1, boxShadow: '0 2px 8px rgba(5,150,105,0.20)' }}
           >
             {approving ? 'Aprobando...' : 'Aprobar y generar nota'}
           </button>
@@ -293,6 +237,176 @@ export default function ServiceEditor({ service, canEdit, canManageTech, canAppr
           </p>
         </div>
       )}
+
+      {showTechModal && (
+        <TechModal
+          serviceId={service.id}
+          current={techs}
+          all={tecnicos}
+          initialAssignAll={service.assign_all_technicians}
+          onClose={() => { setShowTechModal(false); router.refresh() }}
+        />
+      )}
+    </div>
+  )
+}
+
+function TechModal({
+  serviceId,
+  current,
+  all,
+  initialAssignAll,
+  onClose,
+}: {
+  serviceId: string
+  current: { user_id: string; username?: string }[]
+  all: { id: string; username: string }[]
+  initialAssignAll: boolean
+  onClose: () => void
+}) {
+  const [assignAll, setAssignAll] = useState(initialAssignAll)
+  const [selected, setSelected] = useState<Set<string>>(new Set(current.map(t => t.user_id)))
+  const [saving, setSaving] = useState(false)
+
+  function toggle(id: string) {
+    setSelected(prev => {
+      const next = new Set(prev)
+      if (next.has(id)) next.delete(id); else next.add(id)
+      return next
+    })
+  }
+
+  async function save() {
+    setSaving(true)
+    try {
+      const ops: Promise<unknown>[] = []
+      if (assignAll !== initialAssignAll) {
+        ops.push(fetch(`/api/servicios/services/${serviceId}`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ assign_all_technicians: assignAll }),
+        }))
+      }
+      const currentIds = new Set(current.map(t => t.user_id))
+      const toAdd = [...selected].filter(id => !currentIds.has(id))
+      const toRemove = [...currentIds].filter(id => !selected.has(id))
+      ops.push(
+        ...toAdd.map(id =>
+          fetch(`/api/servicios/services/${serviceId}/technicians`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ user_id: id }),
+          })
+        ),
+        ...toRemove.map(id =>
+          fetch(`/api/servicios/services/${serviceId}/technicians?user_id=${id}`, { method: 'DELETE' })
+        ),
+      )
+      await Promise.all(ops)
+      toast('Técnicos actualizados', 'success')
+      onClose()
+    } catch {
+      toast('Error al guardar', 'error')
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-4"
+      style={{ background: 'rgba(9,11,16,0.5)', backdropFilter: 'blur(2px)' }}
+      onClick={onClose}
+    >
+      <div
+        role="dialog"
+        aria-modal="true"
+        className="w-full max-w-sm rounded-2xl flex flex-col overflow-hidden"
+        style={{
+          background: 'var(--c-card)',
+          border: '1px solid var(--c-rim)',
+          boxShadow: '0 8px 32px rgba(9,11,16,0.24)',
+        }}
+        onClick={e => e.stopPropagation()}
+      >
+        <div className="flex items-center justify-between px-6 py-4" style={{ borderBottom: '1px solid var(--c-rim)' }}>
+          <h2 className="font-heading text-base font-bold" style={{ color: 'var(--c-ink)' }}>
+            Técnicos asignados
+          </h2>
+          <button
+            type="button"
+            onClick={onClose}
+            className="rounded-lg p-1.5 transition-colors hover:opacity-70"
+            style={{ color: 'var(--c-dim)', cursor: 'pointer', background: 'transparent', border: 'none' }}
+          >
+            <svg width="16" height="16" viewBox="0 0 18 18" fill="none">
+              <path d="M14 4L4 14M4 4l10 10" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+            </svg>
+          </button>
+        </div>
+
+        <div className="px-6 py-5 flex flex-col gap-4">
+          <div className="flex flex-wrap gap-2">
+            <button
+              type="button"
+              onClick={() => setAssignAll(v => !v)}
+              className="px-3 py-1.5 rounded-full text-xs font-semibold transition-colors"
+              style={{
+                background: assignAll ? 'var(--c-navy)' : 'var(--c-panel)',
+                color: assignAll ? '#fff' : 'var(--c-ink)',
+                border: assignAll ? '1px solid var(--c-navy)' : '1px solid var(--c-rim)',
+                cursor: 'pointer',
+              }}
+            >
+              Todos
+            </button>
+            {all.map(t => {
+              const active = selected.has(t.id)
+              return (
+                <button
+                  key={t.id}
+                  type="button"
+                  onClick={() => toggle(t.id)}
+                  className="px-3 py-1.5 rounded-full text-xs font-semibold transition-colors"
+                  style={{
+                    background: active ? 'var(--c-navy)' : 'var(--c-panel)',
+                    color: active ? '#fff' : 'var(--c-ink)',
+                    border: active ? '1px solid var(--c-navy)' : '1px solid var(--c-rim)',
+                    cursor: 'pointer',
+                  }}
+                >
+                  {t.username}
+                </button>
+              )
+            })}
+          </div>
+
+          <div className="flex gap-3 pt-1" style={{ borderTop: '1px solid var(--c-rim)' }}>
+            <button
+              type="button"
+              onClick={onClose}
+              className="flex-1 py-2 rounded-lg text-sm font-semibold transition-colors hover:opacity-75"
+              style={{ background: 'transparent', color: 'var(--c-dim)', border: '1px solid var(--c-rim)', cursor: 'pointer' }}
+            >
+              Cancelar
+            </button>
+            <button
+              type="button"
+              onClick={save}
+              disabled={saving}
+              className="flex-1 py-2 rounded-lg text-sm font-semibold text-white"
+              style={{
+                background: saving ? 'var(--c-rim-hi)' : 'var(--c-navy)',
+                cursor: saving ? 'not-allowed' : 'pointer',
+                border: 'none',
+                opacity: saving ? 0.75 : 1,
+              }}
+            >
+              {saving ? 'Guardando...' : 'Guardar'}
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
   )
 }

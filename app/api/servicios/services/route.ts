@@ -4,6 +4,7 @@ import { getSession, unauthorized, forbidden } from '@/lib/auth-guard'
 import {
   canAccessServicios,
   canCreateServiceManual,
+  canCreateServiceWalkIn,
   canViewOwnServicesOnly,
 } from '@/lib/permissions'
 import {
@@ -15,6 +16,7 @@ import {
   getServiceOrder,
   listOrderTechnicians,
   assignTechnician,
+  isTechnicianOnOrder,
 } from '@/lib/queries/servicios'
 
 export async function GET(req: NextRequest) {
@@ -51,8 +53,16 @@ export async function POST(req: NextRequest) {
 
   const body = await req.json()
   const walkIn = !body.service_order_id
+  if (walkIn && !canCreateServiceWalkIn(session.role)) {
+    return forbidden()
+  }
   if (walkIn && !body.customer_id) {
     return NextResponse.json({ error: 'customer_id requerido para walk-in' }, { status: 400 })
+  }
+  // Tecnico sólo puede crear servicio dentro de orden donde está asignado.
+  if (canViewOwnServicesOnly(session.role) && body.service_order_id) {
+    const allowed = await isTechnicianOnOrder(body.service_order_id, session.userId)
+    if (!allowed) return forbidden()
   }
 
   try {
@@ -76,6 +86,8 @@ export async function POST(req: NextRequest) {
       comentarios_soporte: body.comentarios_soporte ?? null,
       fecha_hora_agendada: body.fecha_hora_agendada ?? null,
       fecha_hora_limite: body.fecha_hora_limite ?? null,
+      // orphan walk-in created by non-tecnico defaults to visible for all techs
+      assign_all_technicians: walkIn && !canViewOwnServicesOnly(session.role) ? true : false,
       iniciado_por: session.userId,
     })
 

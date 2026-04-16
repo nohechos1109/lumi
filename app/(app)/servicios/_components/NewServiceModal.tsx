@@ -195,10 +195,7 @@ export default function NewServiceModal({ onClose, prefillOrderId, prefillCustom
               <>
                 <input type="hidden" name="tipo_lugar" value={prefillTipoLugar} />
                 <div className="w-full text-sm rounded-xl px-4 py-2.5" style={{ ...inp, opacity: 0.7 }}>
-                  <span className="text-xs font-semibold px-2 py-0.5 rounded-full" style={{
-                    background: prefillTipoLugar === 'taller' ? '#E0F2FE' : '#FEF3C7',
-                    color: prefillTipoLugar === 'taller' ? '#0369A1' : '#B45309',
-                  }}>{prefillTipoLugar === 'taller' ? 'Taller' : 'Calle'}</span>
+                  <span className={`badge badge-${prefillTipoLugar}`}>{prefillTipoLugar === 'taller' ? 'Taller' : 'Calle'}</span>
                   <span className="ml-2 text-xs" style={{ color: 'var(--c-ghost)' }}>Heredado de la orden</span>
                 </div>
               </>

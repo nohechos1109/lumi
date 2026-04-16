@@ -37,7 +37,7 @@ export default function ServiciosLanding({ role, projects, orders, services, req
 
   const tabs: { key: Tab; label: string; count: number; visible: boolean }[] = [
     { key: 'projects', label: 'Proyectos', count: projects.length, visible: !perms.tecnicoOnly },
-    { key: 'orders', label: 'Órdenes', count: orders.length, visible: !perms.tecnicoOnly },
+    { key: 'orders', label: perms.tecnicoOnly ? 'Mis Órdenes' : 'Órdenes', count: orders.length, visible: true },
     { key: 'services', label: perms.tecnicoOnly ? 'Mis Servicios' : 'Servicios', count: services.length, visible: true },
     { key: 'requests', label: 'Solicitudes', count: requests.length, visible: !perms.tecnicoOnly && (perms.createRequest || perms.approveRequest) },
   ]

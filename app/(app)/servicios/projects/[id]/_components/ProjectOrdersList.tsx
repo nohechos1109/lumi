@@ -5,12 +5,12 @@ import Link from 'next/link'
 import type { ServiceOrder } from '@/lib/queries/servicios'
 import NewServiceOrderModal from '../../../_components/NewServiceOrderModal'
 
-const ESTATUS_MAP: Record<string, { label: string; bg: string; text: string }> = {
-  pendiente: { label: 'Pendiente', bg: '#F1F5F9', text: '#475569' },
-  agendado:  { label: 'Agendado',  bg: '#E0F2FE', text: '#0369A1' },
-  en_curso:  { label: 'En curso',  bg: '#FEF3C7', text: '#B45309' },
-  atendido:  { label: 'Atendido',  bg: '#DCFCE7', text: '#15803D' },
-  cancelado: { label: 'Cancelado', bg: '#FFE4E6', text: '#BE123C' },
+const ESTATUS_MAP: Record<string, { label: string; cls: string }> = {
+  pendiente: { label: 'Pendiente', cls: 'badge badge-pending' },
+  agendado:  { label: 'Agendado',  cls: 'badge badge-scheduled' },
+  en_curso:  { label: 'En curso',  cls: 'badge badge-in-progress' },
+  atendido:  { label: 'Atendido',  cls: 'badge badge-attended' },
+  cancelado: { label: 'Cancelado', cls: 'badge badge-cancelled' },
 }
 
 interface Props {
@@ -33,10 +33,11 @@ export default function ProjectOrdersList({ projectId, orders, canCreate }: Prop
           {canCreate && (
             <button
               onClick={() => setShowModal(true)}
-              className="px-4 py-2 rounded-lg text-sm font-semibold text-white"
-              style={{ background: '#B45309', cursor: 'pointer', border: 'none' }}
+              className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold text-white transition-all hover:opacity-90 active:scale-95"
+              style={{ background: 'var(--c-navy)', boxShadow: '0 2px 8px rgba(37,99,235,0.25)', border: 'none', cursor: 'pointer' }}
             >
-              + Nueva Orden
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              Nueva Orden
             </button>
           )}
         </div>
@@ -47,43 +48,46 @@ export default function ProjectOrdersList({ projectId, orders, canCreate }: Prop
           Sin órdenes aún.
         </div>
       ) : (
-        <div className="overflow-x-auto rounded-xl" style={{ border: '1px solid var(--c-rim)' }}>
-          <table className="w-full text-sm" style={{ borderCollapse: 'collapse' }}>
-            <thead>
-              <tr style={{ background: 'var(--c-panel)', borderBottom: '1px solid var(--c-rim)' }}>
-                <th className="text-left px-4 py-2.5 font-semibold" style={{ color: 'var(--c-ghost)' }}>Número</th>
-                <th className="text-left px-4 py-2.5 font-semibold" style={{ color: 'var(--c-ghost)' }}>Motivo</th>
-                <th className="text-left px-4 py-2.5 font-semibold" style={{ color: 'var(--c-ghost)' }}>Estado</th>
-                <th className="text-right px-4 py-2.5 font-semibold" style={{ color: 'var(--c-ghost)' }}>Servicios</th>
-                <th className="text-left px-4 py-2.5 font-semibold" style={{ color: 'var(--c-ghost)' }}>Agendada</th>
-              </tr>
-            </thead>
-            <tbody>
-              {orders.map(o => {
-                const e = ESTATUS_MAP[o.estatus] ?? ESTATUS_MAP.pendiente
-                const total = (o.servicios_pendientes ?? 0) + (o.servicios_en_curso ?? 0) + (o.servicios_atendidos ?? 0)
-                return (
-                  <tr key={o.id} style={{ borderBottom: '1px solid var(--c-rim)' }}>
-                    <td className="px-4 py-2.5">
-                      <Link href={`/servicios/orders/${o.id}`} className="font-mono font-medium hover:underline" style={{ color: '#B45309' }}>
-                        {o.number}
-                      </Link>
-                    </td>
-                    <td className="px-4 py-2.5" style={{ color: 'var(--c-ink)' }}>{o.motivo_del_servicio ?? '—'}</td>
-                    <td className="px-4 py-2.5">
-                      <span className="text-xs font-semibold px-2 py-0.5 rounded-full" style={{ background: e.bg, color: e.text }}>
-                        {e.label}
-                      </span>
-                    </td>
-                    <td className="px-4 py-2.5 text-right font-mono" style={{ color: 'var(--c-ink)' }}>{total}</td>
-                    <td className="px-4 py-2.5" style={{ color: 'var(--c-dim)' }} suppressHydrationWarning>
-                      {o.fecha_hora_agendada ? new Date(o.fecha_hora_agendada).toLocaleDateString('es-MX') : '—'}
-                    </td>
-                  </tr>
-                )
-              })}
-            </tbody>
-          </table>
+        <div
+          className="rounded-xl overflow-hidden shadow-sm"
+          style={{ border: '1px solid var(--c-rim)', background: 'var(--c-card)', boxShadow: '0 1px 3px rgba(15,23,42,0.04)' }}
+        >
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm min-w-[700px]">
+              <thead>
+                <tr style={{ background: 'var(--c-panel)', borderBottom: '1px solid var(--c-rim)' }}>
+                  <th className="text-left px-5 py-4 text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--c-ghost)', letterSpacing: '0.1em' }}>Número</th>
+                  <th className="text-left px-5 py-4 text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--c-ghost)', letterSpacing: '0.1em' }}>Motivo</th>
+                  <th className="text-left px-5 py-4 text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--c-ghost)', letterSpacing: '0.1em' }}>Estado</th>
+                  <th className="text-right px-5 py-4 text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--c-ghost)', letterSpacing: '0.1em' }}>Servicios</th>
+                  <th className="text-left px-5 py-4 text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--c-ghost)', letterSpacing: '0.1em' }}>Agendada</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-[var(--c-rim)]">
+                {orders.map(o => {
+                  const e = ESTATUS_MAP[o.estatus] ?? ESTATUS_MAP.pendiente
+                  const total = (o.servicios_pendientes ?? 0) + (o.servicios_en_curso ?? 0) + (o.servicios_atendidos ?? 0)
+                  return (
+                    <tr key={o.id} className="tr-hover transition-colors">
+                      <td className="px-5 py-4 font-mono text-xs font-bold" style={{ letterSpacing: '0.08em' }}>
+                        <Link href={`/servicios/orders/${o.id}`} className="hover:underline" style={{ color: 'var(--c-navy)' }}>
+                          {o.number}
+                        </Link>
+                      </td>
+                      <td className="px-5 py-4" style={{ color: 'var(--c-ink)' }}>{o.motivo_del_servicio ?? '—'}</td>
+                      <td className="px-5 py-4">
+                        <span className={e.cls}>{e.label}</span>
+                      </td>
+                      <td className="px-5 py-4 text-right font-mono" style={{ color: 'var(--c-ink)' }}>{total}</td>
+                      <td className="px-5 py-4" style={{ color: 'var(--c-dim)' }} suppressHydrationWarning>
+                        {o.fecha_hora_agendada ? new Date(o.fecha_hora_agendada).toLocaleDateString('es-MX') : '—'}
+                      </td>
+                    </tr>
+                  )
+                })}
+              </tbody>
+            </table>
+          </div>
         </div>
       )}
 

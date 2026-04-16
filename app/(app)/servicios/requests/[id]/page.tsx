@@ -3,15 +3,15 @@ import { getIronSession } from 'iron-session'
 import { notFound, redirect } from 'next/navigation'
 import Link from 'next/link'
 import { sessionOptions, SessionData } from '@/lib/session'
-import { canAccessServicios, canApproveServiceRequest } from '@/lib/permissions'
+import { canAccessServicios, canApproveServiceRequest, canViewOwnServicesOnly } from '@/lib/permissions'
 import { getServiceRequest } from '@/lib/queries/servicios'
 import RequestActions from './_components/RequestActions'
 
-const STATUS_MAP: Record<string, { label: string; bg: string; text: string }> = {
-  pending:   { label: 'Pendiente',  bg: '#FEF3C7', text: '#B45309' },
-  approved:  { label: 'Aprobada',   bg: '#DCFCE7', text: '#15803D' },
-  rejected:  { label: 'Rechazada',  bg: '#FEE2E2', text: '#991B1B' },
-  cancelled: { label: 'Cancelada',  bg: '#F1F5F9', text: '#475569' },
+const STATUS_MAP: Record<string, { label: string; cls: string }> = {
+  pending:   { label: 'Pendiente', cls: 'badge badge-in-progress' },
+  approved:  { label: 'Aprobada',  cls: 'badge badge-approved' },
+  rejected:  { label: 'Rechazada', cls: 'badge badge-rejected' },
+  cancelled: { label: 'Cancelada', cls: 'badge badge-cancelled' },
 }
 
 export default async function ServiceRequestDetailPage({ params }: { params: Promise<{ id: string }> }) {
@@ -19,6 +19,7 @@ export default async function ServiceRequestDetailPage({ params }: { params: Pro
   const session = await getIronSession<SessionData>(await cookies(), sessionOptions)
   if (!session.userId) redirect('/login')
   if (!canAccessServicios(session.role)) redirect('/dashboard')
+  if (canViewOwnServicesOnly(session.role)) redirect('/servicios')
 
   const req = await getServiceRequest(id)
   if (!req) notFound()
@@ -45,9 +46,7 @@ export default async function ServiceRequestDetailPage({ params }: { params: Pro
           <h1 className="font-heading text-3xl font-bold" style={{ color: 'var(--c-ink)' }}>
             Solicitud de Servicio
           </h1>
-          <span className="text-xs font-semibold px-2 py-0.5 rounded-full" style={{ background: st.bg, color: st.text }}>
-            {st.label}
-          </span>
+          <span className={st.cls}>{st.label}</span>
         </div>
         <p className="text-sm" suppressHydrationWarning style={{ color: 'var(--c-ghost)' }}>
           Creada el {new Date(req.created_at).toLocaleDateString('es-MX')}
@@ -79,7 +78,7 @@ export default async function ServiceRequestDetailPage({ params }: { params: Pro
                 <Link
                   href={`/servicios/projects/${req.resolved_service_project_id}`}
                   className="font-mono hover:underline"
-                  style={{ color: '#B45309' }}
+                  style={{ color: 'var(--c-navy)' }}
                 >
                   {req.resolved_project_number}
                 </Link>
