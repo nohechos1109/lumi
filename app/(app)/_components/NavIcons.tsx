@@ -165,3 +165,11 @@ export function IconUnidades() {
     </svg>
   )
 }
+
+export function IconServicios() {
+  return (
+    <svg {...props}>
+      <path d="M14.7 6.3a4 4 0 0 0-5.66 5.66l-6.04 6.04a2 2 0 1 0 2.83 2.83l6.04-6.04a4 4 0 0 0 5.66-5.66l-2.83 2.83-2.83-2.83 2.83-2.83z" />
+    </svg>
+  )
+}

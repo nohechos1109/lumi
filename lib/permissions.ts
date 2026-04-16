@@ -70,3 +70,41 @@ export function canCancelSale(role: string) {
 export function canMarkSaleAsPaid(role: string) {
   return role === 'manager' || role === 'admin'
 }
+
+// ── Servicios ─────────────────────────────────────────────────
+
+export function canAccessServicios(role: string) {
+  return role !== 'sales'
+}
+
+export function canCreateServiceProject(role: string) {
+  return role === 'soporte' || role === 'admin' || role === 'manager'
+}
+
+export function canCreateServiceOrder(role: string) {
+  return role === 'soporte' || role === 'admin' || role === 'manager'
+}
+
+export function canCreateServiceManual(role: string) {
+  return role === 'soporte' || role === 'almacen' || role === 'admin' || role === 'manager'
+}
+
+export function canCreateServiceRequest(role: string) {
+  return role === 'admin' || role === 'manager'
+}
+
+export function canApproveServiceRequest(role: string) {
+  return role === 'soporte' || role === 'admin'
+}
+
+export function canEditService(role: string) {
+  return role === 'soporte' || role === 'tecnico' || role === 'admin' || role === 'manager'
+}
+
+export function canDeleteServiceEntities(role: string) {
+  return role === 'admin'
+}
+
+export function canViewOwnServicesOnly(role: string) {
+  return role === 'tecnico'
+}

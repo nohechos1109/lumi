@@ -14,7 +14,13 @@ export const salesNav: NavItem[] = [
 export const restrictedNav: NavItem[] = [
   { href: '/dashboard', label: 'Inicio',        icon: 'dashboard', color: '#1B3461', exact: true },
   { href: '/quotes',    label: 'Cotizaciones',   icon: 'quotes',    color: '#0B9962', desc: 'Cotizaciones del sistema' },
+  { href: '/servicios', label: 'Servicios',      icon: 'servicios', color: '#B45309', desc: 'Proyectos, órdenes y servicios en campo' },
   { href: '/catalog',   label: 'Catálogo',       icon: 'catalog',   color: '#C47F08', desc: 'Productos disponibles' },
+]
+
+export const tecnicoNav: NavItem[] = [
+  { href: '/dashboard', label: 'Inicio',     icon: 'dashboard', color: '#1B3461', exact: true },
+  { href: '/servicios', label: 'Mis Servicios', icon: 'servicios', color: '#B45309', desc: 'Servicios asignados' },
 ]
 
 export const managerNav: NavItem[] = [
@@ -25,6 +31,7 @@ export const managerNav: NavItem[] = [
   { href: '/plantillas',      label: 'Plantillas',   icon: 'templates', color: '#C026D3', desc: 'Plantillas de cotización' },
   { href: '/catalog',         label: 'Catálogo',     icon: 'catalog',   color: '#C47F08', desc: 'Vista de catálogo para el público' },
   { href: '/admin/unidades',  label: 'Unidades',     icon: 'unidades',  color: '#0B7A8E', desc: 'Flota de unidades, rutas y grupos' },
+  { href: '/servicios',       label: 'Servicios',    icon: 'servicios', color: '#B45309', desc: 'Proyectos, órdenes y servicios en campo' },
   { href: '/convenios',       label: 'Convenios',    icon: 'convenios', color: '#7C3AED', desc: 'Calendario de pagos acordados' },
 ]
 
@@ -43,6 +50,7 @@ export const adminNav: NavItem[] = [
   { href: '/catalog',                  label: 'Catálogo',      icon: 'catalog',   color: '#C47F08', desc: 'Vista de catálogo para el público' },
   { href: '/admin/settings',           label: 'Configuración', icon: 'settings',  color: '#374151', desc: 'Tipo de cambio e impuestos' },
   { href: '/admin/unidades',           label: 'Unidades',      icon: 'unidades',  color: '#0B7A8E', desc: 'Flota de unidades, rutas y grupos' },
+  { href: '/servicios',                label: 'Servicios',     icon: 'servicios', color: '#B45309', desc: 'Proyectos, órdenes y servicios en campo' },
 ]
 
 export const NAV_BY_ROLE: Record<string, NavItem[]> = {
@@ -51,4 +59,5 @@ export const NAV_BY_ROLE: Record<string, NavItem[]> = {
   soporte: restrictedNav,
   manager: managerNav,
   admin:   adminNav,
+  tecnico: tecnicoNav,
 }

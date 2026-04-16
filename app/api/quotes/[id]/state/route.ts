@@ -7,6 +7,7 @@ import { insertAuditEvent } from '@/lib/queries/audit'
 import { getSaleByQuote, createSaleFromQuote } from '@/lib/queries/sales'
 import { createNotification } from '@/lib/queries/notifications'
 import { getProject } from '@/lib/queries/projects'
+import { autoCreateServiceProjectFromSale } from '@/lib/queries/servicios'
 import { broadcastToAll } from '@/lib/sse'
 
 const VALID_TRANSITIONS: Record<string, QuoteState[]> = {
@@ -68,6 +69,13 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
           })
         }
         revalidatePath('/cobranza')
+
+        try {
+          const svProject = await autoCreateServiceProjectFromSale(sale.id, session.userId)
+          if (svProject) revalidatePath('/servicios')
+        } catch (svErr) {
+          console.error('Error auto-creating service project from sale:', svErr)
+        }
       }
     } catch (err) {
       console.error('Error creating sale from quote:', err)

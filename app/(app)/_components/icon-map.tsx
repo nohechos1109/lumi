@@ -2,7 +2,7 @@ import {
   IconDashboard, IconProjects, IconQuotes, IconCatalog,
   IconCustomers, IconTemplates, IconTeam, IconUsers,
   IconProducts, IconDiscounts, IconSettings, IconCobranza, IconPagos,
-  IconUnidades, IconConvenios,
+  IconUnidades, IconConvenios, IconServicios,
 } from './NavIcons'
 
 export const ICON_MAP: Record<string, React.ReactNode> = {
@@ -21,4 +21,5 @@ export const ICON_MAP: Record<string, React.ReactNode> = {
   pagos:      <IconPagos />,
   unidades:   <IconUnidades />,
   convenios:  <IconConvenios />,
+  servicios:  <IconServicios />,
 }

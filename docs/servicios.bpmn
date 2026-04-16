@@ -1,0 +1,834 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_02dkdzh" targetNamespace="http://bpmn.io/schema/bpmn" exporter="bpmn-js (https://demo.bpmn.io)" exporterVersion="18.13.2">
+  <bpmn:process id="Process_12oj2vr" isExecutable="false">
+    <bpmn:task id="Activity_0hucppy" name="Venta&#10;(Cotizacion)">
+      <bpmn:outgoing>Flow_1t4rbnp</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:dataObjectReference id="DataObjectReference_1lppvrs" name="Cotizacion" dataObjectRef="DataObject_0pdaytk" />
+    <bpmn:dataObject id="DataObject_0pdaytk" />
+    <bpmn:dataStoreReference id="DataStoreReference_1dycwuq" name="Cliente" />
+    <bpmn:task id="Activity_0yu7fxt" name="Venta (seguimiento de cotizacion)">
+      <bpmn:incoming>Flow_1t4rbnp</bpmn:incoming>
+      <bpmn:outgoing>Flow_0cegib2</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:dataObjectReference id="DataObjectReference_1es4j9t" name="Cotizacion" dataObjectRef="DataObject_03mx9yw" />
+    <bpmn:dataObject id="DataObject_03mx9yw" />
+    <bpmn:dataStoreReference id="DataStoreReference_0gpt436" name="Cliente" />
+    <bpmn:dataObjectReference id="DataObjectReference_1aak3i6" name="Pagos" dataObjectRef="DataObject_0zsuh2x" />
+    <bpmn:dataObject id="DataObject_0zsuh2x" />
+    <bpmn:dataStoreReference id="DataStoreReference_1dsby3t" name="Proyecto" />
+    <bpmn:dataObjectReference id="DataObjectReference_09s55fr" name="Servicios" dataObjectRef="DataObject_1x84z6x" />
+    <bpmn:dataObject id="DataObject_1x84z6x" />
+    <bpmn:task id="Activity_0zqx787" name="Proyecto">
+      <bpmn:incoming>Flow_0cegib2</bpmn:incoming>
+      <bpmn:outgoing>Flow_0o0w3tx</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Activity_04kynqe" name="Orden de Servicio">
+      <bpmn:incoming>Flow_0o0w3tx</bpmn:incoming>
+      <bpmn:outgoing>Flow_0863f7n</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Activity_0tx4omt" name="Nota">
+      <bpmn:incoming>Flow_1ehb0z9</bpmn:incoming>
+    </bpmn:task>
+    <bpmn:dataObjectReference id="DataObjectReference_1fvshuv" name="Notas" dataObjectRef="DataObject_1vg0q2d" />
+    <bpmn:dataObject id="DataObject_1vg0q2d" />
+    <bpmn:task id="Activity_1tomf5b" name="Servicio (TECNICO)">
+      <bpmn:incoming>Flow_0863f7n</bpmn:incoming>
+      <bpmn:outgoing>Flow_0ovy9cs</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:dataStoreReference id="DataStoreReference_1wds2a9" name="Grupo inventario&#10;(ej. carro)" />
+    <bpmn:dataObjectReference id="DataObjectReference_0wtlmza" name="Referencias" dataObjectRef="DataObject_0nn6v6g" />
+    <bpmn:dataObject id="DataObject_0nn6v6g" />
+    <bpmn:dataObjectReference id="DataObjectReference_05n53i5" name="Referencias" dataObjectRef="DataObject_1pf2qog" />
+    <bpmn:dataObject id="DataObject_1pf2qog" />
+    <bpmn:dataStoreReference id="DataStoreReference_0gxoozp" name="Cliente" />
+    <bpmn:dataObjectReference id="DataObjectReference_0gg6crk" name="Cotizacion / Levantamiento" dataObjectRef="DataObject_1bhvz8c" />
+    <bpmn:dataObject id="DataObject_1bhvz8c" />
+    <bpmn:dataStoreReference id="DataStoreReference_1195ntd" name="Venta" />
+    <bpmn:dataObjectReference id="DataObjectReference_0pnr2wd" name="Servicios" dataObjectRef="DataObject_11fqnkr" />
+    <bpmn:dataObject id="DataObject_11fqnkr" />
+    <bpmn:dataObjectReference id="DataObjectReference_0p292b2" name="Notas" dataObjectRef="DataObject_1qwtygv" />
+    <bpmn:dataObject id="DataObject_1qwtygv" />
+    <bpmn:dataObjectReference id="DataObjectReference_1xieam0" name="Referencias" dataObjectRef="DataObject_1o4z1od" />
+    <bpmn:dataObject id="DataObject_1o4z1od" />
+    <bpmn:task id="Activity_0fcfgoh" name="Servicio (SOPORTE)">
+      <bpmn:incoming>Flow_0ovy9cs</bpmn:incoming>
+      <bpmn:outgoing>Flow_1ehb0z9</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:dataStoreReference id="DataStoreReference_0k7tq96" name="Cliente" />
+    <bpmn:dataStoreReference id="DataStoreReference_0ogyh43" name="Proyecto" />
+    <bpmn:dataObjectReference id="DataObjectReference_0q4fa1s" name="Cotizacion / Levantamiento" dataObjectRef="DataObject_02hxiv6" />
+    <bpmn:dataObject id="DataObject_02hxiv6" />
+    <bpmn:dataObjectReference id="DataObjectReference_023k82b" name="Referencias" dataObjectRef="DataObject_1ypt3c0" />
+    <bpmn:dataObject id="DataObject_1ypt3c0" />
+    <bpmn:dataObjectReference id="DataObjectReference_0vpc75u" name="Servicios" dataObjectRef="DataObject_03ka4e7" />
+    <bpmn:dataObject id="DataObject_03ka4e7" />
+    <bpmn:dataStoreReference id="DataStoreReference_1hhkn1f" name="Ordenes de servicio" />
+    <bpmn:dataObjectReference id="DataObjectReference_0s3ezra" name="Notas" dataObjectRef="DataObject_1lyaqn5" />
+    <bpmn:dataObject id="DataObject_1lyaqn5" />
+    <bpmn:dataStoreReference id="DataStoreReference_0zd75g5" name="Grupo inventario&#10;(ej. carro)" />
+    <bpmn:dataStoreReference id="DataStoreReference_16v00n4" name="Unidades" />
+    <bpmn:dataStoreReference id="DataStoreReference_0o6k2zo" name="Ruta" />
+    <bpmn:dataStoreReference id="DataStoreReference_0b2orqq" name="Ruta" />
+    <bpmn:dataStoreReference id="DataStoreReference_1p41dqz" name="Ruta" />
+    <bpmn:dataStoreReference id="DataStoreReference_0w0pho0" name="Cliente" />
+    <bpmn:dataStoreReference id="DataStoreReference_1jid9kk" name="Proyecto" />
+    <bpmn:dataStoreReference id="DataStoreReference_0fr6vvx" name="Orden de servicio" />
+    <bpmn:dataObjectReference id="DataObjectReference_0cthzlo" name="Cotizacion / Levantamiento" dataObjectRef="DataObject_18cpbf5" />
+    <bpmn:dataObject id="DataObject_18cpbf5" />
+    <bpmn:dataObjectReference id="DataObjectReference_1sdi85f" name="Referencias" dataObjectRef="DataObject_0rcru7u" />
+    <bpmn:dataObject id="DataObject_0rcru7u" />
+    <bpmn:dataObjectReference id="DataObjectReference_01cgjql" name="Nota" dataObjectRef="DataObject_1yfxiey" />
+    <bpmn:dataObject id="DataObject_1yfxiey" />
+    <bpmn:dataObjectReference id="DataObjectReference_0j9to2x" name="Materiales usados" dataObjectRef="DataObject_0kk677o" />
+    <bpmn:dataObject id="DataObject_0kk677o" />
+    <bpmn:dataObjectReference id="DataObjectReference_1kfujvz" name="Reporte" dataObjectRef="DataObject_0vp7aqc" />
+    <bpmn:dataObject id="DataObject_0vp7aqc" />
+    <bpmn:dataStoreReference id="DataStoreReference_1vkeidk" name="Grupo inventario&#10;(ej. carro)" />
+    <bpmn:dataStoreReference id="DataStoreReference_186d2my" name="Ruta" />
+    <bpmn:dataStoreReference id="DataStoreReference_0rgnuv3" name="Cliente" />
+    <bpmn:dataStoreReference id="DataStoreReference_1bygl2d" name="Proyecto" />
+    <bpmn:dataStoreReference id="DataStoreReference_1x6vwoi" name="Orden de servicio" />
+    <bpmn:dataObjectReference id="DataObjectReference_00zwjpt" name="Cotizacion / Levantamiento" dataObjectRef="DataObject_0gk5uhk" />
+    <bpmn:dataObject id="DataObject_0gk5uhk" />
+    <bpmn:dataObjectReference id="DataObjectReference_08gcikc" name="Referencias" dataObjectRef="DataObject_0x6v8nz" />
+    <bpmn:dataObject id="DataObject_0x6v8nz" />
+    <bpmn:dataObjectReference id="DataObjectReference_00ssrwy" name="Nota" dataObjectRef="DataObject_0vvl7mj" />
+    <bpmn:dataObject id="DataObject_0vvl7mj" />
+    <bpmn:dataObjectReference id="DataObjectReference_119n6of" name="Reporte" dataObjectRef="DataObject_032a2pk" />
+    <bpmn:dataObject id="DataObject_032a2pk" />
+    <bpmn:dataStoreReference id="DataStoreReference_0i7ma5b" name="Unidad" />
+    <bpmn:dataStoreReference id="DataStoreReference_0mfwz3t" name="Unidad" />
+    <bpmn:dataStoreReference id="DataStoreReference_0tnmymn" name="Ruta" />
+    <bpmn:dataStoreReference id="DataStoreReference_044bc2c" name="Cliente" />
+    <bpmn:dataStoreReference id="DataStoreReference_1cxyrii" name="Proyecto" />
+    <bpmn:dataStoreReference id="DataStoreReference_1s0pl6n" name="Orden de servicio" />
+    <bpmn:dataObjectReference id="DataObjectReference_01p3z2j" name="Nota" dataObjectRef="DataObject_14hfnis" />
+    <bpmn:dataObject id="DataObject_14hfnis" />
+    <bpmn:dataObjectReference id="DataObjectReference_1qq1l4q" name="Materiales usados" dataObjectRef="DataObject_0a0km55" />
+    <bpmn:dataObject id="DataObject_0a0km55" />
+    <bpmn:dataObjectReference id="DataObjectReference_166qwua" name="Reporte" dataObjectRef="DataObject_169wyr7" />
+    <bpmn:dataObject id="DataObject_169wyr7" />
+    <bpmn:dataStoreReference id="DataStoreReference_13kkca2" name="Unidad" />
+    <bpmn:dataObjectReference id="DataObjectReference_1lf17e8" name="Cotizacion / Levantamiento" dataObjectRef="DataObject_1s6f3xa" />
+    <bpmn:dataObject id="DataObject_1s6f3xa" />
+    <bpmn:dataObjectReference id="DataObjectReference_033bjtz" name="Avances" dataObjectRef="DataObject_01bj9yc" />
+    <bpmn:dataObject id="DataObject_01bj9yc" />
+    <bpmn:dataObjectReference id="DataObjectReference_1ojbdg5" name="Materiales usados" dataObjectRef="DataObject_0uxrkps" />
+    <bpmn:dataObject id="DataObject_0uxrkps" />
+    <bpmn:sequenceFlow id="Flow_1t4rbnp" sourceRef="Activity_0hucppy" targetRef="Activity_0yu7fxt" />
+    <bpmn:sequenceFlow id="Flow_0cegib2" sourceRef="Activity_0yu7fxt" targetRef="Activity_0zqx787" />
+    <bpmn:sequenceFlow id="Flow_0o0w3tx" sourceRef="Activity_0zqx787" targetRef="Activity_04kynqe" />
+    <bpmn:sequenceFlow id="Flow_0863f7n" name="Cada unidad&#10;(o añadir)" sourceRef="Activity_04kynqe" targetRef="Activity_1tomf5b" />
+    <bpmn:sequenceFlow id="Flow_0ovy9cs" sourceRef="Activity_1tomf5b" targetRef="Activity_0fcfgoh" />
+    <bpmn:sequenceFlow id="Flow_1ehb0z9" name="La nota se crea con los materiales especificados por los técnicos en el servicio, pero sólo hasta que soporte confirma los datos" sourceRef="Activity_0fcfgoh" targetRef="Activity_0tx4omt" />
+    <bpmn:textAnnotation id="TextAnnotation_0r4dbga">
+      <bpmn:text>FUNCIONES:
+Iniciar
+Terminar</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:textAnnotation id="TextAnnotation_0emrnys">
+      <bpmn:text>El técnico selecciona directamente qué materiales se usaron (de los que hay en el grupo ej. Carro)</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:textAnnotation id="TextAnnotation_002btos">
+      <bpmn:text>La venta termina cuando el proyecto se marca como terminado y es aprobado</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:textAnnotation id="TextAnnotation_1iyftyv">
+      <bpmn:text>La facturación se hace aparte (javi)</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:textAnnotation id="TextAnnotation_1yizoui">
+      <bpmn:text>FUNCIONES:
+Registrar pago y abonar a la nota
+Abonar a la nota (pago existente)</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:textAnnotation id="TextAnnotation_11yzagl">
+      <bpmn:text>Los materiales se adminisitran por almacén a parte</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:textAnnotation id="TextAnnotation_1x10vo2">
+      <bpmn:text>Los materiales se adminisitran por almacén a parte</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:textAnnotation id="TextAnnotation_1niu26l">
+      <bpmn:text>FUNCIONES:
+Devolver (a tecnicos)
+Añadir suscripciones
+Estatus
+Confirmar</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:textAnnotation id="TextAnnotation_08qsm2n">
+      <bpmn:text>CHECKLIST (ej. Nombre de la unidad en plataforma)</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:textAnnotation id="TextAnnotation_1hpelbf">
+      <bpmn:text>Determinar estatus del servicio</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:textAnnotation id="TextAnnotation_0uwuxo4">
+      <bpmn:text>Aprobación del reporte</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:textAnnotation id="TextAnnotation_0u0nzlc">
+      <bpmn:text>Responsabilidad de los técnicos</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:textAnnotation id="TextAnnotation_1htwwf4">
+      <bpmn:text>Detalles específicos</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:textAnnotation id="TextAnnotation_1mt1ef6">
+      <bpmn:text>Detalles generales</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:textAnnotation id="TextAnnotation_1sirljv">
+      <bpmn:text>Encargados</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:textAnnotation id="TextAnnotation_1ibhkhw">
+      <bpmn:text>UNIDADES</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:textAnnotation id="TextAnnotation_0rkh80z">
+      <bpmn:text>Soporte administra, tecnicos inician, los demás consultan</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:textAnnotation id="TextAnnotation_0qsgiy7">
+      <bpmn:text>FUNCIONES:
+Añadir unidad
+Confirmar (iniciar)
+Cancelar</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:textAnnotation id="TextAnnotation_1ju3g5a">
+      <bpmn:text>Margen de tiempo</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:textAnnotation id="TextAnnotation_0isil3g">
+      <bpmn:text>Margen de tiempo</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:textAnnotation id="TextAnnotation_1ie8qqz">
+      <bpmn:text>FUNCIONES:
+Agendar Orden S.
+Agendar Soporte presencial (ej. capacitacion)
+Avance
+Cancelar (Con aprobación por ser venta)
+Terminar (Con aprobacion por ser venta)</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:textAnnotation id="TextAnnotation_0mfuzpf">
+      <bpmn:text>*Soporte lo administra</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:textAnnotation id="TextAnnotation_12s5vms">
+      <bpmn:text>Whatsapp</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:textAnnotation id="TextAnnotation_1m9zn1f">
+      <bpmn:text>Unidades nuevas se crean con nombres provisionales.
+Automáticamente</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:textAnnotation id="TextAnnotation_0zux8co">
+      <bpmn:text>Si la ruta no existe, se crea una provisional (nombre de la empresa).
+Automáticamente</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:textAnnotation id="TextAnnotation_0arr84l">
+      <bpmn:text>Modificar cotizacion (En cualquier momento)</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:textAnnotation id="TextAnnotation_1hebhi3">
+      <bpmn:text>Whatsapp</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:textAnnotation id="TextAnnotation_11mh0ka">
+      <bpmn:text>FUNCIONES:
+Confirmar (Iniciar proyecto)
+Cancelar (No se podrán hacer más ordenes de servicio en el proyecto)
+Copiar
+Imprimir
+
+Crear pago</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:textAnnotation id="TextAnnotation_0nch9ea">
+      <bpmn:text>FUNCIONES:
+Confirmar
+Cancelar
+Copiar
+Limpiar productos
+Imprimir</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:textAnnotation id="TextAnnotation_0vci187">
+      <bpmn:text>Whatsapp</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:textAnnotation id="TextAnnotation_1q60zfc">
+      <bpmn:text>Plantilla de cotizacion</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:textAnnotation id="TextAnnotation_11veo6o">
+      <bpmn:text>evaluacion de soporte y almacen</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:textAnnotation id="TextAnnotation_0h2jc0z">
+      <bpmn:text>Convenio de pago (fecha de pago, abonos, etc)</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:textAnnotation id="TextAnnotation_1nemr6r">
+      <bpmn:text>Si existe un inventario relacionado a la orden del servicio, deberá estar marcado como entregado para poder iniciar la orden de servicio</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Association_1n9op50" associationDirection="None" sourceRef="Activity_0yu7fxt" targetRef="TextAnnotation_002btos" />
+    <bpmn:association id="Association_11z9ysm" associationDirection="None" sourceRef="Activity_0zqx787" targetRef="TextAnnotation_0zux8co" />
+    <bpmn:association id="Association_0z0l77d" associationDirection="None" sourceRef="Activity_04kynqe" targetRef="TextAnnotation_1m9zn1f" />
+    <bpmn:textAnnotation id="TextAnnotation_0ubmb2q">
+      <bpmn:text>Nota; Las ventas tienen un proyecto, los proyectos pueden tener varias ordenes de servicio, las ordenes de servicio tienen servicios por cada unidad</bpmn:text>
+    </bpmn:textAnnotation>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_12oj2vr">
+      <bpmndi:BPMNShape id="Activity_0hucppy_di" bpmnElement="Activity_0hucppy">
+        <dc:Bounds x="160" y="370" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DataObjectReference_1lppvrs_di" bpmnElement="DataObjectReference_1lppvrs">
+        <dc:Bounds x="252" y="475" width="36" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="244" y="532" width="52" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DataStoreReference_1dycwuq_di" bpmnElement="DataStoreReference_1dycwuq">
+        <dc:Bounds x="165" y="475" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="172" y="532" width="35" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0yu7fxt_di" bpmnElement="Activity_0yu7fxt">
+        <dc:Bounds x="590" y="370" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_07oorq1" bpmnElement="DataObjectReference_1es4j9t">
+        <dc:Bounds x="672" y="475" width="36" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="664" y="532" width="52" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_0pt0eww" bpmnElement="DataStoreReference_0gpt436">
+        <dc:Bounds x="595" y="475" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="602" y="532" width="35" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DataObjectReference_1aak3i6_di" bpmnElement="DataObjectReference_1aak3i6">
+        <dc:Bounds x="672" y="655" width="36" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="674" y="712" width="32" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DataStoreReference_1dsby3t_di" bpmnElement="DataStoreReference_1dsby3t">
+        <dc:Bounds x="595" y="566" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="598" y="623" width="44" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DataObjectReference_09s55fr_di" bpmnElement="DataObjectReference_09s55fr">
+        <dc:Bounds x="672" y="566" width="36" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="668" y="623" width="45" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0zqx787_di" bpmnElement="Activity_0zqx787">
+        <dc:Bounds x="1135" y="370" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_04kynqe_di" bpmnElement="Activity_04kynqe">
+        <dc:Bounds x="1610" y="370" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DataObjectReference_1fvshuv_di" bpmnElement="DataObjectReference_1fvshuv">
+        <dc:Bounds x="592" y="745" width="36" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="596" y="802" width="29" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1tomf5b_di" bpmnElement="Activity_1tomf5b">
+        <dc:Bounds x="2060" y="370" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_1xy839y" bpmnElement="DataStoreReference_1wds2a9">
+        <dc:Bounds x="2055" y="755" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2040" y="812" width="82" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_0y9oob5" bpmnElement="DataObjectReference_0wtlmza">
+        <dc:Bounds x="172" y="575" width="36" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="161" y="632" width="59" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_0qvwm3v" bpmnElement="DataObjectReference_05n53i5">
+        <dc:Bounds x="592" y="655" width="36" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="581" y="712" width="59" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_19zr5ln" bpmnElement="DataStoreReference_0gxoozp">
+        <dc:Bounds x="1135" y="475" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1143" y="532" width="35" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_0c3id5e" bpmnElement="DataObjectReference_0gg6crk">
+        <dc:Bounds x="1142" y="575" width="36" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1124" y="632" width="73" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_0qwjf3m" bpmnElement="DataStoreReference_1195ntd">
+        <dc:Bounds x="1205" y="475" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1216" y="532" width="28" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_0pomgrg" bpmnElement="DataObjectReference_0pnr2wd">
+        <dc:Bounds x="1142" y="785" width="36" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1138" y="842" width="45" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_02hzrfu" bpmnElement="DataObjectReference_0p292b2">
+        <dc:Bounds x="1212" y="785" width="36" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1216" y="842" width="29" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_0lag3p8" bpmnElement="DataObjectReference_1xieam0">
+        <dc:Bounds x="1212" y="575" width="36" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1201" y="632" width="59" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_01jgcj7" bpmnElement="Activity_0fcfgoh">
+        <dc:Bounds x="2470" y="370" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_1t9ahs8" bpmnElement="DataStoreReference_0k7tq96">
+        <dc:Bounds x="1605" y="475" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1613" y="532" width="35" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_0zwr43i" bpmnElement="DataStoreReference_0ogyh43">
+        <dc:Bounds x="1675" y="475" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1678" y="532" width="44" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_1klqs7n" bpmnElement="DataObjectReference_0q4fa1s">
+        <dc:Bounds x="1612" y="566" width="36" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1594" y="623" width="73" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_0ws504c" bpmnElement="DataObjectReference_023k82b">
+        <dc:Bounds x="1682" y="566" width="36" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1671" y="623" width="59" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_1mvlrhw" bpmnElement="DataObjectReference_0vpc75u">
+        <dc:Bounds x="1612" y="666" width="36" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1608" y="723" width="45" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DataStoreReference_1hhkn1f_di" bpmnElement="DataStoreReference_1hhkn1f">
+        <dc:Bounds x="1205" y="680" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1201" y="737" width="58" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_0f2i0by" bpmnElement="DataObjectReference_0s3ezra">
+        <dc:Bounds x="1682" y="666" width="36" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1686" y="723" width="29" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_19w3oos" bpmnElement="DataStoreReference_0zd75g5">
+        <dc:Bounds x="1605" y="838" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1590" y="895" width="82" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DataStoreReference_16v00n4_di" bpmnElement="DataStoreReference_16v00n4">
+        <dc:Bounds x="1675" y="755" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1677" y="812" width="47" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DataStoreReference_0o6k2zo_di" bpmnElement="DataStoreReference_0o6k2zo">
+        <dc:Bounds x="1135" y="680" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1148" y="737" width="24" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_1ha7pff" bpmnElement="DataStoreReference_0b2orqq">
+        <dc:Bounds x="1605" y="755" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1618" y="812" width="24" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_038gr28" bpmnElement="DataStoreReference_1p41dqz">
+        <dc:Bounds x="2055" y="470" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2068" y="527" width="24" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_0gwt2j2" bpmnElement="DataStoreReference_0w0pho0">
+        <dc:Bounds x="2125" y="470" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2133" y="527" width="35" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_1o733sn" bpmnElement="DataStoreReference_1jid9kk">
+        <dc:Bounds x="2055" y="566" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2058" y="623" width="44" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_0eo7yls" bpmnElement="DataStoreReference_0fr6vvx">
+        <dc:Bounds x="2125" y="566" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2107" y="623" width="87" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_0dvt69y" bpmnElement="DataObjectReference_0cthzlo">
+        <dc:Bounds x="2062" y="655" width="36" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2044" y="712" width="73" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_1b3sp3l" bpmnElement="DataObjectReference_1sdi85f">
+        <dc:Bounds x="2132" y="655" width="36" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2121" y="712" width="59" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_1nthjdm" bpmnElement="DataObjectReference_01cgjql">
+        <dc:Bounds x="2062" y="855" width="36" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2069" y="912" width="24" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DataObjectReference_0j9to2x_di" bpmnElement="DataObjectReference_0j9to2x">
+        <dc:Bounds x="2132" y="755" width="36" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2106" y="812" width="90" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DataObjectReference_1kfujvz_di" bpmnElement="DataObjectReference_1kfujvz">
+        <dc:Bounds x="2132" y="855" width="36" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2130" y="912" width="40" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_05y79cz" bpmnElement="DataStoreReference_1vkeidk">
+        <dc:Bounds x="2465" y="755" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2450" y="812" width="82" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_1c2w2vf" bpmnElement="DataStoreReference_186d2my">
+        <dc:Bounds x="2465" y="470" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2478" y="527" width="24" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_0rv7gq5" bpmnElement="DataStoreReference_0rgnuv3">
+        <dc:Bounds x="2535" y="470" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2543" y="527" width="35" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_12d2jd9" bpmnElement="DataStoreReference_1bygl2d">
+        <dc:Bounds x="2465" y="566" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2468" y="623" width="44" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_0a8e1ld" bpmnElement="DataStoreReference_1x6vwoi">
+        <dc:Bounds x="2535" y="566" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2517" y="623" width="87" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_1ddl92n" bpmnElement="DataObjectReference_00zwjpt">
+        <dc:Bounds x="2472" y="655" width="36" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2454" y="712" width="73" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_1mkmqwz" bpmnElement="DataObjectReference_08gcikc">
+        <dc:Bounds x="2542" y="655" width="36" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2531" y="712" width="59" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_0owfyam" bpmnElement="DataObjectReference_00ssrwy">
+        <dc:Bounds x="2472" y="855" width="36" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2479" y="912" width="24" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_0wwbczl" bpmnElement="DataObjectReference_119n6of">
+        <dc:Bounds x="2542" y="855" width="36" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2540" y="912" width="40" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_128whhk" bpmnElement="DataStoreReference_0i7ma5b">
+        <dc:Bounds x="2465" y="945" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2473" y="1002" width="36" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_0hx1gh1" bpmnElement="DataStoreReference_0mfwz3t">
+        <dc:Bounds x="2055" y="945" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2063" y="1002" width="36" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DataObjectReference_033bjtz_di" bpmnElement="DataObjectReference_033bjtz">
+        <dc:Bounds x="1142" y="878" width="36" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1139" y="935" width="42" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_16qgor7" bpmnElement="DataObjectReference_1ojbdg5">
+        <dc:Bounds x="2542" y="765" width="36" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2516" y="822" width="90" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0tx4omt_di" bpmnElement="Activity_0tx4omt">
+        <dc:Bounds x="3010" y="370" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_1q5jgyy" bpmnElement="DataStoreReference_0tnmymn">
+        <dc:Bounds x="3005" y="470" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="3018" y="527" width="24" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_19x30u4" bpmnElement="DataStoreReference_044bc2c">
+        <dc:Bounds x="3075" y="470" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="3083" y="527" width="35" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_1cl8ayo" bpmnElement="DataStoreReference_1cxyrii">
+        <dc:Bounds x="3005" y="566" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="3008" y="623" width="44" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_10l0xzr" bpmnElement="DataStoreReference_1s0pl6n">
+        <dc:Bounds x="3075" y="566" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="3057" y="623" width="87" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_023v4bo" bpmnElement="DataObjectReference_01p3z2j">
+        <dc:Bounds x="3012" y="855" width="36" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="3019" y="912" width="24" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_0obdz9c" bpmnElement="DataObjectReference_1qq1l4q">
+        <dc:Bounds x="3082" y="655" width="36" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="3056" y="712" width="90" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_16vooni" bpmnElement="DataObjectReference_166qwua">
+        <dc:Bounds x="3012" y="755" width="36" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="3010" y="812" width="40" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_0g78umh" bpmnElement="DataStoreReference_13kkca2">
+        <dc:Bounds x="3005" y="655" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="3013" y="712" width="36" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_0v6yoy0" bpmnElement="DataObjectReference_1lf17e8">
+        <dc:Bounds x="3082" y="755" width="36" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="3064" y="812" width="73" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Association_1n9op50_di" bpmnElement="Association_1n9op50">
+        <di:waypoint x="663" y="370" />
+        <di:waypoint x="674" y="350" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_11z9ysm_di" bpmnElement="Association_11z9ysm">
+        <di:waypoint x="1185" y="370" />
+        <di:waypoint x="1185" y="330" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_0z0l77d_di" bpmnElement="Association_0z0l77d">
+        <di:waypoint x="1701" y="370" />
+        <di:waypoint x="1720" y="353" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="BPMNShape_18wgcnj" bpmnElement="TextAnnotation_0r4dbga">
+        <dc:Bounds x="2060" y="1300" width="130" height="55" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_0vndws8" bpmnElement="TextAnnotation_0emrnys">
+        <dc:Bounds x="2060" y="1201" width="130" height="84" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_002btos_di" bpmnElement="TextAnnotation_002btos">
+        <dc:Bounds x="650" y="290" width="210" height="60" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_1bgcaba" bpmnElement="TextAnnotation_11yzagl">
+        <dc:Bounds x="2060" y="1135" width="130" height="55" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_1bkus0h" bpmnElement="TextAnnotation_1x10vo2">
+        <dc:Bounds x="1610" y="1200" width="130" height="55" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_1faks4z" bpmnElement="TextAnnotation_1niu26l">
+        <dc:Bounds x="2470" y="1218" width="130" height="85" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_1t0byek" bpmnElement="TextAnnotation_08qsm2n">
+        <dc:Bounds x="2470" y="1150" width="130" height="55" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_10w719b" bpmnElement="TextAnnotation_1hpelbf">
+        <dc:Bounds x="2470" y="1091" width="130" height="40" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_0cqqzsa" bpmnElement="TextAnnotation_0uwuxo4">
+        <dc:Bounds x="2470" y="1031" width="130" height="40" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_1uuc8he" bpmnElement="TextAnnotation_0u0nzlc">
+        <dc:Bounds x="2060" y="1079" width="130" height="41" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_16re2sj" bpmnElement="TextAnnotation_1htwwf4">
+        <dc:Bounds x="2060" y="1031" width="130" height="27" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_0xxu25a" bpmnElement="TextAnnotation_1mt1ef6">
+        <dc:Bounds x="1610" y="1080" width="130" height="27" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_1yxm0v4" bpmnElement="TextAnnotation_1sirljv">
+        <dc:Bounds x="1610" y="1031" width="130" height="27" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_1pdffor" bpmnElement="TextAnnotation_1ibhkhw">
+        <dc:Bounds x="1610" y="988" width="130" height="27" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_06vh6j6" bpmnElement="TextAnnotation_0rkh80z">
+        <dc:Bounds x="1610" y="1126" width="130" height="56" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_116ydil" bpmnElement="TextAnnotation_0qsgiy7">
+        <dc:Bounds x="1610" y="1430" width="130" height="69" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_0ggr2q1" bpmnElement="TextAnnotation_1ju3g5a">
+        <dc:Bounds x="1610" y="940" width="130" height="27" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_0y3yiq1" bpmnElement="TextAnnotation_0isil3g">
+        <dc:Bounds x="1140" y="1062" width="130" height="27" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_0vx4kzx" bpmnElement="TextAnnotation_1ie8qqz">
+        <dc:Bounds x="1140" y="1107" width="130" height="185" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_0l0ysrp" bpmnElement="TextAnnotation_0mfuzpf">
+        <dc:Bounds x="1140" y="962" width="130" height="41" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_0ev5wvo" bpmnElement="TextAnnotation_12s5vms">
+        <dc:Bounds x="1140" y="1017" width="130" height="26" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_1m9zn1f_di" bpmnElement="TextAnnotation_1m9zn1f">
+        <dc:Bounds x="1720" y="290" width="150" height="70" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_0zux8co_di" bpmnElement="TextAnnotation_0zux8co">
+        <dc:Bounds x="1110" y="260" width="150" height="70" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_0ozpy27" bpmnElement="TextAnnotation_0arr84l">
+        <dc:Bounds x="590" y="880" width="130" height="55" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_06ts3ye" bpmnElement="TextAnnotation_1hebhi3">
+        <dc:Bounds x="590" y="840" width="130" height="26" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_1xyktud" bpmnElement="TextAnnotation_11mh0ka">
+        <dc:Bounds x="590" y="951" width="130" height="169" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_1eu6e1v" bpmnElement="TextAnnotation_0nch9ea">
+        <dc:Bounds x="160" y="890" width="130" height="99" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_19mgq0q" bpmnElement="TextAnnotation_0vci187">
+        <dc:Bounds x="160" y="850" width="130" height="26" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_1kbbi4e" bpmnElement="TextAnnotation_1q60zfc">
+        <dc:Bounds x="161" y="670" width="128" height="41" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_08x4ssg" bpmnElement="TextAnnotation_11veo6o">
+        <dc:Bounds x="160" y="795" width="128" height="41" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_0h2jc0z_di" bpmnElement="TextAnnotation_0h2jc0z">
+        <dc:Bounds x="160" y="725" width="130" height="55" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_16yks3t" bpmnElement="TextAnnotation_1nemr6r">
+        <dc:Bounds x="1610" y="1270" width="130" height="142" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_1t4rbnp_di" bpmnElement="Flow_1t4rbnp">
+        <di:waypoint x="260" y="410" />
+        <di:waypoint x="590" y="410" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2145" y="116" width="61" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0cegib2_di" bpmnElement="Flow_0cegib2">
+        <di:waypoint x="690" y="410" />
+        <di:waypoint x="1135" y="410" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0o0w3tx_di" bpmnElement="Flow_0o0w3tx">
+        <di:waypoint x="1235" y="410" />
+        <di:waypoint x="1610" y="410" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0863f7n_di" bpmnElement="Flow_0863f7n">
+        <di:waypoint x="1710" y="410" />
+        <di:waypoint x="2060" y="410" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1854" y="376" width="63" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0ovy9cs_di" bpmnElement="Flow_0ovy9cs">
+        <di:waypoint x="2160" y="410" />
+        <di:waypoint x="2470" y="410" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="BPMNShape_0z6j8ba" bpmnElement="TextAnnotation_1iyftyv">
+        <dc:Bounds x="3010" y="946" width="130" height="44" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_0boxsm9" bpmnElement="TextAnnotation_1yizoui">
+        <dc:Bounds x="3010" y="1008" width="130" height="84" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_1ehb0z9_di" bpmnElement="Flow_1ehb0z9">
+        <di:waypoint x="2570" y="410" />
+        <di:waypoint x="3010" y="410" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2755" y="297" width="89" height="106" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="BPMNShape_1p65ma7" bpmnElement="TextAnnotation_0ubmb2q">
+        <dc:Bounds x="380" y="80" width="209.98651296021004" height="83.67071524966262" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
