@@ -78,6 +78,9 @@ export interface Service {
   fecha_hora_limite: string | null
   fecha_hora_servicio: string | null
   archived_at: string | null
+  approved_by: string | null
+  approved_at: string | null
+  sale_note_id: string | null
   // joined
   unidad_name?: string
   ruta_name?: string
@@ -718,4 +721,281 @@ export async function autoCreateServiceProjectFromSale(
   } finally {
     client.release()
   }
+}
+
+// ─── Service Materials ───────────────────────────────────────
+
+export interface ServiceMaterial {
+  id: string
+  service_id: string
+  product_id: string
+  quantity: string
+  unit_price: string
+  notes: string | null
+  created_by: string | null
+  created_at: string
+  // joined
+  product_name?: string
+  product_sku?: string | null
+  created_by_username?: string
+}
+
+export async function listServiceMaterials(serviceId: string): Promise<ServiceMaterial[]> {
+  const { rows } = await pool.query(
+    `SELECT sm.*, p.name AS product_name, p.sku AS product_sku, u.username AS created_by_username
+     FROM service_materials sm
+     LEFT JOIN products p ON p.id = sm.product_id
+     LEFT JOIN users u ON u.id = sm.created_by
+     WHERE sm.service_id = $1
+     ORDER BY sm.created_at DESC`,
+    [serviceId]
+  )
+  return rows
+}
+
+export interface CreateServiceMaterialInput {
+  service_id: string
+  product_id: string
+  quantity: number
+  unit_price: number
+  notes?: string | null
+  created_by: string
+}
+
+export async function createServiceMaterial(data: CreateServiceMaterialInput): Promise<ServiceMaterial> {
+  const { rows: [m] } = await pool.query(
+    `INSERT INTO service_materials (service_id, product_id, quantity, unit_price, notes, created_by)
+     VALUES ($1, $2, $3, $4, $5, $6)
+     RETURNING *`,
+    [data.service_id, data.product_id, data.quantity, data.unit_price, data.notes ?? null, data.created_by]
+  )
+  return m
+}
+
+export async function deleteServiceMaterial(id: string): Promise<void> {
+  await pool.query(`DELETE FROM service_materials WHERE id = $1`, [id])
+}
+
+export async function getServiceMaterialsTotal(serviceId: string): Promise<number> {
+  const { rows: [{ total }] } = await pool.query(
+    `SELECT COALESCE(SUM(quantity * unit_price), 0)::numeric AS total
+     FROM service_materials WHERE service_id = $1`,
+    [serviceId]
+  )
+  return Number(total)
+}
+
+// ─── Service Approval (Fase 3) ───────────────────────────────
+
+const TAX_RATE = 0.16
+
+export interface ApproveServiceResult {
+  service: Service
+  saleNote: { id: string; number: string; sale_id: string }
+  sale: { id: string; number: string }
+}
+
+/**
+ * Approve a service that has status 'atendido' + materials.
+ * Creates a sale_note (and sale if needed) from the service materials.
+ *
+ * Flow:
+ * 1. Validate service is atendido + has materials
+ * 2. Find linked sale via order → project → sale_id (or create new sale)
+ * 3. Create sale_note with materials as lines
+ * 4. Update service: approved_by, approved_at, sale_note_id
+ */
+export async function approveService(
+  serviceId: string,
+  approverId: string
+): Promise<ApproveServiceResult> {
+  const client = await pool.connect()
+  try {
+    await client.query('BEGIN')
+
+    // 1. Lock + validate service
+    const { rows: [srv] } = await client.query(
+      `SELECT s.*, so.service_project_id
+       FROM services s
+       LEFT JOIN service_orders so ON so.id = s.service_order_id
+       WHERE s.id = $1 FOR UPDATE OF s`,
+      [serviceId]
+    )
+    if (!srv) throw new Error('NOT_FOUND')
+    if (srv.estatus !== 'atendido') throw new Error('INVALID_STATE')
+    if (srv.approved_at) throw new Error('ALREADY_APPROVED')
+
+    // 2. Get materials
+    const { rows: materials } = await client.query(
+      `SELECT sm.*, p.name AS product_name
+       FROM service_materials sm
+       JOIN products p ON p.id = sm.product_id
+       WHERE sm.service_id = $1
+       ORDER BY sm.created_at`,
+      [serviceId]
+    )
+    if (materials.length === 0) throw new Error('NO_MATERIALS')
+
+    // 3. Find or create sale
+    let saleId: string
+    let saleNumber: string
+
+    if (srv.service_project_id) {
+      const { rows: [proj] } = await client.query(
+        `SELECT sale_id FROM service_projects WHERE id = $1`,
+        [srv.service_project_id]
+      )
+      if (proj?.sale_id) {
+        saleId = proj.sale_id
+        const { rows: [s] } = await client.query(`SELECT number FROM sales WHERE id = $1`, [saleId])
+        saleNumber = s.number
+      } else {
+        // Create sale for project without quote
+        const result = await createServiceSale(client, srv.customer_id, approverId)
+        saleId = result.id
+        saleNumber = result.number
+        // Link sale to project
+        if (srv.service_project_id) {
+          await client.query(
+            `UPDATE service_projects SET sale_id = $1 WHERE id = $2 AND sale_id IS NULL`,
+            [saleId, srv.service_project_id]
+          )
+        }
+      }
+    } else {
+      // Walk-in — create sale
+      const result = await createServiceSale(client, srv.customer_id, approverId)
+      saleId = result.id
+      saleNumber = result.number
+    }
+
+    // 4. Build note lines + totals
+    let amountUntaxed = 0
+    const noteLines: Array<{
+      product_id: string; name: string; qty: number;
+      unit_price_mxn: number; subtotal: number; tax_amount: number; total: number;
+    }> = []
+
+    for (const m of materials) {
+      const qty = Number(m.quantity)
+      const price = Number(m.unit_price)
+      const subtotal = qty * price
+      const tax = subtotal * TAX_RATE
+      amountUntaxed += subtotal
+      noteLines.push({
+        product_id: m.product_id,
+        name: m.product_name,
+        qty,
+        unit_price_mxn: price,
+        subtotal,
+        tax_amount: Math.round(tax * 100) / 100,
+        total: Math.round((subtotal + tax) * 100) / 100,
+      })
+    }
+
+    const amountTax = Math.round(amountUntaxed * TAX_RATE * 100) / 100
+    const amountTotal = Math.round((amountUntaxed + amountTax) * 100) / 100
+
+    // 5. Generate NTA number + insert note
+    const dateStr = new Date().toISOString().slice(0, 10).replace(/-/g, '')
+    const { rows: lastNta } = await client.query(
+      `SELECT number FROM sale_notes WHERE number LIKE $1 ORDER BY number DESC LIMIT 1`,
+      [`NTA-${dateStr}-%`]
+    )
+    let ntaSeq = 1
+    if (lastNta.length > 0) {
+      ntaSeq = parseInt(lastNta[0].number.split('-').pop()!, 10) + 1
+    }
+    const ntaNumber = `NTA-${dateStr}-${String(ntaSeq).padStart(4, '0')}`
+
+    const { rows: [note] } = await client.query(
+      `INSERT INTO sale_notes
+         (number, sale_id, service_id, state, concept,
+          amount_untaxed, amount_tax, amount_total, amount_balance,
+          observaciones)
+       VALUES ($1, $2, $3, 'draft', $4, $5, $6, $7, $7, $8)
+       RETURNING id, number, sale_id`,
+      [
+        ntaNumber, saleId, serviceId,
+        `Materiales servicio ${srv.number}`,
+        amountUntaxed, amountTax, amountTotal,
+        `Generada automáticamente desde servicio ${srv.number}`,
+      ]
+    )
+
+    // 6. Insert note lines
+    for (let i = 0; i < noteLines.length; i++) {
+      const ln = noteLines[i]
+      await client.query(
+        `INSERT INTO sale_note_lines
+           (sale_note_id, sequence, display_type, product_id, name, qty,
+            unit_price_mxn, subtotal, tax_amount, total)
+         VALUES ($1, $2, 'product', $3, $4, $5, $6, $7, $8, $9)`,
+        [note.id, i + 1, ln.product_id, ln.name, ln.qty,
+         ln.unit_price_mxn, ln.subtotal, ln.tax_amount, ln.total]
+      )
+    }
+
+    // 7. Update service
+    await client.query(
+      `UPDATE services
+       SET approved_by = $1, approved_at = now(), sale_note_id = $2
+       WHERE id = $3`,
+      [approverId, note.id, serviceId]
+    )
+
+    // 8. Update sale totals
+    await client.query(`
+      UPDATE sales
+      SET amount_untaxed = COALESCE((SELECT SUM(sn.amount_untaxed) FROM sale_notes sn WHERE sn.sale_id = sales.id AND sn.state != 'cancelled'), 0),
+          amount_tax = COALESCE((SELECT SUM(sn.amount_tax) FROM sale_notes sn WHERE sn.sale_id = sales.id AND sn.state != 'cancelled'), 0),
+          amount_total = COALESCE((SELECT SUM(sn.amount_total) FROM sale_notes sn WHERE sn.sale_id = sales.id AND sn.state != 'cancelled'), 0),
+          amount_balance = COALESCE((SELECT SUM(sn.amount_balance) FROM sale_notes sn WHERE sn.sale_id = sales.id AND sn.state != 'cancelled'), 0)
+      WHERE id = $1
+    `, [saleId])
+
+    await client.query('COMMIT')
+
+    // Re-fetch service
+    const updated = await getService(serviceId)
+
+    return {
+      service: updated!,
+      saleNote: note,
+      sale: { id: saleId, number: saleNumber },
+    }
+  } catch (err) {
+    await client.query('ROLLBACK')
+    throw err
+  } finally {
+    client.release()
+  }
+}
+
+/** Create a minimal sale for service-only billing (no quote required). */
+async function createServiceSale(
+  client: import('pg').PoolClient,
+  customerId: string | null,
+  userId: string
+): Promise<{ id: string; number: string }> {
+  const dateStr = new Date().toISOString().slice(0, 10).replace(/-/g, '')
+  const { rows: lastVta } = await client.query(
+    `SELECT number FROM sales WHERE number LIKE $1 ORDER BY number DESC LIMIT 1`,
+    [`VTA-${dateStr}-%`]
+  )
+  let seq = 1
+  if (lastVta.length > 0) {
+    seq = parseInt(lastVta[0].number.split('-').pop()!, 10) + 1
+  }
+  const vtaNumber = `VTA-${dateStr}-${String(seq).padStart(4, '0')}`
+
+  const { rows: [sale] } = await client.query(
+    `INSERT INTO sales
+       (number, quote_id, customer_id, user_id,
+        amount_untaxed, amount_tax, amount_total, amount_balance, unit_count)
+     VALUES ($1, NULL, $2, $3, 0, 0, 0, 0, 1)
+     RETURNING id, number`,
+    [vtaNumber, customerId, userId]
+  )
+  return sale
 }

@@ -11,6 +11,9 @@ RUN npm install
 # Copiamos el resto del código
 COPY . .
 
+# Directorio para uploads (montado como volume en docker-compose)
+RUN mkdir -p /app/uploads
+
 # Compilamos la aplicación de Next.js para producción
 RUN npm run build
 

@@ -7,12 +7,17 @@ import {
   canAccessServicios,
   canEditService,
   canViewOwnServicesOnly,
+  canApproveServiceRequest,
 } from '@/lib/permissions'
 import {
   getService,
   listTechnicianUsers,
+  listServiceMaterials,
 } from '@/lib/queries/servicios'
+import { listFilesByEntity } from '@/lib/queries/files'
 import ServiceEditor from './_components/ServiceEditor'
+import FileUploader from './_components/FileUploader'
+import MaterialsEditor from './_components/MaterialsEditor'
 
 export default async function ServiceDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
@@ -30,7 +35,12 @@ export default async function ServiceDetailPage({ params }: { params: Promise<{ 
 
   const canEdit = canEditService(session.role)
   const canManageTech = canEdit && session.role !== 'tecnico'
-  const tecnicos = canManageTech ? await listTechnicianUsers() : []
+
+  const [tecnicos, files, materials] = await Promise.all([
+    canManageTech ? listTechnicianUsers() : Promise.resolve([]),
+    listFilesByEntity('service', id),
+    listServiceMaterials(id),
+  ])
 
   return (
     <div>
@@ -57,7 +67,22 @@ export default async function ServiceDetailPage({ params }: { params: Promise<{ 
         service={service}
         canEdit={canEdit}
         canManageTech={canManageTech}
+        canApprove={canApproveServiceRequest(session.role)}
+        hasMaterials={materials.length > 0}
         tecnicos={tecnicos}
+      />
+
+      <MaterialsEditor
+        serviceId={id}
+        materials={materials}
+        canEdit={canEdit}
+      />
+
+      <FileUploader
+        entityType="service"
+        entityId={id}
+        files={files}
+        canEdit={canEdit}
       />
     </div>
   )

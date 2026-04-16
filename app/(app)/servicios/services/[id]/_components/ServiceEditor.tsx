@@ -31,10 +31,12 @@ interface Props {
   service: Service
   canEdit: boolean
   canManageTech: boolean
+  canApprove: boolean
+  hasMaterials: boolean
   tecnicos: { id: string; username: string }[]
 }
 
-export default function ServiceEditor({ service, canEdit, canManageTech, tecnicos }: Props) {
+export default function ServiceEditor({ service, canEdit, canManageTech, canApprove, hasMaterials, tecnicos }: Props) {
   const router = useRouter()
   const [estatus, setEstatus] = useState<ServiceEstatus>(service.estatus)
   const [reporte, setReporte] = useState(service.reporte_tecnico ?? '')
@@ -42,6 +44,7 @@ export default function ServiceEditor({ service, canEdit, canManageTech, tecnico
   const [comentariosSoporte, setComentariosSoporte] = useState(service.comentarios_soporte ?? '')
   const [saving, setSaving] = useState(false)
   const [newTechId, setNewTechId] = useState('')
+  const [approving, setApproving] = useState(false)
 
   async function saveField(field: string, value: string | null) {
     setSaving(true)
@@ -96,6 +99,26 @@ export default function ServiceEditor({ service, canEdit, canManageTech, tecnico
     toast('Técnico removido', 'success')
     router.refresh()
   }
+
+  async function handleApprove() {
+    setApproving(true)
+    try {
+      const res = await fetch(`/api/servicios/services/${service.id}/approve`, { method: 'POST' })
+      const result = await res.json()
+      if (!res.ok) {
+        toast(result.error || 'Error al aprobar servicio', 'error')
+        return
+      }
+      toast(`Servicio aprobado — nota ${result.saleNote.number} creada`, 'success')
+      notifyRefresh()
+      router.refresh()
+    } finally {
+      setApproving(false)
+    }
+  }
+
+  const isApproved = !!service.approved_at
+  const showApproveBtn = canApprove && estatus === 'atendido' && !isApproved && hasMaterials
 
   const st = ESTATUS_MAP[estatus] ?? ESTATUS_MAP.pendiente
   const assignedIds = new Set((service.technicians ?? []).map(t => t.user_id))
@@ -232,6 +255,45 @@ export default function ServiceEditor({ service, canEdit, canManageTech, tecnico
           </div>
         )}
       </div>
+
+      {/* Approval section */}
+      {isApproved && (
+        <div className="mt-8 rounded-xl p-4" style={{ background: '#DCFCE7', border: '1px solid #BBF7D0' }}>
+          <p className="text-sm font-semibold" style={{ color: '#15803D' }}>
+            Servicio aprobado
+            {service.sale_note_id && (
+              <span className="ml-2 font-normal" style={{ color: '#166534' }}>
+                — Nota generada
+              </span>
+            )}
+          </p>
+        </div>
+      )}
+
+      {showApproveBtn && (
+        <div className="mt-8 rounded-xl p-5" style={{ border: '1px solid var(--c-rim)', background: 'var(--c-card)' }}>
+          <h3 className="text-sm font-bold mb-2" style={{ color: 'var(--c-ink)' }}>Aprobar servicio</h3>
+          <p className="text-xs mb-4" style={{ color: 'var(--c-dim)' }}>
+            Se generará una nota de venta automática con los materiales registrados.
+          </p>
+          <button
+            onClick={handleApprove}
+            disabled={approving}
+            className="px-5 py-2.5 rounded-lg text-sm font-semibold text-white"
+            style={{ background: approving ? 'var(--c-rim-hi)' : '#15803D', cursor: approving ? 'not-allowed' : 'pointer', border: 'none', opacity: approving ? 0.6 : 1 }}
+          >
+            {approving ? 'Aprobando...' : 'Aprobar y generar nota'}
+          </button>
+        </div>
+      )}
+
+      {estatus === 'atendido' && !isApproved && !hasMaterials && canApprove && (
+        <div className="mt-8 rounded-xl p-4" style={{ border: '1px dashed var(--c-rim)', color: 'var(--c-dim)' }}>
+          <p className="text-sm">
+            Registra materiales antes de aprobar.
+          </p>
+        </div>
+      )}
     </div>
   )
 }
