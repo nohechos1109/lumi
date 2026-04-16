@@ -163,7 +163,7 @@ export default function DateRangePicker({ dateFrom, dateTo, onChange }: Props) {
         /* Today */
         .drp-today button {
           font-weight: 700;
-          color: #1B3461;
+          color: #2563EB;
         }
         .drp-today button::after {
           content: '';
@@ -174,17 +174,17 @@ export default function DateRangePicker({ dateFrom, dateTo, onChange }: Props) {
           width: 4px;
           height: 4px;
           border-radius: 50%;
-          background: #1B3461;
+          background: #2563EB;
         }
 
         /* Selected (start / end) */
         .drp-selected button,
         .drp-range-start button,
         .drp-range-end button {
-          background: #1B3461 !important;
+          background: #2563EB !important;
           color: #fff !important;
           font-weight: 700;
-          box-shadow: 0 2px 8px rgba(27,52,97,0.32);
+          box-shadow: 0 2px 8px rgba(37,99,235,0.32);
           transform: scale(1.05);
         }
         .drp-selected button::after,
@@ -193,22 +193,22 @@ export default function DateRangePicker({ dateFrom, dateTo, onChange }: Props) {
 
         /* Range middle */
         .drp-range-middle {
-          background: rgba(27,52,97,0.08);
+          background: rgba(37,99,235,0.08);
         }
         .drp-range-middle button {
-          color: #1B3461;
+          color: #2563EB;
           font-weight: 600;
         }
         .drp-range-middle button:hover {
-          background: rgba(27,52,97,0.14);
+          background: rgba(37,99,235,0.14);
         }
 
         /* Range start/end — pill sides */
         .drp-range-start {
-          background: linear-gradient(to right, transparent 50%, rgba(27,52,97,0.08) 50%);
+          background: linear-gradient(to right, transparent 50%, rgba(37,99,235,0.08) 50%);
         }
         .drp-range-end {
-          background: linear-gradient(to left, transparent 50%, rgba(27,52,97,0.08) 50%);
+          background: linear-gradient(to left, transparent 50%, rgba(37,99,235,0.08) 50%);
         }
 
         /* Outside month */
@@ -250,41 +250,39 @@ export default function DateRangePicker({ dateFrom, dateTo, onChange }: Props) {
         <button
           type="button"
           onClick={() => setOpen(v => !v)}
-          className="flex items-center gap-2 rounded-lg px-2.5 py-1.5 text-xs transition-all duration-150"
+          className="flex items-center gap-1.5 h-8 pl-3.5 pr-2.5 rounded-full text-xs font-semibold transition-all whitespace-nowrap"
           style={{
-            background: open ? '#fff' : 'var(--c-rim)',
-            border: `1px solid ${open ? 'var(--c-navy)' : 'var(--c-rim)'}`,
-            color: hasValue ? 'var(--c-ink)' : 'var(--c-ghost)',
-            minWidth: 200,
-            boxShadow: open ? '0 0 0 2px rgba(27,52,97,0.12)' : 'none',
+            background: hasValue ? 'var(--c-navy-bg)' : 'var(--c-card)',
+            border: hasValue ? '1.5px solid var(--c-navy-bd)' : '1px solid var(--c-rim)',
+            color: hasValue ? 'var(--c-navy)' : 'var(--c-dim)',
+            boxShadow: hasValue ? 'none' : '0 1px 3px rgba(15,23,42,0.04)',
           }}
         >
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none"
-            stroke={hasValue ? 'var(--c-navy)' : 'var(--c-ghost)'}
-            strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
-            style={{ flexShrink: 0 }}>
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"
+            style={{ flexShrink: 0, opacity: 0.7 }}>
             <rect x="3" y="4" width="18" height="18" rx="2"/>
             <path d="M16 2v4M8 2v4M3 10h18"/>
           </svg>
-          <span className="flex-1 text-left truncate font-medium">
+          <span className="truncate" style={{ maxWidth: 160 }}>
             {displayLabel(dateFrom, dateTo)}
           </span>
           {hasValue ? (
             <span
               role="button"
               onClick={e => { e.stopPropagation(); onChange('', '') }}
-              className="rounded-full p-0.5 hover:opacity-60 transition-opacity cursor-pointer"
-              style={{ color: 'var(--c-ghost)' }}
-              title="Limpiar"
+              className="flex items-center justify-center w-4 h-4 rounded-full ml-0.5 cursor-pointer"
+              style={{ background: 'var(--c-navy-bd)', color: 'var(--c-navy)' }}
             >
-              <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
-                <path d="M18 6 6 18M6 6l12 12"/>
+              <svg width="7" height="7" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="2.8" strokeLinecap="round">
+                <line x1="1" y1="1" x2="11" y2="11"/><line x1="11" y1="1" x2="1" y2="11"/>
               </svg>
             </span>
           ) : (
             <svg width="10" height="10" viewBox="0 0 24 24" fill="none"
-              stroke="var(--c-ghost)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-              <path d="m6 9 6 6 6-6"/>
+              stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"
+              style={{ color: 'var(--c-ghost)', opacity: 0.6, transform: open ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.15s' }}>
+              <polyline points="6 9 12 15 18 9"/>
             </svg>
           )}
         </button>
@@ -296,7 +294,7 @@ export default function DateRangePicker({ dateFrom, dateTo, onChange }: Props) {
             style={{
               background: '#fff',
               border: '1px solid var(--c-rim)',
-              boxShadow: '0 8px 32px rgba(27,52,97,0.14), 0 2px 8px rgba(27,52,97,0.08)',
+              boxShadow: '0 8px 32px rgba(15,23,42,0.12), 0 2px 8px rgba(15,23,42,0.06)',
               top: '100%',
               left: 0,
               animation: 'drp-in 120ms ease-out',

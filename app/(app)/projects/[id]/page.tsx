@@ -45,8 +45,8 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
         <div>
           <div className="flex items-center gap-3 mb-1">
             <h1
-              className="font-heading text-4xl font-bold"
-              style={{ color: 'var(--c-ink)', letterSpacing: '0.02em' }}
+              className="text-2xl font-bold"
+              style={{ color: 'var(--c-ink)', fontFamily: 'var(--font-montserrat)' }}
             >
               {project.name}
             </h1>

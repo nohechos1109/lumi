@@ -180,6 +180,7 @@ function ProductCard({ product }: { product: CatalogProduct }) {
 
   return (
     <div
+      className="group"
       style={{
         background: 'var(--c-card)',
         border: '1px solid var(--c-rim)',
@@ -187,103 +188,78 @@ function ProductCard({ product }: { product: CatalogProduct }) {
         overflow: 'hidden',
         display: 'flex',
         flexDirection: 'column',
+        transition: 'box-shadow 0.18s, transform 0.18s, border-color 0.18s',
+        cursor: 'default',
+      }}
+      onMouseEnter={e => {
+        const el = e.currentTarget as HTMLElement
+        el.style.boxShadow = '0 8px 24px rgba(15,23,42,0.09)'
+        el.style.transform = 'translateY(-2px)'
+        el.style.borderColor = 'var(--c-navy-bd)'
+      }}
+      onMouseLeave={e => {
+        const el = e.currentTarget as HTMLElement
+        el.style.boxShadow = 'none'
+        el.style.transform = 'translateY(0)'
+        el.style.borderColor = 'var(--c-rim)'
       }}
     >
-      {/* Image area */}
+      {/* Image / Placeholder area */}
       {product.image_url ? (
         // eslint-disable-next-line @next/next/no-img-element
         <img
           src={product.image_url}
           alt={product.name}
-          style={{ width: '100%', height: '160px', objectFit: 'cover' }}
+          style={{ width: '100%', height: '140px', objectFit: 'cover' }}
         />
       ) : (
         <div
           style={{
             width: '100%',
-            height: '160px',
+            height: '140px',
             background: meta.bg,
             display: 'flex',
-            flexDirection: 'column',
             alignItems: 'center',
             justifyContent: 'center',
-            gap: '10px',
             color: meta.accent,
           }}
         >
           {meta.icon}
-          {product.category && (
-            <span style={{
-              fontSize: '10px',
-              fontWeight: 700,
-              letterSpacing: '0.08em',
-              textTransform: 'uppercase',
-              opacity: 0.65,
-            }}>
-              {product.category}
-            </span>
-          )}
         </div>
       )}
 
       {/* Content */}
-      <div style={{ padding: '12px 14px', display: 'flex', flexDirection: 'column', gap: '6px', flex: 1 }}>
-        {/* Category badge */}
+      <div style={{ padding: '12px 14px 14px', display: 'flex', flexDirection: 'column', gap: '4px', flex: 1 }}>
+        {/* Category */}
         {product.category && (
-          <span
-            style={{
-              background: 'var(--c-panel)',
-              color: 'var(--c-ghost)',
-              fontSize: '11px',
-              borderRadius: '6px',
-              padding: '2px 6px',
-              alignSelf: 'flex-start',
-              fontWeight: 500,
-            }}
-          >
+          <span style={{ fontSize: '10px', fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase', color: meta.accent }}>
             {product.category}
           </span>
         )}
 
         {/* Name */}
-        <p
-          style={{
-            color: 'var(--c-ink)',
-            fontWeight: 700,
-            fontSize: '14px',
-            lineHeight: '1.35',
-            margin: 0,
-          }}
-        >
+        <p style={{ color: 'var(--c-ink)', fontWeight: 700, fontSize: '13px', lineHeight: '1.4', margin: 0 }}>
           {product.name}
         </p>
 
         {/* SKU */}
         {product.sku && (
-          <p style={{ color: 'var(--c-ghost)', fontSize: '11px', margin: 0 }}>
-            SKU: {product.sku}
+          <p style={{ color: 'var(--c-ghost)', fontSize: '10px', fontFamily: 'monospace', margin: 0 }}>
+            {product.sku}
           </p>
         )}
 
-        {/* Spacer */}
-        <div style={{ flex: 1 }} />
+        <div style={{ flex: 1, minHeight: '8px' }} />
 
         {/* Prices */}
-        <div style={{ marginTop: '8px', display: 'flex', flexDirection: 'column', gap: '3px' }}>
-          <p style={{ color: 'var(--c-dim)', fontSize: '12px', margin: 0 }}>
-            $ {formatMXN(product.price_without_tax)} MXN
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '2px', borderTop: '1px solid var(--c-rim)', paddingTop: '10px', marginTop: '4px' }}>
+          <p style={{ color: 'var(--c-ghost)', fontSize: '11px', margin: 0 }}>
+            $ {formatMXN(product.price_without_tax)}
+            <span style={{ marginLeft: '4px', fontSize: '10px' }}>s/IVA</span>
           </p>
-          <p
-            style={{
-              color: 'var(--c-navy)',
-              fontWeight: 600,
-              fontFamily: 'monospace',
-              fontSize: '14px',
-              margin: 0,
-            }}
-          >
-            $ {formatMXN(product.price_with_tax)} MXN{' '}
-            <span style={{ fontSize: '11px', fontWeight: 400, color: 'var(--c-ghost)' }}>(c/IVA)</span>
+          <p style={{ color: 'var(--c-navy)', fontWeight: 700, fontFamily: 'monospace', fontSize: '14px', margin: 0 }}>
+            $ {formatMXN(product.price_with_tax)}
+            <span style={{ fontSize: '10px', fontWeight: 400, color: 'var(--c-ghost)', marginLeft: '4px' }}>c/IVA</span>
           </p>
         </div>
       </div>
@@ -328,46 +304,73 @@ export default function CatalogPage() {
 
   return (
     <div>
-      <h1 className="font-heading text-2xl font-bold mb-6" style={{ color: 'var(--c-ink)' }}>
-        Catálogo de Productos
-      </h1>
+      {/* Header */}
+      <div className="mb-8">
+        <p className="text-xs font-semibold uppercase tracking-widest mb-1" style={{ color: 'var(--c-ghost)', letterSpacing: '0.1em' }}>Catálogo</p>
+        <h1 className="text-2xl font-bold" style={{ color: 'var(--c-ink)', fontFamily: 'var(--font-montserrat)' }}>
+          Catálogo de Productos
+        </h1>
+        <p className="text-sm mt-1" style={{ color: 'var(--c-ghost)' }}>
+          {products.length} {products.length === 1 ? 'producto' : 'productos'}
+        </p>
+      </div>
 
       {/* Search */}
-      <input
-        type="text"
-        placeholder="Buscar por nombre, SKU o categoría…"
-        value={search}
-        onChange={e => setSearch(e.target.value)}
-        style={{
-          width: '100%',
-          padding: '8px 12px',
-          borderRadius: '8px',
-          border: '1px solid var(--c-rim)',
-          background: 'var(--c-panel)',
-          color: 'var(--c-ink)',
-          fontSize: '14px',
-          marginBottom: '16px',
-          outline: 'none',
-          boxSizing: 'border-box',
-        }}
-      />
+      <div style={{ maxWidth: '640px', margin: '0 auto 20px', width: '100%' }}>
+        <div
+          className="flex items-center h-12 rounded-full transition-shadow"
+          style={{
+            background: 'var(--c-card)',
+            border: search ? '1.5px solid var(--c-navy-bd)' : '1px solid var(--c-rim)',
+            boxShadow: search
+              ? '0 2px 8px rgba(37,99,235,0.10), 0 0 0 3px rgba(37,99,235,0.06)'
+              : '0 1px 4px rgba(15,23,42,0.06)',
+          }}
+        >
+          <div className="flex items-center justify-center w-12 shrink-0" style={{ color: search ? 'var(--c-navy)' : 'var(--c-ghost)', opacity: search ? 0.85 : 0.5 }}>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+            </svg>
+          </div>
+          <input
+            type="text"
+            placeholder="Buscar por nombre, SKU o categoría..."
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+            className="flex-1 h-full bg-transparent outline-none text-sm font-medium"
+            style={{ color: 'var(--c-ink)' }}
+          />
+          {search && (
+            <button
+              onClick={() => setSearch('')}
+              className="flex items-center justify-center w-10 h-10 mr-1 rounded-full transition-colors"
+              style={{ color: 'var(--c-dim)' }}
+              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'var(--c-rim)' }}
+              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'transparent' }}
+            >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+                <line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/>
+              </svg>
+            </button>
+          )}
+        </div>
+      </div>
 
       {/* Category filter */}
-      <div className="flex flex-wrap gap-2 mb-6">
+      <div className="flex flex-wrap gap-2 mb-6 justify-center">
         {(['all', ...categories] as string[]).map(cat => (
           <button
             key={cat}
             onClick={() => setCategoryFilter(cat)}
+            className="text-xs font-semibold transition-all"
             style={{
-              padding: '5px 12px',
-              borderRadius: '8px',
-              fontSize: '13px',
-              fontWeight: 500,
+              padding: '5px 14px',
+              borderRadius: '999px',
               cursor: 'pointer',
-              border: categoryFilter === cat ? 'none' : '1px solid var(--c-rim)',
-              background: categoryFilter === cat ? 'var(--c-navy)' : 'var(--c-panel)',
-              color: categoryFilter === cat ? 'white' : 'var(--c-dim)',
-              transition: 'background 0.15s, color 0.15s',
+              border: categoryFilter === cat ? '1.5px solid var(--c-navy-bd)' : '1px solid var(--c-rim)',
+              background: categoryFilter === cat ? 'var(--c-navy-bg)' : 'var(--c-card)',
+              color: categoryFilter === cat ? 'var(--c-navy)' : 'var(--c-dim)',
+              boxShadow: categoryFilter === cat ? 'none' : '0 1px 3px rgba(15,23,42,0.04)',
             }}
           >
             {cat === 'all' ? 'Todos' : cat}

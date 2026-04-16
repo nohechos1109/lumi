@@ -4,6 +4,7 @@ import { useState, useEffect, useMemo } from 'react'
 import Link from 'next/link'
 import { toast, notifyRefresh } from '@/lib/toast'
 import CustomerSearchSelect, { type CustomerOption } from '@/components/ui/CustomerSearchSelect'
+import FilterSelect from '@/components/ui/FilterSelect'
 
 interface Ruta { id: string; name: string; cliente_id: string | null; cliente_name?: string }
 interface Unidad {
@@ -152,19 +153,21 @@ export default function AdminUnidadesPage() {
   return (
     <div>
       {/* Back */}
-      <div className="mb-6">
-        <Link href="/admin" className="inline-flex items-center text-xs font-bold uppercase tracking-widest transition-colors hover:opacity-75" style={{ color: 'var(--c-ghost)' }}>
-          ← Volver al Dashboard Admin
+      <div className="mb-5">
+        <Link href="/admin" className="inline-flex items-center gap-1.5 text-xs font-semibold transition-opacity hover:opacity-70" style={{ color: 'var(--c-ghost)' }}>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+          Dashboard Admin
         </Link>
       </div>
 
       {/* Header */}
       <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between mb-8">
         <div>
-          <h1 className="font-heading text-3xl font-bold uppercase" style={{ color: 'var(--c-ink)', letterSpacing: '0.1em' }}>
+          <p className="text-xs font-semibold uppercase tracking-widest mb-1" style={{ color: 'var(--c-ghost)' }}>Admin</p>
+          <h1 className="text-2xl font-bold" style={{ color: 'var(--c-ink)' }}>
             {tab === 'rutas' ? 'Rutas' : 'Unidades'}
           </h1>
-          <p className="text-sm mt-1 font-mono" style={{ color: 'var(--c-ghost)' }}>
+          <p className="text-sm mt-1" style={{ color: 'var(--c-ghost)' }}>
             {tab === 'rutas'
               ? `${filteredRutas.length} ${filteredRutas.length === 1 ? 'ruta' : 'rutas'}`
               : `${filteredUnidades.length} ${filteredUnidades.length === 1 ? 'unidad' : 'unidades'}`}
@@ -173,7 +176,7 @@ export default function AdminUnidadesPage() {
 
         <div className="flex items-center gap-3">
           {/* Tab switcher */}
-          <div className="relative flex rounded-full p-1 text-xs font-bold" style={{ background: 'var(--c-base)', border: '1px solid var(--c-rim)' }}>
+          <div className="relative flex rounded-full p-1 text-xs font-semibold" style={{ background: 'var(--c-base)', border: '1px solid var(--c-rim)' }}>
             <div
               className="absolute top-1 bottom-1 rounded-full transition-all duration-200"
               style={{
@@ -187,7 +190,7 @@ export default function AdminUnidadesPage() {
               <button
                 key={t}
                 onClick={() => { setTab(t); setEditRuta(null) }}
-                className="relative z-10 flex items-center gap-1.5 px-5 py-2 rounded-full uppercase tracking-wider transition-colors duration-200"
+                className="relative z-10 flex items-center gap-1.5 px-5 py-2 rounded-full transition-colors duration-200"
                 style={{ color: tab === t ? '#fff' : 'var(--c-ghost)', minWidth: 96 }}
               >
                 {t === 'unidades' ? (
@@ -205,16 +208,18 @@ export default function AdminUnidadesPage() {
           </div>
           {tab === 'unidades' && (
             <button onClick={openNew}
-              className="text-sm px-5 py-2.5 rounded-xl font-bold uppercase tracking-wider transition-opacity hover:opacity-85"
-              style={{ background: 'var(--c-navy)', color: '#fff', letterSpacing: '0.08em' }}>
-              + Nueva Unidad
+              className="inline-flex items-center gap-1.5 text-sm px-4 py-2 rounded-xl font-semibold transition-opacity hover:opacity-85"
+              style={{ background: 'var(--c-navy)', color: '#fff' }}>
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              Nueva Unidad
             </button>
           )}
           {tab === 'rutas' && (
             <button onClick={() => { setNewRuta(''); setModalRuta(true) }}
-              className="text-sm px-5 py-2.5 rounded-xl font-bold uppercase tracking-wider transition-opacity hover:opacity-85"
-              style={{ background: 'var(--c-navy)', color: '#fff', letterSpacing: '0.08em' }}>
-              + Nueva Ruta
+              className="inline-flex items-center gap-1.5 text-sm px-4 py-2 rounded-xl font-semibold transition-opacity hover:opacity-85"
+              style={{ background: 'var(--c-navy)', color: '#fff' }}>
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              Nueva Ruta
             </button>
           )}
         </div>
@@ -224,23 +229,13 @@ export default function AdminUnidadesPage() {
       {tab === 'rutas' && (
         <div>
           {/* Filtros rutas */}
-          <div className="flex flex-wrap gap-3 mb-4">
-            <div className="flex flex-col gap-1">
-              <label className="text-xs font-bold uppercase tracking-wider" style={{ color: 'var(--c-ghost)' }}>Cliente</label>
-              <select className="text-sm rounded-xl px-3 py-2 pr-8"
-                style={{ background: 'var(--c-card)', border: '1px solid var(--c-rim)', color: filterRutaCliente ? 'var(--c-ink)' : 'var(--c-ghost)', outline: 'none', minWidth: 180 }}
-                value={filterRutaCliente} onChange={e => setFilterRutaCliente(e.target.value)}>
-                <option value="">Todos los clientes</option>
-                {contacts.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
-              </select>
-            </div>
-            {filterRutaCliente && (
-              <button onClick={() => setFilterRutaCliente('')}
-                className="self-end text-xs font-semibold px-3 py-2 rounded-xl hover:opacity-75"
-                style={{ color: 'var(--c-ghost)', border: '1px solid var(--c-rim)' }}>
-                Limpiar filtros
-              </button>
-            )}
+          <div className="flex flex-wrap items-center gap-2 mb-4">
+            <FilterSelect
+              value={filterRutaCliente}
+              onChange={setFilterRutaCliente}
+              placeholder="Cliente"
+              options={contacts.map(c => ({ value: c.id, label: c.name }))}
+            />
           </div>
           <div className="rounded-2xl overflow-x-auto" style={{ background: 'var(--c-card)', border: '1px solid var(--c-rim)' }}>
             <table className="w-full text-sm">
@@ -275,32 +270,19 @@ export default function AdminUnidadesPage() {
       {tab === 'unidades' && (
         <div>
           {/* Filtros unidades */}
-          <div className="flex flex-wrap gap-3 mb-4">
-            <div className="flex flex-col gap-1">
-              <label className="text-xs font-bold uppercase tracking-wider" style={{ color: 'var(--c-ghost)' }}>Ruta</label>
-              <select className="text-sm rounded-xl px-3 py-2 pr-8"
-                style={{ background: 'var(--c-card)', border: '1px solid var(--c-rim)', color: filterUnidadRuta ? 'var(--c-ink)' : 'var(--c-ghost)', outline: 'none', minWidth: 180 }}
-                value={filterUnidadRuta} onChange={e => setFilterUnidadRuta(e.target.value)}>
-                <option value="">Todas las rutas</option>
-                {rutas.map(r => <option key={r.id} value={r.id}>{r.name}</option>)}
-              </select>
-            </div>
-            <div className="flex flex-col gap-1">
-              <label className="text-xs font-bold uppercase tracking-wider" style={{ color: 'var(--c-ghost)' }}>Empresa</label>
-              <select className="text-sm rounded-xl px-3 py-2 pr-8"
-                style={{ background: 'var(--c-card)', border: '1px solid var(--c-rim)', color: filterUnidadEmpresa ? 'var(--c-ink)' : 'var(--c-ghost)', outline: 'none', minWidth: 180 }}
-                value={filterUnidadEmpresa} onChange={e => setFilterUnidadEmpresa(e.target.value)}>
-                <option value="">Todas las empresas</option>
-                {contacts.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
-              </select>
-            </div>
-            {(filterUnidadRuta || filterUnidadEmpresa) && (
-              <button onClick={() => { setFilterUnidadRuta(''); setFilterUnidadEmpresa('') }}
-                className="self-end text-xs font-semibold px-3 py-2 rounded-xl hover:opacity-75"
-                style={{ color: 'var(--c-ghost)', border: '1px solid var(--c-rim)' }}>
-                Limpiar filtros
-              </button>
-            )}
+          <div className="flex flex-wrap items-center gap-2 mb-4">
+            <FilterSelect
+              value={filterUnidadRuta}
+              onChange={setFilterUnidadRuta}
+              placeholder="Ruta"
+              options={rutas.map(r => ({ value: r.id, label: r.name }))}
+            />
+            <FilterSelect
+              value={filterUnidadEmpresa}
+              onChange={setFilterUnidadEmpresa}
+              placeholder="Empresa"
+              options={contacts.map(c => ({ value: c.id, label: c.name }))}
+            />
           </div>
         <div className="rounded-2xl overflow-x-auto" style={{ background: 'var(--c-card)', border: '1px solid var(--c-rim)' }}>
           <table className="w-full text-sm" style={{ minWidth: 680 }}>
@@ -348,7 +330,7 @@ export default function AdminUnidadesPage() {
         <div className="fixed inset-0 z-50 flex items-start justify-center pt-16 px-4" style={{ background: 'rgba(0,0,0,0.4)' }} onClick={e => { if (e.target === e.currentTarget) setModalRuta(false) }}>
           <div className="w-full max-w-md rounded-2xl shadow-xl" style={{ background: 'var(--c-card)', border: '1px solid var(--c-rim)' }}>
             <div className="flex items-center justify-between px-6 py-4" style={{ borderBottom: '1px solid var(--c-rim)' }}>
-              <h2 className="font-heading text-lg font-bold uppercase" style={{ color: 'var(--c-ink)', letterSpacing: '0.08em' }}>Nueva Ruta</h2>
+              <h2 className="text-lg font-bold" style={{ color: 'var(--c-ink)' }}>Nueva Ruta</h2>
               <button onClick={() => setModalRuta(false)} style={{ color: 'var(--c-ghost)' }}>
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
                   <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
@@ -375,8 +357,8 @@ export default function AdminUnidadesPage() {
                   Cancelar
                 </button>
                 <button type="submit"
-                  className="px-5 py-2.5 rounded-xl text-sm font-bold uppercase tracking-wider transition-opacity hover:opacity-85 mt-4"
-                  style={{ background: 'var(--c-navy)', color: '#fff', letterSpacing: '0.08em' }}>
+                  className="px-5 py-2.5 rounded-xl text-sm font-semibold transition-opacity hover:opacity-85 mt-4"
+                  style={{ background: 'var(--c-navy)', color: '#fff' }}>
                   Crear Ruta
                 </button>
               </div>
@@ -390,7 +372,7 @@ export default function AdminUnidadesPage() {
         <div className="fixed inset-0 z-50 flex items-start justify-center pt-16 px-4" style={{ background: 'rgba(0,0,0,0.4)' }} onClick={e => { if (e.target === e.currentTarget) setEditRuta(null) }}>
           <div className="w-full max-w-md rounded-2xl shadow-xl" style={{ background: 'var(--c-card)', border: '1px solid var(--c-rim)' }}>
             <div className="flex items-center justify-between px-6 py-4" style={{ borderBottom: '1px solid var(--c-rim)' }}>
-              <h2 className="font-heading text-lg font-bold uppercase" style={{ color: 'var(--c-ink)', letterSpacing: '0.08em' }}>Editar Ruta</h2>
+              <h2 className="text-lg font-bold" style={{ color: 'var(--c-ink)' }}>Editar Ruta</h2>
               <button onClick={() => setEditRuta(null)} style={{ color: 'var(--c-ghost)' }}>
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
                   <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
@@ -417,8 +399,8 @@ export default function AdminUnidadesPage() {
                   Cancelar
                 </button>
                 <button type="submit"
-                  className="px-5 py-2.5 rounded-xl text-sm font-bold uppercase tracking-wider transition-opacity hover:opacity-85 mt-4"
-                  style={{ background: 'var(--c-navy)', color: '#fff', letterSpacing: '0.08em' }}>
+                  className="px-5 py-2.5 rounded-xl text-sm font-semibold transition-opacity hover:opacity-85 mt-4"
+                  style={{ background: 'var(--c-navy)', color: '#fff' }}>
                   Guardar Cambios
                 </button>
               </div>
@@ -432,7 +414,7 @@ export default function AdminUnidadesPage() {
         <div className="fixed inset-0 z-50 flex items-start justify-center pt-16 px-4" style={{ background: 'rgba(0,0,0,0.4)' }} onClick={e => { if (e.target === e.currentTarget) setModal(null) }}>
           <div className="w-full max-w-2xl rounded-2xl shadow-xl overflow-y-auto" style={{ background: 'var(--c-card)', border: '1px solid var(--c-rim)', maxHeight: 'calc(100vh - 8rem)' }}>
             <div className="flex items-center justify-between px-6 py-4" style={{ borderBottom: '1px solid var(--c-rim)' }}>
-              <h2 className="font-heading text-lg font-bold uppercase" style={{ color: 'var(--c-ink)', letterSpacing: '0.08em' }}>
+              <h2 className="text-lg font-bold" style={{ color: 'var(--c-ink)' }}>
                 {modal === 'new' ? 'Nueva Unidad' : 'Editar Unidad'}
               </h2>
               <button onClick={() => setModal(null)} style={{ color: 'var(--c-ghost)' }}>
@@ -549,8 +531,8 @@ function UnidadForm({ form, setForm, rutas, contacts, onSubmit, onCancel, submit
           Cancelar
         </button>
         <button type="submit"
-          className="px-5 py-2.5 rounded-xl text-sm font-bold uppercase tracking-wider transition-opacity hover:opacity-85 mt-4"
-          style={{ background: 'var(--c-navy)', color: '#fff', letterSpacing: '0.08em' }}>
+          className="px-5 py-2.5 rounded-xl text-sm font-semibold transition-opacity hover:opacity-85 mt-4"
+          style={{ background: 'var(--c-navy)', color: '#fff' }}>
           {submitLabel}
         </button>
       </div>

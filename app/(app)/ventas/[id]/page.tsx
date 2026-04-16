@@ -33,20 +33,22 @@ export default async function SaleDetailPage({ params }: { params: Promise<{ id:
       <div className="mb-5">
         <Link
           href="/cobranza"
-          className="text-xs font-bold uppercase tracking-widest transition-colors hover:opacity-75"
+          className="inline-flex items-center gap-1.5 text-xs font-semibold transition-opacity hover:opacity-70"
           style={{ color: 'var(--c-ghost)' }}
         >
-          ← Volver a Cobranza
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+          Cobranza
         </Link>
       </div>
 
       {/* Header */}
       <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between mb-7">
         <div className="flex-1">
-          <div className="flex items-center gap-4 mb-1">
+          <p className="text-xs font-semibold uppercase tracking-widest mb-1" style={{ color: 'var(--c-ghost)', letterSpacing: '0.1em' }}>Venta</p>
+          <div className="flex items-center gap-3 mb-1">
             <h1
-              className="font-heading text-3xl font-bold"
-              style={{ color: 'var(--c-ink)', letterSpacing: '0.04em' }}
+              className="text-2xl font-bold font-mono"
+              style={{ color: 'var(--c-ink)' }}
             >
               {sale.number}
             </h1>
@@ -54,32 +56,34 @@ export default async function SaleDetailPage({ params }: { params: Promise<{ id:
           </div>
 
           <div className="flex flex-wrap items-center gap-x-2 text-sm" style={{ color: 'var(--c-dim)' }}>
-            <span className="font-medium text-slate-700">{sale.customer_name}</span>
-            <span style={{ color: 'var(--c-rim-hi)' }}>|</span>
+            <span className="font-medium" style={{ color: 'var(--c-ink)' }}>{sale.customer_name}</span>
+            <span style={{ color: 'var(--c-rim-hi)' }}>·</span>
             <span>{new Date(sale.created_at).toLocaleDateString('es-MX')}</span>
 
             {sale.quote_number && (
               <>
-                <span style={{ color: 'var(--c-rim-hi)' }}>|</span>
+                <span style={{ color: 'var(--c-rim-hi)' }}>·</span>
                 <Link
                   href={`/quotes/${sale.quote_id}`}
-                  className="px-2 py-0.5 rounded bg-slate-100 hover:bg-slate-200 transition-colors font-medium"
-                  style={{ color: 'var(--c-navy)' }}
+                  className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md transition-colors font-medium text-xs"
+                  style={{ background: 'var(--c-navy-bg)', color: 'var(--c-navy)', border: '1px solid var(--c-navy-bd)' }}
                 >
-                  📋 {sale.quote_number}
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                  {sale.quote_number}
                 </Link>
               </>
             )}
 
             {sale.project_name && (
               <>
-                <span style={{ color: 'var(--c-rim-hi)' }}>|</span>
+                <span style={{ color: 'var(--c-rim-hi)' }}>·</span>
                 <Link
                   href={`/projects/${sale.project_id}`}
-                  className="px-2 py-0.5 rounded bg-slate-100 hover:bg-slate-200 transition-colors font-medium"
-                  style={{ color: 'var(--c-navy)' }}
+                  className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md transition-colors font-medium text-xs"
+                  style={{ background: 'var(--c-navy-bg)', color: 'var(--c-navy)', border: '1px solid var(--c-navy-bd)' }}
                 >
-                  📁 {sale.project_name}
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+                  {sale.project_name}
                 </Link>
               </>
             )}

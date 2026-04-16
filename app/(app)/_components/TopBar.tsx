@@ -19,7 +19,7 @@ export default function TopBar({ items, username, roleLabel, userInitial, homeHr
       style={{
         background: 'var(--c-panel)',
         borderBottom: '1px solid var(--c-rim)',
-        boxShadow: '0 1px 8px rgba(27,52,97,0.06)',
+        boxShadow: '0 1px 6px rgba(15,23,42,0.05)',
       }}
     >
       {/* Logo — client component that reacts to pathname changes */}

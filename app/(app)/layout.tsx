@@ -3,6 +3,7 @@ import { getIronSession } from 'iron-session'
 import { sessionOptions, SessionData } from '@/lib/session'
 import TopBar from './_components/TopBar'
 import Toaster from '@/components/ui/Toaster'
+import DragScrollInit from '@/components/DragScrollInit'
 import { NAV_BY_ROLE } from './_components/nav-config'
 
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
@@ -31,6 +32,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
       />
 
       <Toaster />
+      <DragScrollInit />
 
       <main className="pt-14 overflow-auto min-w-0">
         <div className="max-w-7xl mx-auto px-4 py-5 sm:px-6 sm:py-6 md:px-8 md:py-8">

@@ -110,7 +110,7 @@ export default function MaterialsEditor({ serviceId, materials, canEdit }: Props
           <button
             onClick={() => setShowForm(true)}
             className="px-3 py-1.5 rounded-lg text-xs font-semibold text-white"
-            style={{ background: '#B45309', cursor: 'pointer', border: 'none' }}
+            style={{ background: 'var(--c-navy)', cursor: 'pointer', border: 'none' }}
           >
             + Agregar
           </button>
@@ -198,7 +198,7 @@ export default function MaterialsEditor({ serviceId, materials, canEdit }: Props
                 disabled={adding || !selectedProductId}
                 className="px-4 py-1.5 rounded-lg text-xs font-semibold text-white"
                 style={{
-                  background: adding || !selectedProductId ? 'var(--c-rim-hi)' : '#B45309',
+                  background: adding || !selectedProductId ? 'var(--c-rim-hi)' : 'var(--c-navy)',
                   cursor: adding || !selectedProductId ? 'not-allowed' : 'pointer',
                   border: 'none',
                 }}
@@ -245,7 +245,7 @@ export default function MaterialsEditor({ serviceId, materials, canEdit }: Props
                         <button
                           onClick={() => handleDelete(m.id)}
                           className="text-xs hover:underline"
-                          style={{ color: '#991B1B', background: 'transparent', border: 'none', cursor: 'pointer' }}
+                          style={{ color: 'var(--c-rose)', background: 'transparent', border: 'none', cursor: 'pointer' }}
                         >
                           Quitar
                         </button>
@@ -260,7 +260,7 @@ export default function MaterialsEditor({ serviceId, materials, canEdit }: Props
                 <td colSpan={3} className="px-4 py-2.5 text-right text-xs font-bold uppercase" style={{ color: 'var(--c-ghost)' }}>
                   Total
                 </td>
-                <td className="px-4 py-2.5 text-right font-mono font-bold" style={{ color: '#B45309' }}>
+                <td className="px-4 py-2.5 text-right font-mono font-bold" style={{ color: 'var(--c-navy)' }}>
                   ${fmt(total)}
                 </td>
                 <td />

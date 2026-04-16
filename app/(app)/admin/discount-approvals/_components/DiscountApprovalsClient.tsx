@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { toast, notifyRefresh } from '@/lib/toast'
 import { useSSE } from '@/hooks/useSSE'
@@ -101,9 +102,20 @@ export default function DiscountApprovalsClient() {
 
   return (
     <div>
-      <h1 className="font-heading text-2xl font-bold mb-6" style={{ color: 'var(--c-ink)' }}>
-        Aprobación de Descuentos
-      </h1>
+      <div className="mb-5">
+        <Link
+          href="/admin"
+          className="inline-flex items-center gap-1.5 text-xs font-semibold transition-opacity hover:opacity-70"
+          style={{ color: 'var(--c-ghost)' }}
+        >
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+          Dashboard Admin
+        </Link>
+      </div>
+      <div className="mb-7">
+        <p className="text-xs font-semibold uppercase tracking-widest mb-1" style={{ color: 'var(--c-ghost)' }}>Admin</p>
+        <h1 className="text-2xl font-bold" style={{ color: 'var(--c-ink)' }}>Aprobación de Descuentos</h1>
+      </div>
 
       {approvals.length === 0 ? (
         <div

@@ -174,11 +174,17 @@ export default function CustomersClient({ role, initialCustomers }: Props) {
   return (
     <div className="flex flex-col gap-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold" style={{ color: 'var(--c-ink)' }}>Contactos</h1>
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-widest mb-1" style={{ color: 'var(--c-ghost)', letterSpacing: '0.1em' }}>Clientes</p>
+          <h1 className="text-2xl font-bold" style={{ color: 'var(--c-ink)', fontFamily: 'var(--font-montserrat)' }}>Contactos</h1>
+          <p className="text-sm mt-1" style={{ color: 'var(--c-ghost)' }}>
+            {contacts.length} {contacts.length === 1 ? 'contacto' : 'contactos'}
+          </p>
+        </div>
         <button
           onClick={() => setShowCreate(true)}
-          className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-opacity hover:opacity-85"
+          className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold transition-opacity hover:opacity-85 self-start"
           style={{ background: 'var(--c-navy)', color: '#FFFFFF' }}
         >
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
@@ -197,7 +203,7 @@ export default function CustomersClient({ role, initialCustomers }: Props) {
             style={{
               background: 'var(--c-card)',
               border: search ? '1.5px solid var(--c-navy-bd)' : '1px solid var(--c-rim)',
-              boxShadow: '0 1px 6px rgba(27,52,97,0.08)',
+              boxShadow: search ? '0 2px 8px rgba(37,99,235,0.10), 0 0 0 3px rgba(37,99,235,0.06)' : '0 1px 4px rgba(15,23,42,0.06)',
             }}
           >
             <div className="flex items-center justify-center w-10 shrink-0" style={{ color: search ? 'var(--c-navy)' : 'var(--c-ghost)', opacity: search ? 0.85 : 0.5 }}>
@@ -224,15 +230,20 @@ export default function CustomersClient({ role, initialCustomers }: Props) {
         </div>
 
         {/* Type filter */}
-        <div className="flex rounded-lg overflow-hidden text-xs font-semibold" style={{ border: '1px solid var(--c-rim)' }}>
+        <div className="flex gap-2">
           {(['all', 'company', 'person'] as const).map(t => (
             <button
               key={t}
               onClick={() => setTypeFilter(t)}
-              className="px-3 py-2 transition-colors"
+              className="text-xs font-semibold transition-all"
               style={{
-                background: typeFilter === t ? 'var(--c-navy)' : 'var(--c-card)',
-                color: typeFilter === t ? '#fff' : 'var(--c-dim)',
+                padding: '5px 14px',
+                borderRadius: '999px',
+                cursor: 'pointer',
+                border: typeFilter === t ? '1.5px solid var(--c-navy-bd)' : '1px solid var(--c-rim)',
+                background: typeFilter === t ? 'var(--c-navy-bg)' : 'var(--c-card)',
+                color: typeFilter === t ? 'var(--c-navy)' : 'var(--c-dim)',
+                boxShadow: typeFilter === t ? 'none' : '0 1px 3px rgba(15,23,42,0.04)',
               }}
             >
               {t === 'all' ? 'Todos' : t === 'company' ? 'Empresas' : 'Personas'}
@@ -301,29 +312,43 @@ export default function CustomersClient({ role, initialCustomers }: Props) {
                         {c.phone ?? <span style={{ color: 'var(--c-ghost)' }}>—</span>}
                       </td>
                       <td className="px-5 py-4">
-                        <div className="flex items-center justify-end gap-2">
+                        <div className="flex items-center justify-end gap-1">
                           <button
                             onClick={() => setEditContact(c)}
-                            className="px-3 py-1.5 rounded-lg text-xs font-semibold transition-opacity hover:opacity-75"
-                            style={{ background: 'var(--c-navy-bg)', color: 'var(--c-navy)', border: '1px solid var(--c-navy-bd)' }}
+                            title="Editar contacto"
+                            className="p-1.5 rounded-lg transition-colors"
+                            style={{ color: 'var(--c-ghost)' }}
+                            onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'var(--c-navy-bg)'; (e.currentTarget as HTMLElement).style.color = 'var(--c-navy)' }}
+                            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'transparent'; (e.currentTarget as HTMLElement).style.color = 'var(--c-ghost)' }}
                           >
-                            Editar
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                              <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                              <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                            </svg>
                           </button>
                           {isSales ? (
                             <button
                               onClick={() => setDeleteRequest(c)}
-                              className="px-3 py-1.5 rounded-lg text-xs font-semibold transition-opacity hover:opacity-75"
-                              style={{ background: 'var(--c-rose-bg)', color: 'var(--c-rose)', border: '1px solid rgba(209,44,60,0.18)' }}
+                              title="Solicitar eliminación"
+                              className="btn-delete p-1.5 rounded-lg transition-colors"
+                              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'var(--c-rose-bg)' }}
+                              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'transparent' }}
                             >
-                              Solicitar eliminación
+                              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+                                <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/>
+                              </svg>
                             </button>
                           ) : (
                             <button
                               onClick={() => setDeleteConfirm(c)}
-                              className="px-3 py-1.5 rounded-lg text-xs font-semibold transition-opacity hover:opacity-75"
-                              style={{ background: 'var(--c-rose-bg)', color: 'var(--c-rose)', border: '1px solid rgba(209,44,60,0.18)' }}
+                              title="Eliminar contacto"
+                              className="btn-delete p-1.5 rounded-lg transition-colors"
+                              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'var(--c-rose-bg)' }}
+                              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'transparent' }}
                             >
-                              Eliminar
+                              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+                                <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/>
+                              </svg>
                             </button>
                           )}
                         </div>

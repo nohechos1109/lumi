@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import type { CobranzaNote } from '@/lib/queries/sale-notes'
 import { toast } from '@/lib/toast'
+import FilterSelect from '@/components/ui/FilterSelect'
 import AbonoModal from './AbonoModal'
 import EditFieldsModal from './EditFieldsModal'
 import NewNoteSaleSelector from './NewNoteSaleSelector'
@@ -182,132 +183,237 @@ export default function CobranzaTable({ notes, role, activeSales }: Props) {
   return (
     <div>
       {/* ── Filter bar ─────────────────────────────────────────────────────── */}
-      <div className="rounded-xl mb-4" style={{ background: 'var(--c-card)', border: '1px solid var(--c-rim)' }}>
-        {/* Primary filters row */}
-        <div className="px-4 pt-4 pb-3 flex flex-wrap gap-3 items-end">
-          <FilterField label="Remisión / Ord. Servicio">
-            <div className="relative">
-              <svg className="absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: 'var(--c-ghost)' }}>
-                <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
-              </svg>
-              <input type="text" placeholder="Buscar..." value={filters.search}
-                onChange={e => setF('search', e.target.value)}
-                className="rounded-lg pl-8 pr-3 py-1.5 text-xs w-44 transition-all duration-150 focus:outline-none"
-                style={filters.search ? inputActiveStyle : inputStyle} />
-            </div>
-          </FilterField>
+      <div className="flex flex-col gap-4 mb-6">
 
-          <FilterField label="Fecha">
-            <DateRangePicker
-              dateFrom={filters.dateFrom}
-              dateTo={filters.dateTo}
-              onChange={(from, to) => { setF('dateFrom', from); setF('dateTo', to) }}
-            />
-          </FilterField>
-
-          <FilterField label="Cliente">
-            <input type="text" placeholder="Nombre..." value={filters.cliente}
-              onChange={e => setF('cliente', e.target.value)}
-              className="rounded-lg px-2.5 py-1.5 text-xs w-36 transition-all duration-150 focus:outline-none"
-              style={filters.cliente ? inputActiveStyle : inputStyle} />
-          </FilterField>
-
-          <FilterField label="Estado">
-            <SelectFilter value={filters.estado} onChange={v => setF('estado', v)}
-              placeholder="Todos"
-              options={['draft', 'confirmed', 'paid', 'cancelled']}
-              labels={{ draft: 'Borrador', confirmed: 'Confirmada', paid: 'Pagada', cancelled: 'Cancelada' }}
-              active={!!filters.estado} />
-          </FilterField>
-
-          {uniqueAgentes.length > 0 && (
-            <FilterField label="Agente">
-              <SelectFilter value={filters.agente} onChange={v => setF('agente', v)}
-                placeholder="Todos" options={uniqueAgentes} active={!!filters.agente} />
-            </FilterField>
-          )}
-
-          {/* Secondary toggle */}
-          <button
-            onClick={() => setShowMoreFilters(v => !v)}
-            className="self-end flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-xs font-semibold transition-all duration-150"
+        {/* Search bar */}
+        <div style={{ maxWidth: '640px', margin: '0 auto', width: '100%' }}>
+          <div
+            className="flex items-center h-12 rounded-full transition-shadow"
             style={{
-              background: (showMoreFilters || secondaryActiveCount > 0) ? 'var(--c-navy-bg)' : 'var(--c-rim)',
-              color: (showMoreFilters || secondaryActiveCount > 0) ? 'var(--c-navy)' : 'var(--c-dim)',
-              border: `1px solid ${(showMoreFilters || secondaryActiveCount > 0) ? 'var(--c-navy-bd)' : 'var(--c-rim)'}`,
-            }}>
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <line x1="4" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="11" y1="18" x2="13" y2="18"/>
-            </svg>
-            Más filtros
-            {secondaryActiveCount > 0 && (
-              <span className="rounded-full text-white flex items-center justify-center font-bold"
-                style={{ background: 'var(--c-navy)', width: 16, height: 16, fontSize: 9 }}>
-                {secondaryActiveCount}
-              </span>
-            )}
-          </button>
-
-          {/* Actions */}
-          <div className="flex items-end gap-2 ml-auto">
-            <span className="text-xs pb-1.5 font-medium tabular-nums" style={{ color: 'var(--c-ghost)' }}>
-              {filtered.length}<span style={{ color: 'var(--c-rim-hi)' }}>/</span>{notes.length}
-            </span>
-            {hasFilters && (
-              <button onClick={() => { setFilters(EMPTY); setShowMoreFilters(false) }}
-                className="rounded-lg px-3 py-1.5 text-xs font-semibold transition-all duration-150 hover:opacity-80 active:scale-95"
-                style={{ background: 'rgba(209,44,60,0.08)', color: 'var(--c-rose)', border: '1px solid rgba(209,44,60,0.18)' }}>
-                Limpiar
-              </button>
-            )}
-            {canCreateNote ? (
-              <div className="flex flex-col items-stretch gap-1.5">
-                <button onClick={() => setShowColModal(true)}
-                  className="rounded-lg px-2.5 py-1 text-xs font-semibold transition-all duration-150 hover:opacity-80 flex items-center justify-center gap-1.5"
-                  style={{ background: 'var(--c-rim)', color: 'var(--c-dim)', border: '1px solid var(--c-rim)' }}>
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
-                    <rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/>
-                  </svg>
-                  Columnas
-                </button>
-                <button onClick={() => setShowNewNote(true)}
-                  className="rounded-lg px-3 py-1.5 text-xs font-semibold transition-all duration-150 hover:opacity-85 active:scale-95 flex items-center gap-1.5"
-                  style={{ background: 'var(--c-navy)', color: '#fff' }}>
-                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M12 5v14M5 12h14"/></svg>
-                  Nueva Nota
-                </button>
-              </div>
-            ) : (
-              <button onClick={() => setShowColModal(true)}
-                className="rounded-lg px-2.5 py-1.5 text-xs font-semibold transition-all duration-150 hover:opacity-80 flex items-center gap-1.5"
-                style={{ background: 'var(--c-rim)', color: 'var(--c-dim)', border: '1px solid var(--c-rim)' }}>
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
-                  <rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/>
+              background: 'var(--c-card)',
+              border: filters.search ? '1.5px solid var(--c-navy-bd)' : '1px solid var(--c-rim)',
+              boxShadow: filters.search
+                ? '0 2px 8px rgba(37,99,235,0.10), 0 0 0 3px rgba(37,99,235,0.06)'
+                : '0 1px 4px rgba(15,23,42,0.06)',
+            }}
+          >
+            <div className="flex items-center justify-center w-12 shrink-0" style={{ color: filters.search ? 'var(--c-navy)' : 'var(--c-ghost)', opacity: filters.search ? 0.85 : 0.5 }}>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+              </svg>
+            </div>
+            <input
+              type="text"
+              placeholder="Buscar por remisión u orden de servicio..."
+              className="flex-1 h-full bg-transparent outline-none text-sm font-medium"
+              value={filters.search}
+              onChange={e => setF('search', e.target.value)}
+              style={{ color: 'var(--c-ink)' }}
+            />
+            {filters.search && (
+              <button
+                onClick={() => setF('search', '')}
+                className="flex items-center justify-center w-10 h-10 mr-1 rounded-full transition-colors"
+                style={{ color: 'var(--c-dim)' }}
+                onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'var(--c-rim)' }}
+                onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'transparent' }}
+              >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+                  <line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/>
                 </svg>
-                Columnas
               </button>
             )}
           </div>
         </div>
 
-        {/* Secondary filters — progressive disclosure */}
+        {/* Filter pills row + actions */}
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <div className="flex flex-wrap items-center gap-2">
+            {/* filter icon */}
+            <div className="flex items-center gap-1" style={{ color: 'var(--c-ghost)' }}>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="4" y1="6" x2="20" y2="6"/><line x1="7" y1="12" x2="17" y2="12"/><line x1="10" y1="18" x2="14" y2="18"/>
+              </svg>
+            </div>
+
+            <DateRangePicker
+              dateFrom={filters.dateFrom}
+              dateTo={filters.dateTo}
+              onChange={(from, to) => { setF('dateFrom', from); setF('dateTo', to) }}
+            />
+
+            {/* Cliente pill input */}
+            <div className="relative flex items-center">
+              <input
+                type="text"
+                placeholder="Cliente"
+                value={filters.cliente}
+                onChange={e => setF('cliente', e.target.value)}
+                className="h-8 pl-3.5 text-xs font-semibold outline-none transition-all"
+                style={{
+                  borderRadius: '999px',
+                  paddingRight: filters.cliente ? '28px' : '14px',
+                  width: filters.cliente ? 160 : 90,
+                  background: filters.cliente ? 'var(--c-navy-bg)' : 'var(--c-card)',
+                  border: filters.cliente ? '1.5px solid var(--c-navy-bd)' : '1px solid var(--c-rim)',
+                  color: filters.cliente ? 'var(--c-navy)' : 'var(--c-dim)',
+                  boxShadow: filters.cliente ? 'none' : '0 1px 3px rgba(15,23,42,0.04)',
+                }}
+              />
+              {filters.cliente && (
+                <button
+                  onClick={() => setF('cliente', '')}
+                  className="absolute right-1.5 flex items-center justify-center w-4 h-4 rounded-full cursor-pointer"
+                  style={{ background: 'var(--c-navy-bd)', color: 'var(--c-navy)' }}
+                >
+                  <svg width="7" height="7" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="2.8" strokeLinecap="round">
+                    <line x1="1" y1="1" x2="11" y2="11"/><line x1="11" y1="1" x2="1" y2="11"/>
+                  </svg>
+                </button>
+              )}
+            </div>
+
+            <FilterSelect
+              value={filters.estado}
+              onChange={v => setF('estado', v)}
+              placeholder="Estado"
+              options={[
+                { value: 'draft',     label: 'Borrador' },
+                { value: 'confirmed', label: 'Confirmada' },
+                { value: 'paid',      label: 'Pagada' },
+                { value: 'cancelled', label: 'Cancelada' },
+              ]}
+            />
+
+            {uniqueAgentes.length > 0 && (
+              <FilterSelect
+                value={filters.agente}
+                onChange={v => setF('agente', v)}
+                placeholder="Agente"
+                options={uniqueAgentes.map(a => ({ value: a, label: a }))}
+              />
+            )}
+
+            {/* Más filtros */}
+            <button
+              onClick={() => setShowMoreFilters(v => !v)}
+              className="flex items-center gap-1.5 h-8 pl-3.5 pr-2.5 rounded-full text-xs font-semibold transition-all"
+              style={{
+                background: (showMoreFilters || secondaryActiveCount > 0) ? 'var(--c-navy-bg)' : 'var(--c-card)',
+                color: (showMoreFilters || secondaryActiveCount > 0) ? 'var(--c-navy)' : 'var(--c-dim)',
+                border: (showMoreFilters || secondaryActiveCount > 0) ? '1.5px solid var(--c-navy-bd)' : '1px solid var(--c-rim)',
+                boxShadow: (showMoreFilters || secondaryActiveCount > 0) ? 'none' : '0 1px 3px rgba(15,23,42,0.04)',
+              }}
+            >
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="4" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="11" y1="18" x2="13" y2="18"/>
+              </svg>
+              Más filtros
+              {secondaryActiveCount > 0 && (
+                <span className="flex items-center justify-center rounded-full font-bold text-white"
+                  style={{ background: 'var(--c-navy)', width: 16, height: 16, fontSize: 9 }}>
+                  {secondaryActiveCount}
+                </span>
+              )}
+            </button>
+
+            {hasFilters && (
+              <button
+                onClick={() => { setFilters(EMPTY); setShowMoreFilters(false) }}
+                className="flex items-center gap-1.5 h-8 px-3.5 rounded-full text-xs font-semibold transition-all hover:opacity-80"
+                style={{ background: 'var(--c-rose-bg)', color: 'var(--c-rose)', border: '1px solid rgba(209,44,60,0.18)' }}
+              >
+                <svg width="10" height="10" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+                  <line x1="1" y1="1" x2="11" y2="11"/><line x1="11" y1="1" x2="1" y2="11"/>
+                </svg>
+                Limpiar
+              </button>
+            )}
+
+            <span className="text-xs font-medium tabular-nums" style={{ color: 'var(--c-ghost)' }}>
+              {filtered.length}<span style={{ color: 'var(--c-rim-hi)' }}>/</span>{notes.length}
+            </span>
+          </div>
+
+          {/* Actions */}
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => setShowColModal(true)}
+              className="flex items-center gap-1.5 h-8 px-3 rounded-xl text-xs font-semibold transition-all hover:opacity-80"
+              style={{ background: 'var(--c-panel)', color: 'var(--c-dim)', border: '1px solid var(--c-rim)' }}
+            >
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
+                <rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/>
+              </svg>
+              Columnas
+            </button>
+            {canCreateNote && (
+              <button
+                onClick={() => setShowNewNote(true)}
+                className="flex items-center gap-1.5 h-8 px-3.5 rounded-xl text-xs font-semibold transition-opacity hover:opacity-85"
+                style={{ background: 'var(--c-navy)', color: '#fff' }}
+              >
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+                  <path d="M12 5v14M5 12h14"/>
+                </svg>
+                Nueva Nota
+              </button>
+            )}
+          </div>
+        </div>
+
+        {/* Secondary filters */}
         {showMoreFilters && (
-          <div className="px-4 pb-4 pt-1 flex flex-wrap gap-3 items-end"
-            style={{ borderTop: '1px solid var(--c-rim)' }}>
-            <FilterField label="Unidad">
-              <input type="text" placeholder="Buscar..." value={filters.unidad}
+          <div className="flex flex-wrap items-center gap-2 pt-2" style={{ borderTop: '1px solid var(--c-rim)' }}>
+            {/* Unidad pill input */}
+            <div className="relative flex items-center">
+              <input
+                type="text"
+                placeholder="Unidad"
+                value={filters.unidad}
                 onChange={e => setF('unidad', e.target.value)}
-                className="rounded-lg px-2.5 py-1.5 text-xs w-32 transition-all duration-150 focus:outline-none"
-                style={filters.unidad ? inputActiveStyle : inputStyle} />
-            </FilterField>
-            <FilterField label="Observaciones">
-              <input type="text" placeholder="Buscar..." value={filters.observaciones}
+                className="h-8 pl-3.5 text-xs font-semibold outline-none transition-all"
+                style={{
+                  borderRadius: '999px',
+                  paddingRight: filters.unidad ? '28px' : '14px',
+                  width: filters.unidad ? 140 : 90,
+                  background: filters.unidad ? 'var(--c-navy-bg)' : 'var(--c-card)',
+                  border: filters.unidad ? '1.5px solid var(--c-navy-bd)' : '1px solid var(--c-rim)',
+                  color: filters.unidad ? 'var(--c-navy)' : 'var(--c-dim)',
+                  boxShadow: filters.unidad ? 'none' : '0 1px 3px rgba(15,23,42,0.04)',
+                }}
+              />
+              {filters.unidad && (
+                <button onClick={() => setF('unidad', '')} className="absolute right-1.5 flex items-center justify-center w-4 h-4 rounded-full cursor-pointer" style={{ background: 'var(--c-navy-bd)', color: 'var(--c-navy)' }}>
+                  <svg width="7" height="7" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="2.8" strokeLinecap="round"><line x1="1" y1="1" x2="11" y2="11"/><line x1="11" y1="1" x2="1" y2="11"/></svg>
+                </button>
+              )}
+            </div>
+            {/* Observaciones pill input */}
+            <div className="relative flex items-center">
+              <input
+                type="text"
+                placeholder="Observaciones"
+                value={filters.observaciones}
                 onChange={e => setF('observaciones', e.target.value)}
-                className="rounded-lg px-2.5 py-1.5 text-xs w-40 transition-all duration-150 focus:outline-none"
-                style={filters.observaciones ? inputActiveStyle : inputStyle} />
-            </FilterField>
+                className="h-8 pl-3.5 text-xs font-semibold outline-none transition-all"
+                style={{
+                  borderRadius: '999px',
+                  paddingRight: filters.observaciones ? '28px' : '14px',
+                  width: filters.observaciones ? 180 : 130,
+                  background: filters.observaciones ? 'var(--c-navy-bg)' : 'var(--c-card)',
+                  border: filters.observaciones ? '1.5px solid var(--c-navy-bd)' : '1px solid var(--c-rim)',
+                  color: filters.observaciones ? 'var(--c-navy)' : 'var(--c-dim)',
+                  boxShadow: filters.observaciones ? 'none' : '0 1px 3px rgba(15,23,42,0.04)',
+                }}
+              />
+              {filters.observaciones && (
+                <button onClick={() => setF('observaciones', '')} className="absolute right-1.5 flex items-center justify-center w-4 h-4 rounded-full cursor-pointer" style={{ background: 'var(--c-navy-bd)', color: 'var(--c-navy)' }}>
+                  <svg width="7" height="7" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="2.8" strokeLinecap="round"><line x1="1" y1="1" x2="11" y2="11"/><line x1="11" y1="1" x2="1" y2="11"/></svg>
+                </button>
+              )}
+            </div>
           </div>
         )}
       </div>
@@ -639,18 +745,19 @@ export default function CobranzaTable({ notes, role, activeSales }: Props) {
 // ── Small helpers ─────────────────────────────────────────────────────────────
 
 const inputStyle: React.CSSProperties = {
-  background: 'var(--c-rim)',
+  background: 'var(--c-card)',
   border: '1px solid var(--c-rim)',
   color: 'var(--c-ink)',
   outline: 'none',
+  boxShadow: '0 1px 2px rgba(15,23,42,0.04)',
 }
 
 const inputActiveStyle: React.CSSProperties = {
-  background: '#fff',
-  border: '1px solid var(--c-navy-bd)',
+  background: 'var(--c-card)',
+  border: '1.5px solid var(--c-navy-bd)',
   color: 'var(--c-ink)',
   outline: 'none',
-  boxShadow: '0 0 0 2px rgba(27,52,97,0.08)',
+  boxShadow: '0 0 0 2px rgba(37,99,235,0.08)',
 }
 
 function FilterField({ label, children }: { label: string; children: React.ReactNode }) {

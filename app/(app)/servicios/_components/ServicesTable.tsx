@@ -92,7 +92,7 @@ export default function ServicesTable({ services, role }: { services: Service[];
               return (
                 <tr key={s.id} style={{ borderBottom: '1px solid var(--c-rim)' }}>
                   <td className="px-4 py-2.5">
-                    <Link href={`/servicios/services/${s.id}`} className="font-mono font-medium hover:underline" style={{ color: '#B45309' }}>
+                    <Link href={`/servicios/services/${s.id}`} className="font-mono font-medium hover:underline" style={{ color: 'var(--c-navy)' }}>
                       {s.number}
                     </Link>
                   </td>

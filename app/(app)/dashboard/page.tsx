@@ -9,6 +9,9 @@ import { ICON_MAP } from '../_components/icon-map'
 const roleLabel: Record<string, string> = {
   sales:   'Ventas',
   manager: 'Gerente',
+  almacen: 'Almacén',
+  soporte: 'Soporte',
+  tecnico: 'Técnico',
 }
 
 export default async function DashboardPage() {
@@ -20,14 +23,18 @@ export default async function DashboardPage() {
   const sections = allItems.filter(item => !item.exact)
 
   return (
-    <div>
-      <div className="mb-8">
-        <p className="text-sm font-medium mb-1" style={{ color: 'var(--c-ghost)' }}>
+    <div className="animate-fade-in">
+      {/* Greeting */}
+      <div className="mb-10">
+        <p
+          className="text-xs font-semibold uppercase tracking-widest mb-2"
+          style={{ color: 'var(--c-ghost)', letterSpacing: '0.1em' }}
+        >
           {roleLabel[session.role] ?? session.role}
         </p>
         <h1
-          className="font-heading text-3xl font-bold"
-          style={{ color: 'var(--c-ink)', letterSpacing: '0.04em' }}
+          className="text-2xl font-bold"
+          style={{ color: 'var(--c-ink)', fontFamily: 'var(--font-montserrat)' }}
         >
           Hola, {session.username}
         </h1>
@@ -36,36 +43,44 @@ export default async function DashboardPage() {
         </p>
       </div>
 
-      <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-4">
+      {/* Nav grid */}
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
         {sections.map(s => (
           <Link
             key={s.href}
             href={s.href}
-            className="flex flex-col items-center gap-3 rounded-2xl p-5 transition-all"
+            className="card-link flex flex-col items-start gap-4 rounded-xl p-4"
             style={{
               background: 'var(--c-card)',
               border: '1px solid var(--c-rim)',
-              boxShadow: '0 1px 4px rgba(27,52,97,0.06)',
+              boxShadow: '0 1px 3px rgba(15,23,42,0.04)',
               textDecoration: 'none',
             }}
           >
+            {/* Icon — tinted background, colored stroke */}
             <div
-              className="w-16 h-16 rounded-2xl flex items-center justify-center"
+              className="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0"
               style={{
-                background: s.color,
-                color: '#fff',
-                boxShadow: `0 4px 14px ${s.color}44`,
+                background: `${s.color}14`,
+                color: s.color,
               }}
             >
               {ICON_MAP[s.icon]}
             </div>
-            <div className="text-center">
-              <p className="text-sm font-semibold" style={{ color: 'var(--c-ink)', fontFamily: 'var(--font-montserrat)' }}>
+
+            {/* Text */}
+            <div>
+              <p
+                className="text-sm font-semibold leading-tight"
+                style={{ color: 'var(--c-ink)', fontFamily: 'var(--font-montserrat)' }}
+              >
                 {s.label}
               </p>
-              <p className="text-xs mt-0.5 leading-snug" style={{ color: 'var(--c-ghost)' }}>
-                {s.desc}
-              </p>
+              {s.desc && (
+                <p className="text-xs mt-0.5 leading-snug" style={{ color: 'var(--c-ghost)' }}>
+                  {s.desc}
+                </p>
+              )}
             </div>
           </Link>
         ))}

@@ -71,34 +71,32 @@ export default function AdminCustomersPage() {
 
   return (
     <div>
-      <div className="mb-6">
+      <div className="mb-5">
         <Link
           href="/admin"
-          className="inline-flex items-center text-xs font-bold uppercase tracking-widest transition-colors hover:opacity-75"
+          className="inline-flex items-center gap-1.5 text-xs font-semibold transition-opacity hover:opacity-70"
           style={{ color: 'var(--c-ghost)' }}
         >
-          ← Volver al Dashboard Admin
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+          Dashboard Admin
         </Link>
       </div>
 
       <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between mb-8">
         <div>
-          <h1
-            className="font-heading text-3xl font-bold uppercase"
-            style={{ color: 'var(--c-ink)', letterSpacing: '0.1em' }}
-          >
-            Contactos
-          </h1>
-          <p className="text-sm mt-1 font-mono" style={{ color: 'var(--c-ghost)' }}>
+          <p className="text-xs font-semibold uppercase tracking-widest mb-1" style={{ color: 'var(--c-ghost)' }}>Admin</p>
+          <h1 className="text-2xl font-bold" style={{ color: 'var(--c-ink)' }}>Contactos</h1>
+          <p className="text-sm mt-1" style={{ color: 'var(--c-ghost)' }}>
             {contacts.length} {contacts.length === 1 ? 'contacto' : 'contactos'}
           </p>
         </div>
         <button
           onClick={() => setAdding(true)}
-          className="text-sm px-5 py-2.5 rounded-xl font-bold uppercase tracking-wider transition-opacity hover:opacity-85"
-          style={{ background: 'var(--c-navy)', color: '#fff', letterSpacing: '0.08em' }}
+          className="inline-flex items-center gap-1.5 text-sm px-4 py-2 rounded-xl font-semibold transition-opacity hover:opacity-85"
+          style={{ background: 'var(--c-navy)', color: '#fff' }}
         >
-          + Nuevo Contacto
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Nuevo Contacto
         </button>
       </div>
 
@@ -144,12 +142,12 @@ export default function AdminCustomersPage() {
         </div>
 
         {/* Type filter */}
-        <div className="flex rounded-xl overflow-hidden text-xs font-bold" style={{ border: '1px solid var(--c-rim)' }}>
+        <div className="flex rounded-xl overflow-hidden text-xs font-semibold" style={{ border: '1px solid var(--c-rim)' }}>
           {(['all', 'company', 'person'] as const).map(t => (
             <button
               key={t}
               onClick={() => setTypeFilter(t)}
-              className="px-4 py-2.5 transition-colors uppercase tracking-wider"
+              className="px-4 py-2.5 transition-colors"
               style={{
                 background: typeFilter === t ? 'var(--c-navy)' : 'var(--c-card)',
                 color: typeFilter === t ? '#fff' : 'var(--c-dim)',

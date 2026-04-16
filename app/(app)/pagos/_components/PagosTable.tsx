@@ -13,6 +13,8 @@ import AplicarPagoANotasModal from './AplicarPagoANotasModal'
 
 import { fmtMXN, fmtDate } from '@/lib/formatters'
 import { METHOD_LABELS, PAYMENT_STATE_BADGE } from '@/lib/constants/payments'
+import FilterSelect from '@/components/ui/FilterSelect'
+import DateRangePicker from '@/app/(app)/cobranza/_components/DateRangePicker'
 
 // ── Interfaces ────────────────────────────────────────────────────────────────
 
@@ -95,68 +97,77 @@ export default function PagosTable({ payments, customers, role }: Props) {
   return (
     <div>
       {/* Filter bar */}
-      <div className="rounded-xl p-4 mb-4 flex flex-wrap gap-3 items-end"
-        style={{ background: 'var(--c-card)', border: '1px solid var(--c-rim)' }}>
-
-        <FilterField label="Búsqueda">
-          <div className="relative">
-            <svg className="absolute left-2.5 top-1/2 -translate-y-1/2" width="12" height="12"
-              viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"
-              style={{ color: 'var(--c-ghost)' }}>
-              <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
-            </svg>
-            <input type="text" placeholder="Número / cliente..." value={filters.search}
-              onChange={e => setF('search', e.target.value)}
-              className="rounded-lg pl-8 pr-3 py-1.5 text-xs w-44" style={inputStyle} />
-          </div>
-        </FilterField>
-
-        <FilterField label="Fecha">
-          <div className="flex items-center gap-1.5">
-            <input type="date" value={filters.dateFrom} onChange={e => setF('dateFrom', e.target.value)}
-              className="rounded-lg px-2.5 py-1.5 text-xs w-36" style={inputStyle} />
-            <span className="text-xs" style={{ color: 'var(--c-ghost)' }}>—</span>
-            <input type="date" value={filters.dateTo} onChange={e => setF('dateTo', e.target.value)}
-              className="rounded-lg px-2.5 py-1.5 text-xs w-36" style={inputStyle} />
-          </div>
-        </FilterField>
-
-        <FilterField label="Método">
-          <select value={filters.method} onChange={e => setF('method', e.target.value)}
-            className="rounded-lg px-2.5 py-1.5 text-xs w-36" style={inputStyle}>
-            <option value="">Todos</option>
-            {Object.entries(METHOD_LABELS).map(([v, l]) =>
-              <option key={v} value={v}>{l}</option>
+      <div className="flex flex-col gap-4 mb-6">
+        {/* Search */}
+        <div style={{ maxWidth: '640px', margin: '0 auto', width: '100%' }}>
+          <div className="flex items-center h-12 rounded-full transition-shadow"
+            style={{
+              background: 'var(--c-card)',
+              border: filters.search ? '1.5px solid var(--c-navy-bd)' : '1px solid var(--c-rim)',
+              boxShadow: filters.search ? '0 2px 8px rgba(37,99,235,0.10), 0 0 0 3px rgba(37,99,235,0.06)' : '0 1px 4px rgba(15,23,42,0.06)',
+            }}>
+            <div className="flex items-center justify-center w-12 shrink-0" style={{ color: filters.search ? 'var(--c-navy)' : 'var(--c-ghost)', opacity: filters.search ? 0.85 : 0.5 }}>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+              </svg>
+            </div>
+            <input type="text" placeholder="Buscar por número o cliente..." className="flex-1 h-full bg-transparent outline-none text-sm font-medium"
+              value={filters.search} onChange={e => setF('search', e.target.value)} style={{ color: 'var(--c-ink)' }} />
+            {filters.search && (
+              <button onClick={() => setF('search', '')} className="flex items-center justify-center w-10 h-10 mr-1 rounded-full transition-colors"
+                style={{ color: 'var(--c-dim)' }}
+                onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'var(--c-rim)' }}
+                onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'transparent' }}>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+                  <line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/>
+                </svg>
+              </button>
             )}
-          </select>
-        </FilterField>
+          </div>
+        </div>
 
-        <FilterField label="Estado">
-          <select value={filters.estado} onChange={e => setF('estado', e.target.value)}
-            className="rounded-lg px-2.5 py-1.5 text-xs w-36" style={inputStyle}>
-            <option value="">Todos</option>
-            <option value="draft">Borrador</option>
-            <option value="confirmed">Confirmado</option>
-            <option value="cancelled">Cancelado</option>
-          </select>
-        </FilterField>
-
-        <div className="flex items-end gap-3 ml-auto">
-          <span className="text-xs pb-1.5" style={{ color: 'var(--c-ghost)' }}>
-            {filtered.length} / {payments.length}
-          </span>
-          {hasFilters && (
-            <button onClick={() => setFilters(EMPTY)}
-              className="rounded-lg px-3 py-1.5 text-xs font-semibold hover:opacity-75 transition-opacity"
-              style={{ background: '#FFE4E6', color: '#BE123C' }}>
-              Limpiar
-            </button>
-          )}
+        {/* Filter pills + actions */}
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <div className="flex flex-wrap items-center gap-2">
+            <div className="flex items-center" style={{ color: 'var(--c-ghost)' }}>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="4" y1="6" x2="20" y2="6"/><line x1="7" y1="12" x2="17" y2="12"/><line x1="10" y1="18" x2="14" y2="18"/>
+              </svg>
+            </div>
+            <DateRangePicker
+              dateFrom={filters.dateFrom} dateTo={filters.dateTo}
+              onChange={(from, to) => { setF('dateFrom', from); setF('dateTo', to) }}
+            />
+            <FilterSelect value={filters.method} onChange={v => setF('method', v)} placeholder="Método"
+              options={Object.entries(METHOD_LABELS).map(([v, l]) => ({ value: v, label: l }))} />
+            <FilterSelect value={filters.estado} onChange={v => setF('estado', v)} placeholder="Estado"
+              options={[
+                { value: 'draft',     label: 'Borrador' },
+                { value: 'confirmed', label: 'Confirmado' },
+                { value: 'cancelled', label: 'Cancelado' },
+              ]} />
+            {hasFilters && (
+              <button onClick={() => setFilters(EMPTY)}
+                className="flex items-center gap-1.5 h-8 px-3.5 rounded-full text-xs font-semibold transition-all hover:opacity-80"
+                style={{ background: 'var(--c-rose-bg)', color: 'var(--c-rose)', border: '1px solid rgba(209,44,60,0.18)' }}>
+                <svg width="10" height="10" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+                  <line x1="1" y1="1" x2="11" y2="11"/><line x1="11" y1="1" x2="1" y2="11"/>
+                </svg>
+                Limpiar
+              </button>
+            )}
+            <span className="text-xs font-medium tabular-nums" style={{ color: 'var(--c-ghost)' }}>
+              {filtered.length}<span style={{ color: 'var(--c-rim-hi)' }}>/</span>{payments.length}
+            </span>
+          </div>
           {canManage && (
             <button onClick={() => setShowRegister(true)}
-              className="rounded-lg px-3 py-1.5 text-xs font-semibold hover:opacity-85 transition-opacity"
+              className="flex items-center gap-1.5 h-8 px-3.5 rounded-xl text-xs font-semibold transition-opacity hover:opacity-85"
               style={{ background: 'var(--c-navy)', color: '#fff' }}>
-              + Registrar Pago
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+                <path d="M12 5v14M5 12h14"/>
+              </svg>
+              Registrar Pago
             </button>
           )}
         </div>

@@ -90,7 +90,7 @@ export default function ServiceRequestsTable({ requests, canApprove }: { request
                         onClick={() => handleAction(r.id, 'reject')}
                         disabled={busy === r.id}
                         className="px-3 py-1 rounded text-xs font-semibold text-white"
-                        style={{ background: '#991B1B', cursor: busy === r.id ? 'not-allowed' : 'pointer', border: 'none', opacity: busy === r.id ? 0.6 : 1 }}
+                        style={{ background: 'var(--c-rose)', cursor: busy === r.id ? 'not-allowed' : 'pointer', border: 'none', opacity: busy === r.id ? 0.6 : 1 }}
                       >
                         Rechazar
                       </button>

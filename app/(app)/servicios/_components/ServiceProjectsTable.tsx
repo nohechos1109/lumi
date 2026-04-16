@@ -78,7 +78,7 @@ export default function ServiceProjectsTable({ projects }: { projects: ServicePr
               return (
                 <tr key={p.id} style={{ borderBottom: '1px solid var(--c-rim)' }}>
                   <td className="px-4 py-2.5">
-                    <Link href={`/servicios/projects/${p.id}`} className="font-mono font-medium hover:underline" style={{ color: '#B45309' }}>
+                    <Link href={`/servicios/projects/${p.id}`} className="font-mono font-medium hover:underline" style={{ color: 'var(--c-navy)' }}>
                       {p.number}
                     </Link>
                   </td>

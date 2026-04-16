@@ -35,7 +35,7 @@ export default function AppLauncherPanel({ items, onClose }: Props) {
         style={{
           background: 'var(--c-panel)',
           border: '1px solid var(--c-rim)',
-          boxShadow: '0 24px 64px rgba(27,52,97,0.18)',
+          boxShadow: '0 24px 64px rgba(15,23,42,0.12)',
         }}
         onClick={e => e.stopPropagation()}
       >
@@ -68,13 +68,12 @@ export default function AppLauncherPanel({ items, onClose }: Props) {
 
             const iconCircle = (
               <div
-                className="w-14 h-14 rounded-2xl flex items-center justify-center shadow-sm"
+                className="w-12 h-12 rounded-xl flex items-center justify-center"
                 style={{
-                  background: item.color,
-                  color: '#fff',
-                  boxShadow: isActive
-                    ? `0 0 0 3px ${item.color}55, 0 4px 12px ${item.color}44`
-                    : '0 2px 8px rgba(0,0,0,0.12)',
+                  background: `${item.color}14`,
+                  color: item.color,
+                  outline: isActive ? `2px solid ${item.color}40` : 'none',
+                  outlineOffset: '2px',
                 }}
               >
                 {ICON_MAP[item.icon]}

@@ -9,7 +9,7 @@ import SettingsModal from './SettingsModal'
 const cardStyle = {
   background: 'var(--c-card)',
   border: '1px solid var(--c-rim)',
-  boxShadow: '0 1px 4px rgba(27,52,97,0.06)',
+  boxShadow: '0 1px 3px rgba(15,23,42,0.04)',
   textDecoration: 'none',
 } as const
 
@@ -22,27 +22,31 @@ export default function AdminGrid({ sections }: Props) {
 
   return (
     <>
-      <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
         {sections.map(s => {
           const cardContent = (
             <>
+              {/* Icon — tinted background, colored stroke */}
               <div
-                className="w-16 h-16 rounded-2xl flex items-center justify-center"
+                className="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0"
                 style={{
-                  background: s.color,
-                  color: '#fff',
-                  boxShadow: `0 4px 14px ${s.color}44`,
+                  background: `${s.color}14`,
+                  color: s.color,
                 }}
               >
                 {ICON_MAP[s.icon]}
               </div>
-              <div className="text-center">
-                <p className="text-sm font-semibold" style={{ color: 'var(--c-ink)', fontFamily: 'var(--font-montserrat)' }}>
+
+              {/* Text */}
+              <div>
+                <p className="text-sm font-semibold leading-tight" style={{ color: 'var(--c-ink)', fontFamily: 'var(--font-montserrat)' }}>
                   {s.label}
                 </p>
-                <p className="text-xs mt-0.5 leading-snug" style={{ color: 'var(--c-ghost)' }}>
-                  {s.desc}
-                </p>
+                {s.desc && (
+                  <p className="text-xs mt-0.5 leading-snug" style={{ color: 'var(--c-ghost)' }}>
+                    {s.desc}
+                  </p>
+                )}
               </div>
             </>
           )
@@ -53,7 +57,7 @@ export default function AdminGrid({ sections }: Props) {
                 key={s.href}
                 type="button"
                 onClick={() => setShowSettings(true)}
-                className="group flex flex-col items-center gap-3 rounded-2xl p-5 transition-all"
+                className="card-link flex flex-col items-start gap-4 rounded-xl p-4 transition-all w-full text-left"
                 style={{ ...cardStyle, cursor: 'pointer' }}
               >
                 {cardContent}
@@ -65,7 +69,7 @@ export default function AdminGrid({ sections }: Props) {
             <Link
               key={s.href}
               href={s.href}
-              className="group flex flex-col items-center gap-3 rounded-2xl p-5 transition-all"
+              className="card-link flex flex-col items-start gap-4 rounded-xl p-4"
               style={cardStyle}
             >
               {cardContent}

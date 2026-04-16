@@ -1,7 +1,6 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
-import Image from 'next/image'
 
 const PRODUCT_CATEGORIES = [
   'Varios', 'Servicios', 'Polizas', 'Suscripciones', 'Grabadores', 'Almacenamiento',
@@ -95,7 +94,7 @@ export default function ProductFormModal({ product, onClose, onSave, onDelete }:
     e.preventDefault()
     setBusy(true)
     try {
-      await onSave(form)
+      await onSave({ ...form, image_url: form.image_url || null })
       onClose()
     } finally {
       setBusy(false)
@@ -170,28 +169,27 @@ export default function ProductFormModal({ product, onClose, onSave, onDelete }:
                 </div>
               ) : form.image_url ? (
                 <div className="relative w-full p-3">
-                  <div className="relative w-full h-40 rounded-lg overflow-hidden">
-                    <Image
+                  <div className="w-full h-40 rounded-lg overflow-hidden flex items-center justify-center" style={{ background: 'var(--c-base)' }}>
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
                       src={form.image_url}
                       alt="Preview"
-                      fill
-                      className="object-contain"
-                      sizes="(max-width: 672px) 100vw, 672px"
+                      className="max-w-full max-h-full object-contain"
+                      onError={() => {
+                      setForm(f => ({ ...f, image_url: '' }))
+                      if (product?.id) {
+                        fetch(`/api/admin/products/${product.id}`, {
+                          method: 'PATCH',
+                          headers: { 'Content-Type': 'application/json' },
+                          body: JSON.stringify({ image_url: null }),
+                        }).catch(() => {})
+                      }
+                    }}
                     />
                   </div>
-                  <div className="flex items-center justify-center gap-3 mt-2">
-                    <span className="text-[10px] uppercase tracking-wider" style={{ color: 'var(--c-ghost)' }}>
-                      Click o arrastra para cambiar
-                    </span>
-                    <button
-                      type="button"
-                      onClick={e => { e.stopPropagation(); setForm(f => ({ ...f, image_url: '' })) }}
-                      className="text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded hover:bg-[rgba(209,44,60,0.08)] transition-colors"
-                      style={{ color: 'var(--c-rose)' }}
-                    >
-                      Quitar
-                    </button>
-                  </div>
+                  <p className="text-center text-[10px] mt-2" style={{ color: 'var(--c-ghost)' }}>
+                    Click o arrastra para cambiar
+                  </p>
                 </div>
               ) : (
                 <div className="flex flex-col items-center gap-2 py-6">
@@ -209,6 +207,18 @@ export default function ProductFormModal({ product, onClose, onSave, onDelete }:
                 </div>
               )}
             </div>
+            {form.image_url && (
+              <button
+                type="button"
+                onClick={() => setForm(f => ({ ...f, image_url: '' }))}
+                className="mt-2 text-xs font-semibold px-3 py-1.5 rounded-lg transition-colors"
+                style={{ color: 'var(--c-rose)', background: 'transparent', border: '1px solid var(--c-rim)' }}
+                onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'rgba(209,44,60,0.06)' }}
+                onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'transparent' }}
+              >
+                Quitar imagen
+              </button>
+            )}
           </div>
 
           <div className="md:col-span-2 lg:col-span-2">

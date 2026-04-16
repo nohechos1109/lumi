@@ -192,7 +192,7 @@ function Section({ title, action, children }: { title: string; action?: React.Re
       style={{
         background: 'var(--c-card)',
         border: '1px solid var(--c-rim)',
-        boxShadow: '0 1px 3px rgba(27,52,97,0.05)',
+        boxShadow: '0 1px 3px rgba(15,23,42,0.04)',
       }}
     >
       <div className="px-4 py-3 flex items-center justify-between" style={{ borderBottom: '1px solid var(--c-rim)' }}>
@@ -218,7 +218,7 @@ function StatCard({ label, value, sub, highlight, progress, alert }: {
       style={{
         background: highlight ? 'var(--c-navy)' : 'var(--c-card)',
         border: `1px solid ${highlight ? 'var(--c-navy)' : 'var(--c-rim)'}`,
-        boxShadow: highlight ? '0 2px 8px rgba(27,52,97,0.18)' : '0 1px 3px rgba(27,52,97,0.05)',
+        boxShadow: highlight ? '0 2px 8px rgba(37,99,235,0.18)' : '0 1px 3px rgba(15,23,42,0.04)',
       }}
     >
       <p className="text-xs font-semibold mb-2" style={{ color: highlight ? 'rgba(255,255,255,0.6)' : 'var(--c-ghost)' }}>
@@ -226,7 +226,7 @@ function StatCard({ label, value, sub, highlight, progress, alert }: {
       </p>
       <p
         className="font-mono text-lg font-bold"
-        style={{ color: highlight ? '#fff' : alert ? '#B45309' : 'var(--c-ink)' }}
+        style={{ color: highlight ? '#fff' : alert ? 'var(--c-gold)' : 'var(--c-ink)' }}
       >
         {value}
       </p>

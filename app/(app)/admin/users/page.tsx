@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import ConfirmModal from '@/components/ui/ConfirmModal'
+import FilterSelect from '@/components/ui/FilterSelect'
 import { toast, notifyRefresh } from '@/lib/toast'
 
 interface User { id: string; username: string; role: string }
@@ -101,25 +102,22 @@ export default function AdminUsersPage() {
 
   return (
     <div>
-      <div className="mb-6">
-        <Link 
+      <div className="mb-5">
+        <Link
           href="/admin"
-          className="inline-flex items-center text-xs font-bold uppercase tracking-widest transition-colors hover:opacity-75"
+          className="inline-flex items-center gap-1.5 text-xs font-semibold transition-opacity hover:opacity-70"
           style={{ color: 'var(--c-ghost)' }}
         >
-          ← Volver al Dashboard Admin
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+          Dashboard Admin
         </Link>
       </div>
 
       <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between mb-8">
         <div>
-          <h1
-            className="font-heading text-3xl font-bold uppercase"
-            style={{ color: 'var(--c-ink)', letterSpacing: '0.1em' }}
-          >
-            Usuarios
-          </h1>
-          <p className="text-sm mt-1 font-mono" style={{ color: 'var(--c-ghost)' }}>
+          <p className="text-xs font-semibold uppercase tracking-widest mb-1" style={{ color: 'var(--c-ghost)' }}>Admin</p>
+          <h1 className="text-2xl font-bold" style={{ color: 'var(--c-ink)' }}>Usuarios</h1>
+          <p className="text-sm mt-1" style={{ color: 'var(--c-ghost)' }}>
             {users.length} {users.length === 1 ? 'usuario' : 'usuarios'}
           </p>
         </div>
@@ -127,20 +125,17 @@ export default function AdminUsersPage() {
           <button
             onClick={() => setShowRoles(true)}
             className="text-xs font-semibold transition-all hover:underline cursor-pointer"
-            style={{ color: '#0EA5E9' }}
+            style={{ color: 'var(--c-navy)' }}
           >
             Sobre los roles
           </button>
           <button
             onClick={() => setAdding(true)}
-            className="text-sm px-5 py-2.5 rounded-xl font-bold uppercase tracking-wider transition-opacity hover:opacity-85"
-            style={{
-              background: 'var(--c-navy)',
-              color: '#fff',
-              letterSpacing: '0.08em',
-            }}
+            className="inline-flex items-center gap-1.5 text-sm px-4 py-2 rounded-xl font-semibold transition-opacity hover:opacity-85"
+            style={{ background: 'var(--c-navy)', color: '#fff' }}
           >
-            + Nuevo Usuario
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Nuevo Usuario
           </button>
         </div>
       </div>
@@ -225,8 +220,8 @@ export default function AdminUsersPage() {
               </button>
               <button
                 type="submit"
-                className="flex-1 px-4 py-2.5 rounded-xl text-sm font-bold uppercase tracking-wider transition-opacity hover:opacity-90"
-                style={{ background: 'var(--c-navy)', color: '#fff', letterSpacing: '0.08em' }}
+                className="flex-1 px-4 py-2.5 rounded-xl text-sm font-semibold transition-opacity hover:opacity-90"
+                style={{ background: 'var(--c-navy)', color: '#fff' }}
               >
                 Guardar
               </button>
@@ -315,8 +310,8 @@ export default function AdminUsersPage() {
               <button
                 type="submit"
                 disabled={editSaving}
-                className="flex-1 px-4 py-2.5 rounded-xl text-sm font-bold uppercase tracking-wider transition-opacity hover:opacity-90"
-                style={{ background: 'var(--c-navy)', color: '#fff', letterSpacing: '0.08em', opacity: editSaving ? 0.6 : 1 }}
+                className="flex-1 px-4 py-2.5 rounded-xl text-sm font-semibold transition-opacity hover:opacity-90"
+                style={{ background: 'var(--c-navy)', color: '#fff', opacity: editSaving ? 0.6 : 1 }}
               >
                 {editSaving ? 'Guardando...' : 'Guardar Cambios'}
               </button>
@@ -376,24 +371,18 @@ export default function AdminUsersPage() {
             </svg>
           </div>
 
-          <div className="relative">
-            <select
-              className="appearance-none pl-3.5 pr-7 h-8 rounded-full outline-none cursor-pointer text-xs font-semibold transition-all"
-              value={roleFilter}
-              onChange={(e) => setRoleFilter(e.target.value)}
-              style={{ background: roleFilter ? 'var(--c-navy-bg)' : 'var(--c-card)', border: roleFilter ? '1.5px solid var(--c-navy-bd)' : '1px solid var(--c-rim)', color: roleFilter ? 'var(--c-navy)' : 'var(--c-dim)', boxShadow: roleFilter ? 'none' : '0 1px 3px rgba(27,52,97,0.05)' }}
-            >
-              <option value="">Rol</option>
-              <option value="admin">Admin</option>
-              <option value="manager">Manager</option>
-              <option value="sales">Sales</option>
-              <option value="almacen">Almacén</option>
-              <option value="soporte">Soporte</option>
-            </select>
-            <div className="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: roleFilter ? 'var(--c-navy)' : 'var(--c-ghost)', opacity: 0.6 }}>
-              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
-            </div>
-          </div>
+          <FilterSelect
+            value={roleFilter}
+            onChange={setRoleFilter}
+            placeholder="Rol"
+            options={[
+              { value: 'admin', label: 'Admin' },
+              { value: 'manager', label: 'Manager' },
+              { value: 'sales', label: 'Sales' },
+              { value: 'almacen', label: 'Almacén' },
+              { value: 'soporte', label: 'Soporte' },
+            ]}
+          />
         </div>
       </div>
 

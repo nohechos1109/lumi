@@ -223,10 +223,11 @@ export default function ServiceEditor({ service, canEdit, canManageTech, canAppr
                 {canManageTech && (
                   <button
                     onClick={() => removeTech(t.user_id)}
-                    className="opacity-60 hover:opacity-100"
-                    style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: '#991B1B' }}
+                    className="opacity-50 hover:opacity-100 transition-opacity"
+                    style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: 'var(--c-rose)' }}
+                    aria-label="Quitar técnico"
                   >
-                    ×
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg>
                   </button>
                 )}
               </li>
@@ -248,7 +249,7 @@ export default function ServiceEditor({ service, canEdit, canManageTech, canAppr
               onClick={assignTech}
               disabled={!newTechId}
               className="px-4 py-2 rounded-lg text-sm font-semibold text-white"
-              style={{ background: newTechId ? '#B45309' : 'var(--c-rim-hi)', cursor: newTechId ? 'pointer' : 'not-allowed', border: 'none' }}
+              style={{ background: newTechId ? 'var(--c-navy)' : 'var(--c-rim-hi)', cursor: newTechId ? 'pointer' : 'not-allowed', border: 'none' }}
             >
               Asignar
             </button>

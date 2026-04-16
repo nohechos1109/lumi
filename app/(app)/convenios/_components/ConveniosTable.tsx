@@ -1,12 +1,14 @@
 'use client'
 
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import type { ScheduleItemWithContext } from '@/lib/queries/payment-schedule'
 import type { Contact } from '@/lib/queries/customers'
 import { fmtMXN, fmtDate } from '@/lib/formatters'
 import { useSSE } from '@/hooks/useSSE'
+import FilterSelect from '@/components/ui/FilterSelect'
+import DateRangePicker from '@/app/(app)/cobranza/_components/DateRangePicker'
 
 interface Props {
   items: ScheduleItemWithContext[]
@@ -22,9 +24,6 @@ interface Filters {
 }
 
 const EMPTY: Filters = { search: '', customerId: '', estado: '', dateFrom: '', dateTo: '' }
-
-const inputClass = 'px-3 py-1.5 rounded-lg text-xs outline-none'
-const inputStyle = { background: 'var(--c-card)', border: '1px solid var(--c-rim)', color: 'var(--c-ink)', minWidth: 0 }
 
 function StateBadge({ state, overdue }: { state: string; overdue: boolean }) {
   if (state === 'paid') {
@@ -42,7 +41,7 @@ export default function ConveniosTable({ items, customers }: Props) {
 
   useSSE({ 'schedule:updated': () => router.refresh() })
 
-  const set = (k: keyof Filters, v: string) => setFilters(f => ({ ...f, [k]: v }))
+  const set = useCallback((k: keyof Filters, v: string) => setFilters(f => ({ ...f, [k]: v })), [])
   const hasFilters = Object.values(filters).some(Boolean)
 
   const filtered = useMemo(() => {
@@ -69,73 +68,81 @@ export default function ConveniosTable({ items, customers }: Props) {
 
   return (
     <div className="flex flex-col gap-4">
-      {/* Filters */}
-      <div className="flex flex-wrap gap-2 items-center">
-        <input
-          type="text"
-          placeholder="Buscar cliente, venta, etiqueta…"
-          className={inputClass}
-          style={{ ...inputStyle, width: 220 }}
-          value={filters.search}
-          onChange={e => set('search', e.target.value)}
-        />
-        <select
-          className={inputClass}
-          style={inputStyle}
-          value={filters.customerId}
-          onChange={e => set('customerId', e.target.value)}
-        >
-          <option value="">Todos los clientes</option>
-          {customers.map(c => (
-            <option key={c.id} value={c.id}>{c.name}</option>
-          ))}
-        </select>
-        <select
-          className={inputClass}
-          style={inputStyle}
-          value={filters.estado}
-          onChange={e => set('estado', e.target.value)}
-        >
-          <option value="">Todos los estados</option>
-          <option value="overdue">Vencido</option>
-          <option value="pending">Vigente</option>
-          <option value="paid">Pagado</option>
-        </select>
-        <input
-          type="date"
-          className={inputClass}
-          style={inputStyle}
-          value={filters.dateFrom}
-          onChange={e => set('dateFrom', e.target.value)}
-          title="Fecha desde"
-        />
-        <input
-          type="date"
-          className={inputClass}
-          style={inputStyle}
-          value={filters.dateTo}
-          onChange={e => set('dateTo', e.target.value)}
-          title="Fecha hasta"
-        />
-        {hasFilters && (
-          <button
-            type="button"
-            onClick={() => setFilters(EMPTY)}
-            className="text-xs px-3 py-1.5 rounded-lg transition-opacity hover:opacity-75"
-            style={{ color: 'var(--c-ghost)', border: '1px solid var(--c-rim)' }}
-          >
-            Limpiar
-          </button>
-        )}
-        <span className="text-xs ml-auto" style={{ color: 'var(--c-ghost)' }}>
-          {filtered.length} resultado{filtered.length !== 1 ? 's' : ''}
-        </span>
+      {/* Filter bar */}
+      <div className="flex flex-col gap-4 mb-2">
+        {/* Search */}
+        <div style={{ maxWidth: '640px', margin: '0 auto', width: '100%' }}>
+          <div className="flex items-center h-12 rounded-full transition-shadow"
+            style={{
+              background: 'var(--c-card)',
+              border: filters.search ? '1.5px solid var(--c-navy-bd)' : '1px solid var(--c-rim)',
+              boxShadow: filters.search ? '0 2px 8px rgba(37,99,235,0.10), 0 0 0 3px rgba(37,99,235,0.06)' : '0 1px 4px rgba(15,23,42,0.06)',
+            }}>
+            <div className="flex items-center justify-center w-12 shrink-0" style={{ color: filters.search ? 'var(--c-navy)' : 'var(--c-ghost)', opacity: filters.search ? 0.85 : 0.5 }}>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+              </svg>
+            </div>
+            <input type="text" placeholder="Buscar cliente, venta, etiqueta…" className="flex-1 h-full bg-transparent outline-none text-sm font-medium"
+              value={filters.search} onChange={e => set('search', e.target.value)} style={{ color: 'var(--c-ink)' }} />
+            {filters.search && (
+              <button onClick={() => set('search', '')} className="flex items-center justify-center w-10 h-10 mr-1 rounded-full transition-colors"
+                style={{ color: 'var(--c-dim)' }}
+                onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'var(--c-rim)' }}
+                onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'transparent' }}>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+                  <line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/>
+                </svg>
+              </button>
+            )}
+          </div>
+        </div>
+
+        {/* Filter pills */}
+        <div className="flex flex-wrap items-center gap-2">
+          <div className="flex items-center" style={{ color: 'var(--c-ghost)' }}>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <line x1="4" y1="6" x2="20" y2="6"/><line x1="7" y1="12" x2="17" y2="12"/><line x1="10" y1="18" x2="14" y2="18"/>
+            </svg>
+          </div>
+          <DateRangePicker
+            dateFrom={filters.dateFrom} dateTo={filters.dateTo}
+            onChange={(from, to) => { set('dateFrom', from); set('dateTo', to) }}
+          />
+          <FilterSelect
+            value={filters.customerId} onChange={v => set('customerId', v)}
+            placeholder="Cliente"
+            options={customers.map(c => ({ value: c.id, label: c.name }))}
+          />
+          <FilterSelect
+            value={filters.estado} onChange={v => set('estado', v)}
+            placeholder="Estado"
+            options={[
+              { value: 'overdue', label: 'Vencido' },
+              { value: 'pending', label: 'Vigente' },
+              { value: 'paid',    label: 'Pagado'  },
+            ]}
+          />
+          {hasFilters && (
+            <button onClick={() => setFilters(EMPTY)}
+              className="flex items-center gap-1.5 h-8 px-3.5 rounded-full text-xs font-semibold transition-all hover:opacity-80"
+              style={{ background: 'var(--c-rose-bg)', color: 'var(--c-rose)', border: '1px solid rgba(209,44,60,0.18)' }}>
+              <svg width="10" height="10" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+                <line x1="1" y1="1" x2="11" y2="11"/><line x1="11" y1="1" x2="1" y2="11"/>
+              </svg>
+              Limpiar
+            </button>
+          )}
+          <span className="text-xs font-medium tabular-nums ml-auto" style={{ color: 'var(--c-ghost)' }}>
+            {filtered.length}/{items.length}
+          </span>
+        </div>
       </div>
 
       {/* Table */}
       <div
         className="rounded-xl overflow-hidden"
-        style={{ background: 'var(--c-card)', border: '1px solid var(--c-rim)', boxShadow: '0 1px 3px rgba(27,52,97,0.05)' }}
+        style={{ background: 'var(--c-card)', border: '1px solid var(--c-rim)', boxShadow: '0 1px 3px rgba(15,23,42,0.04)' }}
       >
         {filtered.length === 0 ? (
           <p className="text-sm py-12 text-center" style={{ color: 'var(--c-ghost)' }}>Sin resultados</p>

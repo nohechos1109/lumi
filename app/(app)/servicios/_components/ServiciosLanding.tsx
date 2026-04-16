@@ -43,7 +43,8 @@ export default function ServiciosLanding({ role, projects, services, requests, p
     <div>
       <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between mb-8">
         <div>
-          <h1 className="font-heading text-3xl font-bold" style={{ color: 'var(--c-ink)', letterSpacing: '0.04em' }}>
+          <p className="text-xs font-semibold uppercase tracking-widest mb-1" style={{ color: 'var(--c-ghost)', letterSpacing: '0.1em' }}>Servicios</p>
+          <h1 className="text-2xl font-bold" style={{ color: 'var(--c-ink)', fontFamily: 'var(--font-montserrat)' }}>
             Servicios
           </h1>
           <p className="text-sm mt-1" style={{ color: 'var(--c-ghost)' }}>
@@ -55,28 +56,31 @@ export default function ServiciosLanding({ role, projects, services, requests, p
           {tab === 'projects' && perms.createProject && (
             <button
               onClick={() => setShowNewProject(true)}
-              className="px-4 py-2 rounded-lg text-sm font-semibold text-white"
-              style={{ background: '#B45309', cursor: 'pointer', border: 'none' }}
+              className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all hover:opacity-90 active:scale-95"
+              style={{ background: 'var(--c-navy)', color: '#fff', boxShadow: '0 2px 8px rgba(37,99,235,0.25)', border: 'none', cursor: 'pointer' }}
             >
-              + Nuevo Proyecto
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              Nuevo Proyecto
             </button>
           )}
           {tab === 'services' && perms.createService && (
             <button
               onClick={() => setShowNewService(true)}
-              className="px-4 py-2 rounded-lg text-sm font-semibold text-white"
-              style={{ background: '#B45309', cursor: 'pointer', border: 'none' }}
+              className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all hover:opacity-90 active:scale-95"
+              style={{ background: 'var(--c-navy)', color: '#fff', boxShadow: '0 2px 8px rgba(37,99,235,0.25)', border: 'none', cursor: 'pointer' }}
             >
-              + Nuevo Servicio
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              Nuevo Servicio
             </button>
           )}
           {tab === 'requests' && perms.createRequest && (
             <button
               onClick={() => setShowNewRequest(true)}
-              className="px-4 py-2 rounded-lg text-sm font-semibold text-white"
-              style={{ background: '#B45309', cursor: 'pointer', border: 'none' }}
+              className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all hover:opacity-90 active:scale-95"
+              style={{ background: 'var(--c-navy)', color: '#fff', boxShadow: '0 2px 8px rgba(37,99,235,0.25)', border: 'none', cursor: 'pointer' }}
             >
-              + Nueva Solicitud
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              Nueva Solicitud
             </button>
           )}
         </div>
@@ -89,8 +93,8 @@ export default function ServiciosLanding({ role, projects, services, requests, p
             onClick={() => setTab(t.key)}
             className="px-4 py-2.5 text-sm font-semibold transition-colors"
             style={{
-              color: tab === t.key ? '#B45309' : 'var(--c-dim)',
-              borderBottom: tab === t.key ? '2px solid #B45309' : '2px solid transparent',
+              color: tab === t.key ? 'var(--c-navy)' : 'var(--c-dim)',
+              borderBottom: tab === t.key ? '2px solid var(--c-navy)' : '2px solid transparent',
               marginBottom: '-1px',
               background: 'transparent',
               cursor: 'pointer',
@@ -98,9 +102,10 @@ export default function ServiciosLanding({ role, projects, services, requests, p
             }}
           >
             {t.label}
-            <span className="ml-2 text-xs font-mono px-2 py-0.5 rounded" style={{
-              background: 'var(--c-panel)',
-              color: 'var(--c-ghost)',
+            <span className="ml-2 text-xs px-2 py-0.5 rounded-full" style={{
+              background: tab === t.key ? 'var(--c-navy-bg)' : 'var(--c-panel)',
+              color: tab === t.key ? 'var(--c-navy)' : 'var(--c-ghost)',
+              border: tab === t.key ? '1px solid var(--c-navy-bd)' : '1px solid var(--c-rim)',
             }}>
               {t.count}
             </span>

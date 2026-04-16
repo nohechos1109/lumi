@@ -140,7 +140,7 @@ export default function FileUploader({ entityType, entityId, files, canEdit }: P
                     <button
                       onClick={() => handleDelete(f.id)}
                       className="text-xs mt-1 hover:underline"
-                      style={{ color: '#991B1B', background: 'transparent', border: 'none', cursor: 'pointer' }}
+                      style={{ color: 'var(--c-rose)', background: 'transparent', border: 'none', cursor: 'pointer' }}
                     >
                       Eliminar
                     </button>

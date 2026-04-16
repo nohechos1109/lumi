@@ -9,35 +9,35 @@
 
 :root {
   /* ── Surface ─────────────────────────────── */
-  --c-base:    #ECF0F6;
+  --c-base:    #F8FAFC;
   --c-panel:   #FFFFFF;
   --c-card:    #FFFFFF;
-  --c-hover:   #F0F4F9;
-  --c-rim:     #D8E1EC;
-  --c-rim-hi:  #B8C8DA;
+  --c-hover:   #F1F5F9;
+  --c-rim:     #E2E8F0;
+  --c-rim-hi:  #CBD5E1;
 
-  /* ── Brand navy ─────────────────────────── */
-  --c-navy:    #1B3461;
-  --c-navy-bg: rgba(27, 52, 97, 0.07);
-  --c-navy-bd: rgba(27, 52, 97, 0.18);
+  /* ── Brand blue (replaces navy) ─────────── */
+  --c-navy:    #2563EB;
+  --c-navy-bg: rgba(37, 99, 235, 0.06);
+  --c-navy-bd: rgba(37, 99, 235, 0.20);
 
   /* ── Accents ─────────────────────────────── */
-  --c-gold:    #C47F08;
-  --c-gold-bg: rgba(196, 127, 8, 0.09);
-  --c-gold-bd: rgba(196, 127, 8, 0.24);
-  --c-amber:   #C47F08;
-  --c-mint:    #0B9962;
-  --c-mint-bg: rgba(11, 153, 98, 0.09);
-  --c-rose:    #D12C3C;
-  --c-rose-bg: rgba(209, 44, 60, 0.08);
-  --c-sky:     #1C5AD6;
-  --c-sky-bg:  rgba(28, 90, 214, 0.09);
-  --c-sky-bd:  rgba(28, 90, 214, 0.22);
+  --c-gold:    #D97706;
+  --c-gold-bg: rgba(217, 119, 6, 0.08);
+  --c-gold-bd: rgba(217, 119, 6, 0.22);
+  --c-amber:   #D97706;
+  --c-mint:    #059669;
+  --c-mint-bg: rgba(5, 150, 105, 0.08);
+  --c-rose:    #DC2626;
+  --c-rose-bg: rgba(220, 38, 38, 0.07);
+  --c-sky:     #0284C7;
+  --c-sky-bg:  rgba(2, 132, 199, 0.08);
+  --c-sky-bd:  rgba(2, 132, 199, 0.22);
 
   /* ── Text ────────────────────────────────── */
-  --c-ink:     #0C1524;
-  --c-dim:     #445566;
-  --c-ghost:   #8899AA;
+  --c-ink:     #0F172A;
+  --c-dim:     #475569;
+  --c-ghost:   #94A3B8;
 }
 
 body {
@@ -129,6 +129,20 @@ input[type="number"] {
 ::-webkit-scrollbar-thumb { background: var(--c-rim-hi); border-radius: 3px; }
 ::-webkit-scrollbar-thumb:hover { background: var(--c-ghost); }
 
+/* Horizontal scrollbar in tables — more visible */
+.overflow-x-auto::-webkit-scrollbar,
+.overflow-x-scroll::-webkit-scrollbar { height: 7px; }
+.overflow-x-auto::-webkit-scrollbar-track,
+.overflow-x-scroll::-webkit-scrollbar-track { background: var(--c-rim); border-radius: 4px; margin: 0 8px; }
+.overflow-x-auto::-webkit-scrollbar-thumb,
+.overflow-x-scroll::-webkit-scrollbar-thumb { background: var(--c-ghost); border-radius: 4px; }
+.overflow-x-auto::-webkit-scrollbar-thumb:hover,
+.overflow-x-scroll::-webkit-scrollbar-thumb:hover { background: var(--c-dim); }
+
+/* Drag-scroll cursor */
+.drag-scroll { cursor: grab; }
+.drag-scroll.dragging { cursor: grabbing; user-select: none; }
+
 /* ── Hover utilities (Block D) ─────────────── */
 .btn-delete {
   color: var(--c-ghost);
@@ -178,11 +192,12 @@ input[type="number"] {
 .btn-logout:hover { color: var(--c-rose); background: var(--c-rose-bg); }
 
 .card-link {
-  transition: border-color 0.15s, box-shadow 0.15s;
+  transition: border-color 0.15s, box-shadow 0.15s, transform 0.15s;
 }
 .card-link:hover {
   border-color: var(--c-navy-bd) !important;
-  box-shadow: 0 3px 10px rgba(27,52,97,0.10) !important;
+  box-shadow: 0 4px 16px rgba(37,99,235,0.10) !important;
+  transform: translateY(-2px);
 }
 
 /* ── Product cards ─────────────────────────── */

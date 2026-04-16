@@ -170,10 +170,11 @@ export default function PlantillasViewer() {
     <div className="pb-10">
       {/* Header */}
       <div className="mb-8">
-        <h1 className="font-heading text-4xl font-bold uppercase tracking-widest" style={{ color: 'var(--c-ink)' }}>
+        <p className="text-xs font-semibold uppercase tracking-widest mb-1" style={{ color: 'var(--c-ghost)', letterSpacing: '0.1em' }}>Plantillas</p>
+        <h1 className="text-2xl font-bold" style={{ color: 'var(--c-ink)', fontFamily: 'var(--font-montserrat)' }}>
           Plantillas
         </h1>
-        <p className="text-sm mt-1 font-mono uppercase tracking-tighter" style={{ color: 'var(--c-ghost)' }}>
+        <p className="text-sm mt-1" style={{ color: 'var(--c-ghost)' }}>
           {plantillas.length} {plantillas.length === 1 ? 'plantilla' : 'plantillas'}
         </p>
       </div>

@@ -62,7 +62,7 @@ export default function LoginPage() {
           display: flex;
           align-items: center;
           justify-content: center;
-          background: #F0F4FA;
+          background: #F8FAFC;
           font-family: 'DM Sans', sans-serif;
           position: relative;
           overflow: hidden;
@@ -79,20 +79,20 @@ export default function LoginPage() {
         }
         .orb-1 {
           width: 520px; height: 520px;
-          background: radial-gradient(circle, rgba(14,165,233,0.18) 0%, transparent 70%);
+          background: radial-gradient(circle, rgba(37,99,235,0.13) 0%, transparent 70%);
           top: -160px; left: -120px;
           animation-duration: 14s;
         }
         .orb-2 {
           width: 460px; height: 460px;
-          background: radial-gradient(circle, rgba(16,185,129,0.15) 0%, transparent 70%);
+          background: radial-gradient(circle, rgba(99,102,241,0.10) 0%, transparent 70%);
           bottom: -140px; right: -100px;
           animation-duration: 10s;
           animation-delay: -5s;
         }
         .orb-3 {
           width: 300px; height: 300px;
-          background: radial-gradient(circle, rgba(56,189,248,0.12) 0%, transparent 70%);
+          background: radial-gradient(circle, rgba(59,130,246,0.09) 0%, transparent 70%);
           top: 50%; right: 15%;
           animation-duration: 16s;
           animation-delay: -8s;
@@ -106,7 +106,7 @@ export default function LoginPage() {
         .grid-overlay {
           position: absolute;
           inset: 0;
-          background-image: radial-gradient(circle, rgba(14,165,233,0.12) 1px, transparent 1px);
+          background-image: radial-gradient(circle, rgba(37,99,235,0.07) 1px, transparent 1px);
           background-size: 32px 32px;
           pointer-events: none;
         }
@@ -116,16 +116,16 @@ export default function LoginPage() {
           position: relative;
           width: 100%;
           max-width: 420px;
-          background: rgba(255,255,255,0.85);
-          border: 1px solid rgba(14,165,233,0.12);
+          background: rgba(255,255,255,0.90);
+          border: 1px solid rgba(37,99,235,0.10);
           border-radius: 24px;
           padding: 40px 36px 32px;
           backdrop-filter: blur(20px);
           -webkit-backdrop-filter: blur(20px);
           box-shadow:
-            0 0 0 1px rgba(14,165,233,0.06),
-            0 24px 64px rgba(14,165,233,0.1),
-            0 4px 16px rgba(0,0,0,0.06);
+            0 0 0 1px rgba(37,99,235,0.05),
+            0 24px 64px rgba(37,99,235,0.08),
+            0 4px 16px rgba(0,0,0,0.05);
           opacity: ${mounted ? 1 : 0};
           transform: ${mounted ? 'translateY(0)' : 'translateY(16px)'};
           transition: opacity 0.5s ease, transform 0.5s ease;
@@ -174,7 +174,7 @@ export default function LoginPage() {
           transition: color 0.2s;
         }
         .field-label.active {
-          color: #0EA5E9;
+          color: #2563EB;
         }
         .field-input {
           width: 100%;
@@ -192,18 +192,18 @@ export default function LoginPage() {
         .field-input::placeholder { color: #CBD5E1; }
         .field-input:focus {
           background: #fff;
-          border-color: #0EA5E9;
-          box-shadow: 0 0 0 3px rgba(14,165,233,0.12);
+          border-color: #2563EB;
+          box-shadow: 0 0 0 3px rgba(37,99,235,0.10);
         }
 
         /* Error */
         .error-box {
-          background: rgba(239,68,68,0.08);
-          border: 1px solid rgba(239,68,68,0.2);
+          background: rgba(220,38,38,0.07);
+          border: 1px solid rgba(220,38,38,0.18);
           border-radius: 10px;
           padding: 10px 14px;
           font-size: 12.5px;
-          color: #FCA5A5;
+          color: #DC2626;
           margin-bottom: 16px;
           display: flex;
           align-items: center;
@@ -225,13 +225,13 @@ export default function LoginPage() {
           position: relative;
           overflow: hidden;
           transition: transform 0.15s, box-shadow 0.15s, opacity 0.15s;
-          background: linear-gradient(135deg, #0EA5E9 0%, #0DD4A0 50%, #10B981 100%);
+          background: linear-gradient(135deg, #2563EB 0%, #3B82F6 100%);
           color: #fff;
-          box-shadow: 0 4px 24px rgba(14,165,233,0.35);
+          box-shadow: 0 4px 20px rgba(37,99,235,0.28);
         }
         .login-btn:hover:not(:disabled) {
           transform: translateY(-1px);
-          box-shadow: 0 8px 32px rgba(14,165,233,0.45);
+          box-shadow: 0 8px 28px rgba(37,99,235,0.38);
         }
         .login-btn:active:not(:disabled) {
           transform: translateY(0);
@@ -272,9 +272,8 @@ export default function LoginPage() {
         .divider-line {
           flex: 1;
           height: 1px;
-          background: rgba(255,255,255,0.07);
+          background: #E2E8F0;
         }
-        .divider-line { background: #E2E8F0; }
         .divider-text {
           font-size: 11px;
           color: #CBD5E1;
@@ -321,19 +320,19 @@ export default function LoginPage() {
             <svg width="200" height="148" viewBox="0 0 200 148" fill="none" xmlns="http://www.w3.org/2000/svg">
               <defs>
                 <linearGradient id="lgi-boxGrad" x1="56" y1="0" x2="144" y2="90" gradientUnits="userSpaceOnUse">
-                  <stop offset="0%"   stopColor="#0EA5E9" />
-                  <stop offset="100%" stopColor="#10B981" />
+                  <stop offset="0%"   stopColor="#2563EB" />
+                  <stop offset="100%" stopColor="#3B82F6" />
                 </linearGradient>
-<radialGradient id="lgi-innerLight" cx="25%" cy="20%" r="60%">
-                  <stop offset="0%"   stopColor="white" stopOpacity="0.18" />
+                <radialGradient id="lgi-innerLight" cx="25%" cy="20%" r="60%">
+                  <stop offset="0%"   stopColor="white" stopOpacity="0.20" />
                   <stop offset="100%" stopColor="white" stopOpacity="0" />
                 </radialGradient>
                 <linearGradient id="lgi-lumiGrad" x1="40" y1="108" x2="160" y2="148" gradientUnits="userSpaceOnUse">
-                  <stop offset="0%"   stopColor="#0EA5E9" />
-                  <stop offset="100%" stopColor="#10B981" />
+                  <stop offset="0%"   stopColor="#2563EB" />
+                  <stop offset="100%" stopColor="#6366F1" />
                 </linearGradient>
                 <filter id="lgi-shadow" x="-20%" y="-20%" width="140%" height="140%">
-                  <feDropShadow dx="0" dy="6" stdDeviation="12" floodColor="#0EA5E9" floodOpacity="0.28" />
+                  <feDropShadow dx="0" dy="6" stdDeviation="12" floodColor="#2563EB" floodOpacity="0.22" />
                 </filter>
               </defs>
 
@@ -451,7 +450,7 @@ export default function LoginPage() {
               width={64}
               height={20}
               className="object-contain"
-              style={{ opacity: 0.45 }}
+              style={{ opacity: 0.40 }}
             />
           </div>
         </div>

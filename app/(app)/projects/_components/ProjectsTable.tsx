@@ -4,6 +4,7 @@ import { useState, useMemo } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import ConfirmModal from '@/components/ui/ConfirmModal'
+import FilterSelect from '@/components/ui/FilterSelect'
 import { notifyRefresh } from '@/lib/toast'
 import { canViewOwnProjectsOnly } from '@/lib/permissions'
 
@@ -146,8 +147,8 @@ export default function ProjectsTable({ projects, role }: { projects: Project[],
               background: 'var(--c-card)',
               border: searchQuery ? '1.5px solid var(--c-navy-bd)' : '1px solid var(--c-rim)',
               boxShadow: searchQuery
-                ? '0 2px 8px rgba(27,52,97,0.12), 0 0 0 3px rgba(27,52,97,0.06)'
-                : '0 1px 6px rgba(27,52,97,0.08)',
+                ? '0 2px 8px rgba(37,99,235,0.10), 0 0 0 3px rgba(37,99,235,0.06)'
+                : '0 1px 4px rgba(15,23,42,0.06)',
             }}
           >
             <div className="flex items-center justify-center w-12 shrink-0" style={{ color: searchQuery ? 'var(--c-navy)' : 'var(--c-ghost)', opacity: searchQuery ? 0.85 : 0.5, transition: 'color 0.2s, opacity 0.2s' }}>
@@ -204,83 +205,44 @@ export default function ProjectsTable({ projects, role }: { projects: Project[],
             </svg>
           </div>
 
-          <div className="relative">
-            <select
-              className="appearance-none pl-3.5 pr-7 h-8 rounded-full outline-none cursor-pointer text-xs font-semibold transition-all"
-              value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value)}
-              style={{ background: statusFilter ? 'var(--c-navy-bg)' : 'var(--c-card)', border: statusFilter ? '1.5px solid var(--c-navy-bd)' : '1px solid var(--c-rim)', color: statusFilter ? 'var(--c-navy)' : 'var(--c-dim)', boxShadow: statusFilter ? 'none' : '0 1px 3px rgba(27,52,97,0.05)' }}
-            >
-              <option value="">Estado</option>
-              {Object.entries(PROJECT_STATUS_LABELS).map(([key, { label }]) => (
-                <option key={key} value={key}>{label}</option>
-              ))}
-            </select>
-            <div className="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: statusFilter ? 'var(--c-navy)' : 'var(--c-ghost)', opacity: 0.6 }}>
-              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
-            </div>
-          </div>
+          <FilterSelect
+            value={statusFilter}
+            onChange={setStatusFilter}
+            placeholder="Estado"
+            options={Object.entries(PROJECT_STATUS_LABELS).map(([key, { label }]) => ({ value: key, label }))}
+          />
 
-          <div className="relative">
-            <select
-              className="appearance-none pl-3.5 pr-7 h-8 rounded-full outline-none cursor-pointer text-xs font-semibold transition-all"
-              value={customerFilter}
-              onChange={(e) => setCustomerFilter(e.target.value)}
-              style={{ background: customerFilter ? 'var(--c-navy-bg)' : 'var(--c-card)', border: customerFilter ? '1.5px solid var(--c-navy-bd)' : '1px solid var(--c-rim)', color: customerFilter ? 'var(--c-navy)' : 'var(--c-dim)', boxShadow: customerFilter ? 'none' : '0 1px 3px rgba(27,52,97,0.05)' }}
-            >
-              <option value="">Cliente</option>
-              {customers.map(c => (
-                <option key={c} value={c!}>{c}</option>
-              ))}
-            </select>
-            <div className="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: customerFilter ? 'var(--c-navy)' : 'var(--c-ghost)', opacity: 0.6 }}>
-              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
-            </div>
-          </div>
+          <FilterSelect
+            value={customerFilter}
+            onChange={setCustomerFilter}
+            placeholder="Cliente"
+            options={customers.map(c => ({ value: c!, label: c! }))}
+          />
 
           {!isSales && executives.length > 0 && (
-            <div className="relative">
-              <select
-                className="appearance-none pl-3.5 pr-7 h-8 rounded-full outline-none cursor-pointer text-xs font-semibold transition-all"
-                value={executiveFilter}
-                onChange={(e) => setExecutiveFilter(e.target.value)}
-                style={{ background: executiveFilter ? 'var(--c-navy-bg)' : 'var(--c-card)', border: executiveFilter ? '1.5px solid var(--c-navy-bd)' : '1px solid var(--c-rim)', color: executiveFilter ? 'var(--c-navy)' : 'var(--c-dim)', boxShadow: executiveFilter ? 'none' : '0 1px 3px rgba(27,52,97,0.05)' }}
-              >
-                <option value="">Vendedor</option>
-                {executives.map(e => (
-                  <option key={e} value={e!}>{e}</option>
-                ))}
-              </select>
-              <div className="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: executiveFilter ? 'var(--c-navy)' : 'var(--c-ghost)', opacity: 0.6 }}>
-                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
-              </div>
-            </div>
+            <FilterSelect
+              value={executiveFilter}
+              onChange={setExecutiveFilter}
+              placeholder="Vendedor"
+              options={executives.map(e => ({ value: e!, label: e! }))}
+            />
           )}
 
-          <div className="relative">
-            <select
-              className="appearance-none pl-3.5 pr-7 h-8 rounded-full outline-none cursor-pointer text-xs font-semibold transition-all"
-              value={dateFilter}
-              onChange={(e) => setDateFilter(e.target.value)}
-              style={{ background: dateFilter ? 'var(--c-navy-bg)' : 'var(--c-card)', border: dateFilter ? '1.5px solid var(--c-navy-bd)' : '1px solid var(--c-rim)', color: dateFilter ? 'var(--c-navy)' : 'var(--c-dim)', boxShadow: dateFilter ? 'none' : '0 1px 3px rgba(27,52,97,0.05)' }}
-            >
-              <option value="">Fecha</option>
-              {dates.map(d => {
-                const [y, m] = d.split('-')
-                const dateLabel = `${MONTH_NAMES_ES[m] ?? m} ${y}`
-                return <option key={d} value={d}>{dateLabel}</option>
-              })}
-            </select>
-            <div className="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: dateFilter ? 'var(--c-navy)' : 'var(--c-ghost)', opacity: 0.6 }}>
-              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
-            </div>
-          </div>
+          <FilterSelect
+            value={dateFilter}
+            onChange={setDateFilter}
+            placeholder="Fecha"
+            options={dates.map(d => {
+              const [y, m] = d.split('-')
+              return { value: d, label: `${MONTH_NAMES_ES[m] ?? m} ${y}` }
+            })}
+          />
         </div>
       </div>
 
       <div
         className="rounded-xl overflow-hidden shadow-sm"
-        style={{ border: '1px solid var(--c-rim)', background: 'var(--c-card)', boxShadow: '0 1px 4px rgba(27,52,97,0.06)' }}
+        style={{ border: '1px solid var(--c-rim)', background: 'var(--c-card)', boxShadow: '0 1px 4px rgba(15,23,42,0.04)' }}
       >
         <div className="overflow-x-auto">
           <table className="w-full text-sm min-w-[600px]">
@@ -358,9 +320,13 @@ export default function ProjectsTable({ projects, role }: { projects: Project[],
                           <button
                             aria-label="Eliminar proyecto"
                             onClick={(e) => { e.stopPropagation(); setDeleteId(p.id) }}
-                            className="btn-delete text-xs"
+                            className="btn-delete p-1.5 rounded-lg transition-colors"
+                            onMouseEnter={(e) => { e.currentTarget.style.background = 'var(--c-rose-bg)' }}
+                            onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent' }}
                           >
-                            ✕
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+                              <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+                            </svg>
                           </button>
                         )}
                       </div>

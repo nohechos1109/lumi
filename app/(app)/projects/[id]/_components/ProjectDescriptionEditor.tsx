@@ -74,7 +74,7 @@ export default function ProjectDescriptionEditor({ projectId, description }: Pro
             background: 'var(--c-panel)',
             border: '2px solid var(--c-navy)',
             color: 'var(--c-ghost)',
-            boxShadow: '0 0 0 3px rgba(27,52,97,0.10)',
+            boxShadow: '0 0 0 3px rgba(37,99,235,0.10)',
             fontFamily: 'inherit',
             lineHeight: '1.5',
             maxHeight: '200px',

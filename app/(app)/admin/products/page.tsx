@@ -1,9 +1,9 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import Image from 'next/image'
 import Link from 'next/link'
 import ConfirmModal from '@/components/ui/ConfirmModal'
+import FilterSelect from '@/components/ui/FilterSelect'
 import ProductFormModal from './_components/ProductFormModal'
 import ProductGrid from './_components/ProductGrid'
 import { notifyRefresh } from '@/lib/toast'
@@ -22,6 +22,23 @@ interface Product {
   image_url: string | null;
   category: string | null;
   public_price: string | null;
+}
+
+function ListThumb({ imageUrl, name }: { imageUrl: string | null; name: string }) {
+  const [err, setErr] = useState(false)
+  const placeholder = (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ color: 'var(--c-ghost)', opacity: 0.4 }}>
+      <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/>
+    </svg>
+  )
+  return (
+    <div className="w-10 h-10 rounded-lg overflow-hidden flex items-center justify-center" style={{ background: 'var(--c-panel)' }}>
+      {imageUrl && !err ? (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img src={imageUrl} alt={name} className="object-cover w-full h-full" onError={() => setErr(true)} />
+      ) : placeholder}
+    </div>
+  )
 }
 
 export default function AdminProductsPage() {
@@ -83,36 +100,32 @@ export default function AdminProductsPage() {
 
   return (
     <div className="pb-10">
-      <div className="mb-6">
-        <Link 
+      <div className="mb-5">
+        <Link
           href="/admin"
-          className="inline-flex items-center text-xs font-bold uppercase tracking-widest transition-colors hover:opacity-75"
+          className="inline-flex items-center gap-1.5 text-xs font-semibold transition-opacity hover:opacity-70"
           style={{ color: 'var(--c-ghost)' }}
         >
-          ← Volver al Dashboard Admin
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+          Dashboard Admin
         </Link>
       </div>
 
       {/* Header section */}
       <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between mb-8">
         <div>
-          <h1 className="font-heading text-4xl font-bold uppercase tracking-widest" style={{ color: 'var(--c-ink)' }}>
-            Productos
-          </h1>
-          <p className="text-sm mt-1 font-mono uppercase tracking-tighter" style={{ color: 'var(--c-ghost)' }}>
-            {filteredProducts.length} {filteredProducts.length === 1 ? 'resultado' : 'resultados'} / {products.length} total
+          <p className="text-xs font-semibold uppercase tracking-widest mb-1" style={{ color: 'var(--c-ghost)' }}>Admin</p>
+          <h1 className="text-2xl font-bold" style={{ color: 'var(--c-ink)' }}>Productos</h1>
+          <p className="text-sm mt-1" style={{ color: 'var(--c-ghost)' }}>
+            {filteredProducts.length} {filteredProducts.length === 1 ? 'resultado' : 'resultados'} · {products.length} total
           </p>
         </div>
         <button
           onClick={() => { setProductToEdit(null); setShowModal(true) }}
-          className="group flex items-center justify-center gap-2 text-sm px-6 py-3 rounded-2xl font-bold uppercase tracking-wider transition-all hover:shadow-lg active:scale-95"
-          style={{
-            background: 'var(--c-navy)',
-            color: '#fff',
-            letterSpacing: '0.08em',
-          }}
+          className="inline-flex items-center gap-1.5 text-sm px-4 py-2 rounded-xl font-semibold transition-opacity hover:opacity-85"
+          style={{ background: 'var(--c-navy)', color: '#fff' }}
         >
-          <svg className="transition-transform group-hover:rotate-90" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
             <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
           </svg>
           Nuevo Producto
@@ -171,38 +184,22 @@ export default function AdminProductsPage() {
             </svg>
           </div>
 
-          <div className="relative">
-            <select
-              className="appearance-none pl-3.5 pr-7 h-8 rounded-full outline-none cursor-pointer text-xs font-semibold transition-all"
-              value={currencyFilter}
-              onChange={(e) => setCurrencyFilter(e.target.value)}
-              style={{ background: currencyFilter ? 'var(--c-navy-bg)' : 'var(--c-card)', border: currencyFilter ? '1.5px solid var(--c-navy-bd)' : '1px solid var(--c-rim)', color: currencyFilter ? 'var(--c-navy)' : 'var(--c-dim)', boxShadow: currencyFilter ? 'none' : '0 1px 3px rgba(27,52,97,0.05)' }}
-            >
-              <option value="">Moneda</option>
-              <option value="MXN">MXN</option>
-              <option value="USD">USD</option>
-            </select>
-            <div className="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: currencyFilter ? 'var(--c-navy)' : 'var(--c-ghost)', opacity: 0.6 }}>
-              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
-            </div>
-          </div>
+          <FilterSelect
+            value={currencyFilter}
+            onChange={setCurrencyFilter}
+            placeholder="Moneda"
+            options={[
+              { value: 'MXN', label: 'MXN' },
+              { value: 'USD', label: 'USD' },
+            ]}
+          />
 
-          <div className="relative">
-            <select
-              className="appearance-none pl-3.5 pr-7 h-8 rounded-full outline-none cursor-pointer text-xs font-semibold transition-all"
-              value={categoryFilter}
-              onChange={(e) => setCategoryFilter(e.target.value)}
-              style={{ background: categoryFilter ? 'var(--c-navy-bg)' : 'var(--c-card)', border: categoryFilter ? '1.5px solid var(--c-navy-bd)' : '1px solid var(--c-rim)', color: categoryFilter ? 'var(--c-navy)' : 'var(--c-dim)', boxShadow: categoryFilter ? 'none' : '0 1px 3px rgba(27,52,97,0.05)' }}
-            >
-              <option value="">Todos</option>
-              {categories.sort().map(c => (
-                <option key={c} value={c}>{c}</option>
-              ))}
-            </select>
-            <div className="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: categoryFilter ? 'var(--c-navy)' : 'var(--c-ghost)', opacity: 0.6 }}>
-              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
-            </div>
-          </div>
+          <FilterSelect
+            value={categoryFilter}
+            onChange={setCategoryFilter}
+            placeholder="Categoría"
+            options={categories.sort().map(c => ({ value: c, label: c }))}
+          />
 
           <div className="flex p-0.5 rounded-full ml-2" style={{ border: '1px solid var(--c-rim)', background: 'var(--c-card)' }}>
             <button
@@ -253,15 +250,7 @@ export default function AdminProductsPage() {
               {filteredProducts.map(p => (
                   <tr key={p.id} className="tr-hover group cursor-pointer" onClick={() => { setProductToEdit(p); setShowModal(true) }}>
                     <td className="px-4 py-3">
-                      <div className="w-10 h-10 rounded-lg overflow-hidden flex items-center justify-center" style={{ background: 'var(--c-panel)' }}>
-                        {p.image_url ? (
-                          <Image src={p.image_url} alt={p.name} width={40} height={40} className="object-cover w-full h-full" />
-                        ) : (
-                          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ color: 'var(--c-ghost)', opacity: 0.4 }}>
-                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/>
-                          </svg>
-                        )}
-                      </div>
+                      <ListThumb imageUrl={p.image_url} name={p.name} />
                     </td>
                     <td className="px-6 py-4.5">
                       <div className="font-bold text-[var(--c-ink)]">{p.name}</div>

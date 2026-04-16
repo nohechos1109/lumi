@@ -145,7 +145,7 @@ export default function NewServiceOrderModal({ onClose, projectId }: Props) {
               disabled={loading}
               className="flex-1 py-2.5 rounded-lg text-sm font-semibold transition-all text-white"
               style={{
-                background: loading ? 'var(--c-rim-hi)' : '#B45309',
+                background: loading ? 'var(--c-rim-hi)' : 'var(--c-navy)',
                 cursor: loading ? 'not-allowed' : 'pointer',
                 border: 'none',
                 opacity: loading ? 0.75 : 1,

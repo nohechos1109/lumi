@@ -487,29 +487,33 @@ export default function PlantillasClient() {
       <div className="mb-6">
         <Link
           href="/admin"
-          className="inline-flex items-center text-xs font-bold uppercase tracking-widest transition-colors hover:opacity-75"
+          className="inline-flex items-center gap-1.5 text-xs font-semibold transition-opacity hover:opacity-70"
           style={{ color: 'var(--c-ghost)' }}
         >
-          ← Volver al Dashboard Admin
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <polyline points="15 18 9 12 15 6"/>
+          </svg>
+          Volver al Dashboard Admin
         </Link>
       </div>
 
       {/* Header */}
-      <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between mb-8">
+      <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between mb-8">
         <div>
-          <h1 className="font-heading text-4xl font-bold uppercase tracking-widest" style={{ color: 'var(--c-ink)' }}>
+          <p className="text-xs font-semibold uppercase tracking-widest mb-1" style={{ color: 'var(--c-ghost)', letterSpacing: '0.1em' }}>Plantillas</p>
+          <h1 className="text-2xl font-bold" style={{ color: 'var(--c-ink)', fontFamily: 'var(--font-montserrat)' }}>
             Plantillas
           </h1>
-          <p className="text-sm mt-1 font-mono uppercase tracking-tighter" style={{ color: 'var(--c-ghost)' }}>
+          <p className="text-sm mt-1" style={{ color: 'var(--c-ghost)' }}>
             {plantillas.length} {plantillas.length === 1 ? 'plantilla' : 'plantillas'}
           </p>
         </div>
         <button
           onClick={() => setShowCreate(true)}
-          className="group flex items-center justify-center gap-2 text-sm px-6 py-3 rounded-2xl font-bold uppercase tracking-wider transition-all hover:shadow-lg active:scale-95"
-          style={{ background: 'var(--c-navy)', color: '#fff', letterSpacing: '0.08em' }}
+          className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all hover:opacity-90 active:scale-95"
+          style={{ background: 'var(--c-navy)', color: '#fff', boxShadow: '0 2px 8px rgba(37,99,235,0.25)' }}
         >
-          <svg className="transition-transform group-hover:rotate-90" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
             <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
           </svg>
           Nueva Plantilla

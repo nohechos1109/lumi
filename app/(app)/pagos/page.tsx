@@ -17,18 +17,14 @@ export default async function PagosPage() {
 
   return (
     <div>
-      <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 mb-6">
-        <div>
-          <h1
-            className="font-heading text-3xl font-bold"
-            style={{ color: 'var(--c-ink)', letterSpacing: '0.04em' }}
-          >
-            Pagos
-          </h1>
-          <p className="text-sm mt-1" style={{ color: 'var(--c-ghost)' }}>
-            {payments.length} pago{payments.length !== 1 ? 's' : ''}
-          </p>
-        </div>
+      <div className="mb-8">
+        <p className="text-xs font-semibold uppercase tracking-widest mb-1" style={{ color: 'var(--c-ghost)', letterSpacing: '0.1em' }}>Pagos</p>
+        <h1 className="text-2xl font-bold" style={{ color: 'var(--c-ink)', fontFamily: 'var(--font-montserrat)' }}>
+          Pagos
+        </h1>
+        <p className="text-sm mt-1" style={{ color: 'var(--c-ghost)' }}>
+          {payments.length} pago{payments.length !== 1 ? 's' : ''}
+        </p>
       </div>
 
       <PagosTable

@@ -21,23 +21,19 @@ export default async function ConveniosPage() {
 
   return (
     <div>
-      <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 mb-6">
-        <div>
-          <h1
-            className="font-heading text-3xl font-bold"
-            style={{ color: 'var(--c-ink)', letterSpacing: '0.04em' }}
-          >
-            Convenios
-          </h1>
-          <p className="text-sm mt-1" style={{ color: 'var(--c-ghost)' }}>
-            {items.length} cuota{items.length !== 1 ? 's' : ''}
-            {overdueCount > 0 && (
-              <span className="ml-2 text-xs font-semibold px-2 py-0.5 rounded-full" style={{ background: '#FFE4E6', color: '#BE123C' }}>
-                {overdueCount} vencida{overdueCount !== 1 ? 's' : ''}
-              </span>
-            )}
-          </p>
-        </div>
+      <div className="mb-8">
+        <p className="text-xs font-semibold uppercase tracking-widest mb-1" style={{ color: 'var(--c-ghost)', letterSpacing: '0.1em' }}>Convenios</p>
+        <h1 className="text-2xl font-bold" style={{ color: 'var(--c-ink)', fontFamily: 'var(--font-montserrat)' }}>
+          Convenios
+        </h1>
+        <p className="text-sm mt-1 flex items-center gap-2" style={{ color: 'var(--c-ghost)' }}>
+          {items.length} cuota{items.length !== 1 ? 's' : ''}
+          {overdueCount > 0 && (
+            <span className="text-xs font-semibold px-2 py-0.5 rounded-full" style={{ background: 'rgba(220,38,38,0.08)', color: 'var(--c-rose)', border: '1px solid rgba(220,38,38,0.18)' }}>
+              {overdueCount} vencida{overdueCount !== 1 ? 's' : ''}
+            </span>
+          )}
+        </p>
       </div>
 
       <ConveniosTable items={items} customers={customers} />

@@ -47,10 +47,11 @@ export default async function ServiceDetailPage({ params }: { params: Promise<{ 
       <div className="mb-6 flex flex-col gap-1">
         <Link
           href="/servicios"
-          className="inline-flex items-center text-xs font-bold uppercase tracking-widest transition-colors hover:opacity-75"
+          className="inline-flex items-center gap-1.5 text-xs font-semibold transition-opacity hover:opacity-70"
           style={{ color: 'var(--c-ghost)' }}
         >
-          ← Servicios
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+          Servicios
         </Link>
         {service.order_number && service.service_order_id && (
           <Link

@@ -17,13 +17,13 @@ export default async function QuotesPage() {
   const title = canViewOwnQuotesOnly(session.role) ? 'Mis Cotizaciones' : 'Cotizaciones'
 
   return (
-    <div>
+    <div className="animate-fade-in">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between mb-8">
         <div>
-          <h1
-            className="font-heading text-3xl font-bold"
-            style={{ color: 'var(--c-ink)', letterSpacing: '0.04em' }}
-          >
+          <p className="text-xs font-semibold uppercase tracking-widest mb-1" style={{ color: 'var(--c-ghost)', letterSpacing: '0.1em' }}>
+            Cotizaciones
+          </p>
+          <h1 className="text-2xl font-bold" style={{ color: 'var(--c-ink)', fontFamily: 'var(--font-montserrat)' }}>
             {title}
           </h1>
           <p className="text-sm mt-1" style={{ color: 'var(--c-ghost)' }}>
