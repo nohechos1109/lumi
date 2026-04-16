@@ -22,13 +22,15 @@ interface Props {
   onClose: () => void
   prefillOrderId?: string
   prefillCustomerId?: string | null
+  prefillTipoLugar?: 'calle' | 'taller' | null
+  prefillMotivo?: string | null
 }
 
 const labelCls = 'block text-xs font-semibold mb-1.5'
 const labelStyle = { color: 'var(--c-dim)' }
 const inp = { background: 'var(--c-panel)', border: '1px solid var(--c-rim)', color: 'var(--c-ink)', outline: 'none' }
 
-export default function NewServiceModal({ onClose, prefillOrderId, prefillCustomerId }: Props) {
+export default function NewServiceModal({ onClose, prefillOrderId, prefillCustomerId, prefillTipoLugar, prefillMotivo }: Props) {
   const router = useRouter()
   const [customers, setCustomers] = useState<Customer[]>([])
   const [unidades, setUnidades] = useState<Unidad[]>([])
@@ -68,6 +70,8 @@ export default function NewServiceModal({ onClose, prefillOrderId, prefillCustom
           unidad_id: unidadId || null,
           motivo_visita: form.get('motivo_visita') || null,
           ubicacion_txt: form.get('ubicacion_txt') || null,
+          comentarios_soporte: form.get('comentarios_soporte') || null,
+          tipo_lugar: form.get('tipo_lugar') || null,
           fecha_hora_agendada: form.get('fecha_hora_agendada') || null,
         }),
       })
@@ -156,6 +160,7 @@ export default function NewServiceModal({ onClose, prefillOrderId, prefillCustom
               name="motivo_visita"
               type="text"
               required
+              defaultValue={prefillMotivo ?? ''}
               placeholder="Ej. Instalación de dashcam"
               className="w-full text-sm rounded-xl px-4 py-2.5"
               style={inp}
@@ -171,6 +176,39 @@ export default function NewServiceModal({ onClose, prefillOrderId, prefillCustom
               className="w-full text-sm rounded-xl px-4 py-2.5"
               style={inp}
             />
+          </div>
+
+          <div>
+            <label className={labelCls} style={labelStyle}>Detalles (opcional)</label>
+            <textarea
+              name="comentarios_soporte"
+              rows={2}
+              placeholder="Indicaciones o detalles adicionales..."
+              className="w-full text-sm rounded-xl px-4 py-2.5 resize-none"
+              style={inp}
+            />
+          </div>
+
+          <div>
+            <label className={labelCls} style={labelStyle}>Tipo de lugar</label>
+            {prefillTipoLugar ? (
+              <>
+                <input type="hidden" name="tipo_lugar" value={prefillTipoLugar} />
+                <div className="w-full text-sm rounded-xl px-4 py-2.5" style={{ ...inp, opacity: 0.7 }}>
+                  <span className="text-xs font-semibold px-2 py-0.5 rounded-full" style={{
+                    background: prefillTipoLugar === 'taller' ? '#E0F2FE' : '#FEF3C7',
+                    color: prefillTipoLugar === 'taller' ? '#0369A1' : '#B45309',
+                  }}>{prefillTipoLugar === 'taller' ? 'Taller' : 'Calle'}</span>
+                  <span className="ml-2 text-xs" style={{ color: 'var(--c-ghost)' }}>Heredado de la orden</span>
+                </div>
+              </>
+            ) : (
+              <select name="tipo_lugar" className="w-full text-sm rounded-xl px-4 py-2.5" style={inp}>
+                <option value="">— Seleccionar —</option>
+                <option value="calle">Calle</option>
+                <option value="taller">Taller</option>
+              </select>
+            )}
           </div>
 
           <div>

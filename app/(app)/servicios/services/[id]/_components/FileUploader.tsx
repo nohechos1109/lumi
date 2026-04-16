@@ -18,9 +18,10 @@ interface Props {
   entityId: string
   files: FileRecord[]
   canEdit: boolean
+  label?: string
 }
 
-export default function FileUploader({ entityType, entityId, files, canEdit }: Props) {
+export default function FileUploader({ entityType, entityId, files, canEdit, label }: Props) {
   const router = useRouter()
   const inputRef = useRef<HTMLInputElement>(null)
   const [uploading, setUploading] = useState(false)
@@ -67,7 +68,7 @@ export default function FileUploader({ entityType, entityId, files, canEdit }: P
   return (
     <div className="mt-8">
       <h2 className="text-sm font-bold uppercase tracking-widest mb-3" style={{ color: 'var(--c-ghost)' }}>
-        Evidencia / Archivos
+        {label || 'Evidencia / Archivos'}
       </h2>
 
       {canEdit && (

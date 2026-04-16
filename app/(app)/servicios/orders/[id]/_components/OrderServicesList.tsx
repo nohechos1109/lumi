@@ -17,11 +17,13 @@ const ESTATUS_MAP: Record<string, { label: string; bg: string; text: string }> =
 interface Props {
   orderId: string
   customerId: string | null
+  tipoLugar: 'calle' | 'taller' | null
+  motivo: string | null
   services: Service[]
   canCreate: boolean
 }
 
-export default function OrderServicesList({ orderId, customerId, services, canCreate }: Props) {
+export default function OrderServicesList({ orderId, customerId, tipoLugar, motivo, services, canCreate }: Props) {
   const [showModal, setShowModal] = useState(false)
 
   return (
@@ -92,6 +94,8 @@ export default function OrderServicesList({ orderId, customerId, services, canCr
         <NewServiceModal
           prefillOrderId={orderId}
           prefillCustomerId={customerId}
+          prefillTipoLugar={tipoLugar}
+          prefillMotivo={motivo}
           onClose={() => setShowModal(false)}
         />
       )}

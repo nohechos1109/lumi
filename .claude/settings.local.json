@@ -1,5 +1,11 @@
 {
+  "permissions": {
+    "allow": [
+      "Bash(docker-compose up *)"
+    ]
+  },
   "enabledPlugins": {
-    "caveman@caveman": true
+    "caveman@caveman": true,
+    "ui-ux-pro-max@ui-ux-pro-max-skill": true
   }
 }

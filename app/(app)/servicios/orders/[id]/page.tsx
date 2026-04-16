@@ -3,12 +3,15 @@ import { getIronSession } from 'iron-session'
 import { notFound, redirect } from 'next/navigation'
 import Link from 'next/link'
 import { sessionOptions, SessionData } from '@/lib/session'
-import { canAccessServicios, canCreateServiceManual } from '@/lib/permissions'
+import { canAccessServicios, canCreateServiceManual, canEditService } from '@/lib/permissions'
 import {
   getServiceOrder,
   listServicesByOrder,
+  listOrderTechnicians,
 } from '@/lib/queries/servicios'
+import { listFilesByEntity } from '@/lib/queries/files'
 import OrderServicesList from './_components/OrderServicesList'
+import FileUploader from '../../services/[id]/_components/FileUploader'
 
 export default async function ServiceOrderDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
@@ -19,7 +22,11 @@ export default async function ServiceOrderDetailPage({ params }: { params: Promi
   const order = await getServiceOrder(id)
   if (!order) notFound()
 
-  const services = await listServicesByOrder(id)
+  const [services, files, orderTechs] = await Promise.all([
+    listServicesByOrder(id),
+    listFilesByEntity('service_order', id),
+    listOrderTechnicians(id),
+  ])
 
   const ESTATUS_MAP: Record<string, { label: string; bg: string; text: string }> = {
     pendiente: { label: 'Pendiente', bg: '#F1F5F9', text: '#475569' },
@@ -66,8 +73,28 @@ export default async function ServiceOrderDetailPage({ params }: { params: Promi
           )}
           <div className="text-sm mt-2 space-y-1" style={{ color: 'var(--c-dim)' }}>
             {order.customer_name && <div><span style={{ color: 'var(--c-ghost)' }}>Cliente:</span> {order.customer_name}</div>}
+            {order.tipo_lugar && (
+              <div>
+                <span style={{ color: 'var(--c-ghost)' }}>Lugar:</span>{' '}
+                <span className="text-xs font-semibold px-2 py-0.5 rounded-full" style={{
+                  background: order.tipo_lugar === 'taller' ? '#E0F2FE' : '#FEF3C7',
+                  color: order.tipo_lugar === 'taller' ? '#0369A1' : '#B45309',
+                }}>{order.tipo_lugar === 'taller' ? 'Taller' : 'Calle'}</span>
+              </div>
+            )}
             {order.ubicacion && <div><span style={{ color: 'var(--c-ghost)' }}>Ubicación:</span> {order.ubicacion}</div>}
             {order.encargados && <div><span style={{ color: 'var(--c-ghost)' }}>Encargados:</span> {order.encargados}</div>}
+            {orderTechs.length > 0 && (
+              <div className="flex items-center gap-2 flex-wrap">
+                <span style={{ color: 'var(--c-ghost)' }}>Técnicos:</span>
+                {orderTechs.map(t => (
+                  <span key={t.user_id} className="text-xs font-semibold px-2 py-0.5 rounded-full"
+                    style={{ background: 'var(--c-panel)', border: '1px solid var(--c-rim)', color: 'var(--c-ink)' }}>
+                    {t.username}
+                  </span>
+                ))}
+              </div>
+            )}
             {order.fecha_hora_agendada && (
               <div suppressHydrationWarning>
                 <span style={{ color: 'var(--c-ghost)' }}>Agendada:</span>{' '}
@@ -81,8 +108,18 @@ export default async function ServiceOrderDetailPage({ params }: { params: Promi
       <OrderServicesList
         orderId={id}
         customerId={order.customer_id ?? null}
+        tipoLugar={order.tipo_lugar ?? null}
+        motivo={order.motivo_del_servicio ?? null}
         services={services}
         canCreate={canCreateServiceManual(session.role)}
+      />
+
+      <FileUploader
+        entityType="service_order"
+        entityId={id}
+        files={files}
+        canEdit={canEditService(session.role)}
+        label="Referencias"
       />
     </div>
   )
