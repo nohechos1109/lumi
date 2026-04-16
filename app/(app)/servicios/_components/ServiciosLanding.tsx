@@ -1,20 +1,22 @@
 'use client'
 
 import { useState } from 'react'
-import type { ServiceProject, Service, ServiceRequest } from '@/lib/queries/servicios'
+import type { ServiceProject, ServiceOrder, Service, ServiceRequest } from '@/lib/queries/servicios'
 import ServiceProjectsTable from './ServiceProjectsTable'
+import ServiceOrdersTable from './ServiceOrdersTable'
 import ServicesTable from './ServicesTable'
 import ServiceRequestsTable from './ServiceRequestsTable'
 import NewServiceProjectModal from './NewServiceProjectModal'
 import NewServiceModal from './NewServiceModal'
 import NewServiceRequestModal from './NewServiceRequestModal'
 
-type Tab = 'projects' | 'services' | 'requests'
+type Tab = 'projects' | 'orders' | 'services' | 'requests'
 
 interface Props {
   role: string
   userId: string
   projects: ServiceProject[]
+  orders: ServiceOrder[]
   services: Service[]
   requests: ServiceRequest[]
   perms: {
@@ -26,7 +28,7 @@ interface Props {
   }
 }
 
-export default function ServiciosLanding({ role, projects, services, requests, perms }: Props) {
+export default function ServiciosLanding({ role, projects, orders, services, requests, perms }: Props) {
   const initialTab: Tab = perms.tecnicoOnly ? 'services' : 'projects'
   const [tab, setTab] = useState<Tab>(initialTab)
   const [showNewProject, setShowNewProject] = useState(false)
@@ -35,6 +37,7 @@ export default function ServiciosLanding({ role, projects, services, requests, p
 
   const tabs: { key: Tab; label: string; count: number; visible: boolean }[] = [
     { key: 'projects', label: 'Proyectos', count: projects.length, visible: !perms.tecnicoOnly },
+    { key: 'orders', label: 'Órdenes', count: orders.length, visible: !perms.tecnicoOnly },
     { key: 'services', label: perms.tecnicoOnly ? 'Mis Servicios' : 'Servicios', count: services.length, visible: true },
     { key: 'requests', label: 'Solicitudes', count: requests.length, visible: !perms.tecnicoOnly && (perms.createRequest || perms.approveRequest) },
   ]
@@ -109,7 +112,8 @@ export default function ServiciosLanding({ role, projects, services, requests, p
       </div>
 
       {tab === 'projects' && <ServiceProjectsTable projects={projects} />}
-      {tab === 'services' && <ServicesTable services={services} role={role} />}
+      {tab === 'orders' && <ServiceOrdersTable orders={orders} />}
+      {tab === 'services' && <ServicesTable services={services} role={role} canPromote={perms.createProject} />}
       {tab === 'requests' && (
         <ServiceRequestsTable
           requests={requests}

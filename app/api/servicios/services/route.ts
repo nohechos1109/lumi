@@ -12,6 +12,9 @@ import {
   listWalkInServices,
   listServicesByTechnician,
   createService,
+  getServiceOrder,
+  listOrderTechnicians,
+  assignTechnician,
 } from '@/lib/queries/servicios'
 
 export async function GET(req: NextRequest) {
@@ -53,6 +56,13 @@ export async function POST(req: NextRequest) {
   }
 
   try {
+    // Inherit tipo_lugar from parent order
+    let tipoLugar = body.tipo_lugar ?? null
+    if (body.service_order_id && !tipoLugar) {
+      const order = await getServiceOrder(body.service_order_id)
+      if (order?.tipo_lugar) tipoLugar = order.tipo_lugar
+    }
+
     const srv = await createService({
       service_order_id: body.service_order_id ?? null,
       unidad_id: body.unidad_id ?? null,
@@ -62,10 +72,21 @@ export async function POST(req: NextRequest) {
       referencia: body.referencia ?? null,
       ubicacion: body.ubicacion ?? null,
       ubicacion_txt: body.ubicacion_txt ?? null,
+      tipo_lugar: tipoLugar,
+      comentarios_soporte: body.comentarios_soporte ?? null,
       fecha_hora_agendada: body.fecha_hora_agendada ?? null,
       fecha_hora_limite: body.fecha_hora_limite ?? null,
       iniciado_por: session.userId,
     })
+
+    // Propagate order technicians to new service
+    if (body.service_order_id) {
+      const orderTechs = await listOrderTechnicians(body.service_order_id)
+      for (const t of orderTechs) {
+        await assignTechnician(srv.id, t.user_id)
+      }
+    }
+
     revalidatePath('/servicios')
     if (body.service_order_id) revalidatePath(`/servicios/orders/${body.service_order_id}`)
     return NextResponse.json(srv, { status: 201 })

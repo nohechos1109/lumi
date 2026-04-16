@@ -35,6 +35,8 @@ export async function POST(req: NextRequest) {
       foja_de_ruta: body.foja_de_ruta ?? null,
       comentarios_de_soporte: body.comentarios_de_soporte ?? null,
       encargados: body.encargados ?? null,
+      tipo_lugar: body.tipo_lugar ?? null,
+      technician_ids: Array.isArray(body.technician_ids) ? body.technician_ids : [],
       fecha_hora_agendada: body.fecha_hora_agendada ?? null,
       fecha_hora_limite: body.fecha_hora_limite ?? null,
       created_by: session.userId,

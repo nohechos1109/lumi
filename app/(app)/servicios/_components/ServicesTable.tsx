@@ -3,6 +3,7 @@
 import { useState, useMemo } from 'react'
 import Link from 'next/link'
 import type { Service } from '@/lib/queries/servicios'
+import PromoteServiceModal from './PromoteServiceModal'
 
 const ESTATUS_MAP: Record<string, { label: string; bg: string; text: string }> = {
   pendiente:  { label: 'Pendiente',  bg: '#F1F5F9', text: '#475569' },
@@ -13,8 +14,9 @@ const ESTATUS_MAP: Record<string, { label: string; bg: string; text: string }> =
   rechazado:  { label: 'Rechazado',  bg: '#FEE2E2', text: '#991B1B' },
 }
 
-export default function ServicesTable({ services, role }: { services: Service[]; role: string }) {
+export default function ServicesTable({ services, role, canPromote }: { services: Service[]; role: string; canPromote: boolean }) {
   void role
+  const [promoteTarget, setPromoteTarget] = useState<Service | null>(null)
   const [search, setSearch] = useState('')
   const [statusFilter, setStatusFilter] = useState('')
   const [scopeFilter, setScopeFilter] = useState<'' | 'walk_in' | 'with_order'>('')
@@ -81,6 +83,7 @@ export default function ServicesTable({ services, role }: { services: Service[];
               <th className="text-left px-4 py-2.5 font-semibold" style={{ color: 'var(--c-ghost)' }}>Motivo</th>
               <th className="text-left px-4 py-2.5 font-semibold" style={{ color: 'var(--c-ghost)' }}>Unidad</th>
               <th className="text-left px-4 py-2.5 font-semibold" style={{ color: 'var(--c-ghost)' }}>Cliente</th>
+              <th className="text-left px-4 py-2.5 font-semibold" style={{ color: 'var(--c-ghost)' }}>Lugar</th>
               <th className="text-left px-4 py-2.5 font-semibold" style={{ color: 'var(--c-ghost)' }}>Orden</th>
               <th className="text-left px-4 py-2.5 font-semibold" style={{ color: 'var(--c-ghost)' }}>Estado</th>
               <th className="text-left px-4 py-2.5 font-semibold" style={{ color: 'var(--c-ghost)' }}>Agendado</th>
@@ -100,10 +103,31 @@ export default function ServicesTable({ services, role }: { services: Service[];
                   <td className="px-4 py-2.5" style={{ color: 'var(--c-dim)' }}>{s.unidad_name ?? '—'}</td>
                   <td className="px-4 py-2.5" style={{ color: 'var(--c-dim)' }}>{s.customer_name ?? '—'}</td>
                   <td className="px-4 py-2.5">
+                    {s.tipo_lugar ? (
+                      <span className="text-xs font-semibold px-2 py-0.5 rounded-full" style={{
+                        background: s.tipo_lugar === 'taller' ? '#E0F2FE' : '#FEF3C7',
+                        color: s.tipo_lugar === 'taller' ? '#0369A1' : '#B45309',
+                      }}>{s.tipo_lugar === 'taller' ? 'Taller' : 'Calle'}</span>
+                    ) : <span style={{ color: 'var(--c-ghost)' }}>—</span>}
+                  </td>
+                  <td className="px-4 py-2.5">
                     {s.order_number ? (
                       <Link href={`/servicios/orders/${s.service_order_id}`} className="font-mono text-xs hover:underline" style={{ color: 'var(--c-navy)' }}>
                         {s.order_number}
                       </Link>
+                    ) : canPromote ? (
+                      <button
+                        onClick={() => setPromoteTarget(s)}
+                        className="text-xs font-semibold px-2.5 py-1 rounded-lg"
+                        style={{
+                          background: '#FEF3C7',
+                          color: '#B45309',
+                          border: '1px solid #F59E0B',
+                          cursor: 'pointer',
+                        }}
+                      >
+                        Dar seguimiento
+                      </button>
                     ) : (
                       <span className="text-xs italic" style={{ color: 'var(--c-ghost)' }}>walk-in</span>
                     )}
@@ -122,6 +146,15 @@ export default function ServicesTable({ services, role }: { services: Service[];
           </tbody>
         </table>
       </div>
+
+      {promoteTarget && (
+        <PromoteServiceModal
+          serviceId={promoteTarget.id}
+          serviceNumber={promoteTarget.number}
+          motivo={promoteTarget.motivo_visita}
+          onClose={() => setPromoteTarget(null)}
+        />
+      )}
     </div>
   )
 }

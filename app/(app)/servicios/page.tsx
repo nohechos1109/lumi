@@ -12,6 +12,7 @@ import {
 } from '@/lib/permissions'
 import {
   listServiceProjects,
+  listServiceOrders,
   listServices,
   listServicesByTechnician,
   listServiceRequests,
@@ -27,8 +28,9 @@ export default async function ServiciosPage() {
 
   const isTecnico = canViewOwnServicesOnly(session.role)
 
-  const [projects, services, requests] = await Promise.all([
+  const [projects, orders, services, requests] = await Promise.all([
     isTecnico ? Promise.resolve([]) : listServiceProjects(),
+    isTecnico ? Promise.resolve([]) : listServiceOrders(),
     isTecnico ? listServicesByTechnician(session.userId) : listServices(),
     canApproveServiceRequest(session.role)
       ? listServiceRequests()
@@ -42,6 +44,7 @@ export default async function ServiciosPage() {
       role={session.role}
       userId={session.userId}
       projects={projects}
+      orders={orders}
       services={services}
       requests={requests}
       perms={{

@@ -43,6 +43,7 @@ export interface ServiceOrder {
   fecha_llegada: string | null
   fecha_salida: string | null
   fecha_fin: string | null
+  tipo_lugar: 'calle' | 'taller' | null
   created_by: string | null
   created_at: string
   archived_at: string | null
@@ -71,6 +72,7 @@ export interface Service {
   reporte_tecnico: string | null
   comentarios_reporte: string | null
   comentarios_soporte: string | null
+  tipo_lugar: 'calle' | 'taller' | null
   motivo_cancelacion: string | null
   iniciado_por: string | null
   fecha_creado: string
@@ -270,6 +272,13 @@ export async function deleteServiceProject(id: string): Promise<void> {
 
 // ─── Service Orders ───────────────────────────────────────────
 
+export async function listServiceOrders(): Promise<ServiceOrder[]> {
+  const { rows } = await pool.query(
+    `${SO_SELECT} WHERE so.archived_at IS NULL ORDER BY so.created_at DESC`
+  )
+  return rows
+}
+
 export async function listServiceOrdersByProject(projectId: string): Promise<ServiceOrder[]> {
   const { rows } = await pool.query(
     `${SO_SELECT} WHERE so.service_project_id = $1 ORDER BY so.created_at DESC`,
@@ -291,6 +300,8 @@ export interface CreateServiceOrderInput {
   foja_de_ruta?: string | null
   comentarios_de_soporte?: string | null
   encargados?: string | null
+  tipo_lugar?: 'calle' | 'taller' | null
+  technician_ids?: string[]
   fecha_hora_agendada?: string | null
   fecha_hora_limite?: string | null
   created_by: string
@@ -304,17 +315,28 @@ export async function createServiceOrder(data: CreateServiceOrderInput): Promise
     const { rows: [so] } = await client.query(
       `INSERT INTO service_orders
          (number, service_project_id, motivo_del_servicio, ubicacion, referencias,
-          foja_de_ruta, comentarios_de_soporte, encargados,
+          foja_de_ruta, comentarios_de_soporte, encargados, tipo_lugar,
           fecha_hora_agendada, fecha_hora_limite, created_by)
-       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11)
+       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12)
        RETURNING *`,
       [
         number, data.service_project_id,
         data.motivo_del_servicio ?? null, data.ubicacion ?? null, data.referencias ?? null,
         data.foja_de_ruta ?? null, data.comentarios_de_soporte ?? null, data.encargados ?? null,
+        data.tipo_lugar ?? null,
         data.fecha_hora_agendada ?? null, data.fecha_hora_limite ?? null, data.created_by,
       ]
     )
+
+    // Assign technicians to order
+    if (data.technician_ids && data.technician_ids.length > 0) {
+      const vals = data.technician_ids.map((_, i) => `($1, $${i + 2})`).join(', ')
+      await client.query(
+        `INSERT INTO service_order_technicians (service_order_id, user_id) VALUES ${vals} ON CONFLICT DO NOTHING`,
+        [so.id, ...data.technician_ids]
+      )
+    }
+
     await client.query('COMMIT')
     return so
   } catch (err) {
@@ -327,7 +349,7 @@ export async function createServiceOrder(data: CreateServiceOrderInput): Promise
 
 type UpdatableOrderFields = Partial<Pick<ServiceOrder,
   'estatus' | 'motivo_del_servicio' | 'ubicacion' | 'referencias' | 'foja_de_ruta' |
-  'comentarios_de_soporte' | 'encargados' | 'fecha_hora_agendada' | 'fecha_hora_limite' |
+  'comentarios_de_soporte' | 'encargados' | 'tipo_lugar' | 'fecha_hora_agendada' | 'fecha_hora_limite' |
   'fecha_llegada' | 'fecha_salida' | 'fecha_fin'>>
 
 export async function updateServiceOrder(id: string, data: UpdatableOrderFields): Promise<void> {
@@ -342,6 +364,7 @@ export async function updateServiceOrder(id: string, data: UpdatableOrderFields)
   if (data.foja_de_ruta !== undefined) setField('foja_de_ruta', data.foja_de_ruta)
   if (data.comentarios_de_soporte !== undefined) setField('comentarios_de_soporte', data.comentarios_de_soporte)
   if (data.encargados !== undefined) setField('encargados', data.encargados)
+  if (data.tipo_lugar !== undefined) setField('tipo_lugar', data.tipo_lugar)
   if (data.fecha_hora_agendada !== undefined) setField('fecha_hora_agendada', data.fecha_hora_agendada)
   if (data.fecha_hora_limite !== undefined) setField('fecha_hora_limite', data.fecha_hora_limite)
   if (data.fecha_llegada !== undefined) setField('fecha_llegada', data.fecha_llegada)
@@ -418,6 +441,8 @@ export interface CreateServiceInput {
   referencia?: string | null
   ubicacion?: string | null
   ubicacion_txt?: string | null
+  tipo_lugar?: 'calle' | 'taller' | null
+  comentarios_soporte?: string | null
   fecha_hora_agendada?: string | null
   fecha_hora_limite?: string | null
   iniciado_por: string
@@ -432,14 +457,15 @@ export async function createService(data: CreateServiceInput, client?: PoolClien
     const { rows: [srv] } = await c.query(
       `INSERT INTO services
          (number, service_order_id, unidad_id, ruta_id, customer_id,
-          motivo_visita, referencia, ubicacion, ubicacion_txt,
-          fecha_hora_agendada, fecha_hora_limite, iniciado_por)
-       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12)
+          motivo_visita, referencia, ubicacion, ubicacion_txt, tipo_lugar,
+          comentarios_soporte, fecha_hora_agendada, fecha_hora_limite, iniciado_por)
+       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14)
        RETURNING *`,
       [
         number, data.service_order_id ?? null, data.unidad_id ?? null, data.ruta_id ?? null,
         data.customer_id ?? null, data.motivo_visita ?? null, data.referencia ?? null,
-        data.ubicacion ?? null, data.ubicacion_txt ?? null,
+        data.ubicacion ?? null, data.ubicacion_txt ?? null, data.tipo_lugar ?? null,
+        data.comentarios_soporte ?? null,
         data.fecha_hora_agendada ?? null, data.fecha_hora_limite ?? null, data.iniciado_por,
       ]
     )
@@ -487,6 +513,92 @@ export async function updateService(id: string, data: UpdatableServiceFields): P
 
 export async function deleteService(id: string): Promise<void> {
   await pool.query(`DELETE FROM services WHERE id = $1`, [id])
+}
+
+// ─── Promote walk-in → project + order ──────────────────────
+
+export async function promoteWalkInService(
+  serviceId: string,
+  userId: string,
+  projectName?: string,
+  observaciones?: string | null,
+): Promise<{ projectId: string; orderId: string }> {
+  const client = await pool.connect()
+  try {
+    await client.query('BEGIN')
+
+    // Lock service, verify walk-in
+    const { rows: [srv] } = await client.query(
+      `SELECT * FROM services WHERE id = $1 FOR UPDATE`,
+      [serviceId]
+    )
+    if (!srv) throw new Error('NOT_FOUND')
+    if (srv.service_order_id) throw new Error('ALREADY_HAS_ORDER')
+
+    // Create project
+    const projNumber = await generateNumber('SVP', 'service_projects', client)
+    const projName = projectName || srv.motivo_visita || `Seguimiento ${srv.number}`
+    const { rows: [proj] } = await client.query(
+      `INSERT INTO service_projects (number, name, customer_id, created_by, status, observaciones)
+       VALUES ($1, $2, $3, $4, 'open', $5)
+       RETURNING id`,
+      [projNumber, projName, srv.customer_id, userId, observaciones ?? null]
+    )
+
+    // Create order
+    const orderNumber = await generateNumber('OSV', 'service_orders', client)
+    const { rows: [order] } = await client.query(
+      `INSERT INTO service_orders (number, service_project_id, estatus, motivo_del_servicio, tipo_lugar, created_by)
+       VALUES ($1, $2, 'pendiente', $3, $4, $5)
+       RETURNING id`,
+      [orderNumber, proj.id, srv.motivo_visita, srv.tipo_lugar, userId]
+    )
+
+    // Link service to order
+    await client.query(
+      `UPDATE services SET service_order_id = $1 WHERE id = $2`,
+      [order.id, serviceId]
+    )
+
+    await client.query('COMMIT')
+    return { projectId: proj.id, orderId: order.id }
+  } catch (err) {
+    await client.query('ROLLBACK')
+    throw err
+  } finally {
+    client.release()
+  }
+}
+
+// ─── Order Technicians ───────────────────────────────────────
+
+export async function listOrderTechnicians(orderId: string): Promise<Array<{ user_id: string; username: string; assigned_at: string }>> {
+  const { rows } = await pool.query(
+    `SELECT sot.user_id, u.username, sot.assigned_at
+     FROM service_order_technicians sot
+     JOIN users u ON u.id = sot.user_id
+     WHERE sot.service_order_id = $1
+     ORDER BY sot.assigned_at`,
+    [orderId]
+  )
+  return rows
+}
+
+export async function assignOrderTechnicians(orderId: string, userIds: string[]): Promise<void> {
+  if (userIds.length === 0) return
+  const values = userIds.map((_, i) => `($1, $${i + 2})`).join(', ')
+  await pool.query(
+    `INSERT INTO service_order_technicians (service_order_id, user_id) VALUES ${values}
+     ON CONFLICT DO NOTHING`,
+    [orderId, ...userIds]
+  )
+}
+
+export async function removeOrderTechnician(orderId: string, userId: string): Promise<void> {
+  await pool.query(
+    `DELETE FROM service_order_technicians WHERE service_order_id = $1 AND user_id = $2`,
+    [orderId, userId]
+  )
 }
 
 // ─── Service Technicians ──────────────────────────────────────
