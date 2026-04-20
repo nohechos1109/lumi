@@ -48,3 +48,9 @@ CREATE INDEX IF NOT EXISTS idx_service_materials_service
   ON service_materials (service_id);
 CREATE INDEX IF NOT EXISTS idx_service_materials_product
   ON service_materials (product_id);
+
+ALTER TABLE service_materials
+  ADD COLUMN IF NOT EXISTS quote_line_id uuid REFERENCES quote_lines(id) ON DELETE SET NULL;
+
+CREATE INDEX IF NOT EXISTS idx_service_materials_quote_line
+  ON service_materials (quote_line_id);
