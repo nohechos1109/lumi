@@ -11,6 +11,7 @@ import {
   getService,
   updateService,
   deleteService,
+  deleteAllServiceMaterials,
 } from '@/lib/queries/servicios'
 import { insertAuditEvent } from '@/lib/queries/audit'
 
@@ -55,6 +56,9 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
         user_id: session.userId,
         username: session.username,
       })
+      if (body.estatus === 'cancelado') {
+        await deleteAllServiceMaterials(id)
+      }
     }
     revalidatePath('/servicios')
     revalidatePath(`/servicios/services/${id}`)

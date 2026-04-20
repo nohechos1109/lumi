@@ -1,10 +1,10 @@
-import pool from '@/lib/db'
+﻿import pool from '@/lib/db'
 import type { PoolClient } from 'pg'
 
 // ─── Types ────────────────────────────────────────────────────
 
 export type ServiceProjectStatus = 'open' | 'in_progress' | 'completed' | 'cancelled'
-export type ServiceOrderEstatus = 'pendiente' | 'agendado' | 'en_curso' | 'atendido' | 'cancelado'
+export type ServiceOrderEstatus = 'borrador' | 'pendiente' | 'agendado' | 'en_curso' | 'terminado' | 'atendido' | 'cancelado'
 export type ServiceEstatus = 'pendiente' | 'agendado' | 'en_curso' | 'en_revision' | 'terminado' | 'atendido' | 'cancelado' | 'rechazado'
 export type ServiceRequestStatus = 'pending' | 'approved' | 'rejected' | 'cancelled'
 
@@ -35,7 +35,6 @@ export interface ServiceOrder {
   motivo_del_servicio: string | null
   ubicacion: string | null
   referencias: string | null
-  foja_de_ruta: string | null
   comentarios_de_soporte: string | null
   fecha_hora_agendada: string | null
   fecha_hora_limite: string | null
@@ -339,7 +338,6 @@ export interface CreateServiceOrderInput {
   motivo_del_servicio?: string | null
   ubicacion?: string | null
   referencias?: string | null
-  foja_de_ruta?: string | null
   comentarios_de_soporte?: string | null
   tipo_lugar?: 'calle' | 'taller' | null
   technician_ids?: string[]
@@ -357,14 +355,14 @@ export async function createServiceOrder(data: CreateServiceOrderInput): Promise
     const { rows: [so] } = await client.query(
       `INSERT INTO service_orders
          (number, service_project_id, motivo_del_servicio, ubicacion, referencias,
-          foja_de_ruta, comentarios_de_soporte, tipo_lugar,
+          comentarios_de_soporte, tipo_lugar,
           fecha_hora_agendada, fecha_hora_limite, created_by, assign_all_technicians)
-       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12)
+       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11)
        RETURNING *`,
       [
         number, data.service_project_id,
         data.motivo_del_servicio ?? null, data.ubicacion ?? null, data.referencias ?? null,
-        data.foja_de_ruta ?? null, data.comentarios_de_soporte ?? null,
+        data.comentarios_de_soporte ?? null,
         data.tipo_lugar ?? null,
         data.fecha_hora_agendada ?? null, data.fecha_hora_limite ?? null, data.created_by,
         data.assign_all_technicians ?? false,
@@ -391,7 +389,7 @@ export async function createServiceOrder(data: CreateServiceOrderInput): Promise
 }
 
 type UpdatableOrderFields = Partial<Pick<ServiceOrder,
-  'estatus' | 'motivo_del_servicio' | 'ubicacion' | 'referencias' | 'foja_de_ruta' |
+  'estatus' | 'motivo_del_servicio' | 'ubicacion' | 'referencias' |
   'comentarios_de_soporte' | 'tipo_lugar' | 'fecha_hora_agendada' | 'fecha_hora_limite' |
   'fecha_llegada' | 'fecha_salida' | 'fecha_fin' | 'assign_all_technicians'>>
 
@@ -404,7 +402,6 @@ export async function updateServiceOrder(id: string, data: UpdatableOrderFields)
   if (data.motivo_del_servicio !== undefined) setField('motivo_del_servicio', data.motivo_del_servicio)
   if (data.ubicacion !== undefined) setField('ubicacion', data.ubicacion)
   if (data.referencias !== undefined) setField('referencias', data.referencias)
-  if (data.foja_de_ruta !== undefined) setField('foja_de_ruta', data.foja_de_ruta)
   if (data.comentarios_de_soporte !== undefined) setField('comentarios_de_soporte', data.comentarios_de_soporte)
   if (data.tipo_lugar !== undefined) setField('tipo_lugar', data.tipo_lugar)
   if (data.fecha_hora_agendada !== undefined) setField('fecha_hora_agendada', data.fecha_hora_agendada)
@@ -832,8 +829,7 @@ export async function rejectServiceRequest(id: string): Promise<ServiceRequest> 
 /**
  * After a sale is created from a confirmed quote, scan the originating quote
  * for lines whose product is flagged as `is_service`. If any are found,
- * create a service_project + one service_order + one service per is_service line
- * (multiplied by unit_count when applicable).
+ * create a service_project linked to the sale. No orders or services are created.
  *
  * Intentionally swallows errors via try/catch at the caller — never block sale creation.
  */
@@ -846,7 +842,7 @@ export async function autoCreateServiceProjectFromSale(
     await client.query('BEGIN')
 
     const { rows: [sale] } = await client.query(
-      `SELECT s.id, s.number, s.customer_id, s.quote_id, s.unit_count, q.number AS quote_number
+      `SELECT s.id, s.number, s.customer_id, s.quote_id, q.number AS quote_number
        FROM sales s
        JOIN quotes q ON q.id = s.quote_id
        WHERE s.id = $1`,
@@ -858,10 +854,11 @@ export async function autoCreateServiceProjectFromSale(
     }
 
     const { rows: serviceLines } = await client.query(
-      `SELECT ql.product_id, p.name AS product_name
+      `SELECT 1
        FROM quote_lines ql
        JOIN products p ON p.id = ql.product_id
-       WHERE ql.quote_id = $1 AND p.is_service = true AND ql.display_type = 'product'`,
+       WHERE ql.quote_id = $1 AND p.is_service = true AND ql.display_type = 'product'
+       LIMIT 1`,
       [sale.quote_id]
     )
     if (serviceLines.length === 0) {
@@ -883,27 +880,6 @@ export async function autoCreateServiceProjectFromSale(
         `Auto-generado desde venta ${sale.number}`,
       ]
     )
-
-    const orderNumber = await generateNumber('OSV', 'service_orders', client)
-    const { rows: [order] } = await client.query(
-      `INSERT INTO service_orders (number, service_project_id, motivo_del_servicio, created_by)
-       VALUES ($1, $2, $3, $4)
-       RETURNING id`,
-      [orderNumber, project.id, 'Instalación / servicio de cotización', userId]
-    )
-
-    const unitCount = Math.max(1, Number(sale.unit_count) || 1)
-    for (const line of serviceLines) {
-      for (let u = 0; u < unitCount; u++) {
-        const srvNumber = await generateNumber('SRV', 'services', client)
-        await client.query(
-          `INSERT INTO services
-             (number, service_order_id, customer_id, motivo_visita, iniciado_por)
-           VALUES ($1, $2, $3, $4, $5)`,
-          [srvNumber, order.id, sale.customer_id, line.product_name, userId]
-        )
-      }
-    }
 
     await client.query('COMMIT')
     return project
@@ -983,6 +959,10 @@ export async function updateServiceMaterial(
 
 export async function deleteServiceMaterial(id: string): Promise<void> {
   await pool.query(`DELETE FROM service_materials WHERE id = $1`, [id])
+}
+
+export async function deleteAllServiceMaterials(serviceId: string): Promise<void> {
+  await pool.query(`DELETE FROM service_materials WHERE service_id = $1`, [serviceId])
 }
 
 export async function getServiceMaterialsTotal(serviceId: string): Promise<number> {

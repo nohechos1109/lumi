@@ -55,18 +55,18 @@ export function stepsFromService(svc: Service): WorkflowStep[] {
 /** Steps from Service Order detail page perspective. */
 export function stepsFromOrder(order: ServiceOrder): WorkflowStep[] {
   const orderCancelled = isCancelled(order.estatus)
-  const orderAtendido  = order.estatus === 'atendido'
-  const orderActive    = (WORKFLOW_ORDER as readonly string[]).includes(order.estatus) && !orderAtendido
+  const orderTerminado = order.estatus === 'terminado' || order.estatus === 'atendido'
+  const orderActive    = ['borrador', 'pendiente', 'agendado', 'en_curso'].includes(order.estatus)
 
   const ordenState: StepState = orderCancelled
     ? 'error'
-    : orderAtendido
+    : orderTerminado
       ? 'done'
       : orderActive
         ? 'current'
         : 'pending'
 
-  const servicioState: StepState = orderAtendido ? 'current' : 'pending'
+  const servicioState: StepState = orderTerminado ? 'done' : order.estatus === 'en_curso' ? 'current' : 'pending'
 
   return [
     { key: 'proyecto',   label: 'Proyecto',   state: order.service_project_id ? 'done' : 'pending', href: order.service_project_id ? `/servicios/projects/${order.service_project_id}` : undefined },

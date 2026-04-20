@@ -6,9 +6,11 @@ import type { ServiceOrder } from '@/lib/queries/servicios'
 import FilterSelect from '@/components/ui/FilterSelect'
 
 const ESTATUS_MAP: Record<string, { label: string; cls: string }> = {
+  borrador:  { label: 'Borrador',  cls: 'badge badge-pending' },
   pendiente: { label: 'Pendiente', cls: 'badge badge-pending' },
   agendado:  { label: 'Agendado',  cls: 'badge badge-scheduled' },
   en_curso:  { label: 'En curso',  cls: 'badge badge-in-progress' },
+  terminado: { label: 'Terminado', cls: 'badge badge-done' },
   atendido:  { label: 'Atendido',  cls: 'badge badge-attended' },
   cancelado: { label: 'Cancelado', cls: 'badge badge-cancelled' },
 }
