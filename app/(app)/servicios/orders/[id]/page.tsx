@@ -13,6 +13,8 @@ import {
 import { listFilesByEntity } from '@/lib/queries/files'
 import OrderServicesList from './_components/OrderServicesList'
 import FileUploader from '../../services/[id]/_components/FileUploader'
+import WorkflowStepper from '@/components/ui/WorkflowStepper'
+import { stepsFromOrder } from '@/lib/servicios-workflow'
 
 export default async function ServiceOrderDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
@@ -111,6 +113,8 @@ export default async function ServiceOrderDetailPage({ params }: { params: Promi
           </div>
         </div>
       </div>
+
+      <WorkflowStepper steps={stepsFromOrder(order)} />
 
       <OrderServicesList
         orderId={id}

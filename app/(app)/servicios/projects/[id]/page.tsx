@@ -13,6 +13,8 @@ import {
   listServiceOrdersByProject,
 } from '@/lib/queries/servicios'
 import ProjectOrdersList from './_components/ProjectOrdersList'
+import WorkflowStepper from '@/components/ui/WorkflowStepper'
+import { stepsFromProject } from '@/lib/servicios-workflow'
 
 export default async function ServiceProjectDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
@@ -70,6 +72,8 @@ export default async function ServiceProjectDetailPage({ params }: { params: Pro
           )}
         </div>
       </div>
+
+      <WorkflowStepper steps={stepsFromProject(project, orders.length > 0, !!project.sale_id)} />
 
       <ProjectOrdersList
         projectId={id}

@@ -21,6 +21,8 @@ import { getSettings } from '@/lib/queries/settings'
 import ServiceEditor from './_components/ServiceEditor'
 import FileUploader from './_components/FileUploader'
 import MaterialsEditor from './_components/MaterialsEditor'
+import WorkflowStepper from '@/components/ui/WorkflowStepper'
+import { stepsFromService } from '@/lib/servicios-workflow'
 
 export default async function ServiceDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
@@ -83,6 +85,8 @@ export default async function ServiceDetailPage({ params }: { params: Promise<{ 
           </Link>
         )}
       </div>
+
+      <WorkflowStepper steps={stepsFromService(service, materials.length > 0, !!service.sale_note_id)} />
 
       <ServiceEditor
         service={service}
