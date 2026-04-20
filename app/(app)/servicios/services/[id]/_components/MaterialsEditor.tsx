@@ -40,7 +40,6 @@ interface Props {
 }
 
 const inputStyle = { background: 'var(--c-panel)', border: '1px solid var(--c-rim)', color: 'var(--c-ink)', outline: 'none' }
-const fmt = (v: string | number) => Number(v).toLocaleString('es-MX', { minimumFractionDigits: 2 })
 
 // ── Product search bar ──────────────────────────────────────────────────────
 
@@ -262,6 +261,15 @@ export default function MaterialsEditor({
     router.refresh()
   }
 
+  async function removeQuoteLineMaterials(quoteLineId: string) {
+    const linked = materials.filter(m => m.quote_line_id === quoteLineId)
+    if (linked.length === 0) return
+    await Promise.all(linked.map(m =>
+      fetch(`/api/servicios/services/${serviceId}/materials?material_id=${m.id}`, { method: 'DELETE' })
+    ))
+    router.refresh()
+  }
+
   function addFromQuote(dl: typeof displayLines[number]) {
     const usedNow = usedByQuoteLine[dl.id] ?? 0
     if (dl.maxQty - usedNow <= 0) return
@@ -273,8 +281,14 @@ export default function MaterialsEditor({
       ? parseFloat(product.public_price)
       : parseFloat(product.cost_base) * parseFloat(product.utility_factor) + parseFloat(product.utility_fixed)
     const priceMxn = product.currency === 'USD' ? rawPrice * fxRate : rawPrice
-    addMaterial(product.id, priceMxn, null)
+    // If product matches a pending quote line, link it
+    const matchingLine = displayLines.find(dl => dl.product_id === product.id && (dl.maxQty - (usedByQuoteLine[dl.id] ?? 0)) > 0)
+    addMaterial(product.id, priceMxn, matchingLine?.id ?? null)
   }
+
+  const [quoteOpen, setQuoteOpen] = useState(false)
+  const [removeConfirm, setRemoveConfirm] = useState<{ quoteLineId: string; name: string } | null>(null)
+  const [deleteMaterialConfirm, setDeleteMaterialConfirm] = useState<{ id: string; name: string } | null>(null)
 
   return (
     <div className="mt-8">
@@ -282,164 +296,285 @@ export default function MaterialsEditor({
         Materiales utilizados
       </h2>
 
-      <div className="grid gap-5" style={{ gridTemplateColumns: hasQuotePicker ? '300px 1fr' : '1fr' }}>
+      <div className="flex flex-col gap-3">
+        {canEdit && <ProductSearch onSelect={addFromSearch} />}
 
-        {/* Quote products picker (left column) */}
+        {/* ── Collapsible quote products table ── */}
         {hasQuotePicker && (
-          <div className="rounded-2xl flex flex-col overflow-hidden" style={{ background: 'var(--c-card)', border: '1px solid var(--c-rim)' }}>
-            <div className="px-4 py-3" style={{ borderBottom: '1px solid var(--c-rim)' }}>
-              <p className="text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--c-ghost)' }}>
+          <div className="rounded-2xl overflow-hidden" style={{ border: '1px solid var(--c-rim)', background: 'var(--c-card)' }}>
+            <button
+              type="button"
+              onClick={() => setQuoteOpen(v => !v)}
+              className="w-full flex items-center justify-between px-4 py-3 text-left"
+              style={{ background: 'var(--c-panel)', borderBottom: quoteOpen ? '1px solid var(--c-rim)' : 'none', cursor: 'pointer' }}
+            >
+              <span className="text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--c-ghost)' }}>
                 Productos de la cotización
-                {unidadId && <span className="ml-1 normal-case font-normal">(pendientes para esta unidad)</span>}
-              </p>
-            </div>
-            <div className="flex-1 overflow-y-auto" style={{ maxHeight: '60vh' }}>
-              {coverageLoading && (
-                <p className="px-4 py-3 text-xs" style={{ color: 'var(--c-ghost)' }}>Cargando...</p>
-              )}
-              {!coverageLoading && displayLines.map(dl => {
-                const usedNow = usedByQuoteLine[dl.id] ?? 0
-                const remaining = dl.maxQty - usedNow
-                const exhausted = remaining <= 0
-                const isAdding = adding === dl.id
-                return (
-                  <button
-                    key={dl.id}
-                    type="button"
-                    onClick={() => !exhausted && !isAdding && canEdit && addFromQuote(dl)}
-                    className="w-full flex items-center gap-3 px-4 py-3 text-left"
-                    style={{ borderBottom: '1px solid var(--c-rim)', opacity: exhausted ? 0.4 : 1, cursor: !canEdit || exhausted || isAdding ? 'default' : 'pointer' }}
-                  >
-                    <div className="flex-1 min-w-0">
-                      <p className="text-xs font-medium leading-tight truncate" style={{ color: 'var(--c-ink)' }}>{dl.name}</p>
-                      <p className="text-xs mt-0.5 font-mono" style={{ color: 'var(--c-ghost)' }}>
-                        ×{dl.maxQty.toLocaleString('es-MX')}
-                        {unidadId && dl.usedElsewhere > 0 && (
-                          <span style={{ color: 'var(--c-dim)', marginLeft: 6 }}>({dl.usedElsewhere} en otras)</span>
-                        )}
-                        {usedNow > 0 && !exhausted && (
-                          <span style={{ color: 'var(--c-navy)', marginLeft: 6 }}>({usedNow} en servicio)</span>
-                        )}
-                        {exhausted && <span style={{ marginLeft: 6 }}>completo</span>}
-                      </p>
-                    </div>
-                    <span
-                      className="shrink-0 w-6 h-6 rounded-md flex items-center justify-center text-sm font-bold"
-                      style={{ background: exhausted ? 'var(--c-rim)' : isAdding ? 'var(--c-rim-hi)' : 'var(--c-navy)', color: exhausted ? 'var(--c-ghost)' : '#fff' }}
-                    >
-                      {exhausted ? '✓' : '+'}
-                    </span>
-                  </button>
-                )
-              })}
-            </div>
+                {unidadId && <span className="ml-1 normal-case font-normal tracking-normal"> (pendientes para esta unidad)</span>}
+              </span>
+              <svg
+                width="12" height="12" viewBox="0 0 12 12" fill="none"
+                style={{ color: 'var(--c-ghost)', flexShrink: 0, transition: 'transform 0.15s', transform: quoteOpen ? 'rotate(0deg)' : 'rotate(-90deg)' }}
+              >
+                <path d="M2 4l4 4 4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            </button>
+            {quoteOpen && (
+              <table className="w-full text-sm">
+                <tbody>
+                  {coverageLoading && (
+                    <tr><td colSpan={3} className="px-4 py-3 text-xs" style={{ color: 'var(--c-ghost)' }}>Cargando...</td></tr>
+                  )}
+                  {!coverageLoading && displayLines.map(dl => {
+                    const usedNow = usedByQuoteLine[dl.id] ?? 0
+                    const remaining = dl.maxQty - usedNow
+                    const exhausted = remaining <= 0
+                    const isAdding = adding === dl.id
+                    return (
+                      <tr key={dl.id} style={{ borderTop: '1px solid var(--c-rim)', opacity: exhausted ? 0.45 : 1 }}>
+                        <td className="px-4 py-3" style={{ color: 'var(--c-ink)' }}>
+                          <span className="text-sm font-medium">{dl.name}</span>
+                          {unidadId && dl.usedElsewhere > 0 && (
+                            <span className="ml-2 text-xs font-mono" style={{ color: 'var(--c-dim)' }}>({dl.usedElsewhere} agregado{dl.usedElsewhere !== 1 ? 's' : ''} en otras)</span>
+                          )}
+                          {usedNow > 0 && !exhausted && (
+                            <span className="ml-2 text-xs font-mono" style={{ color: 'var(--c-navy)' }}>({usedNow} en servicio)</span>
+                          )}
+                          {exhausted && <span className="ml-2 text-xs font-mono" style={{ color: 'var(--c-ghost)' }}>completo</span>}
+                        </td>
+                        <td className="px-4 py-3 text-right">
+                          <span className="text-xs font-mono" style={{ color: 'var(--c-ghost)' }}>×{dl.maxQty.toLocaleString('es-MX')}</span>
+                        </td>
+                        <td className="px-3 py-3">
+                          <div className="flex items-center justify-end gap-1.5">
+                            {usedNow > 0 && canEdit && (
+                              <button
+                                type="button"
+                                onClick={() => setRemoveConfirm({ quoteLineId: dl.id, name: dl.name })}
+                                className="w-8 h-8 rounded-lg flex items-center justify-center transition-colors btn-delete"
+                                title="Retirar todos los agregados"
+                              >
+                                <svg width="12" height="12" viewBox="0 0 14 14" fill="none">
+                                  <path d="M1 1l12 12M13 1L1 13" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+                                </svg>
+                              </button>
+                            )}
+                            {exhausted ? (
+                              <span className="w-8 h-8 flex items-center justify-center rounded-lg" style={{ color: 'var(--c-ghost)' }}>
+                                <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                                  <path d="M2 7l4 4 6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                                </svg>
+                              </span>
+                            ) : canEdit ? (
+                              <button
+                                type="button"
+                                disabled={isAdding}
+                                onClick={() => !isAdding && addFromQuote(dl)}
+                                className="w-8 h-8 rounded-lg flex items-center justify-center transition-colors"
+                                style={{ background: isAdding ? 'var(--c-rim-hi)' : 'var(--c-navy)', color: '#fff', border: 'none', cursor: isAdding ? 'default' : 'pointer' }}
+                              >
+                                <svg width="12" height="12" viewBox="0 0 14 14" fill="none">
+                                  <rect x="6" width="2" height="14" rx="1" fill="currentColor"/>
+                                  <rect y="6" width="14" height="2" rx="1" fill="currentColor"/>
+                                </svg>
+                              </button>
+                            ) : null}
+                          </div>
+                        </td>
+                      </tr>
+                    )
+                  })}
+                </tbody>
+              </table>
+            )}
           </div>
         )}
 
-        {/* Right: search + table */}
-        <div className="flex flex-col gap-3">
-
-          {canEdit && <ProductSearch onSelect={addFromSearch} />}
-
-          {materials.length === 0 ? (
-            <div className="rounded-2xl py-14 text-center" style={{ border: '1.5px dashed var(--c-rim)', background: 'var(--c-card)' }}>
-              <p className="text-sm font-semibold" style={{ color: 'var(--c-dim)' }}>Sin materiales registrados.</p>
-              {canEdit && <p className="text-xs mt-1" style={{ color: 'var(--c-ghost)' }}>Busca un producto arriba para agregar.</p>}
-            </div>
-          ) : (
-            <div className="rounded-2xl overflow-hidden" style={{ border: '1px solid var(--c-rim)', background: 'var(--c-card)' }}>
-              <div className="overflow-x-auto">
-                <table className="w-full text-sm min-w-[320px]">
-                  <thead>
-                    <tr style={{ borderBottom: '1px solid var(--c-rim)' }}>
-                      <th className="text-left px-4 py-3.5 text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--c-ghost)' }}>Descripción</th>
-                      <th className="text-right px-4 py-3.5 text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--c-ghost)' }}>Cantidad</th>
-                      {canEdit && <th className="w-10 px-2 py-3.5" />}
+        {materials.length === 0 ? (
+          <div className="rounded-2xl py-14 text-center" style={{ border: '1.5px dashed var(--c-rim)', background: 'var(--c-card)' }}>
+            <p className="text-sm font-semibold" style={{ color: 'var(--c-dim)' }}>Sin materiales registrados.</p>
+            {canEdit && <p className="text-xs mt-1" style={{ color: 'var(--c-ghost)' }}>Busca un producto arriba para agregar.</p>}
+          </div>
+        ) : (
+          <div className="rounded-2xl overflow-hidden" style={{ border: '1px solid var(--c-rim)', background: 'var(--c-card)' }}>
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm min-w-[320px]">
+                <thead>
+                  <tr style={{ borderBottom: '1px solid var(--c-rim)' }}>
+                    <th className="text-left px-4 py-3.5 text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--c-ghost)' }}>Descripción</th>
+                    <th className="text-right px-4 py-3.5 text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--c-ghost)' }}>Cantidad</th>
+                    <th className="w-14 px-2 py-3.5" />
+                  </tr>
+                </thead>
+                <tbody>
+                  {materials.map(m => (
+                    <tr key={m.id} className="tr-hover transition-colors" style={{ borderTop: '1px solid var(--c-rim)' }}>
+                      <td className="px-4 py-3 text-sm" style={{ color: 'var(--c-ink)' }}>
+                        {m.product_name}
+                        {m.product_sku && (
+                          <span className="ml-2 text-xs font-mono" style={{ color: 'var(--c-ghost)' }}>{m.product_sku}</span>
+                        )}
+                      </td>
+                      <td className="px-4 py-3">
+                        {canEdit ? (
+                          <div className="flex items-center gap-2 justify-end">
+                            <button
+                              type="button"
+                              onClick={() => {
+                                const next = Math.round(Number(m.quantity)) - 1
+                                if (next <= 0) deleteMaterial(m.id)
+                                else patchMaterial(m.id, 'quantity', next)
+                              }}
+                              className="w-10 h-10 rounded-lg flex items-center justify-center transition-colors"
+                              style={{ background: 'var(--c-panel)', border: '1px solid var(--c-rim)', color: 'var(--c-ink)', cursor: 'pointer' }}
+                            >
+                              <svg width="14" height="2" viewBox="0 0 14 2" fill="none"><rect width="14" height="2" rx="1" fill="currentColor"/></svg>
+                            </button>
+                            <input
+                              type="number"
+                              min="1"
+                              step="1"
+                              defaultValue={Math.round(Number(m.quantity))}
+                              key={`qty-${m.id}-${m.quantity}`}
+                              className="font-mono text-sm text-center rounded-md px-1 py-1 outline-none w-12"
+                              style={{ background: 'var(--c-panel)', border: '1px solid var(--c-rim)', color: 'var(--c-ink)' }}
+                              onFocus={e => { e.target.style.borderColor = 'var(--c-navy)'; e.target.select() }}
+                              onKeyDown={e => {
+                                if (e.key === 'Enter') (e.target as HTMLInputElement).blur()
+                                if (['.', ',', 'e', 'E', '+', '-'].includes(e.key)) e.preventDefault()
+                              }}
+                              onBlur={e => {
+                                e.target.style.borderColor = 'var(--c-rim)'
+                                const v = Math.round(Math.abs(Number(e.target.value))) || 0
+                                if (v <= 0) { deleteMaterial(m.id); return }
+                                e.target.value = String(v)
+                                if (v !== Math.round(Number(m.quantity))) patchMaterial(m.id, 'quantity', v)
+                              }}
+                            />
+                            <button
+                              type="button"
+                              onClick={() => patchMaterial(m.id, 'quantity', Math.round(Number(m.quantity)) + 1)}
+                              className="w-10 h-10 rounded-lg flex items-center justify-center transition-colors"
+                              style={{ background: 'var(--c-panel)', border: '1px solid var(--c-rim)', color: 'var(--c-ink)', cursor: 'pointer' }}
+                            >
+                              <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="6" width="2" height="14" rx="1" fill="currentColor"/><rect y="6" width="14" height="2" rx="1" fill="currentColor"/></svg>
+                            </button>
+                          </div>
+                        ) : (
+                          <span className="font-mono float-right" style={{ color: 'var(--c-ink)' }}>{Math.round(Number(m.quantity))}</span>
+                        )}
+                      </td>
+                      <td className="px-2 py-3 text-right">
+                        {canEdit && (
+                          <button
+                            type="button"
+                            aria-label="Eliminar material"
+                            onClick={() => setDeleteMaterialConfirm({ id: m.id, name: m.product_name ?? '' })}
+                            className="btn-delete text-xs"
+                          >
+                            ✕
+                          </button>
+                        )}
+                      </td>
                     </tr>
-                  </thead>
-                  <tbody>
-                    {materials.map(m => {
-                      return (
-                        <tr key={m.id} className="tr-hover transition-colors" style={{ borderTop: '1px solid var(--c-rim)' }}>
-                          <td className="px-4 py-3 text-sm" style={{ color: 'var(--c-ink)' }}>
-                            {m.product_name}
-                            {m.product_sku && (
-                              <span className="ml-2 text-xs font-mono" style={{ color: 'var(--c-ghost)' }}>{m.product_sku}</span>
-                            )}
-                          </td>
-                          {/* Cantidad */}
-                          <td className="px-4 py-3">
-                            {canEdit ? (
-                              <div className="flex items-center gap-2 justify-end">
-                                <button
-                                  type="button"
-                                  onClick={() => {
-                                    const next = Math.round(Number(m.quantity)) - 1
-                                    if (next <= 0) deleteMaterial(m.id)
-                                    else patchMaterial(m.id, 'quantity', next)
-                                  }}
-                                  className="w-10 h-10 rounded-lg flex items-center justify-center transition-colors"
-                                  style={{ background: 'var(--c-panel)', border: '1px solid var(--c-rim)', color: 'var(--c-ink)', cursor: 'pointer', lineHeight: 1 }}
-                                >
-                                  <svg width="14" height="2" viewBox="0 0 14 2" fill="none"><rect width="14" height="2" rx="1" fill="currentColor"/></svg>
-                                </button>
-                                <input
-                                  type="number"
-                                  min="1"
-                                  step="1"
-                                  defaultValue={Math.round(Number(m.quantity))}
-                                  key={`qty-${m.id}-${m.quantity}`}
-                                  className="font-mono text-sm text-center rounded-md px-1 py-1 outline-none w-12"
-                                  style={{ background: 'var(--c-panel)', border: '1px solid var(--c-rim)', color: 'var(--c-ink)' }}
-                                  onFocus={e => { e.target.style.borderColor = 'var(--c-navy)'; e.target.select() }}
-                                  onKeyDown={e => {
-                                    if (e.key === 'Enter') (e.target as HTMLInputElement).blur()
-                                    if (['.', ',', 'e', 'E', '+', '-'].includes(e.key)) e.preventDefault()
-                                  }}
-                                  onBlur={e => {
-                                    e.target.style.borderColor = 'var(--c-rim)'
-                                    const v = Math.round(Math.abs(Number(e.target.value))) || 0
-                                    if (v <= 0) { deleteMaterial(m.id); return }
-                                    e.target.value = String(v)
-                                    if (v !== Math.round(Number(m.quantity))) patchMaterial(m.id, 'quantity', v)
-                                  }}
-                                />
-                                <button
-                                  type="button"
-                                  onClick={() => patchMaterial(m.id, 'quantity', Math.round(Number(m.quantity)) + 1)}
-                                  className="w-10 h-10 rounded-lg flex items-center justify-center transition-colors"
-                                  style={{ background: 'var(--c-panel)', border: '1px solid var(--c-rim)', color: 'var(--c-ink)', cursor: 'pointer', lineHeight: 1 }}
-                                >
-                                  <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="6" width="2" height="14" rx="1" fill="currentColor"/><rect y="6" width="14" height="2" rx="1" fill="currentColor"/></svg>
-                                </button>
-                              </div>
-                            ) : (
-                              <span className="font-mono float-right" style={{ color: 'var(--c-ink)' }}>{Math.round(Number(m.quantity))}</span>
-                            )}
-                          </td>
-                          {canEdit && (
-                            <td className="px-2 py-3 text-right">
-                              <button
-                                type="button"
-                                aria-label="Eliminar material"
-                                onClick={() => deleteMaterial(m.id)}
-                                className="btn-delete text-xs"
-                              >
-                                ✕
-                              </button>
-                            </td>
-                          )}
-                        </tr>
-                      )
-                    })}
-                  </tbody>
-                </table>
-              </div>
+                  ))}
 
+                </tbody>
+              </table>
             </div>
-          )}
-        </div>
+          </div>
+        )}
       </div>
+
+      {/* ── Delete material confirmation modal ── */}
+      {deleteMaterialConfirm && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4"
+          style={{ background: 'rgba(0,0,0,0.45)' }}
+          onClick={() => setDeleteMaterialConfirm(null)}
+        >
+          <div
+            className="rounded-2xl p-6 w-full max-w-sm flex flex-col gap-4"
+            style={{ background: 'var(--c-card)', border: '1px solid var(--c-rim-hi)', boxShadow: '0 24px 48px rgba(0,0,0,0.2)' }}
+            onClick={e => e.stopPropagation()}
+          >
+            <div>
+              <p className="text-sm font-semibold" style={{ color: 'var(--c-ink)' }}>Eliminar material</p>
+              <p className="text-sm mt-1.5" style={{ color: 'var(--c-dim)' }}>
+                Se eliminará <strong>{deleteMaterialConfirm.name}</strong> de los materiales utilizados.
+              </p>
+            </div>
+            <div className="flex gap-2 justify-end">
+              <button
+                type="button"
+                onClick={() => setDeleteMaterialConfirm(null)}
+                className="px-4 py-2 rounded-lg text-sm font-medium"
+                style={{ background: 'var(--c-panel)', border: '1px solid var(--c-rim)', color: 'var(--c-ink)', cursor: 'pointer' }}
+              >
+                Cancelar
+              </button>
+              <button
+                type="button"
+                onClick={async () => {
+                  const id = deleteMaterialConfirm.id
+                  setDeleteMaterialConfirm(null)
+                  await deleteMaterial(id)
+                }}
+                className="px-4 py-2 rounded-lg text-sm font-medium"
+                style={{ background: 'var(--c-danger, #e53e3e)', color: '#fff', border: 'none', cursor: 'pointer' }}
+              >
+                Eliminar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── Remove confirmation modal ── */}
+      {removeConfirm && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4"
+          style={{ background: 'rgba(0,0,0,0.45)' }}
+          onClick={() => setRemoveConfirm(null)}
+        >
+          <div
+            className="rounded-2xl p-6 w-full max-w-sm flex flex-col gap-4"
+            style={{ background: 'var(--c-card)', border: '1px solid var(--c-rim-hi)', boxShadow: '0 24px 48px rgba(0,0,0,0.2)' }}
+            onClick={e => e.stopPropagation()}
+          >
+            <div>
+              <p className="text-sm font-semibold" style={{ color: 'var(--c-ink)' }}>
+                Retirar materiales de cotización
+              </p>
+              <p className="text-sm mt-1.5" style={{ color: 'var(--c-dim)' }}>
+                Se eliminarán todos los materiales agregados para <strong>{removeConfirm.name}</strong>. Esta acción no se puede deshacer.
+              </p>
+            </div>
+            <div className="flex gap-2 justify-end">
+              <button
+                type="button"
+                onClick={() => setRemoveConfirm(null)}
+                className="px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+                style={{ background: 'var(--c-panel)', border: '1px solid var(--c-rim)', color: 'var(--c-ink)', cursor: 'pointer' }}
+              >
+                Cancelar
+              </button>
+              <button
+                type="button"
+                onClick={async () => {
+                  const id = removeConfirm.quoteLineId
+                  setRemoveConfirm(null)
+                  await removeQuoteLineMaterials(id)
+                }}
+                className="px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+                style={{ background: 'var(--c-danger, #e53e3e)', color: '#fff', border: 'none', cursor: 'pointer' }}
+              >
+                Retirar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

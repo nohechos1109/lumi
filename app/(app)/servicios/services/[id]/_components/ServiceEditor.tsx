@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 import type { Service, ServiceEstatus } from '@/lib/queries/servicios'
 import { notifyRefresh, toast } from '@/lib/toast'
 
@@ -34,9 +35,10 @@ interface Props {
   canApprove: boolean
   hasMaterials: boolean
   tecnicos: { id: string; username: string }[]
+  isAdmin?: boolean
 }
 
-export default function ServiceEditor({ service, canEdit, canManageTech, canApprove, hasMaterials, tecnicos }: Props) {
+export default function ServiceEditor({ service, canEdit, canManageTech, canApprove, hasMaterials, tecnicos, isAdmin }: Props) {
   const router = useRouter()
   const [estatus, setEstatus] = useState<ServiceEstatus>(service.estatus)
   const [reporte, setReporte] = useState(service.reporte_tecnico ?? '')
@@ -173,43 +175,59 @@ export default function ServiceEditor({ service, canEdit, canManageTech, canAppr
         )}
       </div>
 
-      {canEdit && (
+      {(canEdit || reporte || comentariosReporte) && (
         <div className="grid gap-6 md:grid-cols-2">
           <div>
             <label className={labelCls} style={labelStyle}>Reporte técnico</label>
-            <textarea
-              value={reporte}
-              onChange={e => setReporte(e.target.value)}
-              onBlur={() => saveField('reporte_tecnico', reporte || null)}
-              rows={5}
-              className="w-full text-sm rounded-xl px-4 py-2.5 resize-none"
-              style={inp}
-            />
+            {canEdit ? (
+              <textarea
+                value={reporte}
+                onChange={e => setReporte(e.target.value)}
+                onBlur={() => saveField('reporte_tecnico', reporte || null)}
+                rows={5}
+                className="w-full text-sm rounded-xl px-4 py-2.5 resize-none"
+                style={inp}
+              />
+            ) : (
+              <p className="text-sm rounded-xl px-4 py-2.5 min-h-[7rem] whitespace-pre-wrap" style={{ ...inp, color: reporte ? 'var(--c-ink)' : 'var(--c-ghost)' }}>
+                {reporte || 'Sin reporte'}
+              </p>
+            )}
           </div>
           <div>
             <label className={labelCls} style={labelStyle}>Comentarios del técnico</label>
-            <textarea
-              value={comentariosReporte}
-              onChange={e => setComentariosReporte(e.target.value)}
-              onBlur={() => saveField('comentarios_reporte', comentariosReporte || null)}
-              rows={5}
-              className="w-full text-sm rounded-xl px-4 py-2.5 resize-none"
-              style={inp}
-            />
+            {canEdit ? (
+              <textarea
+                value={comentariosReporte}
+                onChange={e => setComentariosReporte(e.target.value)}
+                onBlur={() => saveField('comentarios_reporte', comentariosReporte || null)}
+                rows={5}
+                className="w-full text-sm rounded-xl px-4 py-2.5 resize-none"
+                style={inp}
+              />
+            ) : (
+              <p className="text-sm rounded-xl px-4 py-2.5 min-h-[7rem] whitespace-pre-wrap" style={{ ...inp, color: comentariosReporte ? 'var(--c-ink)' : 'var(--c-ghost)' }}>
+                {comentariosReporte || 'Sin comentarios'}
+              </p>
+            )}
           </div>
         </div>
       )}
 
       {isApproved && (
-        <div className="mt-8 rounded-xl p-4" style={{ background: 'var(--c-mint-bg)', border: '1px solid rgba(11,153,98,0.25)' }}>
+        <div className="mt-8 rounded-xl p-4 flex items-center justify-between gap-4" style={{ background: 'var(--c-mint-bg)', border: '1px solid rgba(11,153,98,0.25)' }}>
           <p className="text-sm font-semibold" style={{ color: 'var(--c-mint)' }}>
             Servicio aprobado
-            {service.sale_note_id && (
-              <span className="ml-2 font-normal" style={{ opacity: 0.85 }}>
-                — Nota generada
-              </span>
-            )}
           </p>
+          {isAdmin && service.sale_note_id && service.sale_id && (
+            <Link
+              href={`/ventas/${service.sale_id}/notas/${service.sale_note_id}`}
+              className="text-xs font-semibold px-3 py-1.5 rounded-lg transition-colors"
+              style={{ background: 'rgba(11,153,98,0.12)', color: 'var(--c-mint)', border: '1px solid rgba(11,153,98,0.3)', textDecoration: 'none' }}
+            >
+              Ver nota de venta
+            </Link>
+          )}
         </div>
       )}
 
