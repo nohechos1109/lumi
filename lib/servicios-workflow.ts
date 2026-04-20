@@ -45,8 +45,8 @@ export function stepsFromService(svc: Service): WorkflowStep[] {
       : 'pending'
 
   return [
-    { key: 'proyecto',   label: 'Proyecto',   state: hasProject ? 'done' : 'pending' },
-    { key: 'orden',      label: 'Orden',      state: hasOrder ? 'done' : 'pending' },
+    { key: 'proyecto',   label: 'Proyecto',   state: hasProject ? 'done' : 'pending',  href: svc.project_id ? `/servicios/projects/${svc.project_id}` : undefined },
+    { key: 'orden',      label: 'Orden',      state: hasOrder ? 'done' : 'pending',     href: svc.service_order_id ? `/servicios/orders/${svc.service_order_id}` : undefined },
     { key: 'servicio',   label: 'Servicio',   state: servicioState, sublabel: estatusSublabel(svc.estatus) },
     { key: 'aprobacion', label: 'Aprobación', state: aprobacionState },
   ]
@@ -66,10 +66,10 @@ export function stepsFromOrder(order: ServiceOrder): WorkflowStep[] {
         ? 'current'
         : 'pending'
 
-  const servicioState: StepState = orderAtendido ? 'done' : orderActive ? 'current' : 'pending'
+  const servicioState: StepState = orderAtendido ? 'current' : 'pending'
 
   return [
-    { key: 'proyecto',   label: 'Proyecto',   state: order.service_project_id ? 'done' : 'pending' },
+    { key: 'proyecto',   label: 'Proyecto',   state: order.service_project_id ? 'done' : 'pending', href: order.service_project_id ? `/servicios/projects/${order.service_project_id}` : undefined },
     { key: 'orden',      label: 'Orden',      state: ordenState, sublabel: estatusSublabel(order.estatus) },
     { key: 'servicio',   label: 'Servicio',   state: servicioState },
     { key: 'aprobacion', label: 'Aprobación', state: 'pending' },
@@ -77,7 +77,7 @@ export function stepsFromOrder(order: ServiceOrder): WorkflowStep[] {
 }
 
 /** Steps from Project detail page perspective. */
-export function stepsFromProject(project: ServiceProject, hasOrders: boolean): WorkflowStep[] {
+export function stepsFromProject(project: ServiceProject): WorkflowStep[] {
   const cancelled = project.status === 'cancelled'
   const completed = project.status === 'completed'
   const active    = project.status === 'open' || project.status === 'in_progress'
@@ -86,8 +86,8 @@ export function stepsFromProject(project: ServiceProject, hasOrders: boolean): W
 
   return [
     { key: 'proyecto',   label: 'Proyecto',   state: proyectoState },
-    { key: 'orden',      label: 'Orden',      state: hasOrders ? 'current' : 'pending' },
-    { key: 'servicio',   label: 'Servicio',   state: 'pending' },
-    { key: 'aprobacion', label: 'Aprobación', state: 'pending' },
+    { key: 'orden',      label: 'Orden',      state: 'pending' as const },
+    { key: 'servicio',   label: 'Servicio',   state: 'pending' as const },
+    { key: 'aprobacion', label: 'Aprobación', state: 'pending' as const },
   ]
 }

@@ -4,6 +4,7 @@ import { useState, useEffect, FormEvent } from 'react'
 import { useRouter } from 'next/navigation'
 import CustomerSearchSelect from '@/components/ui/CustomerSearchSelect'
 import UnidadSearchSelect from '@/components/ui/UnidadSearchSelect'
+import SingleDateTimePicker from '@/components/ui/SingleDateTimePicker'
 import { notifyRefresh, toast } from '@/lib/toast'
 
 interface Customer {
@@ -199,12 +200,7 @@ export default function NewServiceModal({ onClose, prefillOrderId, prefillCustom
 
           <div>
             <label className={labelCls} style={labelStyle}>Fecha/Hora agendada (opcional)</label>
-            <input
-              name="fecha_hora_agendada"
-              type="datetime-local"
-              className="w-full text-sm rounded-xl px-4 py-2.5"
-              style={inp}
-            />
+            <SingleDateTimePicker name="fecha_hora_agendada" placeholder="Seleccionar fecha y hora" />
           </div>
 
           <div className="flex gap-3" style={{ borderTop: '1px solid var(--c-rim)', paddingTop: '1.25rem' }}>
