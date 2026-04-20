@@ -95,6 +95,7 @@ export async function POST(req: NextRequest) {
       paymentMethod: body.payment_method,
       paymentDate: body.payment_date,
       registeredBy: session.userId,
+      confirmed: true,
     })
     paymentId = payment.id
 

@@ -226,6 +226,7 @@ export async function updateSaleNoteFields(
 export interface CobranzaAbono {
   fecha: string
   monto: string
+  payment_id: string
 }
 
 export interface CobranzaNote {
@@ -278,7 +279,7 @@ export async function listAllNotesForCobranza(userId?: string): Promise<Cobranza
     LEFT JOIN unidades un ON un.id = sn.unit_id
     LEFT JOIN LATERAL (
       SELECT json_agg(
-        json_build_object('fecha', cp.payment_date::text, 'monto', pa.amount::text)
+        json_build_object('fecha', cp.payment_date::text, 'monto', pa.amount::text, 'payment_id', pa.payment_id::text)
         ORDER BY cp.payment_date ASC, pa.created_at ASC
       ) AS abonos
       FROM payment_applications pa

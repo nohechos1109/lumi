@@ -51,6 +51,9 @@ export default function ProductFormModal({ product, onClose, onSave, onDelete }:
   const [busy, setBusy] = useState(false)
   const [uploading, setUploading] = useState(false)
   const [dragOver, setDragOver] = useState(false)
+  const imageErrorFired = useRef(false)
+
+  useEffect(() => { imageErrorFired.current = false }, [product?.id])
 
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
@@ -176,15 +179,17 @@ export default function ProductFormModal({ product, onClose, onSave, onDelete }:
                       alt="Preview"
                       className="max-w-full max-h-full object-contain"
                       onError={() => {
-                      setForm(f => ({ ...f, image_url: '' }))
-                      if (product?.id) {
-                        fetch(`/api/admin/products/${product.id}`, {
-                          method: 'PATCH',
-                          headers: { 'Content-Type': 'application/json' },
-                          body: JSON.stringify({ image_url: null }),
-                        }).catch(() => {})
-                      }
-                    }}
+                        if (imageErrorFired.current) return
+                        imageErrorFired.current = true
+                        setForm(f => ({ ...f, image_url: '' }))
+                        if (product?.id) {
+                          fetch(`/api/admin/products/${product.id}`, {
+                            method: 'PATCH',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ image_url: null }),
+                          }).catch(() => {})
+                        }
+                      }}
                     />
                   </div>
                   <p className="text-center text-[10px] mt-2" style={{ color: 'var(--c-ghost)' }}>

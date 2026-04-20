@@ -2,8 +2,8 @@
 
 import { useEffect } from 'react'
 
-function attachDrag(el: HTMLElement) {
-  if (el.dataset.dragAttached) return
+function attachDrag(el: HTMLElement): () => void {
+  if (el.dataset.dragAttached) return () => {}
   el.dataset.dragAttached = '1'
   el.classList.add('drag-scroll')
 
@@ -12,7 +12,6 @@ function attachDrag(el: HTMLElement) {
   let scrollLeft = 0
 
   function onDown(e: MouseEvent) {
-    // Only drag on the container itself, not on links/buttons/inputs
     const target = e.target as HTMLElement
     if (target.closest('a, button, input, select, textarea, [role="button"]')) return
     isDown = true
@@ -35,19 +34,51 @@ function attachDrag(el: HTMLElement) {
   el.addEventListener('mouseleave', onUp)
   el.addEventListener('mouseup', onUp)
   el.addEventListener('mousemove', onMove)
+
+  return () => {
+    el.removeEventListener('mousedown', onDown)
+    el.removeEventListener('mouseleave', onUp)
+    el.removeEventListener('mouseup', onUp)
+    el.removeEventListener('mousemove', onMove)
+    delete el.dataset.dragAttached
+  }
 }
 
 export default function DragScrollInit() {
   useEffect(() => {
+    const cleanups = new Map<HTMLElement, () => void>()
+
     function scan() {
-      document.querySelectorAll<HTMLElement>('.overflow-x-auto').forEach(attachDrag)
+      document.querySelectorAll<HTMLElement>('.overflow-x-auto').forEach(el => {
+        if (!cleanups.has(el)) {
+          cleanups.set(el, attachDrag(el))
+        }
+      })
     }
 
     scan()
 
-    const observer = new MutationObserver(scan)
+    const observer = new MutationObserver((mutations) => {
+      mutations.forEach(m => {
+        m.removedNodes.forEach(node => {
+          if (!(node instanceof HTMLElement)) return
+          const targets = [node, ...Array.from(node.querySelectorAll<HTMLElement>('.overflow-x-auto'))]
+          targets.forEach(el => {
+            cleanups.get(el)?.()
+            cleanups.delete(el)
+          })
+        })
+      })
+      scan()
+    })
+
     observer.observe(document.body, { childList: true, subtree: true })
-    return () => observer.disconnect()
+
+    return () => {
+      observer.disconnect()
+      cleanups.forEach(cleanup => cleanup())
+      cleanups.clear()
+    }
   }, [])
 
   return null

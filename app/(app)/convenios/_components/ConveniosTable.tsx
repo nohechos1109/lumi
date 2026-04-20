@@ -18,12 +18,18 @@ interface Props {
 interface Filters {
   search: string
   customerId: string
-  estado: string
+  estados: string[]
   dateFrom: string
   dateTo: string
 }
 
-const EMPTY: Filters = { search: '', customerId: '', estado: '', dateFrom: '', dateTo: '' }
+const EMPTY: Filters = { search: '', customerId: '', estados: [], dateFrom: '', dateTo: '' }
+
+const ESTADO_OPTIONS = [
+  { value: 'overdue', label: 'Vencido', bg: '#FFE4E6', color: '#BE123C', bd: 'rgba(190,18,60,0.25)' },
+  { value: 'pending', label: 'Vigente', bg: '#E0F2FE', color: '#0369A1', bd: 'rgba(3,105,161,0.25)' },
+  { value: 'paid',    label: 'Pagado',  bg: '#DCFCE7', color: '#15803D', bd: 'rgba(21,128,61,0.25)'  },
+] as const
 
 function StateBadge({ state, overdue }: { state: string; overdue: boolean }) {
   if (state === 'paid') {
@@ -42,7 +48,18 @@ export default function ConveniosTable({ items, customers }: Props) {
   useSSE({ 'schedule:updated': () => router.refresh() })
 
   const set = useCallback((k: keyof Filters, v: string) => setFilters(f => ({ ...f, [k]: v })), [])
-  const hasFilters = Object.values(filters).some(Boolean)
+  const toggleEstado = useCallback((val: string) => {
+    setFilters(f => {
+      const active = f.estados.includes(val)
+      return { ...f, estados: active ? f.estados.filter(e => e !== val) : [...f.estados, val] }
+    })
+  }, [])
+  const hasFilters = filters.search !== '' || filters.customerId !== '' || filters.estados.length > 0 || filters.dateFrom !== '' || filters.dateTo !== ''
+
+  const customerOptions = useMemo(
+    () => customers.map(c => ({ value: c.id, label: c.name })),
+    [customers]
+  )
 
   const filtered = useMemo(() => {
     return items.filter(item => {
@@ -55,10 +72,9 @@ export default function ConveniosTable({ items, customers }: Props) {
         if (!match) return false
       }
       if (filters.customerId && item.customer_id !== filters.customerId) return false
-      if (filters.estado) {
-        if (filters.estado === 'paid' && item.state !== 'paid') return false
-        if (filters.estado === 'overdue' && !item.overdue) return false
-        if (filters.estado === 'pending' && (item.state !== 'pending' || item.overdue)) return false
+      if (filters.estados.length > 0) {
+        const effectiveState = item.state === 'paid' ? 'paid' : item.overdue ? 'overdue' : 'pending'
+        if (!filters.estados.includes(effectiveState)) return false
       }
       if (filters.dateFrom && item.due_date < filters.dateFrom) return false
       if (filters.dateTo && item.due_date > filters.dateTo) return false
@@ -112,17 +128,32 @@ export default function ConveniosTable({ items, customers }: Props) {
           <FilterSelect
             value={filters.customerId} onChange={v => set('customerId', v)}
             placeholder="Cliente"
-            options={customers.map(c => ({ value: c.id, label: c.name }))}
+            options={customerOptions}
           />
-          <FilterSelect
-            value={filters.estado} onChange={v => set('estado', v)}
-            placeholder="Estado"
-            options={[
-              { value: 'overdue', label: 'Vencido' },
-              { value: 'pending', label: 'Vigente' },
-              { value: 'paid',    label: 'Pagado'  },
-            ]}
-          />
+          {ESTADO_OPTIONS.map(opt => {
+            const on = filters.estados.includes(opt.value)
+            return (
+              <button
+                key={opt.value}
+                onClick={() => toggleEstado(opt.value)}
+                className="flex items-center gap-1.5 h-8 px-3 rounded-full text-xs font-semibold transition-all"
+                style={on
+                  ? { background: opt.bg, color: opt.color, border: `1.5px solid ${opt.bd}` }
+                  : { background: 'var(--c-card)', color: 'var(--c-dim)', border: '1px solid var(--c-rim)' }
+                }
+              >
+                <span
+                  className="inline-block rounded-full transition-all"
+                  style={{
+                    width: 8, height: 8,
+                    background: on ? opt.color : 'var(--c-ghost)',
+                    opacity: on ? 1 : 0.4,
+                  }}
+                />
+                {opt.label}
+              </button>
+            )
+          })}
           {hasFilters && (
             <button onClick={() => setFilters(EMPTY)}
               className="flex items-center gap-1.5 h-8 px-3.5 rounded-full text-xs font-semibold transition-all hover:opacity-80"

@@ -3,6 +3,7 @@
 import { useState, useMemo } from 'react'
 import Link from 'next/link'
 import type { ServiceOrder } from '@/lib/queries/servicios'
+import FilterSelect from '@/components/ui/FilterSelect'
 
 const ESTATUS_MAP: Record<string, { label: string; cls: string }> = {
   pendiente: { label: 'Pendiente', cls: 'badge badge-pending' },
@@ -47,14 +48,12 @@ export default function ServiceOrdersTable({ orders }: { orders: ServiceOrder[] 
           onChange={e => setSearch(e.target.value)}
           className="flex-1 min-w-[200px] text-sm"
         />
-        <select
+        <FilterSelect
           value={statusFilter}
-          onChange={e => setStatusFilter(e.target.value)}
-          className="text-sm"
-        >
-          <option value="">Todos los estados</option>
-          {Object.entries(ESTATUS_MAP).map(([k, v]) => <option key={k} value={k}>{v.label}</option>)}
-        </select>
+          onChange={setStatusFilter}
+          placeholder="Todos los estados"
+          options={Object.entries(ESTATUS_MAP).map(([k, v]) => ({ value: k, label: v.label }))}
+        />
       </div>
 
       <div

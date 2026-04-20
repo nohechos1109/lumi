@@ -1,8 +1,8 @@
 'use client'
 
-import { useState, useRef, useEffect } from 'react'
 import { DayPicker, type DateRange } from 'react-day-picker'
 import { es } from 'react-day-picker/locale'
+import { usePopoverPosition } from '@/components/ui/usePopoverPosition'
 
 interface Props {
   dateFrom: string
@@ -27,8 +27,7 @@ function displayLabel(from: string, to: string) {
 }
 
 export default function DateRangePicker({ dateFrom, dateTo, onChange }: Props) {
-  const [open, setOpen] = useState(false)
-  const ref = useRef<HTMLDivElement>(null)
+  const { open, setOpen, pos, btnRef, panelRef, toggle } = usePopoverPosition()
 
   const range: DateRange = {
     from: dateFrom ? new Date(dateFrom + 'T00:00:00') : undefined,
@@ -41,15 +40,6 @@ export default function DateRangePicker({ dateFrom, dateTo, onChange }: Props) {
     onChange(from, to)
     if (from && to) setOpen(false)
   }
-
-  useEffect(() => {
-    if (!open) return
-    const handle = (e: MouseEvent) => {
-      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false)
-    }
-    document.addEventListener('mousedown', handle)
-    return () => document.removeEventListener('mousedown', handle)
-  }, [open])
 
   const hasValue = dateFrom || dateTo
 
@@ -245,11 +235,12 @@ export default function DateRangePicker({ dateFrom, dateTo, onChange }: Props) {
         }
       `}</style>
 
-      <div ref={ref} className="relative">
+      <div style={{ position: 'relative' }}>
         {/* ── Trigger ──────────────────────────────────────────── */}
         <button
+          ref={btnRef}
           type="button"
-          onClick={() => setOpen(v => !v)}
+          onClick={toggle}
           className="flex items-center gap-1.5 h-8 pl-3.5 pr-2.5 rounded-full text-xs font-semibold transition-all whitespace-nowrap"
           style={{
             background: hasValue ? 'var(--c-navy-bg)' : 'var(--c-card)',
@@ -288,15 +279,18 @@ export default function DateRangePicker({ dateFrom, dateTo, onChange }: Props) {
         </button>
 
         {/* ── Popover ───────────────────────────────────────────── */}
-        {open && (
+        {open && pos && (
           <div
-            className="absolute z-50 mt-1.5 rounded-2xl"
+            ref={panelRef}
+            className="rounded-2xl"
             style={{
+              position: 'fixed',
+              top: pos.top,
+              left: pos.left,
+              zIndex: 9999,
               background: '#fff',
               border: '1px solid var(--c-rim)',
               boxShadow: '0 8px 32px rgba(15,23,42,0.12), 0 2px 8px rgba(15,23,42,0.06)',
-              top: '100%',
-              left: 0,
               animation: 'drp-in 120ms ease-out',
             }}
           >

@@ -4,6 +4,7 @@ import { useState, useMemo } from 'react'
 import Link from 'next/link'
 import type { Service } from '@/lib/queries/servicios'
 import PromoteServiceModal from './PromoteServiceModal'
+import FilterSelect from '@/components/ui/FilterSelect'
 
 const ESTATUS_MAP: Record<string, { label: string; cls: string }> = {
   pendiente:  { label: 'Pendiente',  cls: 'badge badge-pending' },
@@ -53,23 +54,21 @@ export default function ServicesTable({ services, role, canPromote }: { services
           onChange={e => setSearch(e.target.value)}
           className="flex-1 min-w-[200px] text-sm"
         />
-        <select
+        <FilterSelect
           value={statusFilter}
-          onChange={e => setStatusFilter(e.target.value)}
-          className="text-sm"
-        >
-          <option value="">Todos los estados</option>
-          {Object.entries(ESTATUS_MAP).map(([k, v]) => <option key={k} value={k}>{v.label}</option>)}
-        </select>
-        <select
+          onChange={setStatusFilter}
+          placeholder="Todos los estados"
+          options={Object.entries(ESTATUS_MAP).map(([k, v]) => ({ value: k, label: v.label }))}
+        />
+        <FilterSelect
           value={scopeFilter}
-          onChange={e => setScopeFilter(e.target.value as '' | 'walk_in' | 'with_order')}
-          className="text-sm"
-        >
-          <option value="">Todos</option>
-          <option value="with_order">Con orden</option>
-          <option value="walk_in">Walk-in</option>
-        </select>
+          onChange={v => setScopeFilter(v as '' | 'walk_in' | 'with_order')}
+          placeholder="Todos"
+          options={[
+            { value: 'with_order', label: 'Con orden' },
+            { value: 'walk_in', label: 'Walk-in' },
+          ]}
+        />
       </div>
 
       <div

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useRef, useEffect } from 'react'
+import { usePopoverPosition } from './usePopoverPosition'
 
 interface Option {
   value: string
@@ -15,26 +15,18 @@ interface Props {
 }
 
 export default function FilterSelect({ value, onChange, options, placeholder }: Props) {
-  const [open, setOpen] = useState(false)
-  const ref = useRef<HTMLDivElement>(null)
-
-  useEffect(() => {
-    function handler(e: MouseEvent) {
-      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false)
-    }
-    document.addEventListener('mousedown', handler)
-    return () => document.removeEventListener('mousedown', handler)
-  }, [])
+  const { open, setOpen, pos, btnRef, panelRef, toggle } = usePopoverPosition()
 
   const selected = options.find(o => o.value === value)
   const isActive = !!value
 
   return (
-    <div ref={ref} className="relative">
+    <div style={{ position: 'relative' }}>
       {/* Trigger pill */}
       <button
+        ref={btnRef}
         type="button"
-        onClick={() => setOpen(v => !v)}
+        onClick={toggle}
         className="flex items-center gap-1.5 h-8 pl-3.5 pr-2.5 rounded-full text-xs font-semibold transition-all whitespace-nowrap"
         style={{
           background: isActive ? 'var(--c-navy-bg)' : 'var(--c-card)',
@@ -75,10 +67,15 @@ export default function FilterSelect({ value, onChange, options, placeholder }: 
       </button>
 
       {/* Dropdown panel */}
-      {open && (
+      {open && pos && (
         <div
-          className="absolute top-full mt-1.5 left-0 min-w-[168px] rounded-xl py-1 z-30 animate-fade-in"
+          ref={panelRef}
+          className="min-w-[168px] rounded-xl py-1 animate-fade-in"
           style={{
+            position: 'fixed',
+            top: pos.top,
+            left: pos.left,
+            zIndex: 9999,
             background: 'var(--c-panel)',
             border: '1px solid var(--c-rim)',
             boxShadow: '0 8px 24px rgba(15,23,42,0.10), 0 2px 6px rgba(15,23,42,0.05)',

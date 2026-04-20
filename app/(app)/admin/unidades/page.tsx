@@ -327,7 +327,7 @@ export default function AdminUnidadesPage() {
 
       {/* ── Modal: nueva ruta ─────────────────────────────────────────────────── */}
       {modalRuta && (
-        <div className="fixed inset-0 z-50 flex items-start justify-center pt-16 px-4" style={{ background: 'rgba(0,0,0,0.4)' }} onClick={e => { if (e.target === e.currentTarget) setModalRuta(false) }}>
+        <div className="fixed inset-0 z-50 flex items-start justify-center pt-16 px-4" style={{ background: 'rgba(0,0,0,0.4)' }}>
           <div className="w-full max-w-md rounded-2xl shadow-xl" style={{ background: 'var(--c-card)', border: '1px solid var(--c-rim)' }}>
             <div className="flex items-center justify-between px-6 py-4" style={{ borderBottom: '1px solid var(--c-rim)' }}>
               <h2 className="text-lg font-bold" style={{ color: 'var(--c-ink)' }}>Nueva Ruta</h2>
@@ -369,7 +369,7 @@ export default function AdminUnidadesPage() {
 
       {/* ── Modal: editar ruta ────────────────────────────────────────────────── */}
       {editRuta && (
-        <div className="fixed inset-0 z-50 flex items-start justify-center pt-16 px-4" style={{ background: 'rgba(0,0,0,0.4)' }} onClick={e => { if (e.target === e.currentTarget) setEditRuta(null) }}>
+        <div className="fixed inset-0 z-50 flex items-start justify-center pt-16 px-4" style={{ background: 'rgba(0,0,0,0.4)' }}>
           <div className="w-full max-w-md rounded-2xl shadow-xl" style={{ background: 'var(--c-card)', border: '1px solid var(--c-rim)' }}>
             <div className="flex items-center justify-between px-6 py-4" style={{ borderBottom: '1px solid var(--c-rim)' }}>
               <h2 className="text-lg font-bold" style={{ color: 'var(--c-ink)' }}>Editar Ruta</h2>
@@ -411,7 +411,7 @@ export default function AdminUnidadesPage() {
 
       {/* ── Modal: nueva / editar unidad ──────────────────────────────────────── */}
       {modal && (
-        <div className="fixed inset-0 z-50 flex items-start justify-center pt-16 px-4" style={{ background: 'rgba(0,0,0,0.4)' }} onClick={e => { if (e.target === e.currentTarget) setModal(null) }}>
+        <div className="fixed inset-0 z-50 flex items-start justify-center pt-16 px-4" style={{ background: 'rgba(0,0,0,0.4)' }}>
           <div className="w-full max-w-2xl rounded-2xl shadow-xl overflow-y-auto" style={{ background: 'var(--c-card)', border: '1px solid var(--c-rim)', maxHeight: 'calc(100vh - 8rem)' }}>
             <div className="flex items-center justify-between px-6 py-4" style={{ borderBottom: '1px solid var(--c-rim)' }}>
               <h2 className="text-lg font-bold" style={{ color: 'var(--c-ink)' }}>

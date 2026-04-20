@@ -41,6 +41,17 @@ const DEFAULT_VISIBILITY: Record<ColKey, boolean> = {
   credito: true, abono_btn: true, abonos: true,
 }
 
+// ── Batch payment colors ──────────────────────────────────────────────────────
+
+const BATCH_COLORS: { bg: string; border: string }[] = [
+  { bg: 'rgba(59,130,246,0.08)',  border: 'rgba(59,130,246,0.28)'  }, // blue
+  { bg: 'rgba(168,85,247,0.08)',  border: 'rgba(168,85,247,0.28)'  }, // purple
+  { bg: 'rgba(234,88,12,0.08)',   border: 'rgba(234,88,12,0.28)'   }, // orange
+  { bg: 'rgba(236,72,153,0.08)',  border: 'rgba(236,72,153,0.28)'  }, // pink
+  { bg: 'rgba(20,184,166,0.08)',  border: 'rgba(20,184,166,0.28)'  }, // teal
+  { bg: 'rgba(234,179,8,0.10)',   border: 'rgba(202,138,4,0.30)'   }, // yellow
+]
+
 // ── State badges ─────────────────────────────────────────────────────────────
 
 const STATE_MAP: Record<string, { bg: string; text: string; label: string }> = {
@@ -104,6 +115,11 @@ export default function CobranzaTable({ notes, role, activeSales }: Props) {
     setFilters(prev => ({ ...prev, [key]: val })), [])
 
   // Unique values for dropdowns
+  const uniqueClientes = useMemo(() => {
+    const seen = new Map<string, string>()
+    for (const n of notes) seen.set(n.customer_id, n.cliente)
+    return [...seen.entries()].map(([id, name]) => ({ value: id, label: name })).sort((a, b) => a.label.localeCompare(b.label))
+  }, [notes])
   const uniqueAgentes  = useMemo(() => [...new Set(notes.map(n => n.agente ?? '').filter(Boolean))].sort(), [notes])
 
   // Filtered rows
@@ -112,7 +128,7 @@ export default function CobranzaTable({ notes, role, activeSales }: Props) {
                             !n.orden_servicio.toLowerCase().includes(filters.search.toLowerCase())) return false
     if (filters.dateFrom && n.fecha.slice(0, 10) < filters.dateFrom) return false
     if (filters.dateTo   && n.fecha.slice(0, 10) > filters.dateTo)   return false
-    if (filters.cliente  && !n.cliente.toLowerCase().includes(filters.cliente.toLowerCase())) return false
+    if (filters.cliente  && n.customer_id !== filters.cliente) return false
     if (filters.estado   && n.state !== filters.estado)           return false
     if (filters.agente   && (n.agente ?? '') !== filters.agente)  return false
     if (filters.unidad   && !(n.unit_name ?? '').toLowerCase().includes(filters.unidad.toLowerCase())) return false
@@ -130,6 +146,22 @@ export default function CobranzaTable({ notes, role, activeSales }: Props) {
     () => Math.max(0, ...filtered.map(n => n.abonos?.length ?? 0)),
     [filtered]
   )
+
+  // Assign a color index to each payment_id that appears in >1 abono across all notes
+  const paymentColorMap = useMemo(() => {
+    const counts = new Map<string, number>()
+    for (const n of filtered) {
+      for (const ab of n.abonos ?? []) {
+        if (ab.payment_id) counts.set(ab.payment_id, (counts.get(ab.payment_id) ?? 0) + 1)
+      }
+    }
+    const map = new Map<string, number>()
+    let idx = 0
+    for (const [pid, count] of counts) {
+      if (count > 1) { map.set(pid, idx % BATCH_COLORS.length); idx++ }
+    }
+    return map
+  }, [filtered])
 
   const hasFilters = JSON.stringify(filters) !== JSON.stringify(EMPTY)
   const secondaryActiveCount = (filters.unidad ? 1 : 0) + (filters.observaciones ? 1 : 0)
@@ -242,36 +274,12 @@ export default function CobranzaTable({ notes, role, activeSales }: Props) {
               onChange={(from, to) => { setF('dateFrom', from); setF('dateTo', to) }}
             />
 
-            {/* Cliente pill input */}
-            <div className="relative flex items-center">
-              <input
-                type="text"
-                placeholder="Cliente"
-                value={filters.cliente}
-                onChange={e => setF('cliente', e.target.value)}
-                className="h-8 pl-3.5 text-xs font-semibold outline-none transition-all"
-                style={{
-                  borderRadius: '999px',
-                  paddingRight: filters.cliente ? '28px' : '14px',
-                  width: filters.cliente ? 160 : 90,
-                  background: filters.cliente ? 'var(--c-navy-bg)' : 'var(--c-card)',
-                  border: filters.cliente ? '1.5px solid var(--c-navy-bd)' : '1px solid var(--c-rim)',
-                  color: filters.cliente ? 'var(--c-navy)' : 'var(--c-dim)',
-                  boxShadow: filters.cliente ? 'none' : '0 1px 3px rgba(15,23,42,0.04)',
-                }}
-              />
-              {filters.cliente && (
-                <button
-                  onClick={() => setF('cliente', '')}
-                  className="absolute right-1.5 flex items-center justify-center w-4 h-4 rounded-full cursor-pointer"
-                  style={{ background: 'var(--c-navy-bd)', color: 'var(--c-navy)' }}
-                >
-                  <svg width="7" height="7" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="2.8" strokeLinecap="round">
-                    <line x1="1" y1="1" x2="11" y2="11"/><line x1="11" y1="1" x2="1" y2="11"/>
-                  </svg>
-                </button>
-              )}
-            </div>
+            <FilterSelect
+              value={filters.cliente}
+              onChange={v => setF('cliente', v)}
+              placeholder="Cliente"
+              options={uniqueClientes}
+            />
 
             <FilterSelect
               value={filters.estado}
@@ -626,7 +634,8 @@ export default function CobranzaTable({ notes, role, activeSales }: Props) {
                     )}
                     {col('abonos') && Array.from({ length: maxAbonos }, (_, i) => {
                       const ab = n.abonos?.[i]
-                      return <AbonoCell key={i} fecha={ab?.fecha ?? null} monto={ab?.monto ?? null} />
+                      const colorIdx = ab?.payment_id != null ? paymentColorMap.get(ab.payment_id) : undefined
+                      return <AbonoCell key={i} fecha={ab?.fecha ?? null} monto={ab?.monto ?? null} colorIdx={colorIdx} />
                     })}
                   </tr>
                 )
@@ -790,14 +799,23 @@ function Th({ children, right }: { children?: React.ReactNode; right?: boolean }
   )
 }
 
-function AbonoCell({ fecha, monto }: { fecha: string | null; monto: string | null }) {
+function AbonoCell({ fecha, monto, colorIdx }: { fecha: string | null; monto: string | null; colorIdx?: number }) {
   if (!monto) return <td className="px-3 py-2.5 text-xs" style={{ color: 'var(--c-ghost)' }}>—</td>
+  const color = colorIdx != null ? BATCH_COLORS[colorIdx] : null
   return (
-    <td className="px-3 py-2.5 whitespace-nowrap">
-      <span className="block text-xs font-mono font-semibold" style={{ color: '#15803D' }}>
-        ${fmtMXN(monto)}
-      </span>
-      <span className="block text-xs" style={{ color: 'var(--c-ghost)' }}>{fmtDate(fecha)}</span>
+    <td className="px-2 py-1.5">
+      <div
+        className="rounded-md px-2 py-1 whitespace-nowrap"
+        style={color
+          ? { background: color.bg, border: `1px solid ${color.border}` }
+          : { background: 'transparent', border: '1px solid transparent' }
+        }
+      >
+        <span className="block text-xs font-mono font-semibold" style={{ color: '#15803D' }}>
+          ${fmtMXN(monto)}
+        </span>
+        <span className="block text-xs" style={{ color: 'var(--c-ghost)' }}>{fmtDate(fecha)}</span>
+      </div>
     </td>
   )
 }
