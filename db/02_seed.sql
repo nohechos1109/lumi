@@ -181,8 +181,6 @@ INSERT INTO "products" ("id", "sku", "name", "description", "currency", "cost_ba
 ('00000000-0009-0000-0000-000000000146',	'TECL-INAL',	'TECLADO INAL',	'TECLADO TACTIL INALAMBRICO CON SIRENA INCLUIDA Y LECTOR DESFIRE KEYPAD',	'USD',	65.5400,	0.0000,	1.300000,	NULL,	NULL,	NULL,	'Alarma inalambrica'),
 ('00000000-0009-0000-0000-000000000147',	'PNL-N1',	'PANEL N1',	'PANEL DE ALARMA INALAMBRICO',	'USD',	126.0000,	0.0000,	1.300000,	NULL,	NULL,	NULL,	'Alarma inalambrica');
 
-UPDATE "products" SET is_service = true WHERE category = 'Servicios';
-
 INSERT INTO "plantillas" ("id", "nombre", "requerimiento") VALUES
 ('00000000-000a-0000-0000-000000000001',	'M1 TP (4)',	'Equipamiento de Sistema de VideoGrabación de 4 Cámaras'),
 ('00000000-000a-0000-0000-000000000004',	'Dashcam',	'Sistema de Videograbación de Cámaras Dashcam'),
