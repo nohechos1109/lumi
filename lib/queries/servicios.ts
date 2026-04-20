@@ -5,7 +5,7 @@ import type { PoolClient } from 'pg'
 
 export type ServiceProjectStatus = 'open' | 'in_progress' | 'completed' | 'cancelled'
 export type ServiceOrderEstatus = 'pendiente' | 'agendado' | 'en_curso' | 'atendido' | 'cancelado'
-export type ServiceEstatus = 'pendiente' | 'agendado' | 'en_curso' | 'atendido' | 'cancelado' | 'rechazado'
+export type ServiceEstatus = 'pendiente' | 'agendado' | 'en_curso' | 'en_revision' | 'terminado' | 'atendido' | 'cancelado' | 'rechazado'
 export type ServiceRequestStatus = 'pending' | 'approved' | 'rejected' | 'cancelled'
 
 export interface ServiceProject {
@@ -1031,7 +1031,7 @@ export async function approveService(
       [serviceId]
     )
     if (!srv) throw new Error('NOT_FOUND')
-    if (srv.estatus !== 'atendido') throw new Error('INVALID_STATE')
+    if (srv.estatus !== 'en_revision') throw new Error('INVALID_STATE')
     if (srv.approved_at) throw new Error('ALREADY_APPROVED')
 
     // 2. Get materials
@@ -1149,7 +1149,7 @@ export async function approveService(
     // 7. Update service
     await client.query(
       `UPDATE services
-       SET approved_by = $1, approved_at = now(), sale_note_id = $2
+       SET approved_by = $1, approved_at = now(), sale_note_id = $2, estatus = 'terminado'
        WHERE id = $3`,
       [approverId, note.id, serviceId]
     )

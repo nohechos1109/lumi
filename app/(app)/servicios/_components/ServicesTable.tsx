@@ -7,12 +7,14 @@ import PromoteServiceModal from './PromoteServiceModal'
 import FilterSelect from '@/components/ui/FilterSelect'
 
 const ESTATUS_MAP: Record<string, { label: string; cls: string }> = {
-  pendiente:  { label: 'Pendiente',  cls: 'badge badge-pending' },
-  agendado:   { label: 'Agendado',   cls: 'badge badge-scheduled' },
-  en_curso:   { label: 'En curso',   cls: 'badge badge-in-progress' },
-  atendido:   { label: 'Atendido',   cls: 'badge badge-attended' },
-  cancelado:  { label: 'Cancelado',  cls: 'badge badge-cancelled' },
-  rechazado:  { label: 'Rechazado',  cls: 'badge badge-rejected' },
+  pendiente:   { label: 'Pendiente',   cls: 'badge badge-pending' },
+  agendado:    { label: 'Agendado',    cls: 'badge badge-scheduled' },
+  en_curso:    { label: 'En curso',    cls: 'badge badge-in-progress' },
+  en_revision: { label: 'En revisión', cls: 'badge badge-in-revision' },
+  terminado:   { label: 'Terminado',   cls: 'badge badge-done' },
+  atendido:    { label: 'Atendido',    cls: 'badge badge-attended' },
+  cancelado:   { label: 'Cancelado',   cls: 'badge badge-cancelled' },
+  rechazado:   { label: 'Rechazado',   cls: 'badge badge-rejected' },
 }
 
 export default function ServicesTable({ services, role, canPromote }: { services: Service[]; role: string; canPromote: boolean }) {

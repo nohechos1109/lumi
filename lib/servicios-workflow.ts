@@ -1,15 +1,16 @@
 import type { WorkflowStep, StepState } from '@/components/ui/WorkflowStepper'
 import type { Service, ServiceOrder, ServiceProject } from '@/lib/queries/servicios'
 
-const WORKFLOW_ORDER = ['pendiente', 'agendado', 'en_curso', 'atendido'] as const
+const WORKFLOW_ORDER = ['pendiente', 'agendado', 'en_curso', 'en_revision'] as const
 
 const ESTATUS_LABEL: Record<string, string> = {
-  pendiente: 'Pendiente',
-  agendado:  'Agendado',
-  en_curso:  'En curso',
-  atendido:  'Atendido',
-  cancelado: 'Cancelado',
-  rechazado: 'Rechazado',
+  pendiente:   'Pendiente',
+  agendado:    'Agendado',
+  en_curso:    'En curso',
+  en_revision: 'En revisión',
+  terminado:   'Terminado',
+  cancelado:   'Cancelado',
+  rechazado:   'Rechazado',
 }
 
 function estatusSublabel(estatus: string): string {
@@ -17,29 +18,29 @@ function estatusSublabel(estatus: string): string {
 }
 
 function isCancelled(estatus: string | null | undefined): boolean {
-  return estatus === 'cancelado' || estatus === 'cancelled' || estatus === 'rechazado'
+  return estatus === 'cancelado' || estatus === 'cancelled'
 }
 
 /** Steps from Service detail page perspective. */
 export function stepsFromService(svc: Service): WorkflowStep[] {
   const servicioCancelled = isCancelled(svc.estatus)
-  const servicioAtendido  = svc.estatus === 'atendido'
-  const servicioActive    = (WORKFLOW_ORDER as readonly string[]).includes(svc.estatus) && !servicioAtendido
-  const approved          = !!svc.approved_at
+  const servicioTerminado = svc.estatus === 'terminado' || !!svc.approved_at
+  const servicioRevision  = svc.estatus === 'en_revision'
+  const servicioActive    = (WORKFLOW_ORDER as readonly string[]).includes(svc.estatus) && !servicioTerminado && !servicioRevision
   const hasProject        = !!svc.project_id
   const hasOrder          = !!svc.service_order_id
 
   const servicioState: StepState = servicioCancelled
     ? 'error'
-    : servicioAtendido
+    : servicioTerminado || servicioRevision
       ? 'done'
       : servicioActive
         ? 'current'
         : 'pending'
 
-  const aprobacionState: StepState = approved
+  const aprobacionState: StepState = servicioTerminado
     ? 'done'
-    : servicioAtendido
+    : servicioRevision
       ? 'current'
       : 'pending'
 

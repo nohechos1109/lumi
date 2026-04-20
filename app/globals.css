@@ -75,7 +75,9 @@ body {
 .badge-pending     { background: rgba(136,153,170,0.10); color: var(--c-dim);  border: 1px solid var(--c-rim-hi); }
 .badge-scheduled   { background: var(--c-sky-bg);       color: var(--c-sky);  border: 1px solid var(--c-sky-bd); }
 .badge-in-progress { background: var(--c-gold-bg);      color: var(--c-gold); border: 1px solid var(--c-gold-bd); }
+.badge-in-revision { background: var(--c-navy-bg);      color: var(--c-navy); border: 1px solid var(--c-navy-bd); }
 .badge-attended    { background: var(--c-mint-bg);      color: var(--c-mint); border: 1px solid rgba(11,153,98,0.25); }
+.badge-done        { background: var(--c-mint-bg);      color: var(--c-mint); border: 1px solid rgba(11,153,98,0.25); }
 .badge-rejected    { background: var(--c-rose-bg);      color: var(--c-rose); border: 1px solid rgba(220,38,38,0.20); }
 .badge-approved    { background: var(--c-mint-bg);      color: var(--c-mint); border: 1px solid rgba(11,153,98,0.25); }
 

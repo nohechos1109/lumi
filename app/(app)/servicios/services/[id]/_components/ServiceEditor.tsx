@@ -6,22 +6,14 @@ import Link from 'next/link'
 import type { Service, ServiceEstatus } from '@/lib/queries/servicios'
 import { notifyRefresh, toast } from '@/lib/toast'
 
-const ESTATUS_OPTIONS: { value: ServiceEstatus; label: string }[] = [
-  { value: 'pendiente', label: 'Pendiente' },
-  { value: 'agendado',  label: 'Agendado' },
-  { value: 'en_curso',  label: 'En curso' },
-  { value: 'atendido',  label: 'Atendido' },
-  { value: 'cancelado', label: 'Cancelado' },
-  { value: 'rechazado', label: 'Rechazado' },
-]
-
-const ESTATUS_MAP: Record<string, string> = {
-  pendiente: 'badge badge-pending',
-  agendado:  'badge badge-scheduled',
-  en_curso:  'badge badge-in-progress',
-  atendido:  'badge badge-attended',
-  cancelado: 'badge badge-cancelled',
-  rechazado: 'badge badge-rejected',
+const ESTATUS_MAP: Record<string, { label: string; cls: string }> = {
+  pendiente:   { label: 'Pendiente',   cls: 'badge badge-pending' },
+  agendado:    { label: 'Agendado',    cls: 'badge badge-scheduled' },
+  en_curso:    { label: 'En curso',    cls: 'badge badge-in-progress' },
+  en_revision: { label: 'En revisión', cls: 'badge badge-in-revision' },
+  terminado:   { label: 'Terminado',   cls: 'badge badge-done' },
+  cancelado:   { label: 'Cancelado',   cls: 'badge badge-cancelled' },
+  rechazado:   { label: 'Rechazado',   cls: 'badge badge-rejected' },
 }
 
 const labelCls = 'block text-xs font-semibold mb-1.5'
@@ -31,6 +23,8 @@ const inp = { background: 'var(--c-panel)', border: '1px solid var(--c-rim)', co
 interface Props {
   service: Service
   canEdit: boolean
+  canEditReport: boolean
+  canChangeStatus: boolean
   canManageTech: boolean
   canApprove: boolean
   hasMaterials: boolean
@@ -38,13 +32,14 @@ interface Props {
   isAdmin?: boolean
 }
 
-export default function ServiceEditor({ service, canEdit, canManageTech, canApprove, hasMaterials, tecnicos, isAdmin }: Props) {
+export default function ServiceEditor({ service, canEdit, canEditReport, canChangeStatus, canManageTech, canApprove, hasMaterials, tecnicos, isAdmin }: Props) {
   const router = useRouter()
   const [estatus, setEstatus] = useState<ServiceEstatus>(service.estatus)
   const [reporte, setReporte] = useState(service.reporte_tecnico ?? '')
   const [comentariosReporte, setComentariosReporte] = useState(service.comentarios_reporte ?? '')
   const [saving, setSaving] = useState(false)
   const [approving, setApproving] = useState(false)
+  const [rejecting, setRejecting] = useState(false)
   const [showTechModal, setShowTechModal] = useState(false)
 
   async function saveField(field: string, value: string | null) {
@@ -68,9 +63,26 @@ export default function ServiceEditor({ service, canEdit, canManageTech, canAppr
     }
   }
 
-  async function handleStatusChange(s: ServiceEstatus) {
-    setEstatus(s)
-    await saveField('estatus', s)
+  async function changeStatus(next: ServiceEstatus) {
+    setSaving(true)
+    try {
+      const res = await fetch(`/api/servicios/services/${service.id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ estatus: next }),
+      })
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}))
+        toast(err.error || 'Error al cambiar estado', 'error')
+        return
+      }
+      setEstatus(next)
+      toast('Estado actualizado', 'success')
+      notifyRefresh()
+      router.refresh()
+    } finally {
+      setSaving(false)
+    }
   }
 
   async function handleApprove() {
@@ -82,7 +94,8 @@ export default function ServiceEditor({ service, canEdit, canManageTech, canAppr
         toast(result.error || 'Error al aprobar servicio', 'error')
         return
       }
-      toast(`Servicio aprobado — nota ${result.saleNote.number} creada`, 'success')
+      setEstatus('terminado')
+      toast(`Servicio terminado — nota ${result.saleNote.number} creada`, 'success')
       notifyRefresh()
       router.refresh()
     } finally {
@@ -90,10 +103,23 @@ export default function ServiceEditor({ service, canEdit, canManageTech, canAppr
     }
   }
 
+  async function handleRegresar() {
+    setRejecting(true)
+    try {
+      await changeStatus('rechazado')
+    } finally {
+      setRejecting(false)
+    }
+  }
+
   const isApproved = !!service.approved_at
-  const showApproveBtn = canApprove && estatus === 'atendido' && !isApproved && hasMaterials
-  const stCls = ESTATUS_MAP[estatus] ?? ESTATUS_MAP.pendiente
+  const info = ESTATUS_MAP[estatus] ?? ESTATUS_MAP.pendiente
   const techs = service.technicians ?? []
+
+  const showIniciar    = canChangeStatus && estatus === 'pendiente'
+  const showTerminar   = canChangeStatus && (estatus === 'en_curso' || estatus === 'rechazado')
+  const showRevision   = canApprove && estatus === 'en_revision'
+  const showNoMaterials = canApprove && estatus === 'en_revision' && !hasMaterials
 
   return (
     <div>
@@ -103,9 +129,7 @@ export default function ServiceEditor({ service, canEdit, canManageTech, canAppr
             <h1 className="font-heading text-3xl font-bold font-mono" style={{ color: 'var(--c-ink)' }}>
               {service.number}
             </h1>
-            <span className={stCls}>
-              {ESTATUS_OPTIONS.find(o => o.value === estatus)?.label ?? estatus}
-            </span>
+            <span className={info.cls}>{info.label}</span>
           </div>
           <div className="text-sm mt-1 space-y-0.5" style={{ color: 'var(--c-dim)' }}>
             {service.customer_name && <div><span style={{ color: 'var(--c-ghost)' }}>Cliente:</span> {service.customer_name}</div>}
@@ -159,27 +183,67 @@ export default function ServiceEditor({ service, canEdit, canManageTech, canAppr
           </div>
         </div>
 
-        {canEdit && (
-          <div className="flex flex-col items-end gap-2">
-            <label className={labelCls} style={labelStyle}>Estado</label>
-            <select
-              value={estatus}
-              onChange={e => handleStatusChange(e.target.value as ServiceEstatus)}
+        <div className="flex flex-col items-end gap-2">
+          {showIniciar && (
+            <button
+              onClick={() => changeStatus('en_curso')}
               disabled={saving}
-              className="text-sm rounded-lg px-3 py-2"
-              style={inp}
+              className="px-5 py-2.5 rounded-xl text-sm font-semibold text-white transition-all hover:opacity-90 active:scale-95"
+              style={{ background: saving ? 'var(--c-rim-hi)' : 'var(--c-navy)', cursor: saving ? 'not-allowed' : 'pointer', border: 'none', opacity: saving ? 0.6 : 1 }}
             >
-              {ESTATUS_OPTIONS.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
-            </select>
-          </div>
-        )}
+              Iniciar
+            </button>
+          )}
+          {showTerminar && (
+            <button
+              onClick={() => changeStatus('en_revision')}
+              disabled={saving}
+              className="px-5 py-2.5 rounded-xl text-sm font-semibold text-white transition-all hover:opacity-90 active:scale-95"
+              style={{ background: saving ? 'var(--c-rim-hi)' : 'var(--c-gold)', cursor: saving ? 'not-allowed' : 'pointer', border: 'none', opacity: saving ? 0.6 : 1 }}
+            >
+              Terminar
+            </button>
+          )}
+        </div>
       </div>
 
-      {(canEdit || reporte || comentariosReporte) && (
+      {showRevision && (
+        <div className="mb-8 rounded-xl p-5" style={{ border: '1px solid var(--c-rim)', background: 'var(--c-card)' }}>
+          <h3 className="text-sm font-bold mb-1" style={{ color: 'var(--c-ink)' }}>Revisión del servicio</h3>
+          <p className="text-xs mb-4" style={{ color: 'var(--c-dim)' }}>
+            Aprobar genera una nota de venta con los materiales registrados. Regresar devuelve el servicio a los técnicos.
+          </p>
+          <div className="flex gap-3 flex-wrap">
+            <button
+              onClick={handleApprove}
+              disabled={approving || rejecting || !hasMaterials}
+              className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold text-white transition-all hover:opacity-90 active:scale-95"
+              style={{ background: approving || !hasMaterials ? 'var(--c-rim-hi)' : 'var(--c-mint)', cursor: approving || !hasMaterials ? 'not-allowed' : 'pointer', border: 'none', opacity: approving || !hasMaterials ? 0.6 : 1, boxShadow: hasMaterials ? '0 2px 8px rgba(5,150,105,0.20)' : 'none' }}
+            >
+              {approving ? 'Aprobando...' : 'Aprobar'}
+            </button>
+            <button
+              onClick={handleRegresar}
+              disabled={approving || rejecting}
+              className="px-5 py-2.5 rounded-xl text-sm font-semibold transition-all hover:opacity-90 active:scale-95"
+              style={{ background: 'transparent', cursor: rejecting ? 'not-allowed' : 'pointer', border: '1px solid var(--c-rose)', color: 'var(--c-rose)', opacity: rejecting ? 0.6 : 1 }}
+            >
+              {rejecting ? 'Regresando...' : 'Regresar'}
+            </button>
+          </div>
+          {showNoMaterials && (
+            <p className="text-xs mt-3" style={{ color: 'var(--c-rose)' }}>
+              Registra materiales antes de aprobar.
+            </p>
+          )}
+        </div>
+      )}
+
+      {(canEditReport || reporte || comentariosReporte) && (
         <div className="grid gap-6 md:grid-cols-2">
           <div>
             <label className={labelCls} style={labelStyle}>Reporte técnico</label>
-            {canEdit ? (
+            {canEditReport ? (
               <textarea
                 value={reporte}
                 onChange={e => setReporte(e.target.value)}
@@ -196,7 +260,7 @@ export default function ServiceEditor({ service, canEdit, canManageTech, canAppr
           </div>
           <div>
             <label className={labelCls} style={labelStyle}>Comentarios del técnico</label>
-            {canEdit ? (
+            {canEditReport ? (
               <textarea
                 value={comentariosReporte}
                 onChange={e => setComentariosReporte(e.target.value)}
@@ -217,7 +281,7 @@ export default function ServiceEditor({ service, canEdit, canManageTech, canAppr
       {isApproved && (
         <div className="mt-8 rounded-xl p-4 flex items-center justify-between gap-4" style={{ background: 'var(--c-mint-bg)', border: '1px solid rgba(11,153,98,0.25)' }}>
           <p className="text-sm font-semibold" style={{ color: 'var(--c-mint)' }}>
-            Servicio aprobado
+            Servicio terminado
           </p>
           {isAdmin && service.sale_note_id && service.sale_id && (
             <Link
@@ -228,31 +292,6 @@ export default function ServiceEditor({ service, canEdit, canManageTech, canAppr
               Ver nota de venta
             </Link>
           )}
-        </div>
-      )}
-
-      {showApproveBtn && (
-        <div className="mt-8 rounded-xl p-5" style={{ border: '1px solid var(--c-rim)', background: 'var(--c-card)' }}>
-          <h3 className="text-sm font-bold mb-2" style={{ color: 'var(--c-ink)' }}>Aprobar servicio</h3>
-          <p className="text-xs mb-4" style={{ color: 'var(--c-dim)' }}>
-            Se generará una nota de venta automática con los materiales registrados.
-          </p>
-          <button
-            onClick={handleApprove}
-            disabled={approving}
-            className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold text-white transition-all hover:opacity-90 active:scale-95"
-            style={{ background: approving ? 'var(--c-rim-hi)' : 'var(--c-mint)', cursor: approving ? 'not-allowed' : 'pointer', border: 'none', opacity: approving ? 0.6 : 1, boxShadow: '0 2px 8px rgba(5,150,105,0.20)' }}
-          >
-            {approving ? 'Aprobando...' : 'Aprobar y generar nota'}
-          </button>
-        </div>
-      )}
-
-      {estatus === 'atendido' && !isApproved && !hasMaterials && canApprove && (
-        <div className="mt-8 rounded-xl p-4" style={{ border: '1px dashed var(--c-rim)', color: 'var(--c-dim)' }}>
-          <p className="text-sm">
-            Registra materiales antes de aprobar.
-          </p>
         </div>
       )}
 

@@ -273,7 +273,12 @@ export default function MaterialsEditor({
   function addFromQuote(dl: typeof displayLines[number]) {
     const usedNow = usedByQuoteLine[dl.id] ?? 0
     if (dl.maxQty - usedNow <= 0) return
-    addMaterial(dl.product_id ?? '', dl.unitPrice, dl.id)
+    const existing = materials.find(m => m.quote_line_id === dl.id)
+    if (existing) {
+      patchMaterial(existing.id, 'quantity', Math.round(Number(existing.quantity)) + 1)
+    } else {
+      addMaterial(dl.product_id ?? '', dl.unitPrice, dl.id)
+    }
   }
 
   function addFromSearch(product: Product) {
@@ -281,9 +286,14 @@ export default function MaterialsEditor({
       ? parseFloat(product.public_price)
       : parseFloat(product.cost_base) * parseFloat(product.utility_factor) + parseFloat(product.utility_fixed)
     const priceMxn = product.currency === 'USD' ? rawPrice * fxRate : rawPrice
-    // If product matches a pending quote line, link it
     const matchingLine = displayLines.find(dl => dl.product_id === product.id && (dl.maxQty - (usedByQuoteLine[dl.id] ?? 0)) > 0)
-    addMaterial(product.id, priceMxn, matchingLine?.id ?? null)
+    const quoteLineId = matchingLine?.id ?? null
+    const existing = materials.find(m => quoteLineId ? m.quote_line_id === quoteLineId : m.product_id === product.id)
+    if (existing) {
+      patchMaterial(existing.id, 'quantity', Math.round(Number(existing.quantity)) + 1)
+    } else {
+      addMaterial(product.id, priceMxn, quoteLineId)
+    }
   }
 
   const [quoteOpen, setQuoteOpen] = useState(false)
