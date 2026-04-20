@@ -41,6 +41,11 @@ export default function ServiceEditor({ service, canEdit, canEditReport, canChan
   const [approving, setApproving] = useState(false)
   const [rejecting, setRejecting] = useState(false)
   const [showTechModal, setShowTechModal] = useState(false)
+  const [cancelModal, setCancelModal] = useState(false)
+  const [cancelReason, setCancelReason] = useState('')
+  const [cancelling, setCancelling] = useState(false)
+  const [cancelTarget, setCancelTarget] = useState<'en_revision' | 'cancelado'>('cancelado')
+  const [approvingCancel, setApprovingCancel] = useState(false)
 
   async function saveField(field: string, value: string | null) {
     setSaving(true)
@@ -112,14 +117,91 @@ export default function ServiceEditor({ service, canEdit, canEditReport, canChan
     }
   }
 
+  async function handleCancel() {
+    if (!cancelReason.trim()) return
+    setCancelling(true)
+    try {
+      const patches = cancelTarget === 'en_revision'
+        ? { estatus: 'en_revision', motivo_cancelacion: cancelReason.trim() }
+        : { estatus: 'cancelado', motivo_cancelacion: cancelReason.trim() }
+      const res = await fetch(`/api/servicios/services/${service.id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(patches),
+      })
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}))
+        toast(err.error || 'Error al cancelar', 'error')
+        return
+      }
+      setEstatus(cancelTarget)
+      setCancelModal(false)
+      setCancelReason('')
+      toast(cancelTarget === 'en_revision' ? 'Cancelación enviada a revisión' : 'Servicio cancelado', 'success')
+      notifyRefresh()
+      router.refresh()
+    } finally {
+      setCancelling(false)
+    }
+  }
+
+  async function handleCancelApprove() {
+    setApprovingCancel(true)
+    try {
+      const res = await fetch(`/api/servicios/services/${service.id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ estatus: 'cancelado' }),
+      })
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}))
+        toast(err.error || 'Error al confirmar cancelación', 'error')
+        return
+      }
+      setEstatus('cancelado')
+      toast('Servicio cancelado', 'success')
+      notifyRefresh()
+      router.refresh()
+    } finally {
+      setApprovingCancel(false)
+    }
+  }
+
+  async function handleCancelRegresar() {
+    setRejecting(true)
+    try {
+      const res = await fetch(`/api/servicios/services/${service.id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ estatus: 'pendiente', motivo_cancelacion: null }),
+      })
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}))
+        toast(err.error || 'Error al regresar', 'error')
+        return
+      }
+      setEstatus('pendiente')
+      toast('Servicio regresado a pendiente', 'success')
+      notifyRefresh()
+      router.refresh()
+    } finally {
+      setRejecting(false)
+    }
+  }
+
   const isApproved = !!service.approved_at
   const info = ESTATUS_MAP[estatus] ?? ESTATUS_MAP.pendiente
   const techs = service.technicians ?? []
 
-  const showIniciar    = canChangeStatus && estatus === 'pendiente'
-  const showTerminar   = canChangeStatus && (estatus === 'en_curso' || estatus === 'rechazado')
-  const showRevision   = canApprove && estatus === 'en_revision'
-  const showNoMaterials = canApprove && estatus === 'en_revision' && !hasMaterials
+  const isCancellationReview = estatus === 'en_revision' && !!service.motivo_cancelacion
+  const isTerminationReview  = estatus === 'en_revision' && !service.motivo_cancelacion
+
+  const showIniciar            = canChangeStatus && estatus === 'pendiente'
+  const showPendingCancel      = canChangeStatus && estatus === 'pendiente'
+  const showTerminar           = canChangeStatus && (estatus === 'en_curso' || estatus === 'rechazado')
+  const showRevision           = canApprove && isTerminationReview
+  const showCancellationReview = canApprove && isCancellationReview
+  const showNoMaterials        = canApprove && isTerminationReview && !hasMaterials
 
   return (
     <div>
@@ -180,19 +262,38 @@ export default function ServiceEditor({ service, canEdit, canEditReport, canChan
             {service.comentarios_soporte && (
               <div className="mt-1"><span style={{ color: 'var(--c-ghost)' }}>Detalles:</span> {service.comentarios_soporte}</div>
             )}
+            {service.motivo_cancelacion && (
+              <div className="mt-1"><span style={{ color: 'var(--c-ghost)' }}>Motivo de cancelación:</span>{' '}
+                <span style={{ color: 'var(--c-rose)' }}>{service.motivo_cancelacion}</span>
+              </div>
+            )}
           </div>
         </div>
 
         <div className="flex flex-col items-end gap-2">
-          {showIniciar && (
-            <button
-              onClick={() => changeStatus('en_curso')}
-              disabled={saving}
-              className="px-5 py-2.5 rounded-xl text-sm font-semibold text-white transition-all hover:opacity-90 active:scale-95"
-              style={{ background: saving ? 'var(--c-rim-hi)' : 'var(--c-navy)', cursor: saving ? 'not-allowed' : 'pointer', border: 'none', opacity: saving ? 0.6 : 1 }}
-            >
-              Iniciar
-            </button>
+          {(showIniciar || showPendingCancel) && (
+            <div className="flex gap-2">
+              {showIniciar && (
+                <button
+                  onClick={() => changeStatus('en_curso')}
+                  disabled={saving}
+                  className="px-5 py-2.5 rounded-xl text-sm font-semibold text-white transition-all hover:opacity-90 active:scale-95"
+                  style={{ background: saving ? 'var(--c-rim-hi)' : 'var(--c-navy)', cursor: saving ? 'not-allowed' : 'pointer', border: 'none', opacity: saving ? 0.6 : 1 }}
+                >
+                  Iniciar
+                </button>
+              )}
+              {showPendingCancel && (
+                <button
+                  onClick={() => { setCancelTarget('en_revision'); setCancelModal(true) }}
+                  disabled={saving}
+                  className="px-5 py-2.5 rounded-xl text-sm font-semibold transition-all hover:opacity-90 active:scale-95"
+                  style={{ background: 'transparent', cursor: saving ? 'not-allowed' : 'pointer', border: '1px solid var(--c-rim-hi)', color: 'var(--c-ghost)', opacity: saving ? 0.6 : 1 }}
+                >
+                  Cancelar
+                </button>
+              )}
+            </div>
           )}
           {showTerminar && (
             <button
@@ -206,6 +307,32 @@ export default function ServiceEditor({ service, canEdit, canEditReport, canChan
           )}
         </div>
       </div>
+
+      {showCancellationReview && (
+        <div className="mb-8 rounded-xl p-5" style={{ border: '1px solid rgba(220,38,38,0.20)', background: 'var(--c-rose-bg)' }}>
+          <h3 className="text-sm font-bold mb-1" style={{ color: 'var(--c-rose)' }}>Solicitud de cancelación</h3>
+          <p className="text-xs mb-1" style={{ color: 'var(--c-dim)' }}>Razón:</p>
+          <p className="text-sm mb-4 font-medium" style={{ color: 'var(--c-ink)' }}>{service.motivo_cancelacion}</p>
+          <div className="flex gap-3 flex-wrap">
+            <button
+              onClick={handleCancelApprove}
+              disabled={approvingCancel || rejecting}
+              className="px-5 py-2.5 rounded-xl text-sm font-semibold text-white transition-all hover:opacity-90 active:scale-95"
+              style={{ background: approvingCancel ? 'var(--c-rim-hi)' : 'var(--c-rose)', cursor: approvingCancel ? 'not-allowed' : 'pointer', border: 'none', opacity: approvingCancel ? 0.6 : 1 }}
+            >
+              {approvingCancel ? 'Confirmando...' : 'Confirmar cancelación'}
+            </button>
+            <button
+              onClick={handleCancelRegresar}
+              disabled={approvingCancel || rejecting}
+              className="px-5 py-2.5 rounded-xl text-sm font-semibold transition-all hover:opacity-90 active:scale-95"
+              style={{ background: 'transparent', cursor: rejecting ? 'not-allowed' : 'pointer', border: '1px solid var(--c-rim-hi)', color: 'var(--c-dim)', opacity: rejecting ? 0.6 : 1 }}
+            >
+              {rejecting ? 'Regresando...' : 'Regresar'}
+            </button>
+          </div>
+        </div>
+      )}
 
       {showRevision && (
         <div className="mb-8 rounded-xl p-5" style={{ border: '1px solid var(--c-rim)', background: 'var(--c-card)' }}>
@@ -229,6 +356,14 @@ export default function ServiceEditor({ service, canEdit, canEditReport, canChan
               style={{ background: 'transparent', cursor: rejecting ? 'not-allowed' : 'pointer', border: '1px solid var(--c-rose)', color: 'var(--c-rose)', opacity: rejecting ? 0.6 : 1 }}
             >
               {rejecting ? 'Regresando...' : 'Regresar'}
+            </button>
+            <button
+              onClick={() => { setCancelTarget('cancelado'); setCancelModal(true) }}
+              disabled={approving || rejecting}
+              className="px-5 py-2.5 rounded-xl text-sm font-semibold transition-all hover:opacity-90 active:scale-95"
+              style={{ background: 'transparent', cursor: 'pointer', border: '1px solid var(--c-rim-hi)', color: 'var(--c-ghost)' }}
+            >
+              Cancelar
             </button>
           </div>
           {showNoMaterials && (
@@ -292,6 +427,78 @@ export default function ServiceEditor({ service, canEdit, canEditReport, canChan
               Ver nota de venta
             </Link>
           )}
+        </div>
+      )}
+
+      {cancelModal && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4"
+          style={{ background: 'rgba(9,11,16,0.5)', backdropFilter: 'blur(2px)' }}
+          onClick={() => { setCancelModal(false); setCancelReason('') }}
+        >
+          <div
+            role="dialog"
+            aria-modal="true"
+            className="w-full max-w-sm rounded-2xl flex flex-col overflow-hidden"
+            style={{ background: 'var(--c-card)', border: '1px solid var(--c-rim)', boxShadow: '0 8px 32px rgba(9,11,16,0.24)' }}
+            onClick={e => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between px-6 py-4" style={{ borderBottom: '1px solid var(--c-rim)' }}>
+              <h2 className="font-heading text-base font-bold" style={{ color: 'var(--c-ink)' }}>
+                {cancelTarget === 'en_revision' ? 'Solicitar cancelación' : 'Cancelar servicio'}
+              </h2>
+              <button
+                type="button"
+                onClick={() => { setCancelModal(false); setCancelReason('') }}
+                className="rounded-lg p-1.5 transition-colors hover:opacity-70"
+                style={{ color: 'var(--c-dim)', cursor: 'pointer', background: 'transparent', border: 'none' }}
+              >
+                <svg width="16" height="16" viewBox="0 0 18 18" fill="none">
+                  <path d="M14 4L4 14M4 4l10 10" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+                </svg>
+              </button>
+            </div>
+            <div className="px-6 py-5 flex flex-col gap-4">
+              <div>
+                <label className="block text-xs font-semibold mb-1.5" style={{ color: 'var(--c-dim)' }}>
+                  Razón de cancelación
+                </label>
+                <textarea
+                  value={cancelReason}
+                  onChange={e => setCancelReason(e.target.value)}
+                  rows={3}
+                  placeholder="Describe el motivo de cancelación..."
+                  className="w-full text-sm rounded-xl px-4 py-2.5 resize-none"
+                  style={{ background: 'var(--c-panel)', border: '1px solid var(--c-rim)', color: 'var(--c-ink)', outline: 'none' }}
+                  autoFocus
+                />
+              </div>
+              <div className="flex gap-3" style={{ borderTop: '1px solid var(--c-rim)', paddingTop: '1rem' }}>
+                <button
+                  type="button"
+                  onClick={() => { setCancelModal(false); setCancelReason('') }}
+                  className="flex-1 py-2 rounded-lg text-sm font-semibold transition-colors hover:opacity-75"
+                  style={{ background: 'transparent', color: 'var(--c-dim)', border: '1px solid var(--c-rim)', cursor: 'pointer' }}
+                >
+                  Volver
+                </button>
+                <button
+                  type="button"
+                  onClick={handleCancel}
+                  disabled={cancelling || !cancelReason.trim()}
+                  className="flex-1 py-2 rounded-lg text-sm font-semibold text-white"
+                  style={{
+                    background: cancelling || !cancelReason.trim() ? 'var(--c-rim-hi)' : 'var(--c-rose)',
+                    cursor: cancelling || !cancelReason.trim() ? 'not-allowed' : 'pointer',
+                    border: 'none',
+                    opacity: cancelling || !cancelReason.trim() ? 0.6 : 1,
+                  }}
+                >
+                  {cancelling ? 'Enviando...' : cancelTarget === 'en_revision' ? 'Enviar a revisión' : 'Confirmar cancelación'}
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
       )}
 
