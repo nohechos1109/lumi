@@ -36,7 +36,7 @@ export default function ServiciosLanding({ role, projects, orders, services, req
   const [showNewRequest, setShowNewRequest] = useState(false)
 
   const tabs: { key: Tab; label: string; count: number; visible: boolean }[] = [
-    { key: 'projects', label: 'Proyectos', count: projects.length, visible: !perms.tecnicoOnly },
+    { key: 'projects', label: 'Planeación', count: projects.length, visible: !perms.tecnicoOnly },
     { key: 'orders', label: perms.tecnicoOnly ? 'Mis Órdenes' : 'Órdenes', count: orders.length, visible: true },
     { key: 'services', label: perms.tecnicoOnly ? 'Mis Servicios' : 'Servicios', count: services.length, visible: true },
     { key: 'requests', label: 'Solicitudes', count: requests.length, visible: !perms.tecnicoOnly && (perms.createRequest || perms.approveRequest) },
@@ -51,7 +51,7 @@ export default function ServiciosLanding({ role, projects, orders, services, req
             Servicios
           </h1>
           <p className="text-sm mt-1" style={{ color: 'var(--c-ghost)' }}>
-            Gestión de proyectos, órdenes y servicios en campo
+            Gestión de planeaciones, órdenes y servicios en campo
           </p>
         </div>
 
@@ -63,7 +63,7 @@ export default function ServiciosLanding({ role, projects, orders, services, req
               style={{ background: 'var(--c-navy)', color: '#fff', boxShadow: '0 2px 8px rgba(37,99,235,0.25)', border: 'none', cursor: 'pointer' }}
             >
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-              Nuevo Proyecto
+              Nueva Planeación
             </button>
           )}
           {tab === 'services' && perms.createService && (

@@ -74,7 +74,7 @@ export default async function ServiceRequestDetailPage({ params }: { params: Pro
             </div>
             {req.resolved_service_project_id && (
               <div>
-                <div className="text-xs font-semibold uppercase tracking-widest mb-1" style={{ color: 'var(--c-ghost)' }}>Proyecto resultante</div>
+                <div className="text-xs font-semibold uppercase tracking-widest mb-1" style={{ color: 'var(--c-ghost)' }}>Planeación resultante</div>
                 <Link
                   href={`/servicios/projects/${req.resolved_service_project_id}`}
                   className="font-mono hover:underline"

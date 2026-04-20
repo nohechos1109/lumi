@@ -30,7 +30,7 @@ export default function ServiceProjectsTable({ projects }: { projects: ServicePr
   if (projects.length === 0) {
     return (
       <div className="rounded-xl p-8 text-center" style={{ border: '1px dashed var(--c-rim)', color: 'var(--c-dim)' }}>
-        Aún no hay proyectos de servicios.
+        Aún no hay planeaciones de servicios.
       </div>
     )
   }

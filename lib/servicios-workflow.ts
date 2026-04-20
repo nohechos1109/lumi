@@ -45,7 +45,7 @@ export function stepsFromService(svc: Service): WorkflowStep[] {
       : 'pending'
 
   return [
-    { key: 'proyecto',   label: 'Proyecto',   state: hasProject ? 'done' : 'pending',  href: svc.project_id ? `/servicios/projects/${svc.project_id}` : undefined },
+    { key: 'proyecto',   label: 'Planeación',   state: hasProject ? 'done' : 'pending',  href: svc.project_id ? `/servicios/projects/${svc.project_id}` : undefined },
     { key: 'orden',      label: 'Orden',      state: hasOrder ? 'done' : 'pending',     href: svc.service_order_id ? `/servicios/orders/${svc.service_order_id}` : undefined },
     { key: 'servicio',   label: 'Servicio',   state: servicioState, sublabel: estatusSublabel(svc.estatus) },
     { key: 'aprobacion', label: 'Aprobación', state: aprobacionState },
@@ -69,7 +69,7 @@ export function stepsFromOrder(order: ServiceOrder): WorkflowStep[] {
   const servicioState: StepState = orderTerminado ? 'done' : order.estatus === 'en_curso' ? 'current' : 'pending'
 
   return [
-    { key: 'proyecto',   label: 'Proyecto',   state: order.service_project_id ? 'done' : 'pending', href: order.service_project_id ? `/servicios/projects/${order.service_project_id}` : undefined },
+    { key: 'proyecto',   label: 'Planeación',   state: order.service_project_id ? 'done' : 'pending', href: order.service_project_id ? `/servicios/projects/${order.service_project_id}` : undefined },
     { key: 'orden',      label: 'Orden',      state: ordenState, sublabel: estatusSublabel(order.estatus) },
     { key: 'servicio',   label: 'Servicio',   state: servicioState },
     { key: 'aprobacion', label: 'Aprobación', state: 'pending' },
@@ -85,7 +85,7 @@ export function stepsFromProject(project: ServiceProject): WorkflowStep[] {
   const proyectoState: StepState = cancelled ? 'error' : completed ? 'done' : active ? 'current' : 'pending'
 
   return [
-    { key: 'proyecto',   label: 'Proyecto',   state: proyectoState },
+    { key: 'proyecto',   label: 'Planeación',   state: proyectoState },
     { key: 'orden',      label: 'Orden',      state: 'pending' as const },
     { key: 'servicio',   label: 'Servicio',   state: 'pending' as const },
     { key: 'aprobacion', label: 'Aprobación', state: 'pending' as const },
