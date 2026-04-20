@@ -39,10 +39,7 @@ interface Props {
   unidadId?: string | null
 }
 
-const IVA = 0.16
-const inputCls = 'text-right rounded-lg px-2 py-1.5 text-sm font-mono outline-none transition-colors'
 const inputStyle = { background: 'var(--c-panel)', border: '1px solid var(--c-rim)', color: 'var(--c-ink)', outline: 'none' }
-const fmtMXN = (n: number) => n.toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
 const fmt = (v: string | number) => Number(v).toLocaleString('es-MX', { minimumFractionDigits: 2 })
 
 // ── Product search bar ──────────────────────────────────────────────────────
@@ -279,10 +276,6 @@ export default function MaterialsEditor({
     addMaterial(product.id, priceMxn, null)
   }
 
-  const untaxed = materials.reduce((s, m) => s + Number(m.quantity) * Number(m.unit_price), 0)
-  const tax = untaxed * IVA
-  const total = untaxed + tax
-
   return (
     <div className="mt-8">
       <h2 className="text-sm font-bold uppercase tracking-widest mb-4" style={{ color: 'var(--c-ghost)' }}>
@@ -320,7 +313,7 @@ export default function MaterialsEditor({
                     <div className="flex-1 min-w-0">
                       <p className="text-xs font-medium leading-tight truncate" style={{ color: 'var(--c-ink)' }}>{dl.name}</p>
                       <p className="text-xs mt-0.5 font-mono" style={{ color: 'var(--c-ghost)' }}>
-                        ×{dl.maxQty.toLocaleString('es-MX')} · ${dl.unitPrice.toLocaleString('es-MX', { minimumFractionDigits: 2 })}
+                        ×{dl.maxQty.toLocaleString('es-MX')}
                         {unidadId && dl.usedElsewhere > 0 && (
                           <span style={{ color: 'var(--c-dim)', marginLeft: 6 }}>({dl.usedElsewhere} en otras)</span>
                         )}
@@ -356,19 +349,16 @@ export default function MaterialsEditor({
           ) : (
             <div className="rounded-2xl overflow-hidden" style={{ border: '1px solid var(--c-rim)', background: 'var(--c-card)' }}>
               <div className="overflow-x-auto">
-                <table className="w-full text-sm min-w-[480px]">
+                <table className="w-full text-sm min-w-[320px]">
                   <thead>
                     <tr style={{ borderBottom: '1px solid var(--c-rim)' }}>
                       <th className="text-left px-4 py-3.5 text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--c-ghost)' }}>Descripción</th>
-                      <th className="text-right px-4 py-3.5 text-xs font-bold uppercase tracking-widest w-20" style={{ color: 'var(--c-ghost)' }}>Cant.</th>
-                      <th className="text-right px-4 py-3.5 text-xs font-bold uppercase tracking-widest w-28" style={{ color: 'var(--c-ghost)' }}>P. Unit.</th>
-                      <th className="text-right px-4 py-3.5 text-xs font-bold uppercase tracking-widest w-28" style={{ color: 'var(--c-ghost)' }}>Subtotal</th>
+                      <th className="text-right px-4 py-3.5 text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--c-ghost)' }}>Cantidad</th>
                       {canEdit && <th className="w-10 px-2 py-3.5" />}
                     </tr>
                   </thead>
                   <tbody>
                     {materials.map(m => {
-                      const sub = Number(m.quantity) * Number(m.unit_price)
                       return (
                         <tr key={m.id} className="tr-hover transition-colors" style={{ borderTop: '1px solid var(--c-rim)' }}>
                           <td className="px-4 py-3 text-sm" style={{ color: 'var(--c-ink)' }}>
@@ -377,56 +367,55 @@ export default function MaterialsEditor({
                               <span className="ml-2 text-xs font-mono" style={{ color: 'var(--c-ghost)' }}>{m.product_sku}</span>
                             )}
                           </td>
-                          {/* Cant. */}
-                          <td className="px-4 py-3 text-right">
+                          {/* Cantidad */}
+                          <td className="px-4 py-3">
                             {canEdit ? (
-                              <input
-                                type="number"
-                                min="0.01"
-                                step="0.01"
-                                defaultValue={Number(m.quantity).toFixed(2)}
-                                key={`qty-${m.id}-${m.quantity}`}
-                                className={`w-16 ${inputCls}`}
-                                style={inputStyle}
-                                onFocus={e => (e.target.style.borderColor = 'var(--c-navy)')}
-                                onKeyDown={e => { if (e.key === 'Enter') (e.target as HTMLInputElement).blur() }}
-                                onBlur={e => {
-                                  e.target.style.borderColor = 'var(--c-rim)'
-                                  const v = Math.max(0.01, Number(e.target.value) || 0.01)
-                                  e.target.value = String(v)
-                                  if (v !== Number(m.quantity)) patchMaterial(m.id, 'quantity', v)
-                                }}
-                              />
+                              <div className="flex items-center gap-2 justify-end">
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    const next = Math.round(Number(m.quantity)) - 1
+                                    if (next <= 0) deleteMaterial(m.id)
+                                    else patchMaterial(m.id, 'quantity', next)
+                                  }}
+                                  className="w-10 h-10 rounded-lg flex items-center justify-center transition-colors"
+                                  style={{ background: 'var(--c-panel)', border: '1px solid var(--c-rim)', color: 'var(--c-ink)', cursor: 'pointer', lineHeight: 1 }}
+                                >
+                                  <svg width="14" height="2" viewBox="0 0 14 2" fill="none"><rect width="14" height="2" rx="1" fill="currentColor"/></svg>
+                                </button>
+                                <input
+                                  type="number"
+                                  min="1"
+                                  step="1"
+                                  defaultValue={Math.round(Number(m.quantity))}
+                                  key={`qty-${m.id}-${m.quantity}`}
+                                  className="font-mono text-sm text-center rounded-md px-1 py-1 outline-none w-12"
+                                  style={{ background: 'var(--c-panel)', border: '1px solid var(--c-rim)', color: 'var(--c-ink)' }}
+                                  onFocus={e => { e.target.style.borderColor = 'var(--c-navy)'; e.target.select() }}
+                                  onKeyDown={e => {
+                                    if (e.key === 'Enter') (e.target as HTMLInputElement).blur()
+                                    if (['.', ',', 'e', 'E', '+', '-'].includes(e.key)) e.preventDefault()
+                                  }}
+                                  onBlur={e => {
+                                    e.target.style.borderColor = 'var(--c-rim)'
+                                    const v = Math.round(Math.abs(Number(e.target.value))) || 0
+                                    if (v <= 0) { deleteMaterial(m.id); return }
+                                    e.target.value = String(v)
+                                    if (v !== Math.round(Number(m.quantity))) patchMaterial(m.id, 'quantity', v)
+                                  }}
+                                />
+                                <button
+                                  type="button"
+                                  onClick={() => patchMaterial(m.id, 'quantity', Math.round(Number(m.quantity)) + 1)}
+                                  className="w-10 h-10 rounded-lg flex items-center justify-center transition-colors"
+                                  style={{ background: 'var(--c-panel)', border: '1px solid var(--c-rim)', color: 'var(--c-ink)', cursor: 'pointer', lineHeight: 1 }}
+                                >
+                                  <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="6" width="2" height="14" rx="1" fill="currentColor"/><rect y="6" width="14" height="2" rx="1" fill="currentColor"/></svg>
+                                </button>
+                              </div>
                             ) : (
-                              <span className="font-mono" style={{ color: 'var(--c-ink)' }}>{fmt(m.quantity)}</span>
+                              <span className="font-mono float-right" style={{ color: 'var(--c-ink)' }}>{Math.round(Number(m.quantity))}</span>
                             )}
-                          </td>
-                          {/* P. Unit. */}
-                          <td className="px-4 py-3 text-right">
-                            {canEdit ? (
-                              <input
-                                type="number"
-                                min="0"
-                                step="0.01"
-                                defaultValue={Number(m.unit_price).toFixed(2)}
-                                key={`price-${m.id}-${m.unit_price}`}
-                                className={`w-24 ${inputCls}`}
-                                style={inputStyle}
-                                onFocus={e => (e.target.style.borderColor = 'var(--c-navy)')}
-                                onKeyDown={e => { if (e.key === 'Enter') (e.target as HTMLInputElement).blur() }}
-                                onBlur={e => {
-                                  e.target.style.borderColor = 'var(--c-rim)'
-                                  const v = Math.max(0, Number(e.target.value))
-                                  if (v !== Number(m.unit_price)) patchMaterial(m.id, 'unit_price', v)
-                                }}
-                              />
-                            ) : (
-                              <span className="font-mono" style={{ color: 'var(--c-ink)' }}>${fmt(m.unit_price)}</span>
-                            )}
-                          </td>
-                          {/* Subtotal */}
-                          <td className="px-4 py-3 text-right font-mono font-medium" style={{ color: 'var(--c-ink)' }}>
-                            {sub > 0 ? `$${fmtMXN(sub)}` : <span style={{ color: 'var(--c-ghost)' }}>—</span>}
                           </td>
                           {canEdit && (
                             <td className="px-2 py-3 text-right">
@@ -447,23 +436,6 @@ export default function MaterialsEditor({
                 </table>
               </div>
 
-              {/* Totals footer */}
-              <div className="px-5 py-4 flex justify-end" style={{ borderTop: '1px solid var(--c-rim)', background: 'var(--c-panel)' }}>
-                <div className="flex flex-col items-end gap-1 text-sm">
-                  <div className="flex gap-8">
-                    <span style={{ color: 'var(--c-ghost)' }}>Subtotal</span>
-                    <span className="font-mono" style={{ color: 'var(--c-ink)', minWidth: '7rem', textAlign: 'right' }}>${fmtMXN(untaxed)}</span>
-                  </div>
-                  <div className="flex gap-8">
-                    <span style={{ color: 'var(--c-ghost)' }}>IVA (16%)</span>
-                    <span className="font-mono" style={{ color: 'var(--c-ink)', minWidth: '7rem', textAlign: 'right' }}>${fmtMXN(tax)}</span>
-                  </div>
-                  <div className="flex gap-8 pt-1" style={{ borderTop: '1px solid var(--c-rim)' }}>
-                    <span className="font-semibold" style={{ color: 'var(--c-ink)' }}>Total</span>
-                    <span className="font-mono font-bold text-base" style={{ color: 'var(--c-ink)', minWidth: '7rem', textAlign: 'right' }}>${fmtMXN(total)}</span>
-                  </div>
-                </div>
-              </div>
             </div>
           )}
         </div>
