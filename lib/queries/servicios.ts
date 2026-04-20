@@ -92,6 +92,7 @@ export interface Service {
   order_number?: string | null
   project_id?: string | null
   project_number?: string | null
+  sale_id?: string | null
   technicians?: ServiceTechnician[]
 }
 
@@ -175,7 +176,8 @@ const SRV_SELECT = `
          iu.username AS iniciado_por_username,
          so.number AS order_number,
          sp.id     AS project_id,
-         sp.number AS project_number
+         sp.number AS project_number,
+         sp.sale_id
   FROM services srv
   LEFT JOIN unidades uni ON uni.id = srv.unidad_id
   LEFT JOIN rutas    r   ON r.id   = srv.ruta_id
@@ -919,6 +921,7 @@ export interface ServiceMaterial {
   id: string
   service_id: string
   product_id: string
+  quote_line_id: string | null
   quantity: string
   unit_price: string
   notes: string | null
@@ -950,16 +953,32 @@ export interface CreateServiceMaterialInput {
   unit_price: number
   notes?: string | null
   created_by: string
+  quote_line_id?: string | null
 }
 
 export async function createServiceMaterial(data: CreateServiceMaterialInput): Promise<ServiceMaterial> {
   const { rows: [m] } = await pool.query(
-    `INSERT INTO service_materials (service_id, product_id, quantity, unit_price, notes, created_by)
-     VALUES ($1, $2, $3, $4, $5, $6)
+    `INSERT INTO service_materials (service_id, product_id, quantity, unit_price, notes, created_by, quote_line_id)
+     VALUES ($1, $2, $3, $4, $5, $6, $7)
      RETURNING *`,
-    [data.service_id, data.product_id, data.quantity, data.unit_price, data.notes ?? null, data.created_by]
+    [data.service_id, data.product_id, data.quantity, data.unit_price, data.notes ?? null, data.created_by, data.quote_line_id ?? null]
   )
   return m
+}
+
+export async function updateServiceMaterial(
+  id: string,
+  data: { quantity?: number; unit_price?: number; notes?: string | null }
+): Promise<void> {
+  const fields: string[] = []
+  const values: unknown[] = []
+  let i = 1
+  if (data.quantity !== undefined) { fields.push(`quantity = $${i++}`); values.push(data.quantity) }
+  if (data.unit_price !== undefined) { fields.push(`unit_price = $${i++}`); values.push(data.unit_price) }
+  if (data.notes !== undefined) { fields.push(`notes = $${i++}`); values.push(data.notes) }
+  if (fields.length === 0) return
+  values.push(id)
+  await pool.query(`UPDATE service_materials SET ${fields.join(', ')} WHERE id = $${i}`, values)
 }
 
 export async function deleteServiceMaterial(id: string): Promise<void> {
@@ -1021,7 +1040,7 @@ export async function approveService(
        FROM service_materials sm
        JOIN products p ON p.id = sm.product_id
        WHERE sm.service_id = $1
-       ORDER BY sm.created_at`,
+       ORDER BY sm.created_at, sm.id`,
       [serviceId]
     )
     if (materials.length === 0) throw new Error('NO_MATERIALS')
@@ -1062,7 +1081,7 @@ export async function approveService(
     // 4. Build note lines + totals
     let amountUntaxed = 0
     const noteLines: Array<{
-      product_id: string; name: string; qty: number;
+      product_id: string; quote_line_id: string | null; name: string; qty: number;
       unit_price_mxn: number; subtotal: number; tax_amount: number; total: number;
     }> = []
 
@@ -1074,6 +1093,7 @@ export async function approveService(
       amountUntaxed += subtotal
       noteLines.push({
         product_id: m.product_id,
+        quote_line_id: m.quote_line_id ?? null,
         name: m.product_name,
         qty,
         unit_price_mxn: price,
@@ -1100,13 +1120,13 @@ export async function approveService(
 
     const { rows: [note] } = await client.query(
       `INSERT INTO sale_notes
-         (number, sale_id, service_id, state, concept,
+         (number, sale_id, service_id, unit_id, state, concept,
           amount_untaxed, amount_tax, amount_total, amount_balance,
           observaciones)
-       VALUES ($1, $2, $3, 'draft', $4, $5, $6, $7, $7, $8)
+       VALUES ($1, $2, $3, $4, 'draft', $5, $6, $7, $8, $8, $9)
        RETURNING id, number, sale_id`,
       [
-        ntaNumber, saleId, serviceId,
+        ntaNumber, saleId, serviceId, srv.unidad_id ?? null,
         `Materiales servicio ${srv.number}`,
         amountUntaxed, amountTax, amountTotal,
         `Generada automáticamente desde servicio ${srv.number}`,
@@ -1118,10 +1138,10 @@ export async function approveService(
       const ln = noteLines[i]
       await client.query(
         `INSERT INTO sale_note_lines
-           (sale_note_id, sequence, display_type, product_id, name, qty,
+           (sale_note_id, sequence, display_type, product_id, quote_line_id, name, qty,
             unit_price_mxn, subtotal, tax_amount, total)
-         VALUES ($1, $2, 'product', $3, $4, $5, $6, $7, $8, $9)`,
-        [note.id, i + 1, ln.product_id, ln.name, ln.qty,
+         VALUES ($1, $2, 'product', $3, $4, $5, $6, $7, $8, $9, $10)`,
+        [note.id, i + 1, ln.product_id, ln.quote_line_id, ln.name, ln.qty,
          ln.unit_price_mxn, ln.subtotal, ln.tax_amount, ln.total]
       )
     }

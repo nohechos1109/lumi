@@ -3,19 +3,13 @@
 import { useState, useEffect, FormEvent } from 'react'
 import { useRouter } from 'next/navigation'
 import CustomerSearchSelect from '@/components/ui/CustomerSearchSelect'
+import UnidadSearchSelect from '@/components/ui/UnidadSearchSelect'
 import { notifyRefresh, toast } from '@/lib/toast'
 
 interface Customer {
   id: string
   name: string
   companies: { id: string; name: string }[]
-}
-
-interface Unidad {
-  id: string
-  name: string
-  empresa_id: string | null
-  dueno_id: string | null
 }
 
 interface Props {
@@ -33,17 +27,16 @@ const inp = { background: 'var(--c-panel)', border: '1px solid var(--c-rim)', co
 export default function NewServiceModal({ onClose, prefillOrderId, prefillCustomerId, prefillTipoLugar, prefillMotivo }: Props) {
   const router = useRouter()
   const [customers, setCustomers] = useState<Customer[]>([])
-  const [unidades, setUnidades] = useState<Unidad[]>([])
   const [customerId, setCustomerId] = useState(prefillCustomerId ?? '')
   const [unidadId, setUnidadId] = useState('')
   const [loading, setLoading] = useState(false)
 
   useEffect(() => {
     if (!prefillOrderId) {
-      fetch('/api/customers').then(r => r.json()).then(setCustomers).catch(() => {})
+      const qs = unidadId ? `?unidad_id=${unidadId}` : ''
+      fetch(`/api/customers${qs}`).then(r => r.json()).then(setCustomers).catch(() => {})
     }
-    fetch('/api/unidades').then(r => r.json()).then(setUnidades).catch(() => {})
-  }, [prefillOrderId])
+  }, [prefillOrderId, unidadId])
 
   useEffect(() => {
     function onKey(e: KeyboardEvent) { if (e.key === 'Escape') onClose() }
@@ -143,15 +136,11 @@ export default function NewServiceModal({ onClose, prefillOrderId, prefillCustom
 
           <div>
             <label className={labelCls} style={labelStyle}>Unidad (opcional)</label>
-            <select
+            <UnidadSearchSelect
               value={unidadId}
-              onChange={e => setUnidadId(e.target.value)}
-              className="w-full text-sm rounded-xl px-4 py-2.5"
-              style={inp}
-            >
-              <option value="">Sin unidad</option>
-              {unidades.map(u => <option key={u.id} value={u.id}>{u.name}</option>)}
-            </select>
+              onChange={setUnidadId}
+              customerId={customerId || null}
+            />
           </div>
 
           <div>

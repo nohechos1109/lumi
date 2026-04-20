@@ -42,7 +42,22 @@ const SELECT_CONTACTS = `
   LEFT JOIN contacts co ON co.id = ccl.company_id
 `
 
-export async function listContacts(): Promise<Contact[]> {
+export async function listContacts(filters?: { unidad_id?: string }): Promise<Contact[]> {
+  if (filters?.unidad_id) {
+    const { rows } = await pool.query(
+      `${SELECT_CONTACTS}
+       WHERE c.id IN (
+         SELECT u.empresa_id FROM unidades u WHERE u.id = $1 AND u.empresa_id IS NOT NULL
+         UNION
+         SELECT ccl2.contact_id FROM unidades u JOIN contact_company_links ccl2 ON ccl2.company_id = u.empresa_id WHERE u.id = $1
+         UNION
+         SELECT u.dueno_id FROM unidades u WHERE u.id = $1 AND u.dueno_id IS NOT NULL
+       )
+       GROUP BY c.id ORDER BY c.name`,
+      [filters.unidad_id]
+    )
+    return rows
+  }
   const { rows } = await pool.query(
     `${SELECT_CONTACTS} GROUP BY c.id ORDER BY c.name`
   )

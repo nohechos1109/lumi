@@ -3,10 +3,11 @@ import { revalidatePath } from 'next/cache'
 import { getSession, unauthorized } from '@/lib/auth-guard'
 import { listContacts, createContact } from '@/lib/queries/customers'
 
-export async function GET() {
+export async function GET(req: NextRequest) {
   const session = await getSession()
   if (!session) return unauthorized()
-  return NextResponse.json(await listContacts())
+  const unidad_id = req.nextUrl.searchParams.get('unidad_id') ?? undefined
+  return NextResponse.json(await listContacts(unidad_id ? { unidad_id } : undefined))
 }
 
 export async function POST(req: NextRequest) {

@@ -7,7 +7,10 @@ export async function GET(req: NextRequest) {
   if (!session) return unauthorized()
 
   const sp = req.nextUrl.searchParams
-  const filters = { ruta_id: sp.get('ruta_id') ?? undefined }
+  const filters = {
+    ruta_id: sp.get('ruta_id') ?? undefined,
+    customer_id: sp.get('customer_id') ?? undefined,
+  }
   const unidades = await getUnidades(filters)
   return NextResponse.json(unidades)
 }

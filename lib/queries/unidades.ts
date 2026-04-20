@@ -47,10 +47,20 @@ const SELECT_UNIDADES = `
   LEFT JOIN contacts cd ON cd.id = u.dueno_id
 `
 
-export async function getUnidades(filters?: { ruta_id?: string }): Promise<Unidad[]> {
+export async function getUnidades(filters?: { ruta_id?: string; customer_id?: string }): Promise<Unidad[]> {
   const conditions: string[] = []
-  const values: string[] = []
-  if (filters?.ruta_id) { conditions.push(`u.ruta_id = $${values.push(filters.ruta_id)}`); }
+  const values: unknown[] = []
+  if (filters?.ruta_id) {
+    conditions.push(`u.ruta_id = $${values.push(filters.ruta_id)}`)
+  }
+  if (filters?.customer_id) {
+    const idx = values.push(filters.customer_id)
+    conditions.push(`(
+      u.empresa_id = $${idx}
+      OR u.empresa_id IN (SELECT company_id FROM contact_company_links WHERE contact_id = $${idx})
+      OR u.dueno_id = $${idx}
+    )`)
+  }
   const where = conditions.length > 0 ? `WHERE ${conditions.join(' AND ')}` : ''
   const { rows } = await pool.query(`${SELECT_UNIDADES} ${where} ORDER BY u.name`, values)
   return rows

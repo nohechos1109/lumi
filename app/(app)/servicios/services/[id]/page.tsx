@@ -15,6 +15,9 @@ import {
   listServiceMaterials,
 } from '@/lib/queries/servicios'
 import { listFilesByEntity } from '@/lib/queries/files'
+import { getSale } from '@/lib/queries/sales'
+import { listLines } from '@/lib/queries/quote_lines'
+import { getSettings } from '@/lib/queries/settings'
 import ServiceEditor from './_components/ServiceEditor'
 import FileUploader from './_components/FileUploader'
 import MaterialsEditor from './_components/MaterialsEditor'
@@ -37,11 +40,27 @@ export default async function ServiceDetailPage({ params }: { params: Promise<{ 
   const isOrphan = !service.service_order_id
   const canManageTech = canEdit && session.role !== 'tecnico' && isOrphan
 
-  const [tecnicos, files, materials] = await Promise.all([
+  const [tecnicos, files, materials, settings] = await Promise.all([
     canManageTech ? listTechnicianUsers() : Promise.resolve([]),
     listFilesByEntity('service', id),
     listServiceMaterials(id),
+    getSettings(),
   ])
+
+  let saleId: string | null = service.sale_id ?? null
+  let saleQuoteLines: import('@/lib/queries/quote_lines').QuoteLine[] = []
+  let globalDiscount = 0
+  const fxRate = Number(settings?.fx_mxn_per_usd ?? 17.85)
+
+  if (saleId) {
+    const sale = await getSale(saleId)
+    if (sale?.quote_id) {
+      const rawLines = await listLines(sale.quote_id)
+      const discountLine = rawLines.find(l => l.display_type === 'discount')
+      globalDiscount = discountLine ? parseFloat(discountLine.discount_percent) : 0
+      saleQuoteLines = rawLines.filter(l => l.display_type === 'product' && Number(l.qty) > 0)
+    }
+  }
 
   return (
     <div>
@@ -78,6 +97,11 @@ export default async function ServiceDetailPage({ params }: { params: Promise<{ 
         serviceId={id}
         materials={materials}
         canEdit={canEdit}
+        saleId={saleId}
+        saleQuoteLines={saleQuoteLines}
+        globalDiscount={globalDiscount}
+        fxRate={fxRate}
+        unidadId={service.unidad_id ?? null}
       />
 
       <FileUploader

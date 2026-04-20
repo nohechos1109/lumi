@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import { toast } from '@/lib/toast'
 import type { Sale } from '@/lib/queries/sales'
+import UnidadSearchSelect from '@/components/ui/UnidadSearchSelect'
 
 interface QuoteLineCoverage {
   quote_line_id: string
@@ -50,7 +51,6 @@ interface Product {
   public_price: string | null
 }
 
-interface Unidad { id: string; name: string; ruta_name?: string }
 
 const IVA = 0.16
 const inputCls = 'text-right rounded-lg px-2 py-1.5 text-sm font-mono outline-none transition-colors'
@@ -207,15 +207,11 @@ export default function NewNoteForm({ sale, quoteLines = [], globalDiscount = 0,
   const [concept, setConcept] = useState('')
   const [observaciones, setObservaciones] = useState('')
   const [unitId, setUnitId] = useState('')
-  const [unidades, setUnidades] = useState<Unidad[]>([])
   const [coverage, setCoverage] = useState<QuoteLineCoverage[]>([])
   const [coverageLoading, setCoverageLoading] = useState(false)
   const [lines, setLines] = useState<ProductLine[]>([])
   const [loading, setLoading] = useState(false)
 
-  useEffect(() => {
-    fetch('/api/unidades').then(r => r.json()).then(d => setUnidades(Array.isArray(d) ? d : []))
-  }, [])
 
   useEffect(() => {
     if (!unitId || quoteLines.length === 0) { setCoverage([]); return }
@@ -352,19 +348,13 @@ export default function NewNoteForm({ sale, quoteLines = [], globalDiscount = 0,
 
           <div className="flex flex-col gap-1.5 md:col-span-1">
             <label className="text-xs font-semibold uppercase tracking-wider" style={{ color: 'var(--c-ghost)' }}>Unidad</label>
-            <select
+            <UnidadSearchSelect
               value={unitId}
-              onChange={e => setUnitId(e.target.value)}
-              className="text-sm rounded-lg px-3 py-2.5 outline-none"
-              style={inputStyle}
-            >
-              <option value="">Sin unidad</option>
-              {unidades.map(u => (
-                <option key={u.id} value={u.id}>
-                  {u.name}{u.ruta_name ? ` — ${u.ruta_name}` : ''}
-                </option>
-              ))}
-            </select>
+              onChange={setUnitId}
+              customerId={sale.customer_id}
+              placeholder="Buscar unidad..."
+              inputStyle={inputStyle}
+            />
           </div>
 
           <div className="flex flex-col gap-1.5 md:col-span-2">

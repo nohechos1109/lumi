@@ -5,6 +5,7 @@ import { canEditService, canViewOwnServicesOnly } from '@/lib/permissions'
 import {
   listServiceMaterials,
   createServiceMaterial,
+  updateServiceMaterial,
   deleteServiceMaterial,
   getService,
 } from '@/lib/queries/servicios'
@@ -45,11 +46,35 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
       unit_price: Number(body.unit_price) || 0,
       notes: body.notes ?? null,
       created_by: session.userId,
+      quote_line_id: body.quote_line_id ?? null,
     })
     revalidatePath(`/servicios/services/${id}`)
     return NextResponse.json(material, { status: 201 })
   } catch (error) {
     console.error('POST materials ERROR:', error)
+    return NextResponse.json({ error: String(error) }, { status: 500 })
+  }
+}
+
+export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const session = await getSession()
+  if (!session) return unauthorized()
+  if (!canEditService(session.role)) return forbidden()
+
+  const { id } = await params
+  const body = await req.json()
+  const materialId = body.material_id
+  if (!materialId) return NextResponse.json({ error: 'material_id requerido' }, { status: 400 })
+
+  try {
+    await updateServiceMaterial(materialId, {
+      quantity: body.quantity !== undefined ? Number(body.quantity) : undefined,
+      unit_price: body.unit_price !== undefined ? Number(body.unit_price) : undefined,
+      notes: body.notes,
+    })
+    revalidatePath(`/servicios/services/${id}`)
+    return NextResponse.json({ ok: true })
+  } catch (error) {
     return NextResponse.json({ error: String(error) }, { status: 500 })
   }
 }
