@@ -86,7 +86,7 @@ export default async function ServiceDetailPage({ params }: { params: Promise<{ 
         )}
       </div>
 
-      <WorkflowStepper steps={stepsFromService(service, materials.length > 0, !!service.sale_note_id)} />
+      <WorkflowStepper steps={stepsFromService(service)} />
 
       <ServiceEditor
         service={service}

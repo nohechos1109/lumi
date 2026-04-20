@@ -21,7 +21,7 @@ function isCancelled(estatus: string | null | undefined): boolean {
 }
 
 /** Steps from Service detail page perspective. */
-export function stepsFromService(svc: Service, hasMaterials: boolean, hasSaleNote: boolean): WorkflowStep[] {
+export function stepsFromService(svc: Service): WorkflowStep[] {
   const servicioCancelled = isCancelled(svc.estatus)
   const servicioAtendido  = svc.estatus === 'atendido'
   const servicioActive    = (WORKFLOW_ORDER as readonly string[]).includes(svc.estatus) && !servicioAtendido
@@ -37,25 +37,17 @@ export function stepsFromService(svc: Service, hasMaterials: boolean, hasSaleNot
         ? 'current'
         : 'pending'
 
-  let materialesState: StepState = 'pending'
-  if (hasMaterials) materialesState = approved || hasSaleNote ? 'done' : servicioAtendido ? 'current' : 'done'
-  else if (servicioAtendido && !approved) materialesState = 'current'
-
   const aprobacionState: StepState = approved
     ? 'done'
-    : servicioAtendido && hasMaterials
+    : servicioAtendido
       ? 'current'
       : 'pending'
-
-  const ventaState: StepState = hasSaleNote ? 'done' : approved ? 'current' : 'pending'
 
   return [
     { key: 'proyecto',   label: 'Proyecto',   state: hasProject ? 'done' : 'pending' },
     { key: 'orden',      label: 'Orden',      state: hasOrder ? 'done' : 'pending' },
     { key: 'servicio',   label: 'Servicio',   state: servicioState, sublabel: estatusSublabel(svc.estatus) },
-    { key: 'materiales', label: 'Materiales', state: materialesState },
     { key: 'aprobacion', label: 'Aprobación', state: aprobacionState },
-    { key: 'venta',      label: 'Nota venta', state: ventaState },
   ]
 }
 
@@ -79,14 +71,12 @@ export function stepsFromOrder(order: ServiceOrder): WorkflowStep[] {
     { key: 'proyecto',   label: 'Proyecto',   state: order.service_project_id ? 'done' : 'pending' },
     { key: 'orden',      label: 'Orden',      state: ordenState, sublabel: estatusSublabel(order.estatus) },
     { key: 'servicio',   label: 'Servicio',   state: servicioState },
-    { key: 'materiales', label: 'Materiales', state: 'pending' },
     { key: 'aprobacion', label: 'Aprobación', state: 'pending' },
-    { key: 'venta',      label: 'Nota venta', state: 'pending' },
   ]
 }
 
 /** Steps from Project detail page perspective. */
-export function stepsFromProject(project: ServiceProject, hasOrders: boolean, hasSale: boolean): WorkflowStep[] {
+export function stepsFromProject(project: ServiceProject, hasOrders: boolean): WorkflowStep[] {
   const cancelled = project.status === 'cancelled'
   const completed = project.status === 'completed'
   const active    = project.status === 'open' || project.status === 'in_progress'
@@ -97,8 +87,6 @@ export function stepsFromProject(project: ServiceProject, hasOrders: boolean, ha
     { key: 'proyecto',   label: 'Proyecto',   state: proyectoState },
     { key: 'orden',      label: 'Orden',      state: hasOrders ? 'current' : 'pending' },
     { key: 'servicio',   label: 'Servicio',   state: 'pending' },
-    { key: 'materiales', label: 'Materiales', state: 'pending' },
     { key: 'aprobacion', label: 'Aprobación', state: 'pending' },
-    { key: 'venta',      label: 'Nota venta', state: hasSale ? 'done' : 'pending' },
   ]
 }

@@ -3,6 +3,7 @@
 import { useState, useEffect, FormEvent } from 'react'
 import { useRouter } from 'next/navigation'
 import { notifyRefresh, toast } from '@/lib/toast'
+import DateTimeRangePicker from '@/components/ui/DateTimeRangePicker'
 
 interface Props {
   onClose: () => void
@@ -168,15 +169,9 @@ export default function NewServiceOrderModal({ onClose, projectId }: Props) {
             )}
           </div>
 
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <label className={labelCls} style={labelStyle}>Agendada</label>
-              <input name="fecha_hora_agendada" type="datetime-local" className="w-full text-sm rounded-xl px-4 py-2.5" style={inp} />
-            </div>
-            <div>
-              <label className={labelCls} style={labelStyle}>Límite</label>
-              <input name="fecha_hora_limite" type="datetime-local" className="w-full text-sm rounded-xl px-4 py-2.5" style={inp} />
-            </div>
+          <div>
+            <label className={labelCls} style={labelStyle}>Fecha y hora agendada → límite</label>
+            <DateTimeRangePicker startName="fecha_hora_agendada" endName="fecha_hora_limite" />
           </div>
 
           <div>

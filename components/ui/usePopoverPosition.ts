@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react'
 
-export function usePopoverPosition() {
+export function usePopoverPosition(estimatedPanelHeight = 340) {
   const [open, setOpen] = useState(false)
   const [pos, setPos] = useState<{ top: number; left: number } | null>(null)
   const btnRef = useRef<HTMLButtonElement>(null)
@@ -11,10 +11,14 @@ export function usePopoverPosition() {
   const toggle = useCallback(() => {
     if (btnRef.current) {
       const r = btnRef.current.getBoundingClientRect()
-      setPos({ top: r.bottom + 6, left: r.left })
+      const spaceBelow = window.innerHeight - r.bottom - 8
+      const top = spaceBelow >= estimatedPanelHeight
+        ? r.bottom + 6
+        : Math.max(8, r.top - estimatedPanelHeight - 6)
+      setPos({ top, left: r.left })
     }
     setOpen(v => !v)
-  }, [])
+  }, [estimatedPanelHeight])
 
   const close = useCallback(() => setOpen(false), [])
 
