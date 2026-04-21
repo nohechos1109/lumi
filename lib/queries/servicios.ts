@@ -1,12 +1,39 @@
 ﻿import pool from '@/lib/db'
 import type { PoolClient } from 'pg'
+import { insertAuditEvent } from '@/lib/queries/audit'
 
 // ─── Types ────────────────────────────────────────────────────
 
-export type ServiceProjectStatus = 'open' | 'in_progress' | 'completed' | 'cancelled'
+export type ServiceProjectStatus = 'abierto' | 'cerrado'
 export type ServiceOrderEstatus = 'borrador' | 'pendiente' | 'agendado' | 'en_curso' | 'terminado' | 'atendido' | 'cancelado'
 export type ServiceEstatus = 'pendiente' | 'agendado' | 'en_curso' | 'en_revision' | 'terminado' | 'atendido' | 'cancelado' | 'rechazado'
 export type ServiceRequestStatus = 'pending' | 'approved' | 'rejected' | 'cancelled'
+
+// ─── Domain errors ────────────────────────────────────────────
+
+export class ProjectClosedError extends Error {
+  constructor() { super('PROJECT_CLOSED'); this.name = 'ProjectClosedError' }
+}
+export class OrderInBorradorError extends Error {
+  constructor() { super('ORDER_IN_BORRADOR'); this.name = 'OrderInBorradorError' }
+}
+export class HasTerminalChildrenError extends Error {
+  constructor() { super('HAS_TERMINAL_CHILDREN'); this.name = 'HasTerminalChildrenError' }
+}
+export class RequiredFieldsError extends Error {
+  fields: string[]
+  constructor(fields: string[]) {
+    super('REQUIRED_FIELDS:' + fields.join(','))
+    this.name = 'RequiredFieldsError'
+    this.fields = fields
+  }
+}
+export class ReportNotEditableError extends Error {
+  constructor() { super('REPORT_NOT_EDITABLE'); this.name = 'ReportNotEditableError' }
+}
+export class ProjectNotCloseableError extends Error {
+  constructor() { super('PROJECT_NOT_CLOSEABLE'); this.name = 'ProjectNotCloseableError' }
+}
 
 export interface ServiceProject {
   id: string
@@ -43,6 +70,8 @@ export interface ServiceOrder {
   fecha_fin: string | null
   tipo_lugar: 'calle' | 'taller' | null
   assign_all_technicians: boolean
+  lat: string | null
+  lng: string | null
   created_by: string | null
   created_at: string
   archived_at: string | null
@@ -73,6 +102,8 @@ export interface Service {
   comentarios_soporte: string | null
   tipo_lugar: 'calle' | 'taller' | null
   assign_all_technicians: boolean
+  lat: string | null
+  lng: string | null
   motivo_cancelacion: string | null
   iniciado_por: string | null
   fecha_creado: string
@@ -239,6 +270,7 @@ export async function createServiceProject(data: CreateServiceProjectInput): Pro
       [number, data.name, data.customer_id ?? null, data.sale_id ?? null, data.created_by, data.observaciones ?? null]
     )
     await client.query('COMMIT')
+    await insertAuditEvent('service_project', sp.id, 'created', { number: sp.number, name: sp.name, created_by: data.created_by })
     return sp
   } catch (err) {
     await client.query('ROLLBACK')
@@ -250,7 +282,8 @@ export async function createServiceProject(data: CreateServiceProjectInput): Pro
 
 export async function updateServiceProject(
   id: string,
-  data: Partial<Pick<ServiceProject, 'name' | 'customer_id' | 'status' | 'observaciones'>>
+  data: Partial<Pick<ServiceProject, 'name' | 'customer_id' | 'status' | 'observaciones'>>,
+  actorId?: string
 ): Promise<void> {
   const fields: string[] = []
   const values: unknown[] = []
@@ -262,6 +295,78 @@ export async function updateServiceProject(
   if (fields.length === 0) return
   values.push(id)
   await pool.query(`UPDATE service_projects SET ${fields.join(', ')} WHERE id = $${i}`, values)
+  if (data.name !== undefined) {
+    await insertAuditEvent('service_project', id, 'name_updated', { name: data.name, actor: actorId ?? null })
+  }
+  if (data.status !== undefined) {
+    await insertAuditEvent('service_project', id, 'status_changed', { status: data.status, actor: actorId ?? null })
+  }
+}
+
+// Returns true if ALL child orders are in terminal states (atendido|terminado|cancelado)
+// so the project can be transitioned to 'cerrado'.
+export async function canCloseServiceProject(projectId: string): Promise<boolean> {
+  const { rows } = await pool.query(
+    `SELECT 1 FROM service_orders
+     WHERE service_project_id = $1
+       AND archived_at IS NULL
+       AND estatus NOT IN ('atendido','terminado','cancelado')
+     LIMIT 1`,
+    [projectId]
+  )
+  return rows.length === 0
+}
+
+export async function closeServiceProject(projectId: string, actorId: string): Promise<void> {
+  const ok = await canCloseServiceProject(projectId)
+  if (!ok) throw new ProjectNotCloseableError()
+  await pool.query(`UPDATE service_projects SET status = 'cerrado' WHERE id = $1`, [projectId])
+  await insertAuditEvent('service_project', projectId, 'closed', { actor: actorId })
+}
+
+export async function reopenServiceProject(projectId: string, actorId: string): Promise<void> {
+  await pool.query(`UPDATE service_projects SET status = 'abierto' WHERE id = $1`, [projectId])
+  await insertAuditEvent('service_project', projectId, 'reopened', { actor: actorId })
+}
+
+// ─── Progress entries (avances) ──────────────────────────────
+
+export interface ProgressEntry {
+  id: string
+  service_project_id: string
+  author_id: string
+  texto: string
+  created_at: string
+  // joined
+  author_username?: string
+}
+
+export async function listProgressEntries(projectId: string): Promise<ProgressEntry[]> {
+  const { rows } = await pool.query(
+    `SELECT pe.*, u.username AS author_username
+     FROM service_project_progress_entries pe
+     LEFT JOIN users u ON u.id = pe.author_id
+     WHERE pe.service_project_id = $1
+     ORDER BY pe.created_at DESC`,
+    [projectId]
+  )
+  return rows
+}
+
+export async function createProgressEntry(data: {
+  service_project_id: string
+  author_id: string
+  texto: string
+}): Promise<ProgressEntry> {
+  if (!data.texto || !data.texto.trim()) throw new RequiredFieldsError(['texto'])
+  const { rows: [pe] } = await pool.query(
+    `INSERT INTO service_project_progress_entries (service_project_id, author_id, texto)
+     VALUES ($1, $2, $3)
+     RETURNING *`,
+    [data.service_project_id, data.author_id, data.texto.trim()]
+  )
+  await insertAuditEvent('service_project', data.service_project_id, 'progress_added', { entry_id: pe.id, author: data.author_id })
+  return pe
 }
 
 export async function archiveServiceProject(id: string): Promise<void> {
@@ -344,6 +449,8 @@ export interface CreateServiceOrderInput {
   assign_all_technicians?: boolean
   fecha_hora_agendada?: string | null
   fecha_hora_limite?: string | null
+  lat?: number | string | null
+  lng?: number | string | null
   created_by: string
 }
 
@@ -351,13 +458,22 @@ export async function createServiceOrder(data: CreateServiceOrderInput): Promise
   const client = await pool.connect()
   try {
     await client.query('BEGIN')
+
+    // Block when parent project is cerrado
+    const { rows: [proj] } = await client.query(
+      `SELECT status FROM service_projects WHERE id = $1 FOR SHARE`,
+      [data.service_project_id]
+    )
+    if (proj?.status === 'cerrado') throw new ProjectClosedError()
+
     const number = await generateNumber('OSV', 'service_orders', client)
     const { rows: [so] } = await client.query(
       `INSERT INTO service_orders
          (number, service_project_id, motivo_del_servicio, ubicacion, referencias,
           comentarios_de_soporte, tipo_lugar,
-          fecha_hora_agendada, fecha_hora_limite, created_by, assign_all_technicians)
-       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11)
+          fecha_hora_agendada, fecha_hora_limite, created_by, assign_all_technicians,
+          lat, lng)
+       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13)
        RETURNING *`,
       [
         number, data.service_project_id,
@@ -366,6 +482,7 @@ export async function createServiceOrder(data: CreateServiceOrderInput): Promise
         data.tipo_lugar ?? null,
         data.fecha_hora_agendada ?? null, data.fecha_hora_limite ?? null, data.created_by,
         data.assign_all_technicians ?? false,
+        data.lat ?? null, data.lng ?? null,
       ]
     )
 
@@ -379,6 +496,9 @@ export async function createServiceOrder(data: CreateServiceOrderInput): Promise
     }
 
     await client.query('COMMIT')
+    await insertAuditEvent('service_order', so.id, 'created', {
+      number: so.number, project_id: data.service_project_id, created_by: data.created_by,
+    })
     return so
   } catch (err) {
     await client.query('ROLLBACK')
@@ -388,12 +508,68 @@ export async function createServiceOrder(data: CreateServiceOrderInput): Promise
   }
 }
 
+// Validate that an order meets the requirements to leave 'borrador':
+// motivo_del_servicio, ubicacion, fecha_hora_agendada, at least one technician
+// (either assign_all_technicians OR ≥1 row in service_order_technicians).
+export async function validateOrderReadyOutOfBorrador(orderId: string): Promise<void> {
+  const { rows: [so] } = await pool.query(
+    `SELECT motivo_del_servicio, ubicacion, tipo_lugar, fecha_hora_agendada, assign_all_technicians
+     FROM service_orders WHERE id = $1`,
+    [orderId]
+  )
+  if (!so) throw new Error('NOT_FOUND')
+  const missing: string[] = []
+  if (!so.motivo_del_servicio?.trim()) missing.push('motivo_del_servicio')
+  if (!so.ubicacion?.trim()) missing.push('ubicacion')
+  if (!so.tipo_lugar) missing.push('tipo_lugar')
+  if (!so.fecha_hora_agendada) missing.push('fecha_hora_agendada')
+  if (!so.assign_all_technicians) {
+    const { rows: techs } = await pool.query(
+      `SELECT 1 FROM service_order_technicians WHERE service_order_id = $1 LIMIT 1`,
+      [orderId]
+    )
+    if (techs.length === 0) missing.push('technicians')
+  }
+  if (missing.length) throw new RequiredFieldsError(missing)
+}
+
 type UpdatableOrderFields = Partial<Pick<ServiceOrder,
   'estatus' | 'motivo_del_servicio' | 'ubicacion' | 'referencias' |
   'comentarios_de_soporte' | 'tipo_lugar' | 'fecha_hora_agendada' | 'fecha_hora_limite' |
-  'fecha_llegada' | 'fecha_salida' | 'fecha_fin' | 'assign_all_technicians'>>
+  'fecha_llegada' | 'fecha_salida' | 'fecha_fin' | 'assign_all_technicians' |
+  'lat' | 'lng'>>
 
-export async function updateServiceOrder(id: string, data: UpdatableOrderFields): Promise<void> {
+export async function updateServiceOrder(id: string, data: UpdatableOrderFields, actorId?: string): Promise<void> {
+  // If caller is trying to transition out of 'borrador', enforce required fields first.
+  if (data.estatus !== undefined && data.estatus !== 'borrador') {
+    const { rows: [cur] } = await pool.query(`SELECT estatus FROM service_orders WHERE id = $1`, [id])
+    if (cur?.estatus === 'borrador') {
+      // Apply pending writes first so required-field check reflects the new state.
+      const merge: UpdatableOrderFields = { ...data }
+      delete merge.estatus
+      await applyOrderFieldUpdates(id, merge)
+      await validateOrderReadyOutOfBorrador(id)
+      await pool.query(`UPDATE service_orders SET estatus = $1 WHERE id = $2`, [data.estatus, id])
+      await insertAuditEvent('service_order', id, 'status_changed', { status: data.estatus, from: 'borrador', actor: actorId ?? null })
+      return
+    }
+  }
+
+  const touched = await applyOrderFieldUpdates(id, data)
+  if (touched.statusChanged && data.estatus) {
+    await insertAuditEvent('service_order', id, 'status_changed', { status: data.estatus, actor: actorId ?? null })
+  }
+  if (touched.scheduleChanged) {
+    await insertAuditEvent('service_order', id, 'schedule_updated', { agendada: data.fecha_hora_agendada, limite: data.fecha_hora_limite, actor: actorId ?? null })
+  }
+  if (touched.locationChanged) {
+    await insertAuditEvent('service_order', id, 'location_updated', { ubicacion: data.ubicacion, lat: data.lat, lng: data.lng, actor: actorId ?? null })
+  }
+}
+
+async function applyOrderFieldUpdates(id: string, data: UpdatableOrderFields): Promise<{
+  statusChanged: boolean; scheduleChanged: boolean; locationChanged: boolean
+}> {
   const fields: string[] = []
   const values: unknown[] = []
   let i = 1
@@ -410,9 +586,59 @@ export async function updateServiceOrder(id: string, data: UpdatableOrderFields)
   if (data.fecha_salida !== undefined) setField('fecha_salida', data.fecha_salida)
   if (data.fecha_fin !== undefined) setField('fecha_fin', data.fecha_fin)
   if (data.assign_all_technicians !== undefined) setField('assign_all_technicians', data.assign_all_technicians)
-  if (fields.length === 0) return
+  if (data.lat !== undefined) setField('lat', data.lat)
+  if (data.lng !== undefined) setField('lng', data.lng)
+  if (fields.length === 0) {
+    return { statusChanged: false, scheduleChanged: false, locationChanged: false }
+  }
   values.push(id)
   await pool.query(`UPDATE service_orders SET ${fields.join(', ')} WHERE id = $${i}`, values)
+  return {
+    statusChanged: data.estatus !== undefined,
+    scheduleChanged: data.fecha_hora_agendada !== undefined || data.fecha_hora_limite !== undefined,
+    locationChanged: data.ubicacion !== undefined || data.lat !== undefined || data.lng !== undefined,
+  }
+}
+
+export async function cancelServiceOrder(orderId: string, motivo: string, actorId: string): Promise<void> {
+  const client = await pool.connect()
+  try {
+    await client.query('BEGIN')
+    // Block if any child servicio is in a terminal "done" state.
+    const { rows: [blocker] } = await client.query(
+      `SELECT COUNT(*)::int AS n
+       FROM services
+       WHERE service_order_id = $1 AND estatus IN ('atendido','terminado')`,
+      [orderId]
+    )
+    if (blocker.n > 0) {
+      await client.query('ROLLBACK')
+      throw new HasTerminalChildrenError()
+    }
+    await client.query(
+      `UPDATE service_orders
+       SET estatus = 'cancelado',
+           comentarios_de_soporte = COALESCE(comentarios_de_soporte,'') ||
+             CASE WHEN COALESCE(comentarios_de_soporte,'') = '' THEN '' ELSE E'\n' END ||
+             'CANCELADA: ' || $2
+       WHERE id = $1`,
+      [orderId, motivo]
+    )
+    await client.query(
+      `UPDATE services
+       SET estatus = 'cancelado',
+           motivo_cancelacion = COALESCE(motivo_cancelacion, $2)
+       WHERE service_order_id = $1 AND estatus NOT IN ('atendido','terminado','cancelado')`,
+      [orderId, motivo]
+    )
+    await client.query('COMMIT')
+    await insertAuditEvent('service_order', orderId, 'cancelled', { motivo, actor: actorId })
+  } catch (err) {
+    try { await client.query('ROLLBACK') } catch { /* ignore */ }
+    throw err
+  } finally {
+    client.release()
+  }
 }
 
 export async function archiveServiceOrder(id: string): Promise<void> {
@@ -510,23 +736,33 @@ export interface CreateServiceInput {
   comentarios_soporte?: string | null
   fecha_hora_agendada?: string | null
   fecha_hora_limite?: string | null
+  lat?: number | string | null
+  lng?: number | string | null
   assign_all_technicians?: boolean
   iniciado_por: string
 }
 
 export async function createService(data: CreateServiceInput, client?: PoolClient): Promise<Service> {
+  // Required fields
+  const missing: string[] = []
+  if (!data.unidad_id) missing.push('unidad_id')
+  if (!data.motivo_visita || !data.motivo_visita.trim()) missing.push('motivo_visita')
+  if (missing.length) throw new RequiredFieldsError(missing)
+
   const useOwnClient = !client
   const c = client ?? await pool.connect()
   try {
     if (useOwnClient) await c.query('BEGIN')
+
+    // Services can be created while parent order is in 'borrador' — they just can't start.
     const number = await generateNumber('SRV', 'services', c)
     const { rows: [srv] } = await c.query(
       `INSERT INTO services
          (number, service_order_id, unidad_id, ruta_id, customer_id,
           motivo_visita, referencia, ubicacion, ubicacion_txt, tipo_lugar,
           comentarios_soporte, fecha_hora_agendada, fecha_hora_limite, iniciado_por,
-          assign_all_technicians)
-       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15)
+          assign_all_technicians, lat, lng)
+       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17)
        RETURNING *`,
       [
         number, data.service_order_id ?? null, data.unidad_id ?? null, data.ruta_id ?? null,
@@ -535,9 +771,13 @@ export async function createService(data: CreateServiceInput, client?: PoolClien
         data.comentarios_soporte ?? null,
         data.fecha_hora_agendada ?? null, data.fecha_hora_limite ?? null, data.iniciado_por,
         data.assign_all_technicians ?? false,
+        data.lat ?? null, data.lng ?? null,
       ]
     )
     if (useOwnClient) await c.query('COMMIT')
+    await insertAuditEvent('service', srv.id, 'created', {
+      number: srv.number, order_id: data.service_order_id ?? null, iniciado_por: data.iniciado_por,
+    })
     return srv
   } catch (err) {
     if (useOwnClient) await c.query('ROLLBACK')
@@ -551,9 +791,32 @@ type UpdatableServiceFields = Partial<Pick<Service,
   'service_order_id' | 'unidad_id' | 'ruta_id' | 'customer_id' | 'estatus' |
   'motivo_visita' | 'referencia' | 'ubicacion' | 'ubicacion_txt' |
   'reporte_tecnico' | 'comentarios_reporte' | 'comentarios_soporte' | 'motivo_cancelacion' |
-  'fecha_hora_agendada' | 'fecha_hora_limite' | 'fecha_hora_servicio' | 'assign_all_technicians'>>
+  'fecha_hora_agendada' | 'fecha_hora_limite' | 'fecha_hora_servicio' | 'assign_all_technicians' |
+  'lat' | 'lng'>>
 
-export async function updateService(id: string, data: UpdatableServiceFields): Promise<void> {
+const REPORT_EDITABLE_STATES = new Set<ServiceEstatus>(['en_curso', 'en_revision', 'terminado'])
+const STARTED_STATES = new Set<ServiceEstatus>(['agendado', 'en_curso', 'en_revision', 'terminado', 'atendido'])
+
+export async function updateService(id: string, data: UpdatableServiceFields, actorId?: string): Promise<void> {
+  // Gate report-field writes by current estatus
+  if (data.reporte_tecnico !== undefined || data.comentarios_reporte !== undefined) {
+    const { rows: [cur] } = await pool.query(`SELECT estatus FROM services WHERE id = $1`, [id])
+    if (!cur || !REPORT_EDITABLE_STATES.has(cur.estatus)) {
+      throw new ReportNotEditableError()
+    }
+  }
+
+  // Block starting a service (transitioning to a "started" state) while parent order is in 'borrador'.
+  if (data.estatus !== undefined && STARTED_STATES.has(data.estatus)) {
+    const { rows: [row] } = await pool.query(
+      `SELECT so.estatus AS order_estatus
+       FROM services s LEFT JOIN service_orders so ON so.id = s.service_order_id
+       WHERE s.id = $1`,
+      [id]
+    )
+    if (row?.order_estatus === 'borrador') throw new OrderInBorradorError()
+  }
+
   const fields: string[] = []
   const values: unknown[] = []
   let i = 1
@@ -575,9 +838,18 @@ export async function updateService(id: string, data: UpdatableServiceFields): P
   if (data.fecha_hora_limite !== undefined) setField('fecha_hora_limite', data.fecha_hora_limite)
   if (data.fecha_hora_servicio !== undefined) setField('fecha_hora_servicio', data.fecha_hora_servicio)
   if (data.assign_all_technicians !== undefined) setField('assign_all_technicians', data.assign_all_technicians)
+  if (data.lat !== undefined) setField('lat', data.lat)
+  if (data.lng !== undefined) setField('lng', data.lng)
   if (fields.length === 0) return
   values.push(id)
   await pool.query(`UPDATE services SET ${fields.join(', ')} WHERE id = $${i}`, values)
+
+  if (data.estatus !== undefined) {
+    await insertAuditEvent('service', id, 'status_changed', { status: data.estatus, actor: actorId ?? null })
+  }
+  if (data.reporte_tecnico !== undefined || data.comentarios_reporte !== undefined) {
+    await insertAuditEvent('service', id, 'report_updated', { actor: actorId ?? null })
+  }
 }
 
 export async function deleteService(id: string): Promise<void> {
@@ -609,7 +881,7 @@ export async function promoteWalkInService(
     const projName = projectName || srv.motivo_visita || `Seguimiento ${srv.number}`
     const { rows: [proj] } = await client.query(
       `INSERT INTO service_projects (number, name, customer_id, created_by, status, observaciones)
-       VALUES ($1, $2, $3, $4, 'open', $5)
+       VALUES ($1, $2, $3, $4, 'abierto', $5)
        RETURNING id`,
       [projNumber, projName, srv.customer_id, userId, observaciones ?? null]
     )
@@ -883,6 +1155,9 @@ export async function autoCreateServiceProjectFromSale(
     )
 
     await client.query('COMMIT')
+    await insertAuditEvent('service_project', project.id, 'created', {
+      number: project.number, auto_from_sale: sale.id, created_by: userId,
+    })
     return project
   } catch (err) {
     await client.query('ROLLBACK')
@@ -1146,6 +1421,8 @@ export async function approveService(
     `, [saleId])
 
     await client.query('COMMIT')
+    await insertAuditEvent('service', serviceId, 'approved', { note_id: note.id, sale_id: saleId, approver: approverId })
+    await insertAuditEvent('service', serviceId, 'status_changed', { status: 'terminado', actor: approverId })
 
     // Re-fetch service
     const updated = await getService(serviceId)

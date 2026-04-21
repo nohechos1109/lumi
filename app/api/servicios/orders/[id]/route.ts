@@ -11,8 +11,8 @@ import {
   updateServiceOrder,
   deleteServiceOrder,
   archiveServiceOrder,
+  RequiredFieldsError,
 } from '@/lib/queries/servicios'
-import { insertAuditEvent } from '@/lib/queries/audit'
 
 export async function GET(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const session = await getSession()
@@ -37,21 +37,15 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
     if (body.archive === true) {
       await archiveServiceOrder(id)
     } else {
-      const old = body.estatus !== undefined ? await getServiceOrder(id) : null
-      await updateServiceOrder(id, body)
-      if (old && body.estatus && body.estatus !== old.estatus) {
-        await insertAuditEvent('service_order', id, 'status_change', {
-          from: old.estatus,
-          to: body.estatus,
-          user_id: session.userId,
-          username: session.username,
-        })
-      }
+      await updateServiceOrder(id, body, session.userId)
     }
     revalidatePath('/servicios')
     revalidatePath(`/servicios/orders/${id}`)
     return NextResponse.json({ ok: true })
   } catch (error) {
+    if (error instanceof RequiredFieldsError) {
+      return NextResponse.json({ error: 'Campos requeridos', fields: error.fields }, { status: 400 })
+    }
     console.error('PATCH /api/servicios/orders/[id] ERROR:', error)
     return NextResponse.json({ error: String(error) }, { status: 500 })
   }

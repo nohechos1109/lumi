@@ -12,7 +12,7 @@ const ESTATUS_MAP: Record<string, { label: string; cls: string }> = {
   en_curso:    { label: 'En curso',    cls: 'badge badge-in-progress' },
   en_revision: { label: 'En revisión', cls: 'badge badge-in-revision' },
   terminado:   { label: 'Terminado',   cls: 'badge badge-done' },
-  cancelado:   { label: 'Cancelado',   cls: 'badge badge-cancelled' },
+  cancelado:   { label: 'Cancelado',   cls: 'badge badge-rejected' },
   rechazado:   { label: 'Rechazado',   cls: 'badge badge-rejected' },
 }
 
@@ -30,9 +30,10 @@ interface Props {
   hasMaterials: boolean
   tecnicos: { id: string; username: string }[]
   isAdmin?: boolean
+  parentOrderEstatus?: string | null
 }
 
-export default function ServiceEditor({ service, canEdit, canEditReport, canChangeStatus, canManageTech, canApprove, hasMaterials, tecnicos, isAdmin }: Props) {
+export default function ServiceEditor({ service, canEdit, canEditReport, canChangeStatus, canManageTech, canApprove, hasMaterials, tecnicos, isAdmin, parentOrderEstatus }: Props) {
   const router = useRouter()
   const [estatus, setEstatus] = useState<ServiceEstatus>(service.estatus)
   const [reporte, setReporte] = useState(service.reporte_tecnico ?? '')
@@ -193,9 +194,14 @@ export default function ServiceEditor({ service, canEdit, canEditReport, canChan
   const info = ESTATUS_MAP[estatus] ?? ESTATUS_MAP.pendiente
   const techs = service.technicians ?? []
 
+  // Report fields are only editable while servicio is en_curso/en_revision/terminado.
+  const reportStateOk = ['en_curso', 'en_revision', 'terminado'].includes(estatus)
+  const reportEditable = canEditReport && reportStateOk
+
   const isCancellationReview = estatus === 'en_revision' && !!service.motivo_cancelacion
   const isTerminationReview  = estatus === 'en_revision' && !service.motivo_cancelacion
 
+  const parentIsBorrador       = parentOrderEstatus === 'borrador'
   const showIniciar            = canChangeStatus && estatus === 'pendiente'
   const showPendingCancel      = canChangeStatus && estatus === 'pendiente'
   const showTerminar           = canChangeStatus && (estatus === 'en_curso' || estatus === 'rechazado')
@@ -259,6 +265,19 @@ export default function ServiceEditor({ service, canEdit, canEditReport, canChan
                 {new Date(service.fecha_hora_agendada).toLocaleString('es-MX')}
               </div>
             )}
+            {service.lat != null && service.lng != null && (
+              <div>
+                <a
+                  href={`https://www.google.com/maps?q=${service.lat},${service.lng}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-xs font-semibold underline"
+                  style={{ color: 'var(--c-navy)' }}
+                >
+                  Ver en Google Maps ↗
+                </a>
+              </div>
+            )}
             {service.comentarios_soporte && (
               <div className="mt-1"><span style={{ color: 'var(--c-ghost)' }}>Detalles:</span> {service.comentarios_soporte}</div>
             )}
@@ -276,9 +295,15 @@ export default function ServiceEditor({ service, canEdit, canEditReport, canChan
               {showIniciar && (
                 <button
                   onClick={() => changeStatus('en_curso')}
-                  disabled={saving}
+                  disabled={saving || parentIsBorrador}
+                  title={parentIsBorrador ? 'La orden está en borrador. Agéndala antes de iniciar.' : undefined}
                   className="px-5 py-2.5 rounded-xl text-sm font-semibold text-white transition-all hover:opacity-90 active:scale-95"
-                  style={{ background: saving ? 'var(--c-rim-hi)' : 'var(--c-navy)', cursor: saving ? 'not-allowed' : 'pointer', border: 'none', opacity: saving ? 0.6 : 1 }}
+                  style={{
+                    background: saving || parentIsBorrador ? 'var(--c-rim-hi)' : 'var(--c-navy)',
+                    cursor: saving || parentIsBorrador ? 'not-allowed' : 'pointer',
+                    border: 'none',
+                    opacity: saving || parentIsBorrador ? 0.6 : 1,
+                  }}
                 >
                   Iniciar
                 </button>
@@ -374,11 +399,11 @@ export default function ServiceEditor({ service, canEdit, canEditReport, canChan
         </div>
       )}
 
-      {(canEditReport || reporte || comentariosReporte) && (
+      {(reportEditable || reporte || comentariosReporte) && (
         <div className="grid gap-6 md:grid-cols-2">
           <div>
             <label className={labelCls} style={labelStyle}>Reporte técnico</label>
-            {canEditReport ? (
+            {reportEditable ? (
               <textarea
                 value={reporte}
                 onChange={e => setReporte(e.target.value)}
@@ -395,7 +420,7 @@ export default function ServiceEditor({ service, canEdit, canEditReport, canChan
           </div>
           <div>
             <label className={labelCls} style={labelStyle}>Comentarios del técnico</label>
-            {canEditReport ? (
+            {reportEditable ? (
               <textarea
                 value={comentariosReporte}
                 onChange={e => setComentariosReporte(e.target.value)}

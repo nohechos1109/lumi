@@ -37,6 +37,7 @@ export default function NewServiceProjectModal({ onClose }: Props) {
 
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault()
+    if (!customerId) { toast('Cliente requerido', 'error'); return }
     setLoading(true)
     const form = new FormData(e.currentTarget)
     try {
@@ -45,7 +46,7 @@ export default function NewServiceProjectModal({ onClose }: Props) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           name: form.get('name'),
-          customer_id: customerId || null,
+          customer_id: customerId,
           observaciones: form.get('observaciones') || null,
         }),
       })
@@ -117,7 +118,7 @@ export default function NewServiceProjectModal({ onClose }: Props) {
           </div>
 
           <div>
-            <label className={labelCls} style={labelStyle}>Cliente (opcional)</label>
+            <label className={labelCls} style={labelStyle}>Cliente *</label>
             <CustomerSearchSelect
               customers={customers}
               value={customerId}
@@ -147,13 +148,13 @@ export default function NewServiceProjectModal({ onClose }: Props) {
             </button>
             <button
               type="submit"
-              disabled={loading}
+              disabled={loading || !customerId}
               className="flex-1 py-2.5 rounded-lg text-sm font-semibold transition-all text-white"
               style={{
-                background: loading ? 'var(--c-rim-hi)' : 'var(--c-navy)',
-                cursor: loading ? 'not-allowed' : 'pointer',
+                background: loading || !customerId ? 'var(--c-rim-hi)' : 'var(--c-navy)',
+                cursor: loading || !customerId ? 'not-allowed' : 'pointer',
                 border: 'none',
-                opacity: loading ? 0.75 : 1,
+                opacity: loading || !customerId ? 0.75 : 1,
               }}
             >
               {loading ? 'Creando...' : 'Crear Planeación'}

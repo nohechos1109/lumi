@@ -8,11 +8,16 @@ import {
   canEditService,
   canViewOwnServicesOnly,
   canApproveServiceRequest,
+  canViewQuoteLink,
 } from '@/lib/permissions'
+import ActivityLog from '@/components/ActivityLog'
+import QuoteLinks from '../../projects/[id]/_components/QuoteLinks'
+import pool from '@/lib/db'
 import {
   getService,
   listTechnicianUsers,
   listServiceMaterials,
+  getServiceOrder,
 } from '@/lib/queries/servicios'
 import { listFilesByEntity } from '@/lib/queries/files'
 import { getSale } from '@/lib/queries/sales'
@@ -47,21 +52,24 @@ export default async function ServiceDetailPage({ params }: { params: Promise<{ 
   const isOrphan = !service.service_order_id
   const canManageTech = canEdit && session.role !== 'tecnico' && isOrphan
 
-  const [tecnicos, files, materials, settings] = await Promise.all([
+  const [tecnicos, files, materials, settings, parentOrder] = await Promise.all([
     canManageTech ? listTechnicianUsers() : Promise.resolve([]),
     listFilesByEntity('service', id),
     listServiceMaterials(id),
     getSettings(),
+    service.service_order_id ? getServiceOrder(service.service_order_id) : Promise.resolve(null),
   ])
 
   let saleId: string | null = service.sale_id ?? null
   let saleQuoteLines: import('@/lib/queries/quote_lines').QuoteLine[] = []
   let globalDiscount = 0
   const fxRate = Number(settings?.fx_mxn_per_usd ?? 17.85)
+  let quoteId: string | null = null
 
   if (saleId) {
     const sale = await getSale(saleId)
     if (sale?.quote_id) {
+      quoteId = sale.quote_id
       const rawLines = await listLines(sale.quote_id)
       const discountLine = rawLines.find(l => l.display_type === 'discount')
       globalDiscount = discountLine ? parseFloat(discountLine.discount_percent) : 0
@@ -69,26 +77,38 @@ export default async function ServiceDetailPage({ params }: { params: Promise<{ 
     }
   }
 
+  // Fallback: derive quoteId through project.sale_id if service has no direct sale link yet
+  if (!quoteId && service.project_id) {
+    const { rows } = await pool.query(
+      `SELECT s.quote_id FROM service_projects sp LEFT JOIN sales s ON s.id = sp.sale_id WHERE sp.id = $1`,
+      [service.project_id]
+    )
+    quoteId = rows[0]?.quote_id ?? null
+  }
+
   return (
     <div>
-      <div className="mb-6 flex flex-col gap-1">
-        <Link
-          href="/servicios"
-          className="inline-flex items-center gap-1.5 text-xs font-semibold transition-opacity hover:opacity-70"
-          style={{ color: 'var(--c-ghost)' }}
-        >
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
-          Servicios
-        </Link>
-        {service.order_number && service.service_order_id && (
+      <div className="mb-6 flex items-center justify-between gap-3 flex-wrap">
+        <div className="flex flex-col gap-1">
           <Link
-            href={`/servicios/orders/${service.service_order_id}`}
-            className="text-xs font-mono hover:underline"
-            style={{ color: 'var(--c-navy)' }}
+            href="/servicios"
+            className="inline-flex items-center gap-1.5 text-xs font-semibold transition-opacity hover:opacity-70"
+            style={{ color: 'var(--c-ghost)' }}
           >
-            Orden {service.order_number}
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+            Servicios
           </Link>
-        )}
+          {service.order_number && service.service_order_id && (
+            <Link
+              href={`/servicios/orders/${service.service_order_id}`}
+              className="text-xs font-mono hover:underline"
+              style={{ color: 'var(--c-navy)' }}
+            >
+              Orden {service.order_number}
+            </Link>
+          )}
+        </div>
+        <ActivityLog entity="service" entityId={id} />
       </div>
 
       <WorkflowStepper steps={stepsFromService(service)} />
@@ -103,7 +123,12 @@ export default async function ServiceDetailPage({ params }: { params: Promise<{ 
         hasMaterials={materials.length > 0}
         tecnicos={tecnicos}
         isAdmin={session.role === 'admin' || session.role === 'manager'}
+        parentOrderEstatus={parentOrder?.estatus ?? null}
       />
+
+      {quoteId && (
+        <QuoteLinks quoteId={quoteId} showQuoteLink={canViewQuoteLink(session.role)} />
+      )}
 
       <MaterialsEditor
         serviceId={id}

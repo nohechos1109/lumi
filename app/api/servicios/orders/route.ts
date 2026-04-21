@@ -2,7 +2,12 @@ import { NextRequest, NextResponse } from 'next/server'
 import { revalidatePath } from 'next/cache'
 import { getSession, unauthorized, forbidden } from '@/lib/auth-guard'
 import { canAccessServicios, canCreateServiceOrder } from '@/lib/permissions'
-import { listServiceOrdersByProject, createServiceOrder } from '@/lib/queries/servicios'
+import {
+  listServiceOrdersByProject,
+  createServiceOrder,
+  ProjectClosedError,
+  RequiredFieldsError,
+} from '@/lib/queries/servicios'
 
 export async function GET(req: NextRequest) {
   const session = await getSession()
@@ -38,12 +43,20 @@ export async function POST(req: NextRequest) {
       technician_ids: Array.isArray(body.technician_ids) ? body.technician_ids : [],
       fecha_hora_agendada: body.fecha_hora_agendada ?? null,
       fecha_hora_limite: body.fecha_hora_limite ?? null,
+      lat: body.lat ?? null,
+      lng: body.lng ?? null,
       created_by: session.userId,
     })
     revalidatePath('/servicios')
     revalidatePath(`/servicios/projects/${body.service_project_id}`)
     return NextResponse.json(order, { status: 201 })
   } catch (error) {
+    if (error instanceof ProjectClosedError) {
+      return NextResponse.json({ error: 'La planeación está cerrada.' }, { status: 409 })
+    }
+    if (error instanceof RequiredFieldsError) {
+      return NextResponse.json({ error: 'Campos requeridos', fields: error.fields }, { status: 400 })
+    }
     console.error('POST /api/servicios/orders ERROR:', error)
     return NextResponse.json({ error: String(error) }, { status: 500 })
   }

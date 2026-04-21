@@ -78,11 +78,8 @@ export function stepsFromOrder(order: ServiceOrder): WorkflowStep[] {
 
 /** Steps from Project detail page perspective. */
 export function stepsFromProject(project: ServiceProject): WorkflowStep[] {
-  const cancelled = project.status === 'cancelled'
-  const completed = project.status === 'completed'
-  const active    = project.status === 'open' || project.status === 'in_progress'
-
-  const proyectoState: StepState = cancelled ? 'error' : completed ? 'done' : active ? 'current' : 'pending'
+  const closed = project.status === 'cerrado'
+  const proyectoState: StepState = closed ? 'done' : 'current'
 
   return [
     { key: 'proyecto',   label: 'Planeación',   state: proyectoState },

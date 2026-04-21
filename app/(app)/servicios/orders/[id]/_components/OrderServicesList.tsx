@@ -12,7 +12,7 @@ const ESTATUS_MAP: Record<string, { label: string; cls: string }> = {
   en_revision: { label: 'En revisión', cls: 'badge badge-in-revision' },
   terminado:   { label: 'Terminado',   cls: 'badge badge-done' },
   atendido:    { label: 'Atendido',    cls: 'badge badge-attended' },
-  cancelado:   { label: 'Cancelado',   cls: 'badge badge-cancelled' },
+  cancelado:   { label: 'Cancelado',   cls: 'badge badge-rejected' },
   rechazado:   { label: 'Rechazado',   cls: 'badge badge-rejected' },
 }
 
@@ -23,9 +23,10 @@ interface Props {
   motivo: string | null
   services: Service[]
   canCreate: boolean
+  role?: string
 }
 
-export default function OrderServicesList({ orderId, customerId, tipoLugar, motivo, services, canCreate }: Props) {
+export default function OrderServicesList({ orderId, customerId, tipoLugar, motivo, services, canCreate, role }: Props) {
   const [showModal, setShowModal] = useState(false)
   const router = useRouter()
 
@@ -106,6 +107,7 @@ export default function OrderServicesList({ orderId, customerId, tipoLugar, moti
           prefillCustomerId={customerId}
           prefillTipoLugar={tipoLugar}
           prefillMotivo={motivo}
+          compact={role === 'tecnico'}
           onClose={() => setShowModal(false)}
         />
       )}

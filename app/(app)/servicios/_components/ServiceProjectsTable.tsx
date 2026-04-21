@@ -6,10 +6,8 @@ import type { ServiceProject } from '@/lib/queries/servicios'
 import FilterSelect from '@/components/ui/FilterSelect'
 
 const STATUS_MAP: Record<string, { label: string; cls: string }> = {
-  open:        { label: 'Abierto',    cls: 'badge badge-scheduled' },
-  in_progress: { label: 'En Proceso', cls: 'badge badge-in-progress' },
-  completed:   { label: 'Completado', cls: 'badge badge-attended' },
-  cancelled:   { label: 'Cancelado',  cls: 'badge badge-cancelled' },
+  abierto: { label: 'Abierto', cls: 'badge badge-scheduled' },
+  cerrado: { label: 'Cerrado', cls: 'badge badge-done' },
 }
 
 export default function ServiceProjectsTable({ projects }: { projects: ServiceProject[] }) {
@@ -72,7 +70,7 @@ export default function ServiceProjectsTable({ projects }: { projects: ServicePr
             </thead>
             <tbody className="divide-y divide-[var(--c-rim)]">
               {filtered.map(p => {
-                const s = STATUS_MAP[p.status] ?? STATUS_MAP.open
+                const s = STATUS_MAP[p.status] ?? STATUS_MAP.abierto
                 return (
                   <tr key={p.id} className="tr-hover transition-colors">
                     <td className="px-5 py-4 font-mono text-xs font-bold" style={{ letterSpacing: '0.08em' }}>
