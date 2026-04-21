@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getSession, unauthorized, forbidden } from '@/lib/auth-guard'
-import { uploadImage } from '@/lib/cloudinary'
+import { uploadImage } from '@/lib/local-upload'
 
 const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp']
 const MAX_SIZE = 5 * 1024 * 1024 // 5 MB
@@ -25,24 +25,15 @@ export async function POST(req: NextRequest) {
   }
 
   if (file.size > MAX_SIZE) {
-    return NextResponse.json(
-      { error: 'El archivo excede el límite de 5 MB.' },
-      { status: 400 },
-    )
+    return NextResponse.json({ error: 'El archivo excede el límite de 5 MB.' }, { status: 400 })
   }
-
-  console.log('[CLOUDINARY DEBUG]', {
-    cloud_name: process.env.CLOUDINARY_CLOUD_NAME ?? 'MISSING',
-    api_key: process.env.CLOUDINARY_API_KEY ? 'SET' : 'MISSING',
-    api_secret: process.env.CLOUDINARY_API_SECRET ? 'SET' : 'MISSING',
-  })
 
   try {
     const buffer = Buffer.from(await file.arrayBuffer())
-    const result = await uploadImage(buffer, 'cotizador/products')
+    const result = await uploadImage(buffer, 'cotizador/products', file.type)
     return NextResponse.json({ url: result.url })
   } catch (err) {
-    console.error('[CLOUDINARY ERROR]', err)
+    console.error('[UPLOAD ERROR]', err)
     return NextResponse.json({ error: String(err) }, { status: 500 })
   }
 }
