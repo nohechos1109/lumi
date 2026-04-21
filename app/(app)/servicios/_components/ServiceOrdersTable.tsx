@@ -6,9 +6,11 @@ import type { ServiceOrder } from '@/lib/queries/servicios'
 import FilterSelect from '@/components/ui/FilterSelect'
 
 const ESTATUS_MAP: Record<string, { label: string; cls: string }> = {
+  borrador:  { label: 'Borrador',  cls: 'badge badge-pending' },
   pendiente: { label: 'Pendiente', cls: 'badge badge-pending' },
   agendado:  { label: 'Agendado',  cls: 'badge badge-scheduled' },
   en_curso:  { label: 'En curso',  cls: 'badge badge-in-progress' },
+  terminado: { label: 'Terminado', cls: 'badge badge-done' },
   atendido:  { label: 'Atendido',  cls: 'badge badge-attended' },
   cancelado: { label: 'Cancelado', cls: 'badge badge-cancelled' },
 }
@@ -43,7 +45,7 @@ export default function ServiceOrdersTable({ orders }: { orders: ServiceOrder[] 
       <div className="flex gap-3 mb-4 flex-wrap">
         <input
           type="text"
-          placeholder="Buscar por número, proyecto, cliente, motivo..."
+          placeholder="Buscar por número, planeación, cliente, motivo..."
           value={search}
           onChange={e => setSearch(e.target.value)}
           className="flex-1 min-w-[200px] text-sm"
@@ -65,7 +67,7 @@ export default function ServiceOrdersTable({ orders }: { orders: ServiceOrder[] 
             <thead>
               <tr style={{ background: 'var(--c-panel)', borderBottom: '1px solid var(--c-rim)' }}>
                 <th className="text-left px-5 py-4 text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--c-ghost)', letterSpacing: '0.1em' }}>Número</th>
-                <th className="text-left px-5 py-4 text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--c-ghost)', letterSpacing: '0.1em' }}>Proyecto</th>
+                <th className="text-left px-5 py-4 text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--c-ghost)', letterSpacing: '0.1em' }}>Planeación</th>
                 <th className="text-left px-5 py-4 text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--c-ghost)', letterSpacing: '0.1em' }}>Cliente</th>
                 <th className="text-left px-5 py-4 text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--c-ghost)', letterSpacing: '0.1em' }}>Motivo</th>
                 <th className="text-left px-5 py-4 text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--c-ghost)', letterSpacing: '0.1em' }}>Estado</th>

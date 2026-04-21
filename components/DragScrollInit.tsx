@@ -49,7 +49,7 @@ export default function DragScrollInit() {
     const cleanups = new Map<HTMLElement, () => void>()
 
     function scan() {
-      document.querySelectorAll<HTMLElement>('.overflow-x-auto').forEach(el => {
+      document.querySelectorAll<HTMLElement>('.overflow-x-auto:not([data-no-drag])').forEach(el => {
         if (!cleanups.has(el)) {
           cleanups.set(el, attachDrag(el))
         }

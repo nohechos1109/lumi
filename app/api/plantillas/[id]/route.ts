@@ -36,7 +36,7 @@ export async function GET(_req: NextRequest, { params }: { params: Promise<{ id:
 export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const session = await getSession()
   if (!session) return unauthorized()
-  if (session.role !== 'admin') return forbidden()
+  if (session.role !== 'admin' && session.role !== 'sales') return forbidden()
   const { id } = await params
   const { nombre, requerimiento } = await req.json()
   if (!nombre?.trim()) return NextResponse.json({ error: 'Nombre requerido' }, { status: 400 })

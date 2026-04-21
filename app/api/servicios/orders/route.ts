@@ -32,7 +32,6 @@ export async function POST(req: NextRequest) {
       motivo_del_servicio: body.motivo_del_servicio ?? null,
       ubicacion: body.ubicacion ?? null,
       referencias: body.referencias ?? null,
-      foja_de_ruta: body.foja_de_ruta ?? null,
       comentarios_de_soporte: body.comentarios_de_soporte ?? null,
       tipo_lugar: body.tipo_lugar ?? null,
       assign_all_technicians: body.assign_all_technicians === true,

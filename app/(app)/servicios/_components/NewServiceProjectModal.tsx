@@ -51,10 +51,10 @@ export default function NewServiceProjectModal({ onClose }: Props) {
       })
       const result = await res.json()
       if (!res.ok) {
-        toast(result.error || 'Error al crear el proyecto', 'error')
+        toast(result.error || 'Error al crear la planeación', 'error')
         return
       }
-      toast('Proyecto creado', 'success')
+      toast('Planeación creada', 'success')
       notifyRefresh()
       onClose()
       router.push(`/servicios/projects/${result.id}`)
@@ -85,10 +85,10 @@ export default function NewServiceProjectModal({ onClose }: Props) {
         <div className="flex items-center justify-between px-6 py-5" style={{ borderBottom: '1px solid var(--c-rim)' }}>
           <div>
             <h2 className="font-heading text-xl font-bold" style={{ color: 'var(--c-ink)', letterSpacing: '0.03em' }}>
-              Nuevo Proyecto de Servicios
+              Nueva Planeación de Servicios
             </h2>
             <p className="text-xs mt-0.5" style={{ color: 'var(--c-ghost)' }}>
-              Agrupa órdenes y servicios bajo un proyecto.
+              Agrupa órdenes y servicios bajo una planeación.
             </p>
           </div>
           <button
@@ -105,7 +105,7 @@ export default function NewServiceProjectModal({ onClose }: Props) {
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-5 px-6 py-5">
           <div>
-            <label className={labelCls} style={labelStyle}>Nombre del Proyecto *</label>
+            <label className={labelCls} style={labelStyle}>Nombre de la Planeación *</label>
             <input
               name="name"
               type="text"
@@ -156,7 +156,7 @@ export default function NewServiceProjectModal({ onClose }: Props) {
                 opacity: loading ? 0.75 : 1,
               }}
             >
-              {loading ? 'Creando...' : 'Crear Proyecto'}
+              {loading ? 'Creando...' : 'Crear Planeación'}
             </button>
           </div>
         </form>

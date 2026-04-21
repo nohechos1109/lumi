@@ -1,14 +1,16 @@
 'use client'
 
 import { useState } from 'react'
-import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import type { ServiceOrder } from '@/lib/queries/servicios'
 import NewServiceOrderModal from '../../../_components/NewServiceOrderModal'
 
 const ESTATUS_MAP: Record<string, { label: string; cls: string }> = {
+  borrador:  { label: 'Borrador',  cls: 'badge badge-pending' },
   pendiente: { label: 'Pendiente', cls: 'badge badge-pending' },
   agendado:  { label: 'Agendado',  cls: 'badge badge-scheduled' },
   en_curso:  { label: 'En curso',  cls: 'badge badge-in-progress' },
+  terminado: { label: 'Terminado', cls: 'badge badge-done' },
   atendido:  { label: 'Atendido',  cls: 'badge badge-attended' },
   cancelado: { label: 'Cancelado', cls: 'badge badge-cancelled' },
 }
@@ -21,6 +23,7 @@ interface Props {
 
 export default function ProjectOrdersList({ projectId, orders, canCreate }: Props) {
   const [showModal, setShowModal] = useState(false)
+  const router = useRouter()
 
   return (
     <div className="mt-10">
@@ -68,11 +71,14 @@ export default function ProjectOrdersList({ projectId, orders, canCreate }: Prop
                   const e = ESTATUS_MAP[o.estatus] ?? ESTATUS_MAP.pendiente
                   const total = (o.servicios_pendientes ?? 0) + (o.servicios_en_curso ?? 0) + (o.servicios_atendidos ?? 0)
                   return (
-                    <tr key={o.id} className="tr-hover transition-colors">
-                      <td className="px-5 py-4 font-mono text-xs font-bold" style={{ letterSpacing: '0.08em' }}>
-                        <Link href={`/servicios/orders/${o.id}`} className="hover:underline" style={{ color: 'var(--c-navy)' }}>
-                          {o.number}
-                        </Link>
+                    <tr
+                      key={o.id}
+                      className="tr-hover transition-colors"
+                      style={{ cursor: 'pointer' }}
+                      onClick={() => router.push(`/servicios/orders/${o.id}`)}
+                    >
+                      <td className="px-5 py-4 font-mono text-xs font-bold" style={{ letterSpacing: '0.08em', color: 'var(--c-navy)' }}>
+                        {o.number}
                       </td>
                       <td className="px-5 py-4" style={{ color: 'var(--c-ink)' }}>{o.motivo_del_servicio ?? '—'}</td>
                       <td className="px-5 py-4">

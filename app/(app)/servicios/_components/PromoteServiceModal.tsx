@@ -43,7 +43,7 @@ export default function PromoteServiceModal({ serviceId, serviceNumber, motivo, 
         toast(data.error || 'Error al dar seguimiento', 'error')
         return
       }
-      toast('Proyecto y orden creados', 'success')
+      toast('Planeación y orden creadas', 'success')
       notifyRefresh()
       onClose()
       router.refresh()
@@ -77,7 +77,7 @@ export default function PromoteServiceModal({ serviceId, serviceNumber, motivo, 
               Dar seguimiento
             </h2>
             <p className="text-xs mt-0.5" style={{ color: 'var(--c-ghost)' }}>
-              Se creará un proyecto y una orden de servicio para <span className="font-mono font-semibold">{serviceNumber}</span>.
+              Se creará una planeación y una orden de servicio para <span className="font-mono font-semibold">{serviceNumber}</span>.
             </p>
           </div>
           <button
@@ -94,7 +94,7 @@ export default function PromoteServiceModal({ serviceId, serviceNumber, motivo, 
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-5 px-6 py-5">
           <div>
-            <label className={labelCls} style={labelStyle}>Nombre del Proyecto</label>
+            <label className={labelCls} style={labelStyle}>Nombre de la Planeación</label>
             <input
               name="project_name"
               type="text"
@@ -104,7 +104,7 @@ export default function PromoteServiceModal({ serviceId, serviceNumber, motivo, 
               style={inp}
             />
             <p className="text-xs mt-1" style={{ color: 'var(--c-ghost)' }}>
-              Si se deja vacío, se usará el motivo del servicio.
+              Si se deja vacío, se usará el motivo del servicio como nombre.
             </p>
           </div>
 
@@ -113,7 +113,7 @@ export default function PromoteServiceModal({ serviceId, serviceNumber, motivo, 
             <textarea
               name="observaciones"
               rows={3}
-              placeholder="Notas adicionales sobre el proyecto..."
+              placeholder="Notas adicionales sobre la planeación..."
               className="w-full text-sm rounded-xl px-4 py-2.5 resize-none"
               style={inp}
             />
@@ -140,7 +140,7 @@ export default function PromoteServiceModal({ serviceId, serviceNumber, motivo, 
                 boxShadow: loading ? 'none' : '0 2px 8px rgba(37,99,235,0.25)',
               }}
             >
-              {loading ? 'Creando...' : 'Crear Proyecto y Orden'}
+              {loading ? 'Creando...' : 'Crear Planeación y Orden'}
             </button>
           </div>
         </form>

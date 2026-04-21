@@ -7,5 +7,5 @@ import PlantillasClient from './_components/PlantillasClient'
 export default async function AdminPlantillasPage() {
   const session = await getIronSession<SessionData>(await cookies(), sessionOptions)
   if (session.role !== 'admin') redirect('/admin')
-  return <PlantillasClient />
+  return <PlantillasClient backHref="/admin" />
 }

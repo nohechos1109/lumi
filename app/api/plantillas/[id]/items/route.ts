@@ -5,7 +5,7 @@ import { addPlantillaItem } from '@/lib/queries/plantillas'
 export async function POST(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const session = await getSession()
   if (!session) return unauthorized()
-  if (session.role !== 'admin') return forbidden()
+  if (session.role !== 'admin' && session.role !== 'sales') return forbidden()
   const { id } = await params
   const { product_id, qty } = await req.json()
   if (!product_id) return NextResponse.json({ error: 'product_id requerido' }, { status: 400 })

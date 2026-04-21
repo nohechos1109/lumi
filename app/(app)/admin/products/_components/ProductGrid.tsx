@@ -1,22 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-
-interface Product {
-  id: string
-  sku: string | null
-  name: string
-  description: string | null
-  currency: string
-  cost_base: string
-  utility_fixed: string
-  utility_factor: string
-  codigo_sat: string | null
-  codigo_proveedor: string | null
-  image_url: string | null
-  category: string | null
-  public_price: string | null
-}
+import type { Product } from '@/lib/queries/products'
 
 interface ProductGridProps {
   products: Product[]

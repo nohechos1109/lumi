@@ -1,17 +1,19 @@
 'use client'
 
 import { useState } from 'react'
-import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import type { Service } from '@/lib/queries/servicios'
 import NewServiceModal from '../../../_components/NewServiceModal'
 
 const ESTATUS_MAP: Record<string, { label: string; cls: string }> = {
-  pendiente: { label: 'Pendiente', cls: 'badge badge-pending' },
-  agendado:  { label: 'Agendado',  cls: 'badge badge-scheduled' },
-  en_curso:  { label: 'En curso',  cls: 'badge badge-in-progress' },
-  atendido:  { label: 'Atendido',  cls: 'badge badge-attended' },
-  cancelado: { label: 'Cancelado', cls: 'badge badge-cancelled' },
-  rechazado: { label: 'Rechazado', cls: 'badge badge-rejected' },
+  pendiente:   { label: 'Pendiente',   cls: 'badge badge-pending' },
+  agendado:    { label: 'Agendado',    cls: 'badge badge-scheduled' },
+  en_curso:    { label: 'En curso',    cls: 'badge badge-in-progress' },
+  en_revision: { label: 'En revisión', cls: 'badge badge-in-revision' },
+  terminado:   { label: 'Terminado',   cls: 'badge badge-done' },
+  atendido:    { label: 'Atendido',    cls: 'badge badge-attended' },
+  cancelado:   { label: 'Cancelado',   cls: 'badge badge-cancelled' },
+  rechazado:   { label: 'Rechazado',   cls: 'badge badge-rejected' },
 }
 
 interface Props {
@@ -25,6 +27,7 @@ interface Props {
 
 export default function OrderServicesList({ orderId, customerId, tipoLugar, motivo, services, canCreate }: Props) {
   const [showModal, setShowModal] = useState(false)
+  const router = useRouter()
 
   return (
     <div className="mt-6">
@@ -71,11 +74,14 @@ export default function OrderServicesList({ orderId, customerId, tipoLugar, moti
                 {services.map(s => {
                   const e = ESTATUS_MAP[s.estatus] ?? ESTATUS_MAP.pendiente
                   return (
-                    <tr key={s.id} className="tr-hover transition-colors">
-                      <td className="px-5 py-4 font-mono text-xs font-bold" style={{ letterSpacing: '0.08em' }}>
-                        <Link href={`/servicios/services/${s.id}`} className="hover:underline" style={{ color: 'var(--c-navy)' }}>
-                          {s.number}
-                        </Link>
+                    <tr
+                      key={s.id}
+                      className="tr-hover transition-colors"
+                      style={{ cursor: 'pointer' }}
+                      onClick={() => router.push(`/servicios/services/${s.id}`)}
+                    >
+                      <td className="px-5 py-4 font-mono text-xs font-bold" style={{ letterSpacing: '0.08em', color: 'var(--c-navy)' }}>
+                        {s.number}
                       </td>
                       <td className="px-5 py-4" style={{ color: 'var(--c-dim)' }}>{s.unidad_name ?? '—'}</td>
                       <td className="px-5 py-4" style={{ color: 'var(--c-ink)' }}>{s.motivo_visita ?? '—'}</td>

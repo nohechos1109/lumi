@@ -38,7 +38,7 @@ export async function POST(_req: NextRequest, { params }: { params: Promise<{ id
   } catch (error) {
     const msg = String(error)
     if (msg.includes('NOT_FOUND')) return NextResponse.json({ error: 'Servicio no encontrado' }, { status: 404 })
-    if (msg.includes('INVALID_STATE')) return NextResponse.json({ error: 'Servicio debe estar en estado "atendido"' }, { status: 409 })
+    if (msg.includes('INVALID_STATE')) return NextResponse.json({ error: 'Servicio debe estar en revisión' }, { status: 409 })
     if (msg.includes('ALREADY_APPROVED')) return NextResponse.json({ error: 'Servicio ya fue aprobado' }, { status: 409 })
     if (msg.includes('NO_MATERIALS')) return NextResponse.json({ error: 'No hay materiales registrados' }, { status: 400 })
     console.error('POST /api/servicios/services/[id]/approve ERROR:', error)

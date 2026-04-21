@@ -43,7 +43,7 @@ export default function RequestActions({ requestId }: { requestId: string }) {
           boxShadow: busy ? 'none' : '0 2px 8px rgba(5,150,105,0.20)',
         }}
       >
-        Aprobar y crear proyecto
+        Aprobar y crear planeación
       </button>
       <button
         onClick={() => act('reject')}

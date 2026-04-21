@@ -73,7 +73,7 @@ export default async function ServiceProjectDetailPage({ params }: { params: Pro
         </div>
       </div>
 
-      <WorkflowStepper steps={stepsFromProject(project, orders.length > 0)} />
+      <WorkflowStepper steps={stepsFromProject(project)} />
 
       <ProjectOrdersList
         projectId={id}

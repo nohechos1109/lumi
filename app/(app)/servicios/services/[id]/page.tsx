@@ -38,7 +38,12 @@ export default async function ServiceDetailPage({ params }: { params: Promise<{ 
     if (!allowed) notFound()
   }
 
-  const canEdit = canEditService(session.role)
+  const isLocked = !!service.approved_at || ['pendiente', 'en_revision', 'terminado', 'cancelado'].includes(service.estatus)
+  const canEdit = canEditService(session.role) && !isLocked
+  const canChangeStatus = canEditService(session.role) && !service.approved_at && !['terminado', 'cancelado'].includes(service.estatus)
+  const isAdminOrSoporte = session.role === 'admin' || session.role === 'soporte'
+  const reportLocked = !!service.approved_at || ['terminado', 'cancelado'].includes(service.estatus)
+  const canEditReport = isAdminOrSoporte ? !reportLocked : canEdit
   const isOrphan = !service.service_order_id
   const canManageTech = canEdit && session.role !== 'tecnico' && isOrphan
 
@@ -91,10 +96,13 @@ export default async function ServiceDetailPage({ params }: { params: Promise<{ 
       <ServiceEditor
         service={service}
         canEdit={canEdit}
+        canEditReport={canEditReport}
+        canChangeStatus={canChangeStatus}
         canManageTech={canManageTech}
         canApprove={canApproveServiceRequest(session.role)}
         hasMaterials={materials.length > 0}
         tecnicos={tecnicos}
+        isAdmin={session.role === 'admin' || session.role === 'manager'}
       />
 
       <MaterialsEditor

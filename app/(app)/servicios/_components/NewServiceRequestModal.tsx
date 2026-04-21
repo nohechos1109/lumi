@@ -97,7 +97,7 @@ export default function NewServiceRequestModal({ onClose }: Props) {
               Nueva Solicitud de Servicio
             </h2>
             <p className="text-xs mt-0.5" style={{ color: 'var(--c-ghost)' }}>
-              Pide a soporte que inicie un nuevo proyecto de servicios.
+              Pide a soporte que inicie una nueva planeación de servicios.
             </p>
           </div>
           <button

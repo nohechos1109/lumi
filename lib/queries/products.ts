@@ -48,9 +48,14 @@ export async function updateProduct(id: string, data: Partial<Omit<Product, 'id'
   const fields: string[] = []
   const values: unknown[] = []
   let i = 1
-  const allowed = ['sku','name','description','currency','cost_base','utility_fixed','utility_factor','codigo_sat','codigo_proveedor','image_url','category','public_price'] as const
+  // public_price is derived (cost_base * utility_factor + utility_fixed) — never set from form
+  const allowed = ['sku','name','description','currency','cost_base','utility_fixed','utility_factor','codigo_sat','codigo_proveedor','image_url','category'] as const
+  const nullableText = new Set(['sku','description','codigo_sat','codigo_proveedor','image_url','category'])
   for (const key of allowed) {
-    if (data[key] !== undefined) { fields.push(`${key} = $${i++}`); values.push(data[key]) }
+    if (data[key] !== undefined) {
+      fields.push(`${key} = $${i++}`)
+      values.push(nullableText.has(key) && data[key] === '' ? null : data[key])
+    }
   }
   if (!fields.length) return
   values.push(id)
