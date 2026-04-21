@@ -23,7 +23,12 @@ export async function DELETE(_req: NextRequest, { params }: { params: Promise<{ 
   if (!session) return unauthorized()
   if (session.role !== 'admin') return forbidden()
   const { id } = await params
-  await deleteProduct(id)
-  revalidatePath('/admin/products')
-  return NextResponse.json({ ok: true })
+  try {
+    await deleteProduct(id)
+    revalidatePath('/admin/products')
+    return NextResponse.json({ ok: true })
+  } catch (err) {
+    console.error('[DELETE /api/admin/products]', err)
+    return NextResponse.json({ ok: false, error: 'No se pudo eliminar el producto' }, { status: 500 })
+  }
 }

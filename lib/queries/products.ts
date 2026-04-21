@@ -50,11 +50,11 @@ export async function updateProduct(id: string, data: Partial<Omit<Product, 'id'
   let i = 1
   // public_price is derived (cost_base * utility_factor + utility_fixed) — never set from form
   const allowed = ['sku','name','description','currency','cost_base','utility_fixed','utility_factor','codigo_sat','codigo_proveedor','image_url','category'] as const
+  const nullableText = new Set(['sku','description','codigo_sat','codigo_proveedor','image_url','category'])
   for (const key of allowed) {
     if (data[key] !== undefined) {
       fields.push(`${key} = $${i++}`)
-      // Convert empty strings to null for optional text fields; numeric fields keep their value
-      values.push(data[key] === '' ? null : data[key])
+      values.push(nullableText.has(key) && data[key] === '' ? null : data[key])
     }
   }
   if (!fields.length) return

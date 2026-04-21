@@ -31,7 +31,6 @@ export default function ProductFormModal({ product, onClose, onSave, onDelete }:
     codigo_proveedor: product?.codigo_proveedor ?? '',
     image_url: product?.image_url ?? '',
     category: product?.category ?? 'Varios',
-    public_price: product?.public_price ?? '',
   })
   const [busy, setBusy] = useState(false)
   const [uploading, setUploading] = useState(false)
@@ -84,10 +83,7 @@ export default function ProductFormModal({ product, onClose, onSave, onDelete }:
     setSaveError(null)
     setBusy(true)
     try {
-      // public_price is derived server-side — never send from form
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const { public_price: _skip, ...payload } = form
-      await onSave({ ...payload, image_url: form.image_url || null })
+      await onSave({ ...form, image_url: form.image_url || null })
       onClose()
     } catch (err) {
       setSaveError(err instanceof Error ? err.message : 'Error al guardar')
