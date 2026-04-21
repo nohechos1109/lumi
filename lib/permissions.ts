@@ -113,3 +113,31 @@ export function canDeleteServiceEntities(role: string) {
 export function canViewOwnServicesOnly(role: string) {
   return role === 'tecnico'
 }
+
+export function canCloseServiceProject(role: string) {
+  return role === 'soporte' || role === 'admin' || role === 'manager'
+}
+
+export function canReopenServiceProject(role: string) {
+  return role === 'admin'
+}
+
+export function canAddProgressEntry(role: string) {
+  return role === 'soporte' || role === 'admin'
+}
+
+export function canViewProgressEntries(role: string) {
+  return role === 'soporte' || role === 'admin' || role === 'manager'
+}
+
+export function canViewQuoteLink(role: string) {
+  return role === 'admin'
+}
+
+export function canEditUnidadInline(role: string) {
+  return role === 'soporte' || role === 'admin' || role === 'tecnico'
+}
+
+export function canCancelServiceOrder(role: string) {
+  return role === 'soporte' || role === 'admin' || role === 'manager'
+}

@@ -7,14 +7,25 @@ import {
   canAccessServicios,
   canCreateServiceOrder,
   canViewOwnServicesOnly,
+  canCloseServiceProject,
+  canReopenServiceProject,
+  canViewProgressEntries,
+  canAddProgressEntry,
+  canViewQuoteLink,
 } from '@/lib/permissions'
 import {
   getServiceProject,
   listServiceOrdersByProject,
+  canCloseServiceProject as computeCanClose,
 } from '@/lib/queries/servicios'
+import pool from '@/lib/db'
+import ProjectHeader from './_components/ProjectHeader'
 import ProjectOrdersList from './_components/ProjectOrdersList'
+import ProgressPanel from './_components/ProgressPanel'
+import QuoteLinks from './_components/QuoteLinks'
 import WorkflowStepper from '@/components/ui/WorkflowStepper'
 import { stepsFromProject } from '@/lib/servicios-workflow'
+import ActivityLog from '@/components/ActivityLog'
 
 export default async function ServiceProjectDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
@@ -27,18 +38,22 @@ export default async function ServiceProjectDetailPage({ params }: { params: Pro
   if (!project) notFound()
 
   const orders = await listServiceOrdersByProject(id)
+  const canClose = await computeCanClose(id)
 
-  const STATUS_MAP: Record<string, { label: string; cls: string }> = {
-    open:        { label: 'Abierto',    cls: 'badge badge-scheduled' },
-    in_progress: { label: 'En Proceso', cls: 'badge badge-in-progress' },
-    completed:   { label: 'Completado', cls: 'badge badge-attended' },
-    cancelled:   { label: 'Cancelado',  cls: 'badge badge-cancelled' },
+  // Resolve quote_id through sale_id (if present)
+  let quoteId: string | null = null
+  if (project.sale_id) {
+    const { rows } = await pool.query(`SELECT quote_id FROM sales WHERE id = $1`, [project.sale_id])
+    quoteId = rows[0]?.quote_id ?? null
   }
-  const st = STATUS_MAP[project.status] ?? STATUS_MAP.open
+
+  const isClosed = project.status === 'cerrado'
+  const allowNewOrder = !isClosed && canCreateServiceOrder(session.role)
+  const role = session.role
 
   return (
     <div>
-      <div className="mb-6">
+      <div className="mb-6 flex items-center justify-between gap-3 flex-wrap">
         <Link
           href="/servicios"
           className="inline-flex items-center text-xs font-bold uppercase tracking-widest transition-colors hover:opacity-75"
@@ -46,40 +61,34 @@ export default async function ServiceProjectDetailPage({ params }: { params: Pro
         >
           ← Volver a Servicios
         </Link>
+        <ActivityLog entity="service_project" entityId={id} />
       </div>
 
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between mb-8">
-        <div>
-          <div className="flex items-center gap-3 mb-1">
-            <h1 className="font-heading text-3xl font-bold" style={{ color: 'var(--c-ink)', letterSpacing: '0.02em' }}>
-              {project.name}
-            </h1>
-            <span className={st.cls}>{st.label}</span>
-          </div>
-          <p className="text-sm flex items-center gap-2" style={{ color: 'var(--c-dim)' }}>
-            <span className="font-mono">{project.number}</span>
-            {project.customer_name && (
-              <>
-                <span style={{ color: 'var(--c-rim-hi)' }}>•</span>
-                <span className="font-semibold" style={{ color: 'var(--c-navy)' }}>{project.customer_name}</span>
-              </>
-            )}
-            <span style={{ color: 'var(--c-rim-hi)' }}>•</span>
-            <span suppressHydrationWarning>Creado el {new Date(project.created_at).toLocaleDateString('es-MX')}</span>
-          </p>
-          {project.observaciones && (
-            <p className="text-sm mt-2" style={{ color: 'var(--c-dim)' }}>{project.observaciones}</p>
-          )}
-        </div>
-      </div>
+      <ProjectHeader
+        project={project}
+        canClose={canClose}
+        canCloseAction={canCloseServiceProject(role)}
+        canReopen={canReopenServiceProject(role)}
+      />
 
       <WorkflowStepper steps={stepsFromProject(project)} />
+
+      {quoteId && (
+        <QuoteLinks quoteId={quoteId} showQuoteLink={canViewQuoteLink(role)} />
+      )}
 
       <ProjectOrdersList
         projectId={id}
         orders={orders}
-        canCreate={canCreateServiceOrder(session.role)}
+        canCreate={allowNewOrder}
       />
+
+      {canViewProgressEntries(role) && (
+        <ProgressPanel
+          projectId={id}
+          canAdd={canAddProgressEntry(role)}
+        />
+      )}
     </div>
   )
 }

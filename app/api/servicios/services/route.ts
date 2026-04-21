@@ -17,6 +17,8 @@ import {
   listOrderTechnicians,
   assignTechnician,
   isTechnicianOnOrder,
+  OrderInBorradorError,
+  RequiredFieldsError,
 } from '@/lib/queries/servicios'
 
 export async function GET(req: NextRequest) {
@@ -86,6 +88,8 @@ export async function POST(req: NextRequest) {
       comentarios_soporte: body.comentarios_soporte ?? null,
       fecha_hora_agendada: body.fecha_hora_agendada ?? null,
       fecha_hora_limite: body.fecha_hora_limite ?? null,
+      lat: body.lat ?? null,
+      lng: body.lng ?? null,
       // orphan walk-in created by non-tecnico defaults to visible for all techs
       assign_all_technicians: walkIn && !canViewOwnServicesOnly(session.role) ? true : false,
       iniciado_por: session.userId,
@@ -103,6 +107,12 @@ export async function POST(req: NextRequest) {
     if (body.service_order_id) revalidatePath(`/servicios/orders/${body.service_order_id}`)
     return NextResponse.json(srv, { status: 201 })
   } catch (error) {
+    if (error instanceof OrderInBorradorError) {
+      return NextResponse.json({ error: 'La orden está en borrador.' }, { status: 409 })
+    }
+    if (error instanceof RequiredFieldsError) {
+      return NextResponse.json({ error: 'Campos requeridos', fields: error.fields }, { status: 400 })
+    }
     console.error('POST /api/servicios/services ERROR:', error)
     return NextResponse.json({ error: String(error) }, { status: 500 })
   }

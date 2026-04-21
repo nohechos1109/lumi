@@ -21,9 +21,44 @@ const QUOTE_STATE_LABELS: Record<string, string> = {
   expired: 'Expirada',
 }
 
+const SERVICE_ENTITY_STATUS_LABELS: Record<string, string> = {
+  abierto: 'Abierto',
+  cerrado: 'Cerrado',
+  borrador: 'Borrador',
+  pendiente: 'Pendiente',
+  agendado: 'Agendado',
+  en_curso: 'En curso',
+  en_revision: 'En revisión',
+  terminado: 'Terminado',
+  atendido: 'Atendido',
+  cancelado: 'Cancelado',
+  rechazado: 'Rechazado',
+}
+
+const EVENT_TYPE_LABELS: Record<string, string> = {
+  created: 'Creado',
+  status_change: 'Cambio de estado',
+  status_changed: 'Cambio de estado',
+  name_updated: 'Nombre actualizado',
+  closed: 'Cerrada',
+  reopened: 'Reabierta',
+  progress_added: 'Avance agregado',
+  schedule_updated: 'Horario actualizado',
+  location_updated: 'Ubicación actualizada',
+  technicians_updated: 'Técnicos actualizados',
+  cancelled: 'Cancelada',
+  report_updated: 'Reporte actualizado',
+  unidad_updated: 'Unidad actualizada',
+  approved: 'Aprobado',
+  updated: 'Actualizado',
+}
+
 function getLabel(entity: string, value: string): string {
-  const map = entity === 'project' ? PROJECT_STATUS_LABELS : QUOTE_STATE_LABELS
-  return map[value] ?? value
+  if (entity === 'project') return PROJECT_STATUS_LABELS[value] ?? value
+  if (entity === 'service_project' || entity === 'service_order' || entity === 'service') {
+    return SERVICE_ENTITY_STATUS_LABELS[value] ?? value
+  }
+  return QUOTE_STATE_LABELS[value] ?? value
 }
 
 interface AuditEvent {
@@ -31,12 +66,12 @@ interface AuditEvent {
   entity: string
   entity_id: string
   type: string
-  payload: { from?: string; to?: string; username?: string }
+  payload: { from?: string; to?: string; status?: string; username?: string; actor?: string }
   created_at: string
 }
 
 interface Props {
-  entity: 'project' | 'quote' | 'sale'
+  entity: 'project' | 'quote' | 'sale' | 'service_project' | 'service_order' | 'service'
   entityId: string
 }
 
@@ -118,9 +153,11 @@ export default function ActivityLog({ entity, entityId }: Props) {
               ) : (
                 <ol className="relative border-l ml-1" style={{ borderColor: 'var(--c-rim)' }}>
                   {events.map((event) => {
-                    const { from, to, username } = event.payload
+                    const { from, to, status, username } = event.payload
                     const fromLabel = from ? getLabel(entity, from) : null
-                    const toLabel = to ? getLabel(entity, to) : null
+                    const toLabel = to ? getLabel(entity, to) : (status ? getLabel(entity, status) : null)
+                    const isStatusChange = event.type === 'status_change' || event.type === 'status_changed'
+                    const typeLabel = EVENT_TYPE_LABELS[event.type] ?? event.type
                     const date = new Date(event.created_at).toLocaleString('es-MX', {
                       day: '2-digit',
                       month: 'short',
@@ -136,15 +173,19 @@ export default function ActivityLog({ entity, entityId }: Props) {
                           style={{ background: 'var(--c-navy)', border: '2px solid var(--c-card)', boxSizing: 'border-box' }}
                         />
                         <p className="text-sm font-medium" style={{ color: 'var(--c-ink)' }}>
-                          {event.type === 'status_change' && fromLabel && toLabel ? (
+                          {isStatusChange && toLabel ? (
                             <>
-                              Cambio de estado:{' '}
-                              <span style={{ color: 'var(--c-ghost)' }}>{fromLabel}</span>
-                              {' → '}
+                              {typeLabel}:{' '}
+                              {fromLabel && (
+                                <>
+                                  <span style={{ color: 'var(--c-ghost)' }}>{fromLabel}</span>
+                                  {' → '}
+                                </>
+                              )}
                               <span style={{ color: 'var(--c-navy)', fontWeight: 600 }}>{toLabel}</span>
                             </>
                           ) : (
-                            event.type
+                            typeLabel
                           )}
                         </p>
                         <p className="text-xs mt-0.5" style={{ color: 'var(--c-ghost)' }}>

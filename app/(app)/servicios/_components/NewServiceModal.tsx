@@ -19,13 +19,14 @@ interface Props {
   prefillCustomerId?: string | null
   prefillTipoLugar?: 'calle' | 'taller' | null
   prefillMotivo?: string | null
+  compact?: boolean
 }
 
 const labelCls = 'block text-xs font-semibold mb-1.5'
 const labelStyle = { color: 'var(--c-dim)' }
 const inp = { background: 'var(--c-panel)', border: '1px solid var(--c-rim)', color: 'var(--c-ink)', outline: 'none' }
 
-export default function NewServiceModal({ onClose, prefillOrderId, prefillCustomerId, prefillTipoLugar, prefillMotivo }: Props) {
+export default function NewServiceModal({ onClose, prefillOrderId, prefillCustomerId, prefillTipoLugar, prefillMotivo, compact }: Props) {
   const router = useRouter()
   const [customers, setCustomers] = useState<Customer[]>([])
   const [customerId, setCustomerId] = useState(prefillCustomerId ?? '')
@@ -50,6 +51,10 @@ export default function NewServiceModal({ onClose, prefillOrderId, prefillCustom
     const walkIn = !prefillOrderId
     if (walkIn && !customerId) {
       toast('Selecciona un cliente para walk-in', 'error')
+      return
+    }
+    if (!unidadId) {
+      toast('Unidad requerida', 'error')
       return
     }
     setLoading(true)
@@ -136,7 +141,7 @@ export default function NewServiceModal({ onClose, prefillOrderId, prefillCustom
           )}
 
           <div>
-            <label className={labelCls} style={labelStyle}>Unidad (opcional)</label>
+            <label className={labelCls} style={labelStyle}>Unidad *</label>
             <UnidadSearchSelect
               value={unidadId}
               onChange={setUnidadId}
@@ -157,51 +162,61 @@ export default function NewServiceModal({ onClose, prefillOrderId, prefillCustom
             />
           </div>
 
-          <div>
-            <label className={labelCls} style={labelStyle}>Ubicación (opcional)</label>
-            <input
-              name="ubicacion_txt"
-              type="text"
-              placeholder="Dirección o referencia"
-              className="w-full text-sm rounded-xl px-4 py-2.5"
-              style={inp}
-            />
-          </div>
+          <details open={!compact} className="group">
+            <summary
+              className="text-xs font-bold uppercase tracking-widest cursor-pointer select-none py-1"
+              style={{ color: 'var(--c-ghost)', letterSpacing: '0.1em' }}
+            >
+              Más opciones
+            </summary>
+            <div className="flex flex-col gap-5 mt-3">
+              <div>
+                <label className={labelCls} style={labelStyle}>Ubicación (opcional)</label>
+                <input
+                  name="ubicacion_txt"
+                  type="text"
+                  placeholder="Dirección o referencia"
+                  className="w-full text-sm rounded-xl px-4 py-2.5"
+                  style={inp}
+                />
+              </div>
 
-          <div>
-            <label className={labelCls} style={labelStyle}>Detalles (opcional)</label>
-            <textarea
-              name="comentarios_soporte"
-              rows={2}
-              placeholder="Indicaciones o detalles adicionales..."
-              className="w-full text-sm rounded-xl px-4 py-2.5 resize-none"
-              style={inp}
-            />
-          </div>
+              <div>
+                <label className={labelCls} style={labelStyle}>Detalles (opcional)</label>
+                <textarea
+                  name="comentarios_soporte"
+                  rows={2}
+                  placeholder="Indicaciones o detalles adicionales..."
+                  className="w-full text-sm rounded-xl px-4 py-2.5 resize-none"
+                  style={inp}
+                />
+              </div>
 
-          <div>
-            <label className={labelCls} style={labelStyle}>Tipo de lugar</label>
-            {prefillTipoLugar ? (
-              <>
-                <input type="hidden" name="tipo_lugar" value={prefillTipoLugar} />
-                <div className="w-full text-sm rounded-xl px-4 py-2.5" style={{ ...inp, opacity: 0.7 }}>
-                  <span className={`badge badge-${prefillTipoLugar}`}>{prefillTipoLugar === 'taller' ? 'Taller' : 'Calle'}</span>
-                  <span className="ml-2 text-xs" style={{ color: 'var(--c-ghost)' }}>Heredado de la orden</span>
-                </div>
-              </>
-            ) : (
-              <select name="tipo_lugar" className="w-full text-sm rounded-xl px-4 py-2.5" style={inp}>
-                <option value="">— Seleccionar —</option>
-                <option value="calle">Calle</option>
-                <option value="taller">Taller</option>
-              </select>
-            )}
-          </div>
+              <div>
+                <label className={labelCls} style={labelStyle}>Tipo de lugar</label>
+                {prefillTipoLugar ? (
+                  <>
+                    <input type="hidden" name="tipo_lugar" value={prefillTipoLugar} />
+                    <div className="w-full text-sm rounded-xl px-4 py-2.5" style={{ ...inp, opacity: 0.7 }}>
+                      <span className={`badge badge-${prefillTipoLugar}`}>{prefillTipoLugar === 'taller' ? 'Taller' : 'Calle'}</span>
+                      <span className="ml-2 text-xs" style={{ color: 'var(--c-ghost)' }}>Heredado de la orden</span>
+                    </div>
+                  </>
+                ) : (
+                  <select name="tipo_lugar" className="w-full text-sm rounded-xl px-4 py-2.5" style={inp}>
+                    <option value="">— Seleccionar —</option>
+                    <option value="calle">Calle</option>
+                    <option value="taller">Taller</option>
+                  </select>
+                )}
+              </div>
 
-          <div>
-            <label className={labelCls} style={labelStyle}>Fecha/Hora agendada (opcional)</label>
-            <SingleDateTimePicker name="fecha_hora_agendada" placeholder="Seleccionar fecha y hora" />
-          </div>
+              <div>
+                <label className={labelCls} style={labelStyle}>Fecha/Hora agendada (opcional)</label>
+                <SingleDateTimePicker name="fecha_hora_agendada" placeholder="Seleccionar fecha y hora" />
+              </div>
+            </div>
+          </details>
 
           <div className="flex gap-3" style={{ borderTop: '1px solid var(--c-rim)', paddingTop: '1.25rem' }}>
             <button

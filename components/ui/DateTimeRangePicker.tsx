@@ -165,15 +165,39 @@ function TimeSelect({ value, onChange }: { value: string; onChange: (v: string) 
 }
 
 interface Props {
-  startName: string
-  endName: string
+  startName?: string
+  endName?: string
+  initialStart?: string | null
+  initialEnd?: string | null
+  onChange?: (startIso: string, endIso: string) => void
 }
 
-export default function DateTimeRangePicker({ startName, endName }: Props) {
+function parseIso(v: string | null | undefined): { date: string; time: string } {
+  if (!v) return { date: '', time: '' }
+  const d = new Date(v)
+  if (isNaN(d.getTime())) return { date: '', time: '' }
+  const yyyy = d.getFullYear()
+  const mm = String(d.getMonth() + 1).padStart(2, '0')
+  const dd = String(d.getDate()).padStart(2, '0')
+  const hh = String(d.getHours()).padStart(2, '0')
+  const mi = String(d.getMinutes()).padStart(2, '0')
+  return { date: `${yyyy}-${mm}-${dd}`, time: `${hh}:${mi}` }
+}
+
+export default function DateTimeRangePicker({ startName, endName, initialStart, initialEnd, onChange }: Props) {
   const { open, pos, btnRef, panelRef, toggle, setOpen } = usePopoverPosition(450)
-  const [range, setRange]         = useState<DateRange | undefined>()
-  const [startTime, setStartTime] = useState('08:00')
-  const [endTime, setEndTime]     = useState('17:00')
+  const initStart = parseIso(initialStart)
+  const initEnd = parseIso(initialEnd)
+  const [range, setRange] = useState<DateRange | undefined>(
+    initStart.date
+      ? {
+          from: new Date(`${initStart.date}T00:00:00`),
+          to: initEnd.date ? new Date(`${initEnd.date}T00:00:00`) : undefined,
+        }
+      : undefined
+  )
+  const [startTime, setStartTime] = useState(initStart.time || '08:00')
+  const [endTime, setEndTime]     = useState(initEnd.time || '17:00')
 
   const startDate  = range?.from ? toISO(range.from) : ''
   const endDate    = range?.to   ? toISO(range.to)   : ''
@@ -181,6 +205,11 @@ export default function DateTimeRangePicker({ startName, endName }: Props) {
   const endValue   = toDatetimeLocal(endDate, endTime)
   const hasValue   = !!(startDate || endDate)
   const label      = displayLabel(startDate, endDate, startTime, endTime)
+
+  useEffect(() => {
+    onChange?.(startValue, endValue)
+
+  }, [startValue, endValue])
 
   function handleClear() {
     setRange(undefined)
@@ -272,8 +301,8 @@ export default function DateTimeRangePicker({ startName, endName }: Props) {
         }
       `}</style>
 
-      <input type="hidden" name={startName} value={startValue} />
-      <input type="hidden" name={endName}   value={endValue} />
+      {startName ? <input type="hidden" name={startName} value={startValue} /> : null}
+      {endName   ? <input type="hidden" name={endName}   value={endValue} />   : null}
 
       {/* ── Trigger ── */}
       <button

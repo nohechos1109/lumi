@@ -12,8 +12,9 @@ import {
   updateService,
   deleteService,
   deleteAllServiceMaterials,
+  ReportNotEditableError,
+  OrderInBorradorError,
 } from '@/lib/queries/servicios'
-import { insertAuditEvent } from '@/lib/queries/audit'
 
 export async function GET(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const session = await getSession()
@@ -47,23 +48,20 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
   }
 
   try {
-    const old = body.estatus !== undefined ? await getService(id) : null
-    await updateService(id, body)
-    if (old && body.estatus && body.estatus !== old.estatus) {
-      await insertAuditEvent('service', id, 'status_change', {
-        from: old.estatus,
-        to: body.estatus,
-        user_id: session.userId,
-        username: session.username,
-      })
-      if (body.estatus === 'cancelado') {
-        await deleteAllServiceMaterials(id)
-      }
+    await updateService(id, body, session.userId)
+    if (body.estatus === 'cancelado') {
+      await deleteAllServiceMaterials(id)
     }
     revalidatePath('/servicios')
     revalidatePath(`/servicios/services/${id}`)
     return NextResponse.json({ ok: true })
   } catch (error) {
+    if (error instanceof ReportNotEditableError) {
+      return NextResponse.json({ error: 'El reporte no es editable en este estado.' }, { status: 403 })
+    }
+    if (error instanceof OrderInBorradorError) {
+      return NextResponse.json({ error: 'La orden está en borrador. Agéndala antes de iniciar servicios.' }, { status: 409 })
+    }
     console.error('PATCH /api/servicios/services/[id] ERROR:', error)
     return NextResponse.json({ error: String(error) }, { status: 500 })
   }

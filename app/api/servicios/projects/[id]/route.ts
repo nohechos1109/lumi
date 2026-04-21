@@ -12,7 +12,6 @@ import {
   deleteServiceProject,
   archiveServiceProject,
 } from '@/lib/queries/servicios'
-import { insertAuditEvent } from '@/lib/queries/audit'
 
 export async function GET(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const session = await getSession()
@@ -37,21 +36,12 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
     if (body.archive === true) {
       await archiveServiceProject(id)
     } else {
-      const old = body.status !== undefined ? await getServiceProject(id) : null
       await updateServiceProject(id, {
         name: body.name,
         customer_id: body.customer_id,
         status: body.status,
         observaciones: body.observaciones,
-      })
-      if (old && body.status && body.status !== old.status) {
-        await insertAuditEvent('service_project', id, 'status_change', {
-          from: old.status,
-          to: body.status,
-          user_id: session.userId,
-          username: session.username,
-        })
-      }
+      }, session.userId)
     }
     revalidatePath('/servicios')
     revalidatePath(`/servicios/projects/${id}`)

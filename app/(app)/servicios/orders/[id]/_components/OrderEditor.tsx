@@ -4,6 +4,8 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import type { ServiceOrder, ServiceOrderEstatus, Service } from '@/lib/queries/servicios'
 import { notifyRefresh, toast } from '@/lib/toast'
+import DateTimeRangePicker from '@/components/ui/DateTimeRangePicker'
+import LatLngInput from '@/components/ui/LatLngInput'
 
 const ESTATUS_MAP: Record<string, { label: string; cls: string }> = {
   borrador:  { label: 'Borrador',  cls: 'badge badge-pending' },
@@ -12,19 +14,12 @@ const ESTATUS_MAP: Record<string, { label: string; cls: string }> = {
   en_curso:  { label: 'En curso',  cls: 'badge badge-in-progress' },
   terminado: { label: 'Terminado', cls: 'badge badge-done' },
   atendido:  { label: 'Atendido',  cls: 'badge badge-attended' },
-  cancelado: { label: 'Cancelado', cls: 'badge badge-cancelled' },
+  cancelado: { label: 'Cancelado', cls: 'badge badge-rejected' },
 }
 
 const inp = { background: 'var(--c-panel)', border: '1px solid var(--c-rim)', color: 'var(--c-ink)', outline: 'none' }
 const labelCls = 'block text-xs font-semibold mb-1.5'
 const labelStyle = { color: 'var(--c-dim)' }
-
-function toLocalDatetime(iso: string | null | undefined): string {
-  if (!iso) return ''
-  const d = new Date(iso)
-  const pad = (n: number) => String(n).padStart(2, '0')
-  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`
-}
 
 interface Props {
   order: ServiceOrder
@@ -46,8 +41,10 @@ export default function OrderEditor({ order, services, canManage, canCancel, ord
   const [ubicacion, setUbicacion] = useState(order.ubicacion ?? '')
   const [referencias, setReferencias] = useState(order.referencias ?? '')
   const [comentarios, setComentarios] = useState(order.comentarios_de_soporte ?? '')
-  const [fechaAgendada, setFechaAgendada] = useState(toLocalDatetime(order.fecha_hora_agendada))
-  const [fechaLimite, setFechaLimite] = useState(toLocalDatetime(order.fecha_hora_limite))
+  const [fechaAgendada, setFechaAgendada] = useState(order.fecha_hora_agendada ?? '')
+  const [fechaLimite, setFechaLimite] = useState(order.fecha_hora_limite ?? '')
+  const [lat, setLat] = useState<string | null>(order.lat ?? null)
+  const [lng, setLng] = useState<string | null>(order.lng ?? null)
 
   // Technician assignment state
   const [assignAll, setAssignAll] = useState(order.assign_all_technicians ?? false)
@@ -68,6 +65,14 @@ export default function OrderEditor({ order, services, canManage, canCancel, ord
   const allComplete = services.length > 0 && services.every(s =>
     ['terminado', 'cancelado', 'atendido'].includes(s.estatus)
   )
+
+  const missingRequired: string[] = []
+  if (!motivo.trim()) missingRequired.push('Motivo')
+  if (!ubicacion.trim()) missingRequired.push('Ubicación')
+  if (!tipoLugar) missingRequired.push('Tipo de lugar')
+  if (!fechaAgendada) missingRequired.push('Fecha agendada')
+  if (!assignAll && selectedTechs.size === 0) missingRequired.push('Técnicos')
+  const canLeaveBorrador = missingRequired.length === 0
 
   const info = ESTATUS_MAP[estatus] ?? ESTATUS_MAP.borrador
   const techs = orderTechs
@@ -110,15 +115,22 @@ export default function OrderEditor({ order, services, canManage, canCancel, ord
     if (!cancelReason.trim()) return
     setCancelling(true)
     try {
-      const ok = await patch({ estatus: 'cancelado' })
-      if (ok) {
-        setEstatus('cancelado')
-        setCancelModal(false)
-        setCancelReason('')
-        toast('Orden cancelada', 'success')
-        notifyRefresh()
-        router.refresh()
+      const res = await fetch(`/api/servicios/orders/${order.id}/cancel`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ motivo: cancelReason.trim() }),
+      })
+      const result = await res.json().catch(() => ({}))
+      if (!res.ok) {
+        toast(result.error || 'Error al cancelar', 'error')
+        return
       }
+      setEstatus('cancelado')
+      setCancelModal(false)
+      setCancelReason('')
+      toast('Orden cancelada', 'success')
+      notifyRefresh()
+      router.refresh()
     } finally {
       setCancelling(false)
     }
@@ -181,19 +193,19 @@ export default function OrderEditor({ order, services, canManage, canCancel, ord
       {/* ── Header ── */}
       <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between mb-8">
         <div>
-          <div className="flex items-center gap-3 mb-1">
-            <h1 className="font-heading text-3xl font-bold font-mono" style={{ color: 'var(--c-ink)' }}>
-              {order.number}
+          <div className="flex items-center gap-3 mb-1 flex-wrap">
+            <h1 className="font-heading text-3xl font-bold" style={{ color: 'var(--c-ink)' }}>
+              {order.motivo_del_servicio || 'Sin motivo'}
             </h1>
             <span className={info.cls}>{info.label}</span>
           </div>
+          <p className="text-xs font-mono mt-0.5" style={{ color: 'var(--c-ghost)', letterSpacing: '0.08em' }}>
+            {order.number}
+          </p>
 
           {/* Read-only info (non-borrador states) */}
           {!canEdit && (
-            <div className="text-sm mt-2 space-y-1" style={{ color: 'var(--c-dim)' }}>
-              {order.motivo_del_servicio && (
-                <p style={{ color: 'var(--c-ink)' }}>{order.motivo_del_servicio}</p>
-              )}
+            <div className="text-sm mt-3 space-y-1" style={{ color: 'var(--c-dim)' }}>
               {order.customer_name && <div><span style={{ color: 'var(--c-ghost)' }}>Cliente:</span> {order.customer_name}</div>}
               {order.tipo_lugar && (
                 <div>
@@ -233,6 +245,19 @@ export default function OrderEditor({ order, services, canManage, canCancel, ord
                   {new Date(order.fecha_hora_limite).toLocaleString('es-MX')}
                 </div>
               )}
+              {order.lat != null && order.lng != null && (
+                <div>
+                  <a
+                    href={`https://www.google.com/maps?q=${order.lat},${order.lng}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-xs font-semibold underline"
+                    style={{ color: 'var(--c-navy)' }}
+                  >
+                    Ver en Google Maps ↗
+                  </a>
+                </div>
+              )}
             </div>
           )}
         </div>
@@ -243,9 +268,15 @@ export default function OrderEditor({ order, services, canManage, canCancel, ord
             {isDraft && (
               <button
                 onClick={() => changeStatus('agendado')}
-                disabled={saving}
+                disabled={saving || !canLeaveBorrador}
+                title={!canLeaveBorrador ? `Falta: ${missingRequired.join(', ')}` : undefined}
                 className="px-5 py-2.5 rounded-xl text-sm font-semibold text-white transition-all hover:opacity-90 active:scale-95"
-                style={{ background: saving ? 'var(--c-rim-hi)' : 'var(--c-navy)', cursor: saving ? 'not-allowed' : 'pointer', border: 'none', opacity: saving ? 0.6 : 1 }}
+                style={{
+                  background: saving || !canLeaveBorrador ? 'var(--c-rim-hi)' : 'var(--c-navy)',
+                  cursor: saving || !canLeaveBorrador ? 'not-allowed' : 'pointer',
+                  border: 'none',
+                  opacity: saving || !canLeaveBorrador ? 0.6 : 1,
+                }}
               >
                 Agendar
               </button>
@@ -296,6 +327,16 @@ export default function OrderEditor({ order, services, canManage, canCancel, ord
           </div>
         )}
       </div>
+
+      {/* ── Borrador required-fields banner ── */}
+      {canEdit && !canLeaveBorrador && (
+        <div
+          className="mb-6 rounded-xl px-4 py-3 text-sm"
+          style={{ background: 'var(--c-gold-bg)', border: '1px solid var(--c-gold-bd)', color: 'var(--c-gold)' }}
+        >
+          Para agendar la orden completa: <strong>{missingRequired.join(', ')}</strong>.
+        </div>
+      )}
 
       {/* ── Edit form (borrador only) ── */}
       {canEdit && (
@@ -357,26 +398,35 @@ export default function OrderEditor({ order, services, canManage, canCancel, ord
               style={inp}
             />
           </div>
-          <div>
-            <label className={labelCls} style={labelStyle}>Fecha/hora agendada</label>
-            <input
-              type="datetime-local"
-              value={fechaAgendada}
-              onChange={e => setFechaAgendada(e.target.value)}
-              onBlur={() => saveField('fecha_hora_agendada', fechaAgendada ? new Date(fechaAgendada).toISOString() : null)}
-              className="w-full text-sm rounded-xl px-4 py-2.5"
-              style={inp}
+          <div className="md:col-span-2">
+            <label className={labelCls} style={labelStyle}>Fecha y hora agendada → límite</label>
+            <DateTimeRangePicker
+              initialStart={fechaAgendada}
+              initialEnd={fechaLimite}
+              onChange={(startIso, endIso) => {
+                const a = startIso ? new Date(startIso).toISOString() : null
+                const l = endIso ? new Date(endIso).toISOString() : null
+                if (a !== fechaAgendada || l !== fechaLimite) {
+                  setFechaAgendada(a ?? '')
+                  setFechaLimite(l ?? '')
+                  patch({ fecha_hora_agendada: a, fecha_hora_limite: l }).then(ok => {
+                    if (ok) { notifyRefresh(); router.refresh() }
+                  })
+                }
+              }}
             />
           </div>
-          <div>
-            <label className={labelCls} style={labelStyle}>Fecha/hora límite</label>
-            <input
-              type="datetime-local"
-              value={fechaLimite}
-              onChange={e => setFechaLimite(e.target.value)}
-              onBlur={() => saveField('fecha_hora_limite', fechaLimite ? new Date(fechaLimite).toISOString() : null)}
-              className="w-full text-sm rounded-xl px-4 py-2.5"
-              style={inp}
+          <div className="md:col-span-2">
+            <label className={labelCls} style={labelStyle}>Coordenadas (lat, lng)</label>
+            <LatLngInput
+              lat={lat}
+              lng={lng}
+              onChange={(la, lo) => {
+                setLat(la); setLng(lo)
+                patch({ lat: la, lng: lo }).then(ok => {
+                  if (ok) { notifyRefresh(); router.refresh() }
+                })
+              }}
             />
           </div>
 
