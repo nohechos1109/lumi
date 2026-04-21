@@ -866,7 +866,6 @@ export async function autoCreateServiceProjectFromSale(
       return null
     }
 
-    const motivoTexto = serviceLines.map((r: { name: string }) => r.name).join(', ')
 
     const spNumber = await generateNumber('SVP', 'service_projects', client)
     const { rows: [project] } = await client.query(
@@ -881,25 +880,6 @@ export async function autoCreateServiceProjectFromSale(
         userId,
         `Auto-generado desde venta ${sale.number}`,
       ]
-    )
-
-    // Create service_order linked to the project
-    const orderNumber = await generateNumber('OSV', 'service_orders', client)
-    const { rows: [order] } = await client.query(
-      `INSERT INTO service_orders
-         (number, service_project_id, estatus, motivo_del_servicio, created_by, assign_all_technicians)
-       VALUES ($1, $2, 'pendiente', $3, $4, false)
-       RETURNING id`,
-      [orderNumber, project.id, motivoTexto, userId]
-    )
-
-    // Create service linked to the order
-    const srvNumber = await generateNumber('SRV', 'services', client)
-    await client.query(
-      `INSERT INTO services
-         (number, service_order_id, customer_id, estatus, motivo_visita, iniciado_por, assign_all_technicians)
-       VALUES ($1, $2, $3, 'pendiente', $4, $5, false)`,
-      [srvNumber, order.id, sale.customer_id, motivoTexto, userId]
     )
 
     await client.query('COMMIT')
