@@ -177,6 +177,7 @@ function getCategoryMeta(category: string | null): CategoryMeta {
 
 function ProductCard({ product }: { product: CatalogProduct }) {
   const meta = getCategoryMeta(product.category)
+  const [imgError, setImgError] = useState(false)
 
   return (
     <div
@@ -205,11 +206,12 @@ function ProductCard({ product }: { product: CatalogProduct }) {
       }}
     >
       {/* Image / Placeholder area */}
-      {product.image_url ? (
+      {product.image_url && !imgError ? (
         // eslint-disable-next-line @next/next/no-img-element
         <img
           src={product.image_url}
           alt={product.name}
+          onError={() => setImgError(true)}
           style={{ width: '100%', height: '140px', objectFit: 'cover' }}
         />
       ) : (
