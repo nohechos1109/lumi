@@ -127,7 +127,7 @@ export default function ServiciosLanding({ role, projects, orders, services, req
       )}
 
       {showNewProject && <NewServiceProjectModal onClose={() => setShowNewProject(false)} />}
-      {showNewService && <NewServiceModal onClose={() => setShowNewService(false)} />}
+      {showNewService && <NewServiceModal onClose={() => setShowNewService(false)} canCreateUnit={['admin', 'manager'].includes(role)} />}
       {showNewRequest && <NewServiceRequestModal onClose={() => setShowNewRequest(false)} />}
     </div>
   )

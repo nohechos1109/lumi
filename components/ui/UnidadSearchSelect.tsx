@@ -17,6 +17,7 @@ interface Props {
   disabled?: boolean
   placeholder?: string
   inputStyle?: React.CSSProperties
+  onNewUnit?: () => void
 }
 
 export default function UnidadSearchSelect({
@@ -27,6 +28,7 @@ export default function UnidadSearchSelect({
   disabled,
   placeholder = 'Buscar unidad...',
   inputStyle,
+  onNewUnit,
 }: Props) {
   const [unidades, setUnidades] = useState<Unidad[]>([])
   const [search, setSearch] = useState('')
@@ -121,6 +123,19 @@ export default function UnidadSearchSelect({
             maxHeight: '260px',
           }}
         >
+          {onNewUnit && (
+            <button
+              type="button"
+              className="w-full text-left px-3 py-2 flex items-center gap-1.5 hover:opacity-75 transition-opacity"
+              style={{ color: 'var(--c-navy)', fontWeight: 600, fontSize: '0.8125rem', borderBottom: '1px solid var(--c-rim)' }}
+              onClick={() => { setShowDropdown(false); setSearch(''); onNewUnit() }}
+            >
+              <svg width="13" height="13" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                <line x1="7" y1="1" x2="7" y2="13"/><line x1="1" y1="7" x2="13" y2="7"/>
+              </svg>
+              Registrar nueva unidad
+            </button>
+          )}
           {filtered.length === 0 ? (
             <div className="px-3 py-2 text-sm" style={{ color: 'var(--c-ghost)' }}>
               {unidades.length === 0 ? 'Sin unidades disponibles' : 'Sin resultados'}

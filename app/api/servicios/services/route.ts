@@ -88,8 +88,6 @@ export async function POST(req: NextRequest) {
       comentarios_soporte: body.comentarios_soporte ?? null,
       fecha_hora_agendada: body.fecha_hora_agendada ?? null,
       fecha_hora_limite: body.fecha_hora_limite ?? null,
-      lat: body.lat ?? null,
-      lng: body.lng ?? null,
       // orphan walk-in created by non-tecnico defaults to visible for all techs
       assign_all_technicians: walkIn && !canViewOwnServicesOnly(session.role) ? true : false,
       iniciado_por: session.userId,

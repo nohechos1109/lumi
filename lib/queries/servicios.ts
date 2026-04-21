@@ -61,7 +61,6 @@ export interface ServiceOrder {
   estatus: ServiceOrderEstatus
   motivo_del_servicio: string | null
   ubicacion: string | null
-  referencias: string | null
   comentarios_de_soporte: string | null
   fecha_hora_agendada: string | null
   fecha_hora_limite: string | null
@@ -70,8 +69,6 @@ export interface ServiceOrder {
   fecha_fin: string | null
   tipo_lugar: 'calle' | 'taller' | null
   assign_all_technicians: boolean
-  lat: string | null
-  lng: string | null
   created_by: string | null
   created_at: string
   archived_at: string | null
@@ -102,8 +99,6 @@ export interface Service {
   comentarios_soporte: string | null
   tipo_lugar: 'calle' | 'taller' | null
   assign_all_technicians: boolean
-  lat: string | null
-  lng: string | null
   motivo_cancelacion: string | null
   iniciado_por: string | null
   fecha_creado: string
@@ -442,15 +437,12 @@ export interface CreateServiceOrderInput {
   service_project_id: string
   motivo_del_servicio?: string | null
   ubicacion?: string | null
-  referencias?: string | null
   comentarios_de_soporte?: string | null
   tipo_lugar?: 'calle' | 'taller' | null
   technician_ids?: string[]
   assign_all_technicians?: boolean
   fecha_hora_agendada?: string | null
   fecha_hora_limite?: string | null
-  lat?: number | string | null
-  lng?: number | string | null
   created_by: string
 }
 
@@ -469,20 +461,18 @@ export async function createServiceOrder(data: CreateServiceOrderInput): Promise
     const number = await generateNumber('OSV', 'service_orders', client)
     const { rows: [so] } = await client.query(
       `INSERT INTO service_orders
-         (number, service_project_id, motivo_del_servicio, ubicacion, referencias,
+         (number, service_project_id, motivo_del_servicio, ubicacion,
           comentarios_de_soporte, tipo_lugar,
-          fecha_hora_agendada, fecha_hora_limite, created_by, assign_all_technicians,
-          lat, lng)
-       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13)
+          fecha_hora_agendada, fecha_hora_limite, created_by, assign_all_technicians)
+       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)
        RETURNING *`,
       [
         number, data.service_project_id,
-        data.motivo_del_servicio ?? null, data.ubicacion ?? null, data.referencias ?? null,
+        data.motivo_del_servicio ?? null, data.ubicacion ?? null,
         data.comentarios_de_soporte ?? null,
         data.tipo_lugar ?? null,
         data.fecha_hora_agendada ?? null, data.fecha_hora_limite ?? null, data.created_by,
         data.assign_all_technicians ?? false,
-        data.lat ?? null, data.lng ?? null,
       ]
     )
 
@@ -534,10 +524,9 @@ export async function validateOrderReadyOutOfBorrador(orderId: string): Promise<
 }
 
 type UpdatableOrderFields = Partial<Pick<ServiceOrder,
-  'estatus' | 'motivo_del_servicio' | 'ubicacion' | 'referencias' |
+  'estatus' | 'motivo_del_servicio' | 'ubicacion' |
   'comentarios_de_soporte' | 'tipo_lugar' | 'fecha_hora_agendada' | 'fecha_hora_limite' |
-  'fecha_llegada' | 'fecha_salida' | 'fecha_fin' | 'assign_all_technicians' |
-  'lat' | 'lng'>>
+  'fecha_llegada' | 'fecha_salida' | 'fecha_fin' | 'assign_all_technicians'>>
 
 export async function updateServiceOrder(id: string, data: UpdatableOrderFields, actorId?: string): Promise<void> {
   // If caller is trying to transition out of 'borrador', enforce required fields first.
@@ -563,7 +552,7 @@ export async function updateServiceOrder(id: string, data: UpdatableOrderFields,
     await insertAuditEvent('service_order', id, 'schedule_updated', { agendada: data.fecha_hora_agendada, limite: data.fecha_hora_limite, actor: actorId ?? null })
   }
   if (touched.locationChanged) {
-    await insertAuditEvent('service_order', id, 'location_updated', { ubicacion: data.ubicacion, lat: data.lat, lng: data.lng, actor: actorId ?? null })
+    await insertAuditEvent('service_order', id, 'location_updated', { ubicacion: data.ubicacion, actor: actorId ?? null })
   }
 }
 
@@ -577,7 +566,6 @@ async function applyOrderFieldUpdates(id: string, data: UpdatableOrderFields): P
   if (data.estatus !== undefined) setField('estatus', data.estatus)
   if (data.motivo_del_servicio !== undefined) setField('motivo_del_servicio', data.motivo_del_servicio)
   if (data.ubicacion !== undefined) setField('ubicacion', data.ubicacion)
-  if (data.referencias !== undefined) setField('referencias', data.referencias)
   if (data.comentarios_de_soporte !== undefined) setField('comentarios_de_soporte', data.comentarios_de_soporte)
   if (data.tipo_lugar !== undefined) setField('tipo_lugar', data.tipo_lugar)
   if (data.fecha_hora_agendada !== undefined) setField('fecha_hora_agendada', data.fecha_hora_agendada)
@@ -586,8 +574,6 @@ async function applyOrderFieldUpdates(id: string, data: UpdatableOrderFields): P
   if (data.fecha_salida !== undefined) setField('fecha_salida', data.fecha_salida)
   if (data.fecha_fin !== undefined) setField('fecha_fin', data.fecha_fin)
   if (data.assign_all_technicians !== undefined) setField('assign_all_technicians', data.assign_all_technicians)
-  if (data.lat !== undefined) setField('lat', data.lat)
-  if (data.lng !== undefined) setField('lng', data.lng)
   if (fields.length === 0) {
     return { statusChanged: false, scheduleChanged: false, locationChanged: false }
   }
@@ -596,7 +582,7 @@ async function applyOrderFieldUpdates(id: string, data: UpdatableOrderFields): P
   return {
     statusChanged: data.estatus !== undefined,
     scheduleChanged: data.fecha_hora_agendada !== undefined || data.fecha_hora_limite !== undefined,
-    locationChanged: data.ubicacion !== undefined || data.lat !== undefined || data.lng !== undefined,
+    locationChanged: data.ubicacion !== undefined,
   }
 }
 
@@ -736,8 +722,6 @@ export interface CreateServiceInput {
   comentarios_soporte?: string | null
   fecha_hora_agendada?: string | null
   fecha_hora_limite?: string | null
-  lat?: number | string | null
-  lng?: number | string | null
   assign_all_technicians?: boolean
   iniciado_por: string
 }
@@ -761,8 +745,8 @@ export async function createService(data: CreateServiceInput, client?: PoolClien
          (number, service_order_id, unidad_id, ruta_id, customer_id,
           motivo_visita, referencia, ubicacion, ubicacion_txt, tipo_lugar,
           comentarios_soporte, fecha_hora_agendada, fecha_hora_limite, iniciado_por,
-          assign_all_technicians, lat, lng)
-       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17)
+          assign_all_technicians)
+       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15)
        RETURNING *`,
       [
         number, data.service_order_id ?? null, data.unidad_id ?? null, data.ruta_id ?? null,
@@ -771,7 +755,6 @@ export async function createService(data: CreateServiceInput, client?: PoolClien
         data.comentarios_soporte ?? null,
         data.fecha_hora_agendada ?? null, data.fecha_hora_limite ?? null, data.iniciado_por,
         data.assign_all_technicians ?? false,
-        data.lat ?? null, data.lng ?? null,
       ]
     )
     if (useOwnClient) await c.query('COMMIT')
@@ -791,8 +774,7 @@ type UpdatableServiceFields = Partial<Pick<Service,
   'service_order_id' | 'unidad_id' | 'ruta_id' | 'customer_id' | 'estatus' |
   'motivo_visita' | 'referencia' | 'ubicacion' | 'ubicacion_txt' |
   'reporte_tecnico' | 'comentarios_reporte' | 'comentarios_soporte' | 'motivo_cancelacion' |
-  'fecha_hora_agendada' | 'fecha_hora_limite' | 'fecha_hora_servicio' | 'assign_all_technicians' |
-  'lat' | 'lng'>>
+  'fecha_hora_agendada' | 'fecha_hora_limite' | 'fecha_hora_servicio' | 'assign_all_technicians'>>
 
 const REPORT_EDITABLE_STATES = new Set<ServiceEstatus>(['en_curso', 'en_revision', 'terminado'])
 const STARTED_STATES = new Set<ServiceEstatus>(['agendado', 'en_curso', 'en_revision', 'terminado', 'atendido'])
@@ -838,8 +820,6 @@ export async function updateService(id: string, data: UpdatableServiceFields, ac
   if (data.fecha_hora_limite !== undefined) setField('fecha_hora_limite', data.fecha_hora_limite)
   if (data.fecha_hora_servicio !== undefined) setField('fecha_hora_servicio', data.fecha_hora_servicio)
   if (data.assign_all_technicians !== undefined) setField('assign_all_technicians', data.assign_all_technicians)
-  if (data.lat !== undefined) setField('lat', data.lat)
-  if (data.lng !== undefined) setField('lng', data.lng)
   if (fields.length === 0) return
   values.push(id)
   await pool.query(`UPDATE services SET ${fields.join(', ')} WHERE id = $${i}`, values)

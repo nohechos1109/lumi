@@ -19,6 +19,7 @@ import {
   listServiceMaterials,
   getServiceOrder,
 } from '@/lib/queries/servicios'
+import { getUnidad } from '@/lib/queries/unidades'
 import { listFilesByEntity } from '@/lib/queries/files'
 import { getSale } from '@/lib/queries/sales'
 import { listLines } from '@/lib/queries/quote_lines'
@@ -29,8 +30,16 @@ import MaterialsEditor from './_components/MaterialsEditor'
 import WorkflowStepper from '@/components/ui/WorkflowStepper'
 import { stepsFromService } from '@/lib/servicios-workflow'
 
-export default async function ServiceDetailPage({ params }: { params: Promise<{ id: string }> }) {
+export default async function ServiceDetailPage({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ id: string }>
+  searchParams: Promise<{ new_unit?: string }>
+}) {
   const { id } = await params
+  const sp = await searchParams
+  const isNewUnit = sp.new_unit === '1'
   const session = await getIronSession<SessionData>(await cookies(), sessionOptions)
   if (!session.userId) redirect('/login')
   if (!canAccessServicios(session.role)) redirect('/dashboard')
@@ -52,12 +61,13 @@ export default async function ServiceDetailPage({ params }: { params: Promise<{ 
   const isOrphan = !service.service_order_id
   const canManageTech = canEdit && session.role !== 'tecnico' && isOrphan
 
-  const [tecnicos, files, materials, settings, parentOrder] = await Promise.all([
+  const [tecnicos, files, materials, settings, parentOrder, unidad] = await Promise.all([
     canManageTech ? listTechnicianUsers() : Promise.resolve([]),
     listFilesByEntity('service', id),
     listServiceMaterials(id),
     getSettings(),
     service.service_order_id ? getServiceOrder(service.service_order_id) : Promise.resolve(null),
+    service.unidad_id ? getUnidad(service.unidad_id) : Promise.resolve(null),
   ])
 
   let saleId: string | null = service.sale_id ?? null
@@ -124,6 +134,8 @@ export default async function ServiceDetailPage({ params }: { params: Promise<{ 
         tecnicos={tecnicos}
         isAdmin={session.role === 'admin' || session.role === 'manager'}
         parentOrderEstatus={parentOrder?.estatus ?? null}
+        unidad={unidad}
+        isNewUnit={isNewUnit}
       />
 
       {quoteId && (

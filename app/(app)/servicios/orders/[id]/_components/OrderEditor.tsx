@@ -5,7 +5,6 @@ import { useRouter } from 'next/navigation'
 import type { ServiceOrder, ServiceOrderEstatus, Service } from '@/lib/queries/servicios'
 import { notifyRefresh, toast } from '@/lib/toast'
 import DateTimeRangePicker from '@/components/ui/DateTimeRangePicker'
-import LatLngInput from '@/components/ui/LatLngInput'
 
 const ESTATUS_MAP: Record<string, { label: string; cls: string }> = {
   borrador:  { label: 'Borrador',  cls: 'badge badge-pending' },
@@ -39,12 +38,9 @@ export default function OrderEditor({ order, services, canManage, canCancel, ord
   const [motivo, setMotivo] = useState(order.motivo_del_servicio ?? '')
   const [tipoLugar, setTipoLugar] = useState<'calle' | 'taller' | ''>(order.tipo_lugar ?? '')
   const [ubicacion, setUbicacion] = useState(order.ubicacion ?? '')
-  const [referencias, setReferencias] = useState(order.referencias ?? '')
   const [comentarios, setComentarios] = useState(order.comentarios_de_soporte ?? '')
   const [fechaAgendada, setFechaAgendada] = useState(order.fecha_hora_agendada ?? '')
   const [fechaLimite, setFechaLimite] = useState(order.fecha_hora_limite ?? '')
-  const [lat, setLat] = useState<string | null>(order.lat ?? null)
-  const [lng, setLng] = useState<string | null>(order.lng ?? null)
 
   // Technician assignment state
   const [assignAll, setAssignAll] = useState(order.assign_all_technicians ?? false)
@@ -213,8 +209,14 @@ export default function OrderEditor({ order, services, canManage, canCancel, ord
                   <span className={`badge badge-${order.tipo_lugar}`}>{order.tipo_lugar === 'taller' ? 'Taller' : 'Calle'}</span>
                 </div>
               )}
-              {order.ubicacion && <div><span style={{ color: 'var(--c-ghost)' }}>Ubicación:</span> {order.ubicacion}</div>}
-              {order.referencias && <div><span style={{ color: 'var(--c-ghost)' }}>Referencias:</span> {order.referencias}</div>}
+              {order.ubicacion && (
+                <div>
+                  <span style={{ color: 'var(--c-ghost)' }}>Ubicación:</span>{' '}
+                  {/^https?:\/\//.test(order.ubicacion) ? (
+                    <a href={order.ubicacion} target="_blank" rel="noopener noreferrer" style={{ color: '#2563eb' }}>{order.ubicacion}</a>
+                  ) : order.ubicacion}
+                </div>
+              )}
               {order.comentarios_de_soporte && <div><span style={{ color: 'var(--c-ghost)' }}>Comentarios:</span> {order.comentarios_de_soporte}</div>}
               {(order.assign_all_technicians || techs.length > 0) && (
                 <div className="flex items-center gap-2 flex-wrap">
@@ -243,19 +245,6 @@ export default function OrderEditor({ order, services, canManage, canCancel, ord
                 <div suppressHydrationWarning>
                   <span style={{ color: 'var(--c-ghost)' }}>Límite:</span>{' '}
                   {new Date(order.fecha_hora_limite).toLocaleString('es-MX')}
-                </div>
-              )}
-              {order.lat != null && order.lng != null && (
-                <div>
-                  <a
-                    href={`https://www.google.com/maps?q=${order.lat},${order.lng}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-xs font-semibold underline"
-                    style={{ color: 'var(--c-navy)' }}
-                  >
-                    Ver en Google Maps ↗
-                  </a>
                 </div>
               )}
             </div>
@@ -383,18 +372,8 @@ export default function OrderEditor({ order, services, canManage, canCancel, ord
               value={ubicacion}
               onChange={e => setUbicacion(e.target.value)}
               onBlur={() => saveField('ubicacion', ubicacion)}
+              placeholder="Dirección o enlace de Google Maps"
               className="w-full text-sm rounded-xl px-4 py-2.5"
-              style={inp}
-            />
-          </div>
-          <div>
-            <label className={labelCls} style={labelStyle}>Referencias</label>
-            <textarea
-              value={referencias}
-              onChange={e => setReferencias(e.target.value)}
-              onBlur={() => saveField('referencias', referencias)}
-              rows={2}
-              className="w-full text-sm rounded-xl px-4 py-2.5 resize-none"
               style={inp}
             />
           </div>
@@ -416,20 +395,6 @@ export default function OrderEditor({ order, services, canManage, canCancel, ord
               }}
             />
           </div>
-          <div className="md:col-span-2">
-            <label className={labelCls} style={labelStyle}>Coordenadas (lat, lng)</label>
-            <LatLngInput
-              lat={lat}
-              lng={lng}
-              onChange={(la, lo) => {
-                setLat(la); setLng(lo)
-                patch({ lat: la, lng: lo }).then(ok => {
-                  if (ok) { notifyRefresh(); router.refresh() }
-                })
-              }}
-            />
-          </div>
-
           {/* Technician picker */}
           {allTecnicos.length > 0 && (
             <div className="md:col-span-2">

@@ -36,15 +36,12 @@ export async function POST(req: NextRequest) {
       service_project_id: body.service_project_id,
       motivo_del_servicio: body.motivo_del_servicio ?? null,
       ubicacion: body.ubicacion ?? null,
-      referencias: body.referencias ?? null,
       comentarios_de_soporte: body.comentarios_de_soporte ?? null,
       tipo_lugar: body.tipo_lugar ?? null,
       assign_all_technicians: body.assign_all_technicians === true,
       technician_ids: Array.isArray(body.technician_ids) ? body.technician_ids : [],
       fecha_hora_agendada: body.fecha_hora_agendada ?? null,
       fecha_hora_limite: body.fecha_hora_limite ?? null,
-      lat: body.lat ?? null,
-      lng: body.lng ?? null,
       created_by: session.userId,
     })
     revalidatePath('/servicios')

@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import type { Service, ServiceEstatus } from '@/lib/queries/servicios'
+import type { Unidad } from '@/lib/queries/unidades'
 import { notifyRefresh, toast } from '@/lib/toast'
 
 const ESTATUS_MAP: Record<string, { label: string; cls: string }> = {
@@ -31,9 +32,11 @@ interface Props {
   tecnicos: { id: string; username: string }[]
   isAdmin?: boolean
   parentOrderEstatus?: string | null
+  unidad?: Unidad | null
+  isNewUnit?: boolean
 }
 
-export default function ServiceEditor({ service, canEdit, canEditReport, canChangeStatus, canManageTech, canApprove, hasMaterials, tecnicos, isAdmin, parentOrderEstatus }: Props) {
+export default function ServiceEditor({ service, canEdit, canEditReport, canChangeStatus, canManageTech, canApprove, hasMaterials, tecnicos, isAdmin, parentOrderEstatus, unidad, isNewUnit }: Props) {
   const router = useRouter()
   const [estatus, setEstatus] = useState<ServiceEstatus>(service.estatus)
   const [reporte, setReporte] = useState(service.reporte_tecnico ?? '')
@@ -265,19 +268,6 @@ export default function ServiceEditor({ service, canEdit, canEditReport, canChan
                 {new Date(service.fecha_hora_agendada).toLocaleString('es-MX')}
               </div>
             )}
-            {service.lat != null && service.lng != null && (
-              <div>
-                <a
-                  href={`https://www.google.com/maps?q=${service.lat},${service.lng}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-xs font-semibold underline"
-                  style={{ color: 'var(--c-navy)' }}
-                >
-                  Ver en Google Maps ↗
-                </a>
-              </div>
-            )}
             {service.comentarios_soporte && (
               <div className="mt-1"><span style={{ color: 'var(--c-ghost)' }}>Detalles:</span> {service.comentarios_soporte}</div>
             )}
@@ -285,6 +275,9 @@ export default function ServiceEditor({ service, canEdit, canEditReport, canChan
               <div className="mt-1"><span style={{ color: 'var(--c-ghost)' }}>Motivo de cancelación:</span>{' '}
                 <span style={{ color: 'var(--c-rose)' }}>{service.motivo_cancelacion}</span>
               </div>
+            )}
+            {unidad && (
+              <UnidadInfoPanel unidad={unidad} editable={!!isNewUnit} />
             )}
           </div>
         </div>
@@ -537,6 +530,159 @@ export default function ServiceEditor({ service, canEdit, canEditReport, canChan
         />
       )}
     </div>
+  )
+}
+
+const DASHCAM_LABELS: Record<string, string> = { dashcam: 'Dashcam', streamax: 'Streamax' }
+
+function UnidadInfoPanel({ unidad, editable }: { unidad: Unidad; editable: boolean }) {
+  const inp = { background: 'var(--c-panel)', border: '1px solid var(--c-rim)', color: 'var(--c-ink)', outline: 'none' }
+  const labelCls = 'block text-xs font-semibold mb-1'
+  const labelStyle = { color: 'var(--c-dim)' }
+
+  const [dashcam, setDashcam] = useState<string>(unidad.dashcam ?? '')
+  const [pantalla, setPantalla] = useState(unidad.pantalla)
+  const [impresora, setImpresora] = useState(unidad.impresora)
+  const [reversa, setReversa] = useState(unidad.reversa)
+  const [reconFacial, setReconFacial] = useState(unidad.reconocimiento_facial)
+  const [fechaInst, setFechaInst] = useState(unidad.fecha_instalacion ?? '')
+  const [descInst, setDescInst] = useState(unidad.descripcion_instalacion ?? '')
+  const [obs, setObs] = useState(unidad.observaciones ?? '')
+
+  async function save(field: string, value: unknown) {
+    await fetch(`/api/unidades/${unidad.id}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ [field]: value }),
+    })
+  }
+
+  const boolFeatures = [
+    { label: 'Pantalla', value: pantalla, set: setPantalla, field: 'pantalla' },
+    { label: 'Impresora', value: impresora, set: setImpresora, field: 'impresora' },
+    { label: 'Reversa', value: reversa, set: setReversa, field: 'reversa' },
+    { label: 'Recon. facial', value: reconFacial, set: setReconFacial, field: 'reconocimiento_facial' },
+  ]
+
+  return (
+    <details className="mt-3" open={editable}>
+      <summary
+        className="text-xs font-bold uppercase tracking-widest cursor-pointer select-none py-1"
+        style={{ color: 'var(--c-ghost)', letterSpacing: '0.1em', listStyle: 'none' }}
+      >
+        <span className="flex items-center gap-1.5">
+          <svg width="11" height="11" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <polyline points="2 4 6 8 10 4"/>
+          </svg>
+          Información de unidad
+          {editable && (
+            <span className="ml-1 px-1.5 py-0.5 rounded text-xs font-semibold" style={{ background: '#FEF3C7', color: '#92400E', fontSize: '0.65rem' }}>
+              Nueva
+            </span>
+          )}
+        </span>
+      </summary>
+      <div className="mt-3 pl-1 flex flex-col gap-3">
+        {editable ? (
+          <>
+            <div>
+              <label className={labelCls} style={labelStyle}>Dashcam</label>
+              <select
+                value={dashcam}
+                onChange={e => { setDashcam(e.target.value); save('dashcam', e.target.value || null) }}
+                className="text-sm rounded-xl px-3 py-2"
+                style={{ ...inp, minWidth: '160px' }}
+              >
+                <option value="">Sin dashcam</option>
+                <option value="dashcam">Dashcam</option>
+                <option value="streamax">Streamax</option>
+              </select>
+            </div>
+            <div>
+              <label className={labelCls} style={labelStyle}>Equipamiento</label>
+              <div className="flex flex-wrap gap-2">
+                {boolFeatures.map(f => (
+                  <button
+                    key={f.field}
+                    type="button"
+                    onClick={() => { const next = !f.value; f.set(next); save(f.field, next) }}
+                    className="px-3 py-1 rounded-full text-xs font-semibold transition-colors"
+                    style={{
+                      background: f.value ? 'var(--c-navy)' : 'var(--c-panel)',
+                      color: f.value ? '#fff' : 'var(--c-dim)',
+                      border: f.value ? '1px solid var(--c-navy)' : '1px solid var(--c-rim)',
+                      cursor: 'pointer',
+                    }}
+                  >
+                    {f.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+            <div>
+              <label className={labelCls} style={labelStyle}>Fecha de instalación</label>
+              <input
+                type="date"
+                value={fechaInst}
+                onChange={e => setFechaInst(e.target.value)}
+                onBlur={() => save('fecha_instalacion', fechaInst || null)}
+                className="text-sm rounded-xl px-3 py-2"
+                style={inp}
+              />
+            </div>
+            <div>
+              <label className={labelCls} style={labelStyle}>Descripción de instalación</label>
+              <textarea
+                value={descInst}
+                onChange={e => setDescInst(e.target.value)}
+                onBlur={() => save('descripcion_instalacion', descInst || null)}
+                rows={2}
+                className="w-full text-sm rounded-xl px-3 py-2 resize-none"
+                style={inp}
+              />
+            </div>
+            <div>
+              <label className={labelCls} style={labelStyle}>Observaciones</label>
+              <textarea
+                value={obs}
+                onChange={e => setObs(e.target.value)}
+                onBlur={() => save('observaciones', obs || null)}
+                rows={2}
+                className="w-full text-sm rounded-xl px-3 py-2 resize-none"
+                style={inp}
+              />
+            </div>
+          </>
+        ) : (
+          <div className="flex flex-col gap-1.5 text-sm" style={{ color: 'var(--c-dim)' }}>
+            {unidad.dashcam && (
+              <div><span style={{ color: 'var(--c-ghost)' }}>Dashcam:</span> {DASHCAM_LABELS[unidad.dashcam] ?? unidad.dashcam}</div>
+            )}
+            {(unidad.pantalla || unidad.impresora || unidad.reversa || unidad.reconocimiento_facial) && (
+              <div className="flex flex-wrap gap-1.5 items-center">
+                <span style={{ color: 'var(--c-ghost)' }}>Equipamiento:</span>
+                {unidad.pantalla && <span className="text-xs px-2 py-0.5 rounded-full" style={{ background: 'var(--c-panel)', border: '1px solid var(--c-rim)' }}>Pantalla</span>}
+                {unidad.impresora && <span className="text-xs px-2 py-0.5 rounded-full" style={{ background: 'var(--c-panel)', border: '1px solid var(--c-rim)' }}>Impresora</span>}
+                {unidad.reversa && <span className="text-xs px-2 py-0.5 rounded-full" style={{ background: 'var(--c-panel)', border: '1px solid var(--c-rim)' }}>Reversa</span>}
+                {unidad.reconocimiento_facial && <span className="text-xs px-2 py-0.5 rounded-full" style={{ background: 'var(--c-panel)', border: '1px solid var(--c-rim)' }}>Recon. facial</span>}
+              </div>
+            )}
+            {unidad.fecha_instalacion && (
+              <div><span style={{ color: 'var(--c-ghost)' }}>Instalación:</span> {unidad.fecha_instalacion}</div>
+            )}
+            {unidad.descripcion_instalacion && (
+              <div><span style={{ color: 'var(--c-ghost)' }}>Descripción:</span> {unidad.descripcion_instalacion}</div>
+            )}
+            {unidad.observaciones && (
+              <div><span style={{ color: 'var(--c-ghost)' }}>Observaciones:</span> {unidad.observaciones}</div>
+            )}
+            {!unidad.dashcam && !unidad.pantalla && !unidad.impresora && !unidad.reversa && !unidad.reconocimiento_facial && !unidad.fecha_instalacion && !unidad.descripcion_instalacion && !unidad.observaciones && (
+              <span style={{ color: 'var(--c-ghost)', fontStyle: 'italic' }}>Sin información registrada</span>
+            )}
+          </div>
+        )}
+      </div>
+    </details>
   )
 }
 

@@ -20,17 +20,20 @@ interface Props {
   prefillTipoLugar?: 'calle' | 'taller' | null
   prefillMotivo?: string | null
   compact?: boolean
+  canCreateUnit?: boolean
 }
 
 const labelCls = 'block text-xs font-semibold mb-1.5'
 const labelStyle = { color: 'var(--c-dim)' }
 const inp = { background: 'var(--c-panel)', border: '1px solid var(--c-rim)', color: 'var(--c-ink)', outline: 'none' }
 
-export default function NewServiceModal({ onClose, prefillOrderId, prefillCustomerId, prefillTipoLugar, prefillMotivo, compact }: Props) {
+export default function NewServiceModal({ onClose, prefillOrderId, prefillCustomerId, prefillTipoLugar, prefillMotivo, compact, canCreateUnit }: Props) {
   const router = useRouter()
   const [customers, setCustomers] = useState<Customer[]>([])
   const [customerId, setCustomerId] = useState(prefillCustomerId ?? '')
   const [unidadId, setUnidadId] = useState('')
+  const [unidadMode, setUnidadMode] = useState<'select' | 'new'>('select')
+  const [newUnitName, setNewUnitName] = useState('')
   const [loading, setLoading] = useState(false)
 
   useEffect(() => {
@@ -53,20 +56,40 @@ export default function NewServiceModal({ onClose, prefillOrderId, prefillCustom
       toast('Selecciona un cliente para walk-in', 'error')
       return
     }
-    if (!unidadId) {
+    if (unidadMode === 'select' && !unidadId) {
       toast('Unidad requerida', 'error')
+      return
+    }
+    if (unidadMode === 'new' && !newUnitName.trim()) {
+      toast('Nombre de unidad requerido', 'error')
       return
     }
     setLoading(true)
     const form = new FormData(e.currentTarget)
     try {
+      let finalUnidadId = unidadId
+      if (unidadMode === 'new') {
+        const unitRes = await fetch('/api/unidades', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name: newUnitName.trim(), empresa_id: customerId || null }),
+        })
+        if (!unitRes.ok) {
+          const err = await unitRes.json().catch(() => ({}))
+          toast(err.error || 'Error al crear unidad', 'error')
+          return
+        }
+        const newUnit = await unitRes.json()
+        finalUnidadId = newUnit.id
+      }
+
       const res = await fetch('/api/servicios/services', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           service_order_id: prefillOrderId ?? null,
           customer_id: walkIn ? customerId : null,
-          unidad_id: unidadId || null,
+          unidad_id: finalUnidadId || null,
           motivo_visita: form.get('motivo_visita') || null,
           ubicacion_txt: form.get('ubicacion_txt') || null,
           comentarios_soporte: form.get('comentarios_soporte') || null,
@@ -82,7 +105,7 @@ export default function NewServiceModal({ onClose, prefillOrderId, prefillCustom
       toast('Servicio creado', 'success')
       notifyRefresh()
       onClose()
-      router.push(`/servicios/services/${result.id}`)
+      router.push(`/servicios/services/${result.id}${unidadMode === 'new' ? '?new_unit=1' : ''}`)
     } finally {
       setLoading(false)
     }
@@ -141,12 +164,37 @@ export default function NewServiceModal({ onClose, prefillOrderId, prefillCustom
           )}
 
           <div>
-            <label className={labelCls} style={labelStyle}>Unidad *</label>
-            <UnidadSearchSelect
-              value={unidadId}
-              onChange={setUnidadId}
-              customerId={customerId || null}
-            />
+            <div className="flex items-center justify-between mb-1.5">
+              <label className={labelCls} style={{ ...labelStyle, marginBottom: 0 }}>Unidad *</label>
+              {unidadMode === 'new' ? (
+                <button
+                  type="button"
+                  onClick={() => { setUnidadMode('select'); setNewUnitName('') }}
+                  className="text-xs hover:opacity-70 transition-opacity"
+                  style={{ color: 'var(--c-ghost)', background: 'transparent', border: 'none', cursor: 'pointer' }}
+                >
+                  Seleccionar existente
+                </button>
+              ) : null}
+            </div>
+            {unidadMode === 'select' ? (
+              <UnidadSearchSelect
+                value={unidadId}
+                onChange={setUnidadId}
+                customerId={customerId || null}
+                onNewUnit={canCreateUnit ? () => setUnidadMode('new') : undefined}
+              />
+            ) : (
+              <input
+                type="text"
+                value={newUnitName}
+                onChange={e => setNewUnitName(e.target.value)}
+                placeholder="Nombre de la unidad (ej. VW Transporter BCD-1234)"
+                className="w-full text-sm rounded-xl px-4 py-2.5"
+                style={inp}
+                autoFocus
+              />
+            )}
           </div>
 
           <div>

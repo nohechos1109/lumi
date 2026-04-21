@@ -109,6 +109,7 @@ export default function OrderServicesList({ orderId, customerId, tipoLugar, moti
           prefillMotivo={motivo}
           compact={role === 'tecnico'}
           onClose={() => setShowModal(false)}
+          canCreateUnit={['admin', 'manager'].includes(role ?? '')}
         />
       )}
     </div>
