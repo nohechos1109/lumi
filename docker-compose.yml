@@ -33,7 +33,6 @@ services:
       POSTGRES_PASSWORD: admin
       POSTGRES_DB: cotizador
     ports:
-      # Exponemos el puerto de la BD por si necesitas conectarte desde tu Windows (ej. DBeaver/PgAdmin)
       - "5432:5432"
     volumes:
       - cotizador_pg_data:/var/lib/postgresql/data
