@@ -1,28 +1,13 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
+import type { Product } from '@/lib/queries/products'
 
 const PRODUCT_CATEGORIES = [
   'Varios', 'Servicios', 'Polizas', 'Suscripciones', 'Grabadores', 'Almacenamiento',
   'Camaras', 'Cableado aviacion', 'Cableado especializado CP4', 'Cableado especializado',
   'Pantallas', 'Boletera', 'Accesorios', 'Actuadores', 'Planes de datos', 'Alarma inalambrica',
 ] as const
-
-interface Product {
-  id: string
-  sku: string | null
-  name: string
-  description: string | null
-  currency: string
-  cost_base: string
-  utility_fixed: string
-  utility_factor: string
-  codigo_sat: string | null
-  codigo_proveedor: string | null
-  image_url: string | null
-  category: string | null
-  public_price: string | null
-}
 
 interface Props {
   product?: Partial<Product> | null
@@ -51,6 +36,7 @@ export default function ProductFormModal({ product, onClose, onSave, onDelete }:
   const [busy, setBusy] = useState(false)
   const [uploading, setUploading] = useState(false)
   const [dragOver, setDragOver] = useState(false)
+  const [saveError, setSaveError] = useState<string | null>(null)
   const imageErrorFired = useRef(false)
 
   useEffect(() => { imageErrorFired.current = false }, [product?.id])
@@ -95,10 +81,16 @@ export default function ProductFormModal({ product, onClose, onSave, onDelete }:
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
+    setSaveError(null)
     setBusy(true)
     try {
-      await onSave({ ...form, image_url: form.image_url || null })
+      // public_price is derived server-side — never send from form
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { public_price: _skip, ...payload } = form
+      await onSave({ ...payload, image_url: form.image_url || null })
       onClose()
+    } catch (err) {
+      setSaveError(err instanceof Error ? err.message : 'Error al guardar')
     } finally {
       setBusy(false)
     }
@@ -253,7 +245,7 @@ export default function ProductFormModal({ product, onClose, onSave, onDelete }:
             <label className={labelCls} style={labelStyle}>Moneda</label>
             <select
               value={form.currency}
-              onChange={e => setForm(f => ({ ...f, currency: e.target.value }))}
+              onChange={e => setForm(f => ({ ...f, currency: e.target.value as 'MXN' | 'USD' }))}
               className="w-full rounded-xl px-4 py-2.5 outline-none transition-all appearance-none cursor-pointer"
               style={inputBase}
             >
@@ -376,6 +368,12 @@ export default function ProductFormModal({ product, onClose, onSave, onDelete }:
               />
             </div>
           </div>
+
+          {saveError && (
+            <div className="md:col-span-2 lg:col-span-4 px-4 py-3 rounded-xl text-sm font-semibold" style={{ background: 'rgba(209,44,60,0.08)', color: 'var(--c-rose)', border: '1px solid rgba(209,44,60,0.2)' }}>
+              {saveError}
+            </div>
+          )}
 
           <div className="md:col-span-2 lg:col-span-4 flex items-center pt-4" style={{ borderTop: '1px solid var(--c-rim)' }}>
             {isEdit && onDelete && (

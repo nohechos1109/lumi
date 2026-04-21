@@ -842,7 +842,7 @@ export async function autoCreateServiceProjectFromSale(
     await client.query('BEGIN')
 
     const { rows: [sale] } = await client.query(
-      `SELECT s.id, s.number, s.customer_id, s.quote_id, q.number AS quote_number
+      `SELECT s.id, s.number, s.customer_id, s.quote_id, q.number AS quote_number, q.description AS requerimiento
        FROM sales s
        JOIN quotes q ON q.id = s.quote_id
        WHERE s.id = $1`,
@@ -874,7 +874,7 @@ export async function autoCreateServiceProjectFromSale(
        RETURNING *`,
       [
         spNumber,
-        `Servicios ${sale.quote_number}`,
+        sale.requerimiento || `Servicios ${sale.quote_number}`,
         sale.customer_id,
         sale.id,
         userId,

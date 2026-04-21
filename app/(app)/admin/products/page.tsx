@@ -7,22 +7,7 @@ import FilterSelect from '@/components/ui/FilterSelect'
 import ProductFormModal from './_components/ProductFormModal'
 import ProductGrid from './_components/ProductGrid'
 import { notifyRefresh } from '@/lib/toast'
-
-interface Product {
-  id: string;
-  sku: string | null;
-  name: string;
-  description: string | null;
-  currency: string;
-  cost_base: string;
-  utility_fixed: string;
-  utility_factor: string;
-  codigo_sat: string | null;
-  codigo_proveedor: string | null;
-  image_url: string | null;
-  category: string | null;
-  public_price: string | null;
-}
+import type { Product } from '@/lib/queries/products'
 
 function ListThumb({ imageUrl, name }: { imageUrl: string | null; name: string }) {
   const [err, setErr] = useState(false)
@@ -74,21 +59,18 @@ export default function AdminProductsPage() {
   })
 
   async function handleSave(data: Partial<Product>) {
-    let res: Response
-    if (productToEdit) {
-      res = await fetch(`/api/admin/products/${productToEdit.id}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
-      })
-    } else {
-      res = await fetch('/api/admin/products', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
-      })
+    const url = productToEdit ? `/api/admin/products/${productToEdit.id}` : '/api/admin/products'
+    const method = productToEdit ? 'PATCH' : 'POST'
+    const res = await fetch(url, {
+      method,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    })
+    if (!res.ok) {
+      const body = await res.json().catch(() => ({}))
+      throw new Error(body.error ?? 'Error al guardar')
     }
-    if (res.ok) notifyRefresh()
+    notifyRefresh()
     load()
   }
 
