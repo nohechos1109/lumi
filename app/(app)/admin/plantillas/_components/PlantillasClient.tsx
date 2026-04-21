@@ -31,6 +31,16 @@ interface Product {
   sku: string | null
 }
 
+interface LocalItem {
+  tempId: string
+  sequence?: number
+  origQty?: number
+  product_id: string
+  product_name: string
+  product_sku?: string | null
+  qty: number
+}
+
 // ─── PlantillaEditorModal ──────────────────────────────────────────────────────
 
 interface EditorModalProps {
@@ -45,23 +55,28 @@ function PlantillaEditorModal({ plantilla, onClose, onSaved }: EditorModalProps)
   const [requerimiento, setRequerimiento] = useState(plantilla?.requerimiento ?? '')
   const [saving, setSaving] = useState(false)
 
-  // Items state (edit mode only)
-  const [items, setItems] = useState<PlantillaItem[]>(plantilla?.items ?? [])
+  const [localItems, setLocalItems] = useState<LocalItem[]>(() =>
+    (plantilla?.items ?? []).map(it => ({
+      tempId: String(it.sequence),
+      sequence: it.sequence,
+      origQty: Math.round(Number(it.qty)),
+      product_id: it.product_id ?? '',
+      product_name: it.product_name ?? '',
+      product_sku: it.product_sku,
+      qty: Math.round(Number(it.qty)),
+    }))
+  )
   const [products, setProducts] = useState<Product[]>([])
   const [productSearch, setProductSearch] = useState('')
   const [showProductSearch, setShowProductSearch] = useState(false)
-  const [addingItem, setAddingItem] = useState(false)
 
-  // Load products once in edit mode
   useEffect(() => {
-    if (!isEdit) return
     fetch('/api/admin/products')
       .then(r => r.ok ? r.json() : [])
       .then(setProducts)
       .catch(() => {})
-  }, [isEdit])
+  }, [])
 
-  // Escape key
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
       if (e.key === 'Escape') onClose()
@@ -70,13 +85,28 @@ function PlantillaEditorModal({ plantilla, onClose, onSaved }: EditorModalProps)
     return () => window.removeEventListener('keydown', onKey)
   }, [onClose])
 
-  async function refreshItems() {
-    if (!plantilla) return
-    const res = await fetch(`/api/plantillas/${plantilla.id}`)
-    if (res.ok) {
-      const data = await res.json()
-      setItems(data.items ?? [])
-    }
+  function handleAddItemLocal(product: Product) {
+    setLocalItems(prev => [
+      ...prev,
+      {
+        tempId: `new-${Date.now()}-${Math.random()}`,
+        product_id: product.id,
+        product_name: product.name,
+        product_sku: product.sku,
+        qty: 1,
+      },
+    ])
+    setProductSearch('')
+    setShowProductSearch(false)
+  }
+
+  function handleRemoveItemLocal(tempId: string) {
+    setLocalItems(prev => prev.filter(it => it.tempId !== tempId))
+  }
+
+  function handleUpdateQtyLocal(tempId: string, qty: number) {
+    if (qty < 1) return
+    setLocalItems(prev => prev.map(it => it.tempId === tempId ? { ...it, qty } : it))
   }
 
   async function handleSave(e: React.FormEvent) {
@@ -85,79 +115,72 @@ function PlantillaEditorModal({ plantilla, onClose, onSaved }: EditorModalProps)
     setSaving(true)
     try {
       const body = { nombre: nombre.trim(), requerimiento: requerimiento.trim() || undefined }
-      const res = isEdit
-        ? await fetch(`/api/plantillas/${plantilla.id}`, {
+      let plantillaId: string
+
+      if (isEdit) {
+        const res = await fetch(`/api/plantillas/${plantilla.id}`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(body),
+        })
+        if (!res.ok) {
+          const data = await res.json().catch(() => ({}))
+          toast(data.error ?? 'Error al guardar', 'error')
+          return
+        }
+        plantillaId = plantilla.id
+      } else {
+        const res = await fetch('/api/plantillas', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(body),
+        })
+        if (!res.ok) {
+          const data = await res.json().catch(() => ({}))
+          toast(data.error ?? 'Error al crear', 'error')
+          return
+        }
+        const data = await res.json()
+        plantillaId = data.id
+      }
+
+      // Delete items removed during editing
+      const origSeqs = new Set((plantilla?.items ?? []).map(i => i.sequence))
+      const currentSeqs = new Set(localItems.filter(i => i.sequence !== undefined).map(i => i.sequence!))
+      for (const seq of origSeqs) {
+        if (!currentSeqs.has(seq)) {
+          await fetch(`/api/plantillas/${plantillaId}/items/${seq}`, { method: 'DELETE' })
+        }
+      }
+
+      // Update qty for existing items that changed
+      for (const item of localItems) {
+        if (item.sequence !== undefined && item.qty !== item.origQty) {
+          await fetch(`/api/plantillas/${plantillaId}/items/${item.sequence}`, {
             method: 'PATCH',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(body),
+            body: JSON.stringify({ qty: item.qty }),
           })
-        : await fetch('/api/plantillas', {
+        }
+      }
+
+      // Add new items
+      for (const item of localItems) {
+        if (item.sequence === undefined) {
+          await fetch(`/api/plantillas/${plantillaId}/items`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(body),
+            body: JSON.stringify({ product_id: item.product_id, qty: item.qty }),
           })
-
-      if (!res.ok) {
-        const data = await res.json().catch(() => ({}))
-        toast(data.error ?? 'Error al guardar', 'error')
-        return
+        }
       }
+
       notifyRefresh()
       toast(isEdit ? 'Plantilla actualizada' : 'Plantilla creada', 'success')
       onSaved()
     } finally {
       setSaving(false)
     }
-  }
-
-  async function handleAddItem(product: Product) {
-    if (!plantilla) return
-    setAddingItem(true)
-    try {
-      const res = await fetch(`/api/plantillas/${plantilla.id}/items`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ product_id: product.id, qty: 1 }),
-      })
-      if (!res.ok) {
-        const data = await res.json().catch(() => ({}))
-        toast(data.error ?? 'Error al agregar producto', 'error')
-        return
-      }
-      notifyRefresh()
-      await refreshItems()
-      setProductSearch('')
-      setShowProductSearch(false)
-      toast('Producto agregado', 'success')
-    } finally {
-      setAddingItem(false)
-    }
-  }
-
-  async function handleRemoveItem(seq: number) {
-    if (!plantilla) return
-    const res = await fetch(`/api/plantillas/${plantilla.id}/items/${seq}`, { method: 'DELETE' })
-    if (!res.ok) {
-      toast('Error al eliminar ítem', 'error')
-      return
-    }
-    notifyRefresh()
-    await refreshItems()
-  }
-
-  async function handleUpdateQty(seq: number, newQty: number) {
-    if (!plantilla || newQty < 1) return
-    const res = await fetch(`/api/plantillas/${plantilla.id}/items/${seq}`, {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ qty: newQty }),
-    })
-    if (!res.ok) {
-      toast('Error al actualizar cantidad', 'error')
-      return
-    }
-    notifyRefresh()
-    setItems(prev => prev.map(it => it.sequence === seq ? { ...it, qty: String(newQty) } : it))
   }
 
   const filteredProducts = productSearch.trim()
@@ -209,7 +232,6 @@ function PlantillaEditorModal({ plantilla, onClose, onSaved }: EditorModalProps)
 
         {/* Body */}
         <div className="flex-1 overflow-y-auto px-6 py-5 flex flex-col gap-6">
-          {/* Fields */}
           <form id="plantilla-form" onSubmit={handleSave} className="flex flex-col gap-4">
             <div className="flex flex-col gap-1.5">
               <label className="text-xs font-semibold uppercase tracking-wider" style={{ color: 'var(--c-ghost)' }}>
@@ -254,155 +276,152 @@ function PlantillaEditorModal({ plantilla, onClose, onSaved }: EditorModalProps)
             </div>
           </form>
 
-          {/* Items section — only in edit mode */}
-          {isEdit && (
-            <div className="flex flex-col gap-3">
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-semibold uppercase tracking-wider" style={{ color: 'var(--c-ghost)' }}>
-                  Productos ({items.length})
-                </span>
-                <button
-                  type="button"
-                  onClick={() => setShowProductSearch(v => !v)}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-opacity hover:opacity-75"
-                  style={{
-                    background: 'var(--c-navy-bg)',
-                    color: 'var(--c-navy)',
-                    border: '1px solid var(--c-navy-bd)',
-                  }}
-                >
-                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                    <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
-                  </svg>
-                  Agregar producto
-                </button>
-              </div>
-
-              {/* Product search */}
-              {showProductSearch && (
-                <div
-                  className="rounded-xl p-3 flex flex-col gap-2"
-                  style={{ background: 'var(--c-panel)', border: '1px solid var(--c-rim)' }}
-                >
-                  <input
-                    type="text"
-                    value={productSearch}
-                    onChange={e => setProductSearch(e.target.value)}
-                    placeholder="Buscar por nombre o SKU…"
-                    autoFocus
-                    className="w-full px-3 py-2 rounded-lg text-sm outline-none"
-                    style={{
-                      background: 'var(--c-card)',
-                      border: '1px solid var(--c-rim)',
-                      color: 'var(--c-ink)',
-                    }}
-                    onFocus={e => { e.currentTarget.style.border = '1.5px solid var(--c-navy-bd)' }}
-                    onBlur={e => { e.currentTarget.style.border = '1px solid var(--c-rim)' }}
-                  />
-                  <div className="flex flex-col gap-1 max-h-40 overflow-y-auto">
-                    {filteredProducts.length === 0 ? (
-                      <p className="text-xs text-center py-3" style={{ color: 'var(--c-ghost)' }}>
-                        {productSearch ? 'Sin resultados' : 'Cargando productos…'}
-                      </p>
-                    ) : (
-                      filteredProducts.map(p => (
-                        <button
-                          key={p.id}
-                          type="button"
-                          disabled={addingItem}
-                          onClick={() => handleAddItem(p)}
-                          className="flex items-center justify-between px-3 py-2 rounded-lg text-sm text-left transition-colors disabled:opacity-50"
-                          style={{ color: 'var(--c-ink)' }}
-                          onMouseEnter={e => { e.currentTarget.style.background = 'var(--c-card)' }}
-                          onMouseLeave={e => { e.currentTarget.style.background = 'transparent' }}
-                        >
-                          <span className="font-medium">{p.name}</span>
-                          {p.sku && (
-                            <span className="font-mono text-xs ml-2" style={{ color: 'var(--c-ghost)' }}>
-                              {p.sku}
-                            </span>
-                          )}
-                        </button>
-                      ))
-                    )}
-                  </div>
-                </div>
-              )}
-
-              {/* Items table */}
-              {items.length === 0 ? (
-                <div
-                  className="text-center py-8 rounded-xl"
-                  style={{ border: '1.5px dashed var(--c-rim)' }}
-                >
-                  <p className="text-sm" style={{ color: 'var(--c-ghost)' }}>
-                    Sin productos en esta plantilla
-                  </p>
-                </div>
-              ) : (
-                <div
-                  className="rounded-xl overflow-hidden"
-                  style={{ border: '1px solid var(--c-rim)' }}
-                >
-                  <table className="w-full text-sm">
-                    <thead>
-                      <tr style={{ background: 'var(--c-panel)', borderBottom: '1px solid var(--c-rim)' }}>
-                        <th className="text-left px-4 py-3 text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--c-ghost)' }}>Producto</th>
-                        <th className="text-center px-4 py-3 text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--c-ghost)' }}>Cantidad</th>
-                        <th className="px-4 py-3 w-12" />
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-[var(--c-rim)]">
-                      {items.map(item => (
-                        <tr key={item.sequence} className="tr-hover">
-                          <td className="px-4 py-3">
-                            <div className="font-medium" style={{ color: 'var(--c-ink)' }}>
-                              {item.product_name ?? <span style={{ color: 'var(--c-ghost)' }}>Producto eliminado</span>}
-                            </div>
-                            {item.product_sku && (
-                              <div className="font-mono text-xs mt-0.5" style={{ color: 'var(--c-ghost)' }}>
-                                {item.product_sku}
-                              </div>
-                            )}
-                          </td>
-                          <td className="px-4 py-3 text-center">
-                            <input
-                              type="number"
-                              min={1}
-                              step={1}
-                              value={Math.round(Number(item.qty))}
-                              onChange={e => handleUpdateQty(item.sequence, Math.round(Number(e.target.value)))}
-                              className="w-16 text-center px-2 py-1 rounded-lg text-sm outline-none"
-                              style={{
-                                background: 'var(--c-panel)',
-                                border: '1px solid var(--c-rim)',
-                                color: 'var(--c-ink)',
-                              }}
-                              onFocus={e => { e.currentTarget.style.border = '1.5px solid var(--c-navy-bd)' }}
-                              onBlur={e => { e.currentTarget.style.border = '1px solid var(--c-rim)' }}
-                            />
-                          </td>
-                          <td className="px-4 py-3 text-right">
-                            <button
-                              type="button"
-                              onClick={() => handleRemoveItem(item.sequence)}
-                              className="flex items-center justify-center w-7 h-7 rounded-lg transition-opacity hover:opacity-70"
-                              style={{ color: 'var(--c-rose)', marginLeft: 'auto' }}
-                              aria-label="Eliminar ítem"
-                            >
-                              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/>
-                              </svg>
-                            </button>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              )}
+          {/* Items section */}
+          <div className="flex flex-col gap-3">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-semibold uppercase tracking-wider" style={{ color: 'var(--c-ghost)' }}>
+                Productos ({localItems.length})
+              </span>
+              <button
+                type="button"
+                onClick={() => setShowProductSearch(v => !v)}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-opacity hover:opacity-75"
+                style={{
+                  background: 'var(--c-navy-bg)',
+                  color: 'var(--c-navy)',
+                  border: '1px solid var(--c-navy-bd)',
+                }}
+              >
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+                </svg>
+                Agregar producto
+              </button>
             </div>
-          )}
+
+            {/* Product search */}
+            {showProductSearch && (
+              <div
+                className="rounded-xl p-3 flex flex-col gap-2"
+                style={{ background: 'var(--c-panel)', border: '1px solid var(--c-rim)' }}
+              >
+                <input
+                  type="text"
+                  value={productSearch}
+                  onChange={e => setProductSearch(e.target.value)}
+                  placeholder="Buscar por nombre o SKU…"
+                  autoFocus
+                  className="w-full px-3 py-2 rounded-lg text-sm outline-none"
+                  style={{
+                    background: 'var(--c-card)',
+                    border: '1px solid var(--c-rim)',
+                    color: 'var(--c-ink)',
+                  }}
+                  onFocus={e => { e.currentTarget.style.border = '1.5px solid var(--c-navy-bd)' }}
+                  onBlur={e => { e.currentTarget.style.border = '1px solid var(--c-rim)' }}
+                />
+                <div className="flex flex-col gap-1 max-h-40 overflow-y-auto">
+                  {filteredProducts.length === 0 ? (
+                    <p className="text-xs text-center py-3" style={{ color: 'var(--c-ghost)' }}>
+                      {productSearch ? 'Sin resultados' : 'Cargando productos…'}
+                    </p>
+                  ) : (
+                    filteredProducts.map(p => (
+                      <button
+                        key={p.id}
+                        type="button"
+                        onClick={() => handleAddItemLocal(p)}
+                        className="flex items-center justify-between px-3 py-2 rounded-lg text-sm text-left transition-colors"
+                        style={{ color: 'var(--c-ink)' }}
+                        onMouseEnter={e => { e.currentTarget.style.background = 'var(--c-card)' }}
+                        onMouseLeave={e => { e.currentTarget.style.background = 'transparent' }}
+                      >
+                        <span className="font-medium">{p.name}</span>
+                        {p.sku && (
+                          <span className="font-mono text-xs ml-2" style={{ color: 'var(--c-ghost)' }}>
+                            {p.sku}
+                          </span>
+                        )}
+                      </button>
+                    ))
+                  )}
+                </div>
+              </div>
+            )}
+
+            {/* Items table */}
+            {localItems.length === 0 ? (
+              <div
+                className="text-center py-8 rounded-xl"
+                style={{ border: '1.5px dashed var(--c-rim)' }}
+              >
+                <p className="text-sm" style={{ color: 'var(--c-ghost)' }}>
+                  Sin productos en esta plantilla
+                </p>
+              </div>
+            ) : (
+              <div
+                className="rounded-xl overflow-hidden"
+                style={{ border: '1px solid var(--c-rim)' }}
+              >
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr style={{ background: 'var(--c-panel)', borderBottom: '1px solid var(--c-rim)' }}>
+                      <th className="text-left px-4 py-3 text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--c-ghost)' }}>Producto</th>
+                      <th className="text-center px-4 py-3 text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--c-ghost)' }}>Cantidad</th>
+                      <th className="px-4 py-3 w-12" />
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-[var(--c-rim)]">
+                    {localItems.map(item => (
+                      <tr key={item.tempId} className="tr-hover">
+                        <td className="px-4 py-3">
+                          <div className="font-medium" style={{ color: 'var(--c-ink)' }}>
+                            {item.product_name || <span style={{ color: 'var(--c-ghost)' }}>Producto eliminado</span>}
+                          </div>
+                          {item.product_sku && (
+                            <div className="font-mono text-xs mt-0.5" style={{ color: 'var(--c-ghost)' }}>
+                              {item.product_sku}
+                            </div>
+                          )}
+                        </td>
+                        <td className="px-4 py-3 text-center">
+                          <input
+                            type="number"
+                            min={1}
+                            step={1}
+                            value={item.qty}
+                            onChange={e => handleUpdateQtyLocal(item.tempId, Math.round(Number(e.target.value)))}
+                            className="w-16 text-center px-2 py-1 rounded-lg text-sm outline-none"
+                            style={{
+                              background: 'var(--c-panel)',
+                              border: '1px solid var(--c-rim)',
+                              color: 'var(--c-ink)',
+                            }}
+                            onFocus={e => { e.currentTarget.style.border = '1.5px solid var(--c-navy-bd)' }}
+                            onBlur={e => { e.currentTarget.style.border = '1px solid var(--c-rim)' }}
+                          />
+                        </td>
+                        <td className="px-4 py-3 text-right">
+                          <button
+                            type="button"
+                            onClick={() => handleRemoveItemLocal(item.tempId)}
+                            className="flex items-center justify-center w-7 h-7 rounded-lg transition-opacity hover:opacity-70"
+                            style={{ color: 'var(--c-rose)', marginLeft: 'auto' }}
+                            aria-label="Eliminar ítem"
+                          >
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                              <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/>
+                            </svg>
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
         </div>
 
         {/* Footer */}
@@ -442,7 +461,12 @@ function PlantillaEditorModal({ plantilla, onClose, onSaved }: EditorModalProps)
 
 // ─── PlantillasClient ──────────────────────────────────────────────────────────
 
-export default function PlantillasClient() {
+interface PlantillasClientProps {
+  backHref?: string
+  backLabel?: string
+}
+
+export default function PlantillasClient({ backHref, backLabel = 'Volver al Dashboard Admin' }: PlantillasClientProps) {
   const [plantillas, setPlantillas] = useState<Plantilla[]>([])
   const [loading, setLoading] = useState(true)
   const [showCreate, setShowCreate] = useState(false)
@@ -484,18 +508,20 @@ export default function PlantillasClient() {
   return (
     <div className="pb-10">
       {/* Back link */}
-      <div className="mb-6">
-        <Link
-          href="/admin"
-          className="inline-flex items-center gap-1.5 text-xs font-semibold transition-opacity hover:opacity-70"
-          style={{ color: 'var(--c-ghost)' }}
-        >
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-            <polyline points="15 18 9 12 15 6"/>
-          </svg>
-          Volver al Dashboard Admin
-        </Link>
-      </div>
+      {backHref && (
+        <div className="mb-6">
+          <Link
+            href={backHref}
+            className="inline-flex items-center gap-1.5 text-xs font-semibold transition-opacity hover:opacity-70"
+            style={{ color: 'var(--c-ghost)' }}
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <polyline points="15 18 9 12 15 6"/>
+            </svg>
+            {backLabel}
+          </Link>
+        </div>
+      )}
 
       {/* Header */}
       <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between mb-8">

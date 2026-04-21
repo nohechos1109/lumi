@@ -5,7 +5,7 @@ import { updatePlantillaItem, removePlantillaItem } from '@/lib/queries/plantill
 export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string; seq: string }> }) {
   const session = await getSession()
   if (!session) return unauthorized()
-  if (session.role !== 'admin') return forbidden()
+  if (session.role !== 'admin' && session.role !== 'sales') return forbidden()
   const { id, seq } = await params
   const { qty } = await req.json()
   if (qty === undefined || qty === null) return NextResponse.json({ error: 'qty requerido' }, { status: 400 })
@@ -16,7 +16,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
 export async function DELETE(_req: NextRequest, { params }: { params: Promise<{ id: string; seq: string }> }) {
   const session = await getSession()
   if (!session) return unauthorized()
-  if (session.role !== 'admin') return forbidden()
+  if (session.role !== 'admin' && session.role !== 'sales') return forbidden()
   const { id, seq } = await params
   await removePlantillaItem(id, Number(seq))
   return NextResponse.json({ ok: true })

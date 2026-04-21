@@ -20,7 +20,7 @@ export async function GET() {
 export async function POST(req: NextRequest) {
   const session = await getSession()
   if (!session) return unauthorized()
-  if (session.role !== 'admin') return forbidden()
+  if (session.role !== 'admin' && session.role !== 'sales') return forbidden()
   const { nombre, requerimiento } = await req.json()
   if (!nombre?.trim()) return NextResponse.json({ error: 'Nombre requerido' }, { status: 400 })
   const plantilla = await createPlantilla(nombre.trim(), requerimiento?.trim() || undefined)
