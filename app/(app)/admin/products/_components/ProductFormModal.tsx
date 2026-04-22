@@ -281,6 +281,18 @@ export default function ProductFormModal({ product, onClose, onSave, onDelete }:
             />
           </div>
 
+          <div className="md:col-span-2 lg:col-span-4">
+            <label className={labelCls} style={labelStyle}>Código Proveedor</label>
+            <textarea
+              value={form.codigo_proveedor}
+              onChange={e => setForm(f => ({ ...f, codigo_proveedor: e.target.value }))}
+              placeholder="Ej: PROV-001"
+              rows={3}
+              className="w-full rounded-xl px-4 py-2.5 outline-none transition-all resize-none"
+              style={inputBase}
+            />
+          </div>
+
           {/* Precio público calculado (solo lectura) */}
           <div className="md:col-span-2 lg:col-span-4">
             <label className={labelCls} style={labelStyle}>Precio Público <span style={{ color: 'var(--c-ghost)', fontWeight: 400, textTransform: 'none', letterSpacing: 0 }}>(calculado automáticamente · MXN{form.currency === 'USD' ? ` · TC $${fxRate.toFixed(2)}` : ''})</span></label>
@@ -312,17 +324,6 @@ export default function ProductFormModal({ product, onClose, onSave, onDelete }:
               value={form.codigo_sat}
               onChange={e => setForm(f => ({ ...f, codigo_sat: e.target.value }))}
               placeholder="Ej: 43211508"
-              className="w-full rounded-xl px-4 py-2.5 outline-none transition-all"
-              style={inputBase}
-            />
-          </div>
-
-          <div>
-            <label className={labelCls} style={labelStyle}>Código Proveedor</label>
-            <input
-              value={form.codigo_proveedor}
-              onChange={e => setForm(f => ({ ...f, codigo_proveedor: e.target.value }))}
-              placeholder="Ej: PROV-001"
               className="w-full rounded-xl px-4 py-2.5 outline-none transition-all"
               style={inputBase}
             />
