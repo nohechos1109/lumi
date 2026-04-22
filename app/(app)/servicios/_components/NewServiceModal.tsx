@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import CustomerSearchSelect from '@/components/ui/CustomerSearchSelect'
 import UnidadSearchSelect from '@/components/ui/UnidadSearchSelect'
 import SingleDateTimePicker from '@/components/ui/SingleDateTimePicker'
+import FormSelect from '@/components/ui/FormSelect'
 import { notifyRefresh, toast } from '@/lib/toast'
 
 interface Customer {
@@ -250,11 +251,14 @@ export default function NewServiceModal({ onClose, prefillOrderId, prefillCustom
                     </div>
                   </>
                 ) : (
-                  <select name="tipo_lugar" className="w-full text-sm rounded-xl px-4 py-2.5" style={inp}>
-                    <option value="">— Seleccionar —</option>
-                    <option value="calle">Calle</option>
-                    <option value="taller">Taller</option>
-                  </select>
+                  <FormSelect
+                    name="tipo_lugar"
+                    placeholder="— Seleccionar —"
+                    options={[
+                      { value: 'calle', label: 'Calle' },
+                      { value: 'taller', label: 'Taller' },
+                    ]}
+                  />
                 )}
               </div>
 

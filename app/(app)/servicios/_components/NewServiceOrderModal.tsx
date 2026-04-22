@@ -4,6 +4,7 @@ import { useState, useEffect, FormEvent } from 'react'
 import { useRouter } from 'next/navigation'
 import { notifyRefresh, toast } from '@/lib/toast'
 import DateTimeRangePicker from '@/components/ui/DateTimeRangePicker'
+import FormSelect from '@/components/ui/FormSelect'
 
 interface Props {
   onClose: () => void
@@ -118,11 +119,14 @@ export default function NewServiceOrderModal({ onClose, projectId }: Props) {
 
           <div>
             <label className={labelCls} style={labelStyle}>Tipo de lugar</label>
-            <select name="tipo_lugar" className="w-full text-sm rounded-xl px-4 py-2.5" style={inp}>
-              <option value="">— Seleccionar —</option>
-              <option value="calle">Calle</option>
-              <option value="taller">Taller</option>
-            </select>
+            <FormSelect
+              name="tipo_lugar"
+              placeholder="— Seleccionar —"
+              options={[
+                { value: 'calle', label: 'Calle' },
+                { value: 'taller', label: 'Taller' },
+              ]}
+            />
           </div>
 
           <div>
