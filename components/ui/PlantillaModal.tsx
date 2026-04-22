@@ -29,22 +29,26 @@ interface PlantillaDetail {
 }
 
 interface Props {
-  fxSnapshot: number
   onApply: (items: PlantillaItem[]) => void
   onClose: () => void
 }
 
-export default function PlantillaModal({ fxSnapshot, onApply, onClose }: Props) {
+export default function PlantillaModal({ onApply, onClose }: Props) {
   const [plantillas, setPlantillas] = useState<Plantilla[]>([])
   const [selected, setSelected] = useState<PlantillaDetail | null>(null)
   const [loading, setLoading] = useState(true)
   const [loadingDetail, setLoadingDetail] = useState(false)
+  const [fxRate, setFxRate] = useState(17.85)
 
   useEffect(() => {
-    fetch('/api/plantillas')
-      .then(r => r.json())
-      .then(data => { setPlantillas(data); setLoading(false) })
-      .catch(() => setLoading(false))
+    Promise.all([
+      fetch('/api/plantillas').then(r => r.json()),
+      fetch('/api/fx').then(r => r.json()),
+    ]).then(([plantillasData, fxData]) => {
+      setPlantillas(plantillasData)
+      setFxRate(Number(fxData.fx_mxn_per_usd) || 17.85)
+      setLoading(false)
+    }).catch(() => setLoading(false))
   }, [])
 
   async function selectPlantilla(id: string) {
@@ -59,7 +63,7 @@ export default function PlantillaModal({ fxSnapshot, onApply, onClose }: Props) 
   }
 
   function calcPrice(item: PlantillaItem) {
-    const fx = item.currency === 'USD' ? (Number(fxSnapshot) || 1) : 1
+    const fx = item.currency === 'USD' ? fxRate : 1
     const costBase = Number(item.cost_base) || 0
     const utilityFactor = Number(item.utility_factor) || 0
     const utilityFixed = Number(item.utility_fixed) || 0

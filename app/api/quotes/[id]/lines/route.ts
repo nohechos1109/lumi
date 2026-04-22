@@ -3,6 +3,7 @@ import { getSession, unauthorized, forbidden } from '@/lib/auth-guard'
 import { canViewOwnQuotesOnly, canRequestDiscounts } from '@/lib/permissions'
 import { getQuote, updateQuoteTotals } from '@/lib/queries/quotes'
 import { listLines, createLine } from '@/lib/queries/quote_lines'
+import { getSettings } from '@/lib/queries/settings'
 import pool from '@/lib/db'
 import { createDiscountApproval } from '@/lib/queries/discount-approvals'
 import { createNotification } from '@/lib/queries/notifications'
@@ -30,6 +31,25 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
   if (canViewOwnQuotesOnly(session.role) && quote.user_id !== session.userId) return forbidden()
 
   const body = await req.json()
+
+  // For product lines: fetch fresh product data + FX from DB, ignore client-sent prices
+  if (body.display_type === 'product' && body.product_id) {
+    const [{ rows: [product] }, settings] = await Promise.all([
+      pool.query(`SELECT cost_base, utility_fixed, utility_factor, currency FROM products WHERE id = $1`, [body.product_id]),
+      getSettings(),
+    ])
+    if (!product) return NextResponse.json({ error: 'Producto no encontrado' }, { status: 404 })
+    const fxRate = Number(settings?.fx_mxn_per_usd ?? 17.85)
+    const fx = product.currency === 'USD' ? fxRate : 1
+    const suggested = (Number(product.cost_base) * Number(product.utility_factor) + Number(product.utility_fixed)) * fx
+    body.currency_snapshot = product.currency
+    body.cost_base_snapshot = Number(product.cost_base)
+    body.utility_fixed_snapshot = Number(product.utility_fixed)
+    body.utility_factor_snapshot = Number(product.utility_factor)
+    body.fx_snapshot = fx
+    body.unit_price_mxn_suggested = suggested
+    body.unit_price_mxn_manual = null
+  }
 
   if (body.display_type === 'discount') {
     const { rows: [{ count }] } = await pool.query(

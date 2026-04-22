@@ -3,7 +3,6 @@ import { revalidatePath } from 'next/cache'
 import { getSession, unauthorized } from '@/lib/auth-guard'
 import { canViewOwnQuotesOnly, canAccessShowroomQuotes } from '@/lib/permissions'
 import { listQuotesByUser, listAllQuotes, createQuote } from '@/lib/queries/quotes'
-import { getSettings } from '@/lib/queries/settings'
 import { broadcastToAll } from '@/lib/sse'
 
 export async function GET() {
@@ -28,7 +27,6 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    const settings = await getSettings()
     const quote = await createQuote({
       customer_id: body.customer_id,
       payment_term_id: body.payment_term_id,
@@ -36,7 +34,6 @@ export async function POST(req: NextRequest) {
       expiration_date: body.expiration_date ?? (() => {
         const d = new Date(); d.setDate(d.getDate() + 1); return d.toISOString()
       })(),
-      fx_mxn_per_usd_snapshot: Number(settings?.fx_mxn_per_usd ?? 17.85),
       description: body.description,
       unit_count: body.unit_count ? Number(body.unit_count) : 1,
       terms: body.terms,

@@ -15,7 +15,6 @@ export interface Quote {
   payment_term_name?: string
   quotation_date: string
   expiration_date: string | null
-  fx_mxn_per_usd_snapshot: string
   description: string | null
   unit_count: number
   terms: string | null
@@ -109,7 +108,6 @@ export interface CreateQuoteInput {
   payment_term_id?: string
   quotation_date: string
   expiration_date?: string
-  fx_mxn_per_usd_snapshot: number
   description?: string
   unit_count?: number
   terms?: string
@@ -136,11 +134,11 @@ export async function createQuote(data: CreateQuoteInput): Promise<Quote> {
   const { rows } = await pool.query(
     `INSERT INTO quotes
        (number, state, customer_id, payment_term_id, quotation_date, expiration_date,
-        fx_mxn_per_usd_snapshot, description, unit_count, terms, user_id, project_id)
-     VALUES ($1,'draft',$2,$3,$4,$5,$6,$7,$8,$9,$10,$11)
+        description, unit_count, terms, user_id, project_id)
+     VALUES ($1,'draft',$2,$3,$4,$5,$6,$7,$8,$9,$10)
      RETURNING *`,
     [number, data.customer_id, data.payment_term_id ?? null, data.quotation_date,
-     data.expiration_date ?? null, data.fx_mxn_per_usd_snapshot,
+     data.expiration_date ?? null,
      data.description ?? null, data.unit_count ?? 1,
      data.terms ?? null, data.user_id, data.project_id ?? null]
   )
@@ -296,16 +294,15 @@ export async function duplicateQuote(
     }
     const number = `COT-${dateStr}-${String(nextSeq).padStart(4, '0')}`
 
-    // Insert new quote with current FX rate
+    // Insert new quote
     const { rows: [newQuote] } = await client.query(
       `INSERT INTO quotes
          (number, state, customer_id, payment_term_id, quotation_date, expiration_date,
-          fx_mxn_per_usd_snapshot, description, unit_count, terms, user_id, project_id)
-       VALUES ($1,'draft',$2,$3,$4,$5,$6,$7,$8,$9,$10,$11)
+          description, unit_count, terms, user_id, project_id)
+       VALUES ($1,'draft',$2,$3,$4,$5,$6,$7,$8,$9,$10)
        RETURNING *`,
       [number, customerId, original.payment_term_id ?? null,
        new Date().toISOString().slice(0, 10), null,
-       currentFx,
        original.description ?? null, original.unit_count,
        original.terms ?? null, userId, projectId ?? null]
     )

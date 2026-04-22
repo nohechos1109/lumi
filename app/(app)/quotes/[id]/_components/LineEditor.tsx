@@ -23,7 +23,6 @@ interface QuoteLine {
 
 interface Props {
   quoteId: string
-  fxSnapshot: number
   unitCount: number
   role?: string
   isLocked?: boolean
@@ -39,7 +38,7 @@ const inputStyle = {
   color: 'var(--c-ink)',
 }
 
-export default function LineEditor({ quoteId, fxSnapshot, unitCount, role, isLocked, quoteState, isShowroom, showMargin = true }: Props) {
+export default function LineEditor({ quoteId, unitCount, role, isLocked, quoteState, isShowroom, showMargin = true }: Props) {
   const router = useRouter()
   const [lines, setLines] = useState<QuoteLine[]>([])
   const [totals, setTotals] = useState({ untaxed: 0, tax: 0, total: 0, margin: 0, marginPct: 0 })
@@ -82,25 +81,16 @@ export default function LineEditor({ quoteId, fxSnapshot, unitCount, role, isLoc
   })
 
   // Block A: busy state + error handling on add operations
-  async function addProductLine(product: { id: string; name: string; description?: string | null; currency: string; cost_base: string; utility_fixed: string; utility_factor: string }) {
+  async function addProductLine(product: { id: string; name: string; description?: string | null }) {
     setBusy(true)
     try {
-      const costBase = Number(product.cost_base)
-      const utilityFixed = Number(product.utility_fixed)
-      const utilityFactor = Number(product.utility_factor)
-      const fx = product.currency === 'USD' ? fxSnapshot : 1
-      const suggested = (costBase * utilityFactor + utilityFixed) * fx
       const finalName = product.description ? `${product.name} - ${product.description}` : product.name
 
       const r = await fetch(`/api/quotes/${quoteId}/lines`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          display_type: 'product', product_id: product.id, name: finalName,
-          qty: 1, tax_id: null, currency_snapshot: product.currency,
-          cost_base_snapshot: costBase, utility_fixed_snapshot: utilityFixed,
-          utility_factor_snapshot: utilityFactor, fx_snapshot: fx,
-          unit_price_mxn_suggested: suggested,
+          display_type: 'product', product_id: product.id, name: finalName, qty: 1,
         }),
       })
       if (!r.ok) throw new Error()
@@ -175,12 +165,12 @@ export default function LineEditor({ quoteId, fxSnapshot, unitCount, role, isLoc
     }
   }
 
-  async function applyPlantilla(items: any[]) {
-    // Add fx_snapshot to each item
+  async function applyPlantilla(items: { product_id: string; name: string; description: string | null; qty: number; discount_percent: number }[]) {
     const payload = items.map(item => ({
-      ...item,
+      product_id: item.product_id,
       name: item.description ? `${item.name} - ${item.description}` : item.name,
-      fx_snapshot: item.currency === 'USD' ? fxSnapshot : 1
+      qty: item.qty,
+      discount_percent: item.discount_percent,
     }))
 
     setBusy(true)
@@ -724,7 +714,6 @@ export default function LineEditor({ quoteId, fxSnapshot, unitCount, role, isLoc
       )}
       {plantillaPrompt && (
         <PlantillaModal
-          fxSnapshot={fxSnapshot}
           onApply={applyPlantilla}
           onClose={() => setPlantillaPrompt(false)}
         />

@@ -178,7 +178,6 @@ export default async function QuotePage({ params }: { params: Promise<{ id: stri
 
       <LineEditor
         quoteId={id}
-        fxSnapshot={Number(quote.fx_mxn_per_usd_snapshot)}
         unitCount={quote.unit_count}
         role={session.role}
         isLocked={quote.state !== 'draft'}
