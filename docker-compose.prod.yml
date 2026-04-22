@@ -6,7 +6,7 @@ services:
     ports:
       - "3000:3000"
     env_file:
-      - .env.production
+      - .env
     volumes:
       - ./lumi_files:/app/uploads
     depends_on:
@@ -18,7 +18,7 @@ services:
     container_name: cotizador_db
     restart: always
     env_file:
-      - .env.production
+      - .env
     volumes:
       - lumi_data:/var/lib/postgresql/data
       - ./db/:/docker-entrypoint-initdb.d
