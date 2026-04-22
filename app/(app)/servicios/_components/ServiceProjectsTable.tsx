@@ -54,20 +54,20 @@ export default function ServiceProjectsTable({ projects }: { projects: ServicePr
       </div>
 
       <div
-        className="rounded-xl overflow-hidden shadow-sm"
-        style={{ border: '1px solid var(--c-rim)', background: 'var(--c-card)', boxShadow: '0 1px 3px rgba(15,23,42,0.04)' }}
+        className="rounded-xl overflow-hidden"
+        style={{ border: '1px solid var(--c-rim)', background: 'var(--c-card)' }}
       >
         <div className="overflow-x-auto">
           <table className="w-full text-sm min-w-[800px]">
             <thead>
               <tr style={{ background: 'var(--c-panel)', borderBottom: '1px solid var(--c-rim)' }}>
-                <th className="text-left px-5 py-4 text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--c-ghost)', letterSpacing: '0.1em' }}>Número</th>
-                <th className="text-left px-5 py-4 text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--c-ghost)', letterSpacing: '0.1em' }}>Nombre</th>
-                <th className="text-left px-5 py-4 text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--c-ghost)', letterSpacing: '0.1em' }}>Cliente</th>
-                <th className="text-left px-5 py-4 text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--c-ghost)', letterSpacing: '0.1em' }}>Estado</th>
-                <th className="text-right px-5 py-4 text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--c-ghost)', letterSpacing: '0.1em' }}>Órdenes</th>
-                <th className="text-right px-5 py-4 text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--c-ghost)', letterSpacing: '0.1em' }}>Servicios</th>
-                <th className="text-left px-5 py-4 text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--c-ghost)', letterSpacing: '0.1em' }}>Creado</th>
+                <th className="text-left px-4 py-3 text-xs font-medium" style={{ color: 'var(--c-ghost)', letterSpacing: '0.1em' }}>Número</th>
+                <th className="text-left px-4 py-3 text-xs font-medium" style={{ color: 'var(--c-ghost)', letterSpacing: '0.1em' }}>Nombre</th>
+                <th className="text-left px-4 py-3 text-xs font-medium" style={{ color: 'var(--c-ghost)', letterSpacing: '0.1em' }}>Cliente</th>
+                <th className="text-left px-4 py-3 text-xs font-medium" style={{ color: 'var(--c-ghost)', letterSpacing: '0.1em' }}>Estado</th>
+                <th className="text-right px-4 py-3 text-xs font-medium" style={{ color: 'var(--c-ghost)', letterSpacing: '0.1em' }}>Órdenes</th>
+                <th className="text-right px-4 py-3 text-xs font-medium" style={{ color: 'var(--c-ghost)', letterSpacing: '0.1em' }}>Servicios</th>
+                <th className="text-left px-4 py-3 text-xs font-medium" style={{ color: 'var(--c-ghost)', letterSpacing: '0.1em' }}>Creado</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-[var(--c-rim)]">
@@ -83,19 +83,19 @@ export default function ServiceProjectsTable({ projects }: { projects: ServicePr
                     onClick={() => router.push(`/servicios/projects/${p.id}`)}
                     onKeyDown={e => { if (e.key === 'Enter') router.push(`/servicios/projects/${p.id}`) }}
                   >
-                    <td className="px-5 py-4 font-mono text-xs font-bold" style={{ letterSpacing: '0.08em' }}>
+                    <td className="px-4 py-3 font-mono text-xs font-bold" style={{ letterSpacing: '0.08em' }}>
                       <Link href={`/servicios/projects/${p.id}`} className="hover:underline" style={{ color: 'var(--c-navy)' }} onClick={e => e.stopPropagation()}>
                         {p.number}
                       </Link>
                     </td>
-                    <td className="px-5 py-4" style={{ color: 'var(--c-ink)' }}>{p.name}</td>
-                    <td className="px-5 py-4" style={{ color: 'var(--c-dim)' }}>{p.customer_name ?? '—'}</td>
-                    <td className="px-5 py-4">
+                    <td className="px-4 py-3" style={{ color: 'var(--c-ink)' }}>{p.name}</td>
+                    <td className="px-4 py-3" style={{ color: 'var(--c-dim)' }}>{p.customer_name ?? '—'}</td>
+                    <td className="px-4 py-3">
                       <span className={s.cls}>{s.label}</span>
                     </td>
-                    <td className="px-5 py-4 text-right font-mono" style={{ color: 'var(--c-ink)' }}>{p.order_count ?? 0}</td>
-                    <td className="px-5 py-4 text-right font-mono" style={{ color: 'var(--c-ink)' }}>{p.service_count ?? 0}</td>
-                    <td className="px-5 py-4" style={{ color: 'var(--c-dim)' }} suppressHydrationWarning>
+                    <td className="px-4 py-3 text-right font-mono" style={{ color: 'var(--c-ink)' }}>{p.order_count ?? 0}</td>
+                    <td className="px-4 py-3 text-right font-mono" style={{ color: 'var(--c-ink)' }}>{p.service_count ?? 0}</td>
+                    <td className="px-4 py-3" style={{ color: 'var(--c-dim)' }} suppressHydrationWarning>
                       {new Date(p.created_at).toLocaleDateString('es-MX')}
                     </td>
                   </tr>

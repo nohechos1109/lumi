@@ -85,12 +85,10 @@ export default function WorkflowStepper({ steps, compact = false }: Props) {
 
   return (
     <div
-      className="rounded-xl mb-6"
+      className="mb-6"
       style={{
-        background: 'var(--c-card)',
-        border: '1px solid var(--c-rim)',
-        boxShadow: '0 1px 4px rgba(15,23,42,0.06)',
-        padding: compact ? '12px 16px' : '16px 20px',
+        borderBottom: '1px solid var(--c-rim)',
+        padding: compact ? '10px 0 14px' : '12px 0 16px',
       }}
     >
       <div className="flex items-center justify-between gap-0 overflow-x-auto" data-no-drag>

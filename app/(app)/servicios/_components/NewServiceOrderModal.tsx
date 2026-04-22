@@ -72,7 +72,7 @@ export default function NewServiceOrderModal({ onClose, projectId }: Props) {
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center p-4"
-      style={{ background: 'rgba(9,11,16,0.5)', backdropFilter: 'blur(2px)' }}
+      style={{ background: 'rgba(9,11,16,0.45)' }}
       onClick={onClose}
     >
       <div
@@ -90,8 +90,8 @@ export default function NewServiceOrderModal({ onClose, projectId }: Props) {
       >
         <div className="flex items-center justify-between px-6 py-5" style={{ borderBottom: '1px solid var(--c-rim)' }}>
           <div>
-            <h2 className="font-heading text-xl font-bold" style={{ color: 'var(--c-ink)', letterSpacing: '0.03em' }}>
-              Nueva Orden de Servicio
+            <h2 className="text-base font-semibold" style={{ color: 'var(--c-ink)' }}>
+              Nueva Orden
             </h2>
           </div>
           <button

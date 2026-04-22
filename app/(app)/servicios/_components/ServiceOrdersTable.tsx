@@ -61,20 +61,20 @@ export default function ServiceOrdersTable({ orders }: { orders: ServiceOrder[] 
       </div>
 
       <div
-        className="rounded-xl overflow-hidden shadow-sm"
-        style={{ border: '1px solid var(--c-rim)', background: 'var(--c-card)', boxShadow: '0 1px 3px rgba(15,23,42,0.04)' }}
+        className="rounded-xl overflow-hidden"
+        style={{ border: '1px solid var(--c-rim)', background: 'var(--c-card)' }}
       >
         <div className="overflow-x-auto">
           <table className="w-full text-sm min-w-[800px]">
             <thead>
               <tr style={{ background: 'var(--c-panel)', borderBottom: '1px solid var(--c-rim)' }}>
-                <th className="text-left px-5 py-4 text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--c-ghost)', letterSpacing: '0.1em' }}>Número</th>
-                <th className="text-left px-5 py-4 text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--c-ghost)', letterSpacing: '0.1em' }}>Planeación</th>
-                <th className="text-left px-5 py-4 text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--c-ghost)', letterSpacing: '0.1em' }}>Cliente</th>
-                <th className="text-left px-5 py-4 text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--c-ghost)', letterSpacing: '0.1em' }}>Motivo</th>
-                <th className="text-left px-5 py-4 text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--c-ghost)', letterSpacing: '0.1em' }}>Estado</th>
-                <th className="text-right px-5 py-4 text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--c-ghost)', letterSpacing: '0.1em' }}>Servicios</th>
-                <th className="text-left px-5 py-4 text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--c-ghost)', letterSpacing: '0.1em' }}>Creado</th>
+                <th className="text-left px-4 py-3 text-xs font-medium" style={{ color: 'var(--c-ghost)', letterSpacing: '0.1em' }}>Número</th>
+                <th className="text-left px-4 py-3 text-xs font-medium" style={{ color: 'var(--c-ghost)', letterSpacing: '0.1em' }}>Planeación</th>
+                <th className="text-left px-4 py-3 text-xs font-medium" style={{ color: 'var(--c-ghost)', letterSpacing: '0.1em' }}>Cliente</th>
+                <th className="text-left px-4 py-3 text-xs font-medium" style={{ color: 'var(--c-ghost)', letterSpacing: '0.1em' }}>Motivo</th>
+                <th className="text-left px-4 py-3 text-xs font-medium" style={{ color: 'var(--c-ghost)', letterSpacing: '0.1em' }}>Estado</th>
+                <th className="text-right px-4 py-3 text-xs font-medium" style={{ color: 'var(--c-ghost)', letterSpacing: '0.1em' }}>Servicios</th>
+                <th className="text-left px-4 py-3 text-xs font-medium" style={{ color: 'var(--c-ghost)', letterSpacing: '0.1em' }}>Creado</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-[var(--c-rim)]">
@@ -91,12 +91,12 @@ export default function ServiceOrdersTable({ orders }: { orders: ServiceOrder[] 
                     onClick={() => router.push(`/servicios/orders/${o.id}`)}
                     onKeyDown={e => { if (e.key === 'Enter') router.push(`/servicios/orders/${o.id}`) }}
                   >
-                    <td className="px-5 py-4 font-mono text-xs font-bold" style={{ letterSpacing: '0.08em' }}>
+                    <td className="px-4 py-3 font-mono text-xs font-bold" style={{ letterSpacing: '0.08em' }}>
                       <Link href={`/servicios/orders/${o.id}`} className="hover:underline" style={{ color: 'var(--c-navy)' }} onClick={e => e.stopPropagation()}>
                         {o.number}
                       </Link>
                     </td>
-                    <td className="px-5 py-4">
+                    <td className="px-4 py-3">
                       {o.project_number ? (
                         <Link href={`/servicios/projects/${o.service_project_id}`} className="hover:underline" style={{ color: 'var(--c-ink)' }} onClick={e => e.stopPropagation()}>
                           {o.project_name || o.project_number}
@@ -105,15 +105,15 @@ export default function ServiceOrdersTable({ orders }: { orders: ServiceOrder[] 
                         <span style={{ color: 'var(--c-dim)' }}>—</span>
                       )}
                     </td>
-                    <td className="px-5 py-4" style={{ color: 'var(--c-dim)' }}>{o.customer_name ?? '—'}</td>
-                    <td className="px-5 py-4" style={{ color: 'var(--c-dim)', maxWidth: 200 }}>
+                    <td className="px-4 py-3" style={{ color: 'var(--c-dim)' }}>{o.customer_name ?? '—'}</td>
+                    <td className="px-4 py-3" style={{ color: 'var(--c-dim)', maxWidth: 200 }}>
                       <span className="line-clamp-1">{o.motivo_del_servicio ?? '—'}</span>
                     </td>
-                    <td className="px-5 py-4">
+                    <td className="px-4 py-3">
                       <span className={s.cls}>{s.label}</span>
                     </td>
-                    <td className="px-5 py-4 text-right font-mono" style={{ color: 'var(--c-ink)' }}>{totalServices}</td>
-                    <td className="px-5 py-4" style={{ color: 'var(--c-dim)' }} suppressHydrationWarning>
+                    <td className="px-4 py-3 text-right font-mono" style={{ color: 'var(--c-ink)' }}>{totalServices}</td>
+                    <td className="px-4 py-3" style={{ color: 'var(--c-dim)' }} suppressHydrationWarning>
                       {new Date(o.created_at).toLocaleDateString('es-MX')}
                     </td>
                   </tr>

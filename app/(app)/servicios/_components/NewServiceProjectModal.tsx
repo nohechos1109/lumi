@@ -67,7 +67,7 @@ export default function NewServiceProjectModal({ onClose }: Props) {
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center p-4"
-      style={{ background: 'rgba(9,11,16,0.5)', backdropFilter: 'blur(2px)' }}
+      style={{ background: 'rgba(9,11,16,0.45)' }}
       onClick={onClose}
     >
       <div
@@ -85,12 +85,9 @@ export default function NewServiceProjectModal({ onClose }: Props) {
       >
         <div className="flex items-center justify-between px-6 py-5" style={{ borderBottom: '1px solid var(--c-rim)' }}>
           <div>
-            <h2 className="font-heading text-xl font-bold" style={{ color: 'var(--c-ink)', letterSpacing: '0.03em' }}>
-              Nueva Planeación de Servicios
+            <h2 className="text-base font-semibold" style={{ color: 'var(--c-ink)' }}>
+              Nueva Planeación
             </h2>
-            <p className="text-xs mt-0.5" style={{ color: 'var(--c-ghost)' }}>
-              Agrupa órdenes y servicios bajo una planeación.
-            </p>
           </div>
           <button
             type="button"

@@ -6,6 +6,7 @@ import { sessionOptions, SessionData } from '@/lib/session'
 import { canAccessServicios, canApproveServiceRequest, canViewOwnServicesOnly } from '@/lib/permissions'
 import { getServiceRequest } from '@/lib/queries/servicios'
 import RequestActions from './_components/RequestActions'
+import Breadcrumbs from '@/components/ui/Breadcrumbs'
 
 const STATUS_MAP: Record<string, { label: string; cls: string }> = {
   pending:   { label: 'Pendiente', cls: 'badge badge-in-progress' },
@@ -31,14 +32,11 @@ export default async function ServiceRequestDetailPage({ params }: { params: Pro
 
   return (
     <div>
-      <div className="mb-6">
-        <Link
-          href="/servicios"
-          className="inline-flex items-center text-xs font-bold uppercase tracking-widest transition-colors hover:opacity-75"
-          style={{ color: 'var(--c-ghost)' }}
-        >
-          ← Servicios
-        </Link>
+      <div className="mb-4">
+        <Breadcrumbs crumbs={[
+          { label: 'Servicios', href: '/servicios' },
+          { label: 'Solicitud' },
+        ]} />
       </div>
 
       <div className="flex flex-col gap-3 mb-8">

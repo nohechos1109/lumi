@@ -26,6 +26,7 @@ import QuoteLinks from './_components/QuoteLinks'
 import WorkflowStepper from '@/components/ui/WorkflowStepper'
 import { stepsFromProject } from '@/lib/servicios-workflow'
 import ActivityLog from '@/components/ActivityLog'
+import Breadcrumbs from '@/components/ui/Breadcrumbs'
 
 export default async function ServiceProjectDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
@@ -53,14 +54,11 @@ export default async function ServiceProjectDetailPage({ params }: { params: Pro
 
   return (
     <div>
-      <div className="mb-6 flex items-center justify-between gap-3 flex-wrap">
-        <Link
-          href="/servicios"
-          className="inline-flex items-center text-xs font-bold uppercase tracking-widest transition-colors hover:opacity-75"
-          style={{ color: 'var(--c-ghost)' }}
-        >
-          ← Volver a Servicios
-        </Link>
+      <div className="mb-4 flex items-start justify-between gap-3 flex-wrap">
+        <Breadcrumbs crumbs={[
+          { label: 'Servicios', href: '/servicios' },
+          { label: `${project.number} — ${project.name}` },
+        ]} />
         <ActivityLog entity="service_project" entityId={id} />
       </div>
 

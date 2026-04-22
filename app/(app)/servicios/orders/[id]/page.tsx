@@ -21,6 +21,7 @@ import WorkflowStepper from '@/components/ui/WorkflowStepper'
 import { stepsFromOrder } from '@/lib/servicios-workflow'
 import ActivityLog from '@/components/ActivityLog'
 import QuoteLinks from '../../projects/[id]/_components/QuoteLinks'
+import Breadcrumbs from '@/components/ui/Breadcrumbs'
 
 export default async function ServiceOrderDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
@@ -58,25 +59,12 @@ export default async function ServiceOrderDetailPage({ params }: { params: Promi
 
   return (
     <div>
-      <div className="mb-6 flex items-center justify-between gap-3 flex-wrap">
-        <div className="flex flex-col gap-1">
-          <Link
-            href="/servicios"
-            className="inline-flex items-center text-xs font-bold uppercase tracking-widest transition-colors hover:opacity-75"
-            style={{ color: 'var(--c-ghost)' }}
-          >
-            ← Servicios
-          </Link>
-          {order.project_number && (
-            <Link
-              href={`/servicios/projects/${order.service_project_id}`}
-              className="text-xs font-mono hover:underline"
-              style={{ color: 'var(--c-navy)' }}
-            >
-              {order.project_number} — {order.project_name}
-            </Link>
-          )}
-        </div>
+      <div className="mb-4 flex items-start justify-between gap-3 flex-wrap">
+        <Breadcrumbs crumbs={[
+          { label: 'Servicios', href: '/servicios' },
+          ...(order.project_number ? [{ label: order.project_number, href: `/servicios/projects/${order.service_project_id}` }] : []),
+          { label: order.number },
+        ]} />
         <ActivityLog entity="service_order" entityId={id} />
       </div>
 

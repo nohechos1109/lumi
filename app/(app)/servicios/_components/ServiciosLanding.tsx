@@ -59,8 +59,8 @@ export default function ServiciosLanding({ role, projects, orders, services, req
           {tab === 'projects' && perms.createProject && (
             <button
               onClick={() => setShowNewProject(true)}
-              className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all hover:opacity-90 active:scale-95"
-              style={{ background: 'var(--c-navy)', color: '#fff', boxShadow: '0 2px 8px rgba(37,99,235,0.25)', border: 'none', cursor: 'pointer' }}
+              className="flex items-center gap-2 px-3.5 py-2 rounded-lg text-sm font-medium transition-all hover:opacity-85 active:scale-95"
+              style={{ background: 'var(--c-navy)', color: '#fff', border: 'none', cursor: 'pointer' }}
             >
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
               Nueva Planeación
@@ -69,8 +69,8 @@ export default function ServiciosLanding({ role, projects, orders, services, req
           {tab === 'services' && perms.createService && (
             <button
               onClick={() => setShowNewService(true)}
-              className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all hover:opacity-90 active:scale-95"
-              style={{ background: 'var(--c-navy)', color: '#fff', boxShadow: '0 2px 8px rgba(37,99,235,0.25)', border: 'none', cursor: 'pointer' }}
+              className="flex items-center gap-2 px-3.5 py-2 rounded-lg text-sm font-medium transition-all hover:opacity-85 active:scale-95"
+              style={{ background: 'var(--c-navy)', color: '#fff', border: 'none', cursor: 'pointer' }}
             >
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
               Nuevo Servicio
@@ -79,8 +79,8 @@ export default function ServiciosLanding({ role, projects, orders, services, req
           {tab === 'requests' && perms.createRequest && (
             <button
               onClick={() => setShowNewRequest(true)}
-              className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all hover:opacity-90 active:scale-95"
-              style={{ background: 'var(--c-navy)', color: '#fff', boxShadow: '0 2px 8px rgba(37,99,235,0.25)', border: 'none', cursor: 'pointer' }}
+              className="flex items-center gap-2 px-3.5 py-2 rounded-lg text-sm font-medium transition-all hover:opacity-85 active:scale-95"
+              style={{ background: 'var(--c-navy)', color: '#fff', border: 'none', cursor: 'pointer' }}
             >
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
               Nueva Solicitud

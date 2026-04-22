@@ -46,20 +46,20 @@ export default function ServiceRequestsTable({ requests, canApprove }: { request
 
   return (
     <div
-      className="rounded-xl overflow-hidden shadow-sm"
-      style={{ border: '1px solid var(--c-rim)', background: 'var(--c-card)', boxShadow: '0 1px 3px rgba(15,23,42,0.04)' }}
+      className="rounded-xl overflow-hidden"
+      style={{ border: '1px solid var(--c-rim)', background: 'var(--c-card)' }}
     >
       <div className="overflow-x-auto">
         <table className="w-full text-sm min-w-[800px]">
           <thead>
             <tr style={{ background: 'var(--c-panel)', borderBottom: '1px solid var(--c-rim)' }}>
-              <th className="text-left px-5 py-4 text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--c-ghost)', letterSpacing: '0.1em' }}>Motivo</th>
-              <th className="text-left px-5 py-4 text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--c-ghost)', letterSpacing: '0.1em' }}>Cliente</th>
-              <th className="text-left px-5 py-4 text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--c-ghost)', letterSpacing: '0.1em' }}>Solicitante</th>
-              <th className="text-left px-5 py-4 text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--c-ghost)', letterSpacing: '0.1em' }}>Asignado</th>
-              <th className="text-left px-5 py-4 text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--c-ghost)', letterSpacing: '0.1em' }}>Estado</th>
-              <th className="text-left px-5 py-4 text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--c-ghost)', letterSpacing: '0.1em' }}>Creada</th>
-              <th className="text-right px-5 py-4 text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--c-ghost)', letterSpacing: '0.1em' }}>Acciones</th>
+              <th className="text-left px-4 py-3 text-xs font-medium" style={{ color: 'var(--c-ghost)', letterSpacing: '0.1em' }}>Motivo</th>
+              <th className="text-left px-4 py-3 text-xs font-medium" style={{ color: 'var(--c-ghost)', letterSpacing: '0.1em' }}>Cliente</th>
+              <th className="text-left px-4 py-3 text-xs font-medium" style={{ color: 'var(--c-ghost)', letterSpacing: '0.1em' }}>Solicitante</th>
+              <th className="text-left px-4 py-3 text-xs font-medium" style={{ color: 'var(--c-ghost)', letterSpacing: '0.1em' }}>Asignado</th>
+              <th className="text-left px-4 py-3 text-xs font-medium" style={{ color: 'var(--c-ghost)', letterSpacing: '0.1em' }}>Estado</th>
+              <th className="text-left px-4 py-3 text-xs font-medium" style={{ color: 'var(--c-ghost)', letterSpacing: '0.1em' }}>Creada</th>
+              <th className="text-right px-4 py-3 text-xs font-medium" style={{ color: 'var(--c-ghost)', letterSpacing: '0.1em' }}>Acciones</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-[var(--c-rim)]">
@@ -75,17 +75,17 @@ export default function ServiceRequestsTable({ requests, canApprove }: { request
                   onClick={() => router.push(`/servicios/requests/${r.id}`)}
                   onKeyDown={e => { if (e.key === 'Enter') router.push(`/servicios/requests/${r.id}`) }}
                 >
-                  <td className="px-5 py-4" style={{ color: 'var(--c-ink)' }}>{r.motivo}</td>
-                  <td className="px-5 py-4" style={{ color: 'var(--c-dim)' }}>{r.customer_name ?? '—'}</td>
-                  <td className="px-5 py-4" style={{ color: 'var(--c-dim)' }}>{r.requested_by_username ?? '—'}</td>
-                  <td className="px-5 py-4" style={{ color: 'var(--c-dim)' }}>{r.assigned_to_username ?? 'Sin asignar'}</td>
-                  <td className="px-5 py-4">
+                  <td className="px-4 py-3" style={{ color: 'var(--c-ink)' }}>{r.motivo}</td>
+                  <td className="px-4 py-3" style={{ color: 'var(--c-dim)' }}>{r.customer_name ?? '—'}</td>
+                  <td className="px-4 py-3" style={{ color: 'var(--c-dim)' }}>{r.requested_by_username ?? '—'}</td>
+                  <td className="px-4 py-3" style={{ color: 'var(--c-dim)' }}>{r.assigned_to_username ?? 'Sin asignar'}</td>
+                  <td className="px-4 py-3">
                     <span className={s.cls}>{s.label}</span>
                   </td>
-                  <td className="px-5 py-4" style={{ color: 'var(--c-dim)' }} suppressHydrationWarning>
+                  <td className="px-4 py-3" style={{ color: 'var(--c-dim)' }} suppressHydrationWarning>
                     {new Date(r.created_at).toLocaleDateString('es-MX')}
                   </td>
-                  <td className="px-5 py-4 text-right">
+                  <td className="px-4 py-3 text-right">
                     {canApprove && r.status === 'pending' ? (
                       <div className="flex gap-1.5 justify-end">
                         <button

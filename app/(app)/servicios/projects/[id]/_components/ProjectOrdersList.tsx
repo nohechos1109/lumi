@@ -28,7 +28,7 @@ export default function ProjectOrdersList({ projectId, orders, canCreate }: Prop
   return (
     <div className="mt-10">
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-lg font-bold" style={{ color: 'var(--c-ink)' }}>Órdenes de Servicio</h2>
+        <h2 className="text-sm font-medium" style={{ color: 'var(--c-dim)' }}>Órdenes de Servicio</h2>
         <div className="flex items-center gap-3">
           <span className="text-xs font-mono px-2 py-1 rounded" style={{ background: 'var(--c-panel)', color: 'var(--c-ghost)' }}>
             {orders.length}
@@ -36,8 +36,8 @@ export default function ProjectOrdersList({ projectId, orders, canCreate }: Prop
           {canCreate && (
             <button
               onClick={() => setShowModal(true)}
-              className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold text-white transition-all hover:opacity-90 active:scale-95"
-              style={{ background: 'var(--c-navy)', boxShadow: '0 2px 8px rgba(37,99,235,0.25)', border: 'none', cursor: 'pointer' }}
+              className="flex items-center gap-2 px-3.5 py-2 rounded-lg text-sm font-medium text-white transition-all hover:opacity-85 active:scale-95"
+              style={{ background: 'var(--c-navy)', border: 'none', cursor: 'pointer' }}
             >
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
               Nueva Orden
@@ -52,18 +52,18 @@ export default function ProjectOrdersList({ projectId, orders, canCreate }: Prop
         </div>
       ) : (
         <div
-          className="rounded-xl overflow-hidden shadow-sm"
-          style={{ border: '1px solid var(--c-rim)', background: 'var(--c-card)', boxShadow: '0 1px 3px rgba(15,23,42,0.04)' }}
+          className="rounded-xl overflow-hidden"
+          style={{ border: '1px solid var(--c-rim)', background: 'var(--c-card)' }}
         >
           <div className="overflow-x-auto">
             <table className="w-full text-sm min-w-[700px]">
               <thead>
                 <tr style={{ background: 'var(--c-panel)', borderBottom: '1px solid var(--c-rim)' }}>
-                  <th className="text-left px-5 py-4 text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--c-ghost)', letterSpacing: '0.1em' }}>Número</th>
-                  <th className="text-left px-5 py-4 text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--c-ghost)', letterSpacing: '0.1em' }}>Motivo</th>
-                  <th className="text-left px-5 py-4 text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--c-ghost)', letterSpacing: '0.1em' }}>Estado</th>
-                  <th className="text-right px-5 py-4 text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--c-ghost)', letterSpacing: '0.1em' }}>Servicios</th>
-                  <th className="text-left px-5 py-4 text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--c-ghost)', letterSpacing: '0.1em' }}>Agendada</th>
+                  <th className="text-left px-4 py-3 text-xs font-medium" style={{ color: 'var(--c-ghost)', letterSpacing: '0.1em' }}>Número</th>
+                  <th className="text-left px-4 py-3 text-xs font-medium" style={{ color: 'var(--c-ghost)', letterSpacing: '0.1em' }}>Motivo</th>
+                  <th className="text-left px-4 py-3 text-xs font-medium" style={{ color: 'var(--c-ghost)', letterSpacing: '0.1em' }}>Estado</th>
+                  <th className="text-right px-4 py-3 text-xs font-medium" style={{ color: 'var(--c-ghost)', letterSpacing: '0.1em' }}>Servicios</th>
+                  <th className="text-left px-4 py-3 text-xs font-medium" style={{ color: 'var(--c-ghost)', letterSpacing: '0.1em' }}>Agendada</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-[var(--c-rim)]">
@@ -77,15 +77,15 @@ export default function ProjectOrdersList({ projectId, orders, canCreate }: Prop
                       style={{ cursor: 'pointer' }}
                       onClick={() => router.push(`/servicios/orders/${o.id}`)}
                     >
-                      <td className="px-5 py-4 font-mono text-xs font-bold" style={{ letterSpacing: '0.08em', color: 'var(--c-navy)' }}>
+                      <td className="px-4 py-3 font-mono text-xs font-bold" style={{ letterSpacing: '0.08em', color: 'var(--c-navy)' }}>
                         {o.number}
                       </td>
-                      <td className="px-5 py-4" style={{ color: 'var(--c-ink)' }}>{o.motivo_del_servicio ?? '—'}</td>
-                      <td className="px-5 py-4">
+                      <td className="px-4 py-3" style={{ color: 'var(--c-ink)' }}>{o.motivo_del_servicio ?? '—'}</td>
+                      <td className="px-4 py-3">
                         <span className={e.cls}>{e.label}</span>
                       </td>
-                      <td className="px-5 py-4 text-right font-mono" style={{ color: 'var(--c-ink)' }}>{total}</td>
-                      <td className="px-5 py-4" style={{ color: 'var(--c-dim)' }} suppressHydrationWarning>
+                      <td className="px-4 py-3 text-right font-mono" style={{ color: 'var(--c-ink)' }}>{total}</td>
+                      <td className="px-4 py-3" style={{ color: 'var(--c-dim)' }} suppressHydrationWarning>
                         {o.fecha_hora_agendada ? new Date(o.fecha_hora_agendada).toLocaleDateString('es-MX') : '—'}
                       </td>
                     </tr>

@@ -76,21 +76,21 @@ export default function ServicesTable({ services, role, canPromote }: { services
       </div>
 
       <div
-        className="rounded-xl overflow-hidden shadow-sm"
-        style={{ border: '1px solid var(--c-rim)', background: 'var(--c-card)', boxShadow: '0 1px 3px rgba(15,23,42,0.04)' }}
+        className="rounded-xl overflow-hidden"
+        style={{ border: '1px solid var(--c-rim)', background: 'var(--c-card)' }}
       >
         <div className="overflow-x-auto">
           <table className="w-full text-sm min-w-[800px]">
             <thead>
               <tr style={{ background: 'var(--c-panel)', borderBottom: '1px solid var(--c-rim)' }}>
-                <th className="text-left px-5 py-4 text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--c-ghost)', letterSpacing: '0.1em' }}>Número</th>
-                <th className="text-left px-5 py-4 text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--c-ghost)', letterSpacing: '0.1em' }}>Motivo</th>
-                <th className="text-left px-5 py-4 text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--c-ghost)', letterSpacing: '0.1em' }}>Unidad</th>
-                <th className="text-left px-5 py-4 text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--c-ghost)', letterSpacing: '0.1em' }}>Cliente</th>
-                <th className="text-left px-5 py-4 text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--c-ghost)', letterSpacing: '0.1em' }}>Lugar</th>
-                <th className="text-left px-5 py-4 text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--c-ghost)', letterSpacing: '0.1em' }}>Orden</th>
-                <th className="text-left px-5 py-4 text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--c-ghost)', letterSpacing: '0.1em' }}>Estado</th>
-                <th className="text-left px-5 py-4 text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--c-ghost)', letterSpacing: '0.1em' }}>Agendado</th>
+                <th className="text-left px-4 py-3 text-xs font-medium" style={{ color: 'var(--c-ghost)', letterSpacing: '0.1em' }}>Número</th>
+                <th className="text-left px-4 py-3 text-xs font-medium" style={{ color: 'var(--c-ghost)', letterSpacing: '0.1em' }}>Motivo</th>
+                <th className="text-left px-4 py-3 text-xs font-medium" style={{ color: 'var(--c-ghost)', letterSpacing: '0.1em' }}>Unidad</th>
+                <th className="text-left px-4 py-3 text-xs font-medium" style={{ color: 'var(--c-ghost)', letterSpacing: '0.1em' }}>Cliente</th>
+                <th className="text-left px-4 py-3 text-xs font-medium" style={{ color: 'var(--c-ghost)', letterSpacing: '0.1em' }}>Lugar</th>
+                <th className="text-left px-4 py-3 text-xs font-medium" style={{ color: 'var(--c-ghost)', letterSpacing: '0.1em' }}>Orden</th>
+                <th className="text-left px-4 py-3 text-xs font-medium" style={{ color: 'var(--c-ghost)', letterSpacing: '0.1em' }}>Estado</th>
+                <th className="text-left px-4 py-3 text-xs font-medium" style={{ color: 'var(--c-ghost)', letterSpacing: '0.1em' }}>Agendado</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-[var(--c-rim)]">
@@ -106,20 +106,20 @@ export default function ServicesTable({ services, role, canPromote }: { services
                     onClick={() => router.push(`/servicios/services/${s.id}`)}
                     onKeyDown={e => { if (e.key === 'Enter') router.push(`/servicios/services/${s.id}`) }}
                   >
-                    <td className="px-5 py-4 font-mono text-xs font-bold" style={{ letterSpacing: '0.08em' }}>
+                    <td className="px-4 py-3 font-mono text-xs font-bold" style={{ letterSpacing: '0.08em' }}>
                       <Link href={`/servicios/services/${s.id}`} className="hover:underline" style={{ color: 'var(--c-navy)' }} onClick={e => e.stopPropagation()}>
                         {s.number}
                       </Link>
                     </td>
-                    <td className="px-5 py-4" style={{ color: 'var(--c-ink)' }}>{s.motivo_visita ?? '—'}</td>
-                    <td className="px-5 py-4" style={{ color: 'var(--c-dim)' }}>{s.unidad_name ?? '—'}</td>
-                    <td className="px-5 py-4" style={{ color: 'var(--c-dim)' }}>{s.customer_name ?? '—'}</td>
-                    <td className="px-5 py-4">
+                    <td className="px-4 py-3" style={{ color: 'var(--c-ink)' }}>{s.motivo_visita ?? '—'}</td>
+                    <td className="px-4 py-3" style={{ color: 'var(--c-dim)' }}>{s.unidad_name ?? '—'}</td>
+                    <td className="px-4 py-3" style={{ color: 'var(--c-dim)' }}>{s.customer_name ?? '—'}</td>
+                    <td className="px-4 py-3">
                       {s.tipo_lugar ? (
                         <span className={`badge badge-${s.tipo_lugar}`}>{s.tipo_lugar === 'taller' ? 'Taller' : 'Calle'}</span>
                       ) : <span style={{ color: 'var(--c-ghost)' }}>—</span>}
                     </td>
-                    <td className="px-5 py-4">
+                    <td className="px-4 py-3">
                       {s.order_number ? (
                         <Link href={`/servicios/orders/${s.service_order_id}`} className="font-mono text-xs hover:underline" style={{ color: 'var(--c-navy)' }} onClick={e => e.stopPropagation()}>
                           {s.order_number}
@@ -141,10 +141,10 @@ export default function ServicesTable({ services, role, canPromote }: { services
                         <span className="text-xs italic" style={{ color: 'var(--c-ghost)' }}>walk-in</span>
                       )}
                     </td>
-                    <td className="px-5 py-4">
+                    <td className="px-4 py-3">
                       <span className={st.cls}>{st.label}</span>
                     </td>
-                    <td className="px-5 py-4" style={{ color: 'var(--c-dim)' }} suppressHydrationWarning>
+                    <td className="px-4 py-3" style={{ color: 'var(--c-dim)' }} suppressHydrationWarning>
                       {s.fecha_hora_agendada ? new Date(s.fecha_hora_agendada).toLocaleDateString('es-MX') : '—'}
                     </td>
                   </tr>

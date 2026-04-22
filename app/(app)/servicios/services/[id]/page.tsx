@@ -29,6 +29,7 @@ import FileUploader from './_components/FileUploader'
 import MaterialsEditor from './_components/MaterialsEditor'
 import WorkflowStepper from '@/components/ui/WorkflowStepper'
 import { stepsFromService } from '@/lib/servicios-workflow'
+import Breadcrumbs from '@/components/ui/Breadcrumbs'
 
 export default async function ServiceDetailPage({
   params,
@@ -98,26 +99,12 @@ export default async function ServiceDetailPage({
 
   return (
     <div>
-      <div className="mb-6 flex items-center justify-between gap-3 flex-wrap">
-        <div className="flex flex-col gap-1">
-          <Link
-            href="/servicios"
-            className="inline-flex items-center gap-1.5 text-xs font-semibold transition-opacity hover:opacity-70"
-            style={{ color: 'var(--c-ghost)' }}
-          >
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
-            Servicios
-          </Link>
-          {service.order_number && service.service_order_id && (
-            <Link
-              href={`/servicios/orders/${service.service_order_id}`}
-              className="text-xs font-mono hover:underline"
-              style={{ color: 'var(--c-navy)' }}
-            >
-              Orden {service.order_number}
-            </Link>
-          )}
-        </div>
+      <div className="mb-4 flex items-start justify-between gap-3 flex-wrap">
+        <Breadcrumbs crumbs={[
+          { label: 'Servicios', href: '/servicios' },
+          ...(service.order_number && service.service_order_id ? [{ label: `Orden ${service.order_number}`, href: `/servicios/orders/${service.service_order_id}` }] : []),
+          { label: service.number },
+        ]} />
         <ActivityLog entity="service" entityId={id} />
       </div>
 
