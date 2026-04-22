@@ -36,7 +36,12 @@ export default function ProductFormModal({ product, onClose, onSave, onDelete }:
   const [uploading, setUploading] = useState(false)
   const [dragOver, setDragOver] = useState(false)
   const [saveError, setSaveError] = useState<string | null>(null)
+  const [fxRate, setFxRate] = useState(1)
   const imageErrorFired = useRef(false)
+
+  useEffect(() => {
+    fetch('/api/fx').then(r => r.json()).then(d => setFxRate(Number(d.fx_mxn_per_usd) || 1))
+  }, [])
 
   useEffect(() => { imageErrorFired.current = false }, [product?.id])
 
@@ -96,7 +101,8 @@ export default function ProductFormModal({ product, onClose, onSave, onDelete }:
   const calcBase = Number(form.cost_base) || 0
   const calcFactor = Number(form.utility_factor) || 0
   const calcFixed = Number(form.utility_fixed) || 0
-  const calcSinIva = calcBase * calcFactor + calcFixed
+  const calcSinIvaRaw = calcBase * calcFactor + calcFixed
+  const calcSinIva = form.currency === 'USD' ? calcSinIvaRaw * fxRate : calcSinIvaRaw
   const calcConIva = calcSinIva * 1.16
 
   const labelCls = 'block text-xs font-bold uppercase tracking-widest mb-1.5'
@@ -278,7 +284,7 @@ export default function ProductFormModal({ product, onClose, onSave, onDelete }:
 
           {/* Precio público calculado (solo lectura) */}
           <div className="md:col-span-2 lg:col-span-4">
-            <label className={labelCls} style={labelStyle}>Precio Público <span style={{ color: 'var(--c-ghost)', fontWeight: 400, textTransform: 'none', letterSpacing: 0 }}>(calculado automáticamente · {form.currency})</span></label>
+            <label className={labelCls} style={labelStyle}>Precio Público <span style={{ color: 'var(--c-ghost)', fontWeight: 400, textTransform: 'none', letterSpacing: 0 }}>(calculado automáticamente · MXN{form.currency === 'USD' ? ` · TC $${fxRate.toFixed(2)}` : ''})</span></label>
             <div className="grid grid-cols-2 gap-3">
               <div>
                 <p className="text-[10px] mb-1" style={{ color: 'var(--c-ghost)' }}>Sin IVA</p>
