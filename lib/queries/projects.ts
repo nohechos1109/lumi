@@ -169,6 +169,10 @@ export async function deleteProjectCascade(id: string): Promise<void> {
       await client.query('DELETE FROM payments WHERE sale_id IN (SELECT id FROM sales WHERE project_id = $1)', [id])
     }
     if (hasSales) {
+      const hasAnticipo = (await client.query(`SELECT to_regclass('public.sale_anticipos') AS t`)).rows[0].t !== null
+      if (hasAnticipo) {
+        await client.query('DELETE FROM sale_anticipos WHERE sale_id IN (SELECT id FROM sales WHERE project_id = $1)', [id])
+      }
       await client.query('DELETE FROM sales WHERE project_id = $1', [id])
     }
     await client.query('DELETE FROM quote_lines WHERE quote_id IN (SELECT id FROM quotes WHERE project_id = $1)', [id])
