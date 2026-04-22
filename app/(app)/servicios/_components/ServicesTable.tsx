@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from 'react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import type { Service } from '@/lib/queries/servicios'
 import PromoteServiceModal from './PromoteServiceModal'
 import FilterSelect from '@/components/ui/FilterSelect'
@@ -19,6 +20,7 @@ const ESTATUS_MAP: Record<string, { label: string; cls: string }> = {
 
 export default function ServicesTable({ services, role, canPromote }: { services: Service[]; role: string; canPromote: boolean }) {
   void role
+  const router = useRouter()
   const [promoteTarget, setPromoteTarget] = useState<Service | null>(null)
   const [search, setSearch] = useState('')
   const [statusFilter, setStatusFilter] = useState('')
@@ -95,9 +97,17 @@ export default function ServicesTable({ services, role, canPromote }: { services
               {filtered.map(s => {
                 const st = ESTATUS_MAP[s.estatus] ?? ESTATUS_MAP.pendiente
                 return (
-                  <tr key={s.id} className="tr-hover transition-colors">
+                  <tr
+                    key={s.id}
+                    tabIndex={0}
+                    role="link"
+                    className="tr-hover transition-colors"
+                    style={{ cursor: 'pointer' }}
+                    onClick={() => router.push(`/servicios/services/${s.id}`)}
+                    onKeyDown={e => { if (e.key === 'Enter') router.push(`/servicios/services/${s.id}`) }}
+                  >
                     <td className="px-5 py-4 font-mono text-xs font-bold" style={{ letterSpacing: '0.08em' }}>
-                      <Link href={`/servicios/services/${s.id}`} className="hover:underline" style={{ color: 'var(--c-navy)' }}>
+                      <Link href={`/servicios/services/${s.id}`} className="hover:underline" style={{ color: 'var(--c-navy)' }} onClick={e => e.stopPropagation()}>
                         {s.number}
                       </Link>
                     </td>
@@ -111,12 +121,12 @@ export default function ServicesTable({ services, role, canPromote }: { services
                     </td>
                     <td className="px-5 py-4">
                       {s.order_number ? (
-                        <Link href={`/servicios/orders/${s.service_order_id}`} className="font-mono text-xs hover:underline" style={{ color: 'var(--c-navy)' }}>
+                        <Link href={`/servicios/orders/${s.service_order_id}`} className="font-mono text-xs hover:underline" style={{ color: 'var(--c-navy)' }} onClick={e => e.stopPropagation()}>
                           {s.order_number}
                         </Link>
                       ) : canPromote ? (
                         <button
-                          onClick={() => setPromoteTarget(s)}
+                          onClick={e => { e.stopPropagation(); setPromoteTarget(s) }}
                           className="text-xs font-semibold px-2.5 py-1 rounded-full transition-opacity hover:opacity-80"
                           style={{
                             background: 'var(--c-gold-bg)',

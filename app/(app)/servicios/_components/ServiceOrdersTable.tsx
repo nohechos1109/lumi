@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from 'react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import type { ServiceOrder } from '@/lib/queries/servicios'
 import FilterSelect from '@/components/ui/FilterSelect'
 
@@ -16,6 +17,7 @@ const ESTATUS_MAP: Record<string, { label: string; cls: string }> = {
 }
 
 export default function ServiceOrdersTable({ orders }: { orders: ServiceOrder[] }) {
+  const router = useRouter()
   const [search, setSearch] = useState('')
   const [statusFilter, setStatusFilter] = useState('')
 
@@ -80,15 +82,23 @@ export default function ServiceOrdersTable({ orders }: { orders: ServiceOrder[] 
                 const s = ESTATUS_MAP[o.estatus] ?? ESTATUS_MAP.pendiente
                 const totalServices = (o.servicios_pendientes ?? 0) + (o.servicios_en_curso ?? 0) + (o.servicios_atendidos ?? 0)
                 return (
-                  <tr key={o.id} className="tr-hover transition-colors">
+                  <tr
+                    key={o.id}
+                    tabIndex={0}
+                    role="link"
+                    className="tr-hover transition-colors"
+                    style={{ cursor: 'pointer' }}
+                    onClick={() => router.push(`/servicios/orders/${o.id}`)}
+                    onKeyDown={e => { if (e.key === 'Enter') router.push(`/servicios/orders/${o.id}`) }}
+                  >
                     <td className="px-5 py-4 font-mono text-xs font-bold" style={{ letterSpacing: '0.08em' }}>
-                      <Link href={`/servicios/orders/${o.id}`} className="hover:underline" style={{ color: 'var(--c-navy)' }}>
+                      <Link href={`/servicios/orders/${o.id}`} className="hover:underline" style={{ color: 'var(--c-navy)' }} onClick={e => e.stopPropagation()}>
                         {o.number}
                       </Link>
                     </td>
                     <td className="px-5 py-4">
                       {o.project_number ? (
-                        <Link href={`/servicios/projects/${o.service_project_id}`} className="hover:underline" style={{ color: 'var(--c-ink)' }}>
+                        <Link href={`/servicios/projects/${o.service_project_id}`} className="hover:underline" style={{ color: 'var(--c-ink)' }} onClick={e => e.stopPropagation()}>
                           {o.project_name || o.project_number}
                         </Link>
                       ) : (

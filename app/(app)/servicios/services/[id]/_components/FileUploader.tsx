@@ -21,27 +21,61 @@ interface Props {
   label?: string
 }
 
+interface UploadError {
+  name: string
+  reason: string
+}
+
+const UPLOAD_TIMEOUT_MS = 120_000
+
 export default function FileUploader({ entityType, entityId, files, canEdit, label }: Props) {
   const router = useRouter()
   const inputRef = useRef<HTMLInputElement>(null)
   const [uploading, setUploading] = useState(false)
+  const [errors, setErrors] = useState<UploadError[]>([])
+
+  async function uploadOne(file: File): Promise<UploadError | null> {
+    const form = new FormData()
+    form.append('file', file)
+    form.append('entity_type', entityType)
+    form.append('entity_id', entityId)
+
+    const controller = new AbortController()
+    const timeoutId = setTimeout(() => controller.abort(), UPLOAD_TIMEOUT_MS)
+
+    try {
+      const res = await fetch('/api/files', {
+        method: 'POST',
+        body: form,
+        signal: controller.signal,
+      })
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}))
+        return { name: file.name, reason: err.error || `HTTP ${res.status}` }
+      }
+      return null
+    } catch (e) {
+      const isAbort = e instanceof DOMException && e.name === 'AbortError'
+      return {
+        name: file.name,
+        reason: isAbort
+          ? `Tiempo agotado (${UPLOAD_TIMEOUT_MS / 1000}s). Revisa conexión o tamaño.`
+          : e instanceof Error ? e.message : 'Error desconocido',
+      }
+    } finally {
+      clearTimeout(timeoutId)
+    }
+  }
 
   async function handleUpload(fileList: FileList | null) {
     if (!fileList || fileList.length === 0) return
     setUploading(true)
     try {
-      for (const file of Array.from(fileList)) {
-        const form = new FormData()
-        form.append('file', file)
-        form.append('entity_type', entityType)
-        form.append('entity_id', entityId)
-        const res = await fetch('/api/files', { method: 'POST', body: form })
-        if (!res.ok) {
-          const err = await res.json().catch(() => ({}))
-          toast(err.error || `Error subiendo ${file.name}`, 'error')
-        }
-      }
-      toast('Archivos subidos', 'success')
+      const results = await Promise.all(Array.from(fileList).map(uploadOne))
+      const collected = results.filter((r): r is UploadError => r !== null)
+      const successCount = results.length - collected.length
+      if (successCount > 0) toast(`${successCount} archivo(s) subido(s)`, 'success')
+      if (collected.length > 0) setErrors(collected)
       router.refresh()
     } finally {
       setUploading(false)
@@ -150,6 +184,53 @@ export default function FileUploader({ entityType, entityId, files, canEdit, lab
               </div>
             )
           })}
+        </div>
+      )}
+
+      {errors.length > 0 && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4"
+          style={{ background: 'rgba(9,11,16,0.5)', backdropFilter: 'blur(2px)' }}
+          onClick={() => setErrors([])}
+        >
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="upload-err-title"
+            className="w-full max-w-md rounded-2xl p-6 flex flex-col gap-4"
+            style={{
+              background: 'var(--c-card)',
+              border: '1px solid var(--c-rim)',
+              boxShadow: '0 8px 32px rgba(9,11,16,0.24)',
+            }}
+            onClick={e => e.stopPropagation()}
+          >
+            <h3 id="upload-err-title" className="text-sm font-bold uppercase tracking-widest" style={{ color: 'var(--c-rose)' }}>
+              Error al subir archivos
+            </h3>
+            <ul className="flex flex-col gap-2 max-h-64 overflow-y-auto">
+              {errors.map((e, i) => (
+                <li
+                  key={`${e.name}-${i}`}
+                  className="rounded-lg p-3 text-xs"
+                  style={{ background: 'var(--c-panel)', border: '1px solid var(--c-rim)' }}
+                >
+                  <p className="font-semibold truncate" style={{ color: 'var(--c-ink)' }}>{e.name}</p>
+                  <p style={{ color: 'var(--c-dim)' }}>{e.reason}</p>
+                </li>
+              ))}
+            </ul>
+            <div className="flex justify-end">
+              <button
+                autoFocus
+                onClick={() => setErrors([])}
+                className="px-4 py-2 rounded-lg text-sm font-semibold transition-opacity hover:opacity-85"
+                style={{ background: 'var(--c-navy)', color: '#FFFFFF' }}
+              >
+                Cerrar
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>

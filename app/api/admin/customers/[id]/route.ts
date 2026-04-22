@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getSession, unauthorized, forbidden } from '@/lib/auth-guard'
-import { updateContact, deleteContact } from '@/lib/queries/customers'
+import { updateContact, deleteContact, deleteContactCascade, getContactDependencies } from '@/lib/queries/customers'
 
 export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const session = await getSession()
@@ -13,11 +13,25 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
   return NextResponse.json({ ok: true })
 }
 
-export async function DELETE(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+export async function DELETE(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const session = await getSession()
   if (!session) return unauthorized()
   if (session.role !== 'admin') return forbidden()
   const { id } = await params
+  const force = req.nextUrl.searchParams.get('force') === 'true'
+
+  if (force) {
+    await deleteContactCascade(id)
+    return NextResponse.json({ ok: true, cascade: true })
+  }
+
+  const deps = await getContactDependencies(id)
+  if (deps.total_hard > 0) {
+    return NextResponse.json(
+      { error: 'Tiene registros asociados', dependencies: deps },
+      { status: 409 }
+    )
+  }
   await deleteContact(id)
   return NextResponse.json({ ok: true })
 }

@@ -2,11 +2,12 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getSession, unauthorized, forbidden } from '@/lib/auth-guard'
 import { listContacts, createContact } from '@/lib/queries/customers'
 
-export async function GET() {
+export async function GET(req: NextRequest) {
   const session = await getSession()
   if (!session) return unauthorized()
   if (session.role !== 'admin') return forbidden()
-  return NextResponse.json(await listContacts())
+  const includeArchived = req.nextUrl.searchParams.get('includeArchived') === 'true'
+  return NextResponse.json(await listContacts({ includeArchived }))
 }
 
 export async function POST(req: NextRequest) {
