@@ -68,7 +68,7 @@ export default async function ServiceOrderDetailPage({ params }: { params: Promi
         <ActivityLog entity="service_order" entityId={id} />
       </div>
 
-      <div className="grid gap-8 grid-cols-1 lg:grid-cols-[minmax(0,1fr)_240px]" style={{ alignItems: 'start' }}>
+      <div className="grid gap-8 grid-cols-1 lg:grid-cols-[minmax(0,1fr)_240px] items-start">
         <div>
           <OrderEditor
             order={order}

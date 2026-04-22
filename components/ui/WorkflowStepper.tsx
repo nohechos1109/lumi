@@ -112,7 +112,8 @@ export default function WorkflowStepper({ steps, compact = false, orientation = 
           const isLast = i === steps.length - 1
           const { dotBg, dotBorder, dotColor, labelColor } = stepColors(step.state)
           const isClickable = step.state === 'done' && !!step.href
-          const lineFilled = step.state === 'done'
+          const next = steps[i + 1]
+          const lineFilled = step.state === 'done' && !!next && (next.state === 'done' || next.state === 'current')
           const dotStyle: React.CSSProperties = {
             width: 28, height: 28, borderRadius: '50%',
             border: `2px solid ${dotBorder}`,

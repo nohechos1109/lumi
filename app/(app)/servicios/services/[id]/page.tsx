@@ -108,7 +108,7 @@ export default async function ServiceDetailPage({
         <ActivityLog entity="service" entityId={id} />
       </div>
 
-      <div className="grid gap-8 grid-cols-1 lg:grid-cols-[minmax(0,1fr)_240px]" style={{ alignItems: 'start' }}>
+      <div className="grid gap-8 grid-cols-1 lg:grid-cols-[minmax(0,1fr)_240px] items-start">
         <div>
           <ServiceEditor
             service={service}
