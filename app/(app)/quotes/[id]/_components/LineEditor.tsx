@@ -422,43 +422,62 @@ export default function LineEditor({ quoteId, unitCount, role, isLocked, quoteSt
             onClick={() => setTextPrompt('section')}
             type="button"
             disabled={busy}
-            className="btn-dashed text-xs px-3 py-1.5 rounded-lg border border-dashed disabled:opacity-40"
+            className="btn-dashed inline-flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg border border-dashed disabled:opacity-40"
           >
-            + Sección
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+              <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+            </svg>
+            Sección
           </button>
           <button
             onClick={() => setTextPrompt('note')}
             type="button"
             disabled={busy}
-            className="btn-dashed text-xs px-3 py-1.5 rounded-lg border border-dashed disabled:opacity-40"
+            className="btn-dashed inline-flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg border border-dashed disabled:opacity-40"
           >
-            + Nota
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+              <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+            </svg>
+            Nota
           </button>
           <button
             onClick={() => setDiscountPrompt(true)}
             type="button"
             disabled={busy}
-            className="btn-dashed-amber text-xs px-3 py-1.5 rounded-lg border border-dashed disabled:opacity-40"
+            className="btn-dashed-amber inline-flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg border border-dashed disabled:opacity-40"
           >
-            − Descuento Global
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+              <line x1="5" y1="12" x2="19" y2="12"/>
+            </svg>
+            Descuento Global
           </button>
           {quoteState === 'draft' && (
             <button
               onClick={() => setClearConfirm(true)}
               type="button"
               disabled={busy}
-              className="btn-dashed-rose text-xs px-3 py-1.5 rounded-lg border border-dashed disabled:opacity-40"
+              className="btn-dashed-rose inline-flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg border border-dashed disabled:opacity-40"
             >
-              🗑 Limpiar
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <polyline points="3 6 5 6 21 6"/>
+                <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
+                <path d="M10 11v6"/>
+                <path d="M14 11v6"/>
+                <path d="M9 6V4a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"/>
+              </svg>
+              Limpiar
             </button>
           )}
           <button
             onClick={() => setPlantillaPrompt(true)}
             type="button"
             disabled={busy}
-            className="btn-dashed text-xs px-3 py-1.5 rounded-lg border border-dashed disabled:opacity-40 ml-auto"
+            className="btn-dashed inline-flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg border border-dashed disabled:opacity-40 ml-auto"
           >
-            ⚡ Plantillas
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+            </svg>
+            Plantillas
           </button>
 
           {/* Block A: saving indicator */}
@@ -538,7 +557,13 @@ export default function LineEditor({ quoteId, unitCount, role, isLocked, quoteSt
                       <tr key={line.id} draggable={!isLocked} onDragStart={() => handleDragStart(index)} onDragEnter={() => handleDragEnter(index)} onDragEnd={handleDragEnd} onDragOver={e => e.preventDefault()}
                         className={isLocked ? '' : 'cursor-grab active:cursor-grabbing'} style={{ ...rowStyle, background: 'var(--c-panel)' }}>
                         <td className="px-2 py-2.5 text-center text-xs" style={{ color: 'var(--c-ghost)' }}>
-                          {isLocked ? '' : '⠿'}
+                          {!isLocked && (
+                            <svg className="inline-block" width="10" height="16" viewBox="0 0 10 16" fill="currentColor" aria-hidden="true">
+                              <circle cx="3" cy="3" r="1"/><circle cx="7" cy="3" r="1"/>
+                              <circle cx="3" cy="8" r="1"/><circle cx="7" cy="8" r="1"/>
+                              <circle cx="3" cy="13" r="1"/><circle cx="7" cy="13" r="1"/>
+                            </svg>
+                          )}
                         </td>
                         <td colSpan={role === 'admin' ? 6 : 5} className="px-4 py-1.5">
                           {!isLocked && editingLine?.id === line.id ? (
@@ -566,7 +591,11 @@ export default function LineEditor({ quoteId, unitCount, role, isLocked, quoteSt
                         </td>
                         {!isLocked && (
                           <td className="px-2 py-2.5 text-right">
-                            <button aria-label="Eliminar sección" onClick={() => setDeleteConfirmLine(line)} className="btn-delete text-xs">✕</button>
+                            <button aria-label="Eliminar sección" onClick={() => setDeleteConfirmLine(line)} className="btn-delete p-1.5 rounded-lg inline-flex items-center justify-center transition-colors" onMouseEnter={e => { e.currentTarget.style.background = 'var(--c-rose-bg)' }} onMouseLeave={e => { e.currentTarget.style.background = 'transparent' }}>
+                              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+                                <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+                              </svg>
+                            </button>
                           </td>
                         )}
                       </tr>
@@ -578,7 +607,13 @@ export default function LineEditor({ quoteId, unitCount, role, isLocked, quoteSt
                       <tr key={line.id} draggable={!isLocked} onDragStart={() => handleDragStart(index)} onDragEnter={() => handleDragEnter(index)} onDragEnd={handleDragEnd} onDragOver={e => e.preventDefault()}
                         className={isLocked ? '' : 'cursor-grab active:cursor-grabbing'} style={rowStyle}>
                         <td className="px-2 py-2.5 text-center text-xs" style={{ color: 'var(--c-ghost)' }}>
-                          {isLocked ? '' : '⠿'}
+                          {!isLocked && (
+                            <svg className="inline-block" width="10" height="16" viewBox="0 0 10 16" fill="currentColor" aria-hidden="true">
+                              <circle cx="3" cy="3" r="1"/><circle cx="7" cy="3" r="1"/>
+                              <circle cx="3" cy="8" r="1"/><circle cx="7" cy="8" r="1"/>
+                              <circle cx="3" cy="13" r="1"/><circle cx="7" cy="13" r="1"/>
+                            </svg>
+                          )}
                         </td>
                         <td colSpan={role === 'admin' ? 6 : 5} className="px-4 py-1.5">
                           {!isLocked && editingLine?.id === line.id ? (
@@ -606,7 +641,11 @@ export default function LineEditor({ quoteId, unitCount, role, isLocked, quoteSt
                         </td>
                         {!isLocked && (
                           <td className="px-2 py-2.5 text-right">
-                            <button aria-label="Eliminar nota" onClick={() => setDeleteConfirmLine(line)} className="btn-delete text-xs">✕</button>
+                            <button aria-label="Eliminar nota" onClick={() => setDeleteConfirmLine(line)} className="btn-delete p-1.5 rounded-lg inline-flex items-center justify-center transition-colors" onMouseEnter={e => { e.currentTarget.style.background = 'var(--c-rose-bg)' }} onMouseLeave={e => { e.currentTarget.style.background = 'transparent' }}>
+                              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+                                <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+                              </svg>
+                            </button>
                           </td>
                         )}
                       </tr>
@@ -618,7 +657,13 @@ export default function LineEditor({ quoteId, unitCount, role, isLocked, quoteSt
                       <tr key={line.id} draggable={line.display_type !== 'discount' && !isLocked} onDragStart={() => handleDragStart(index)} onDragEnter={() => handleDragEnter(index)} onDragEnd={handleDragEnd} onDragOver={e => e.preventDefault()}
                         className={line.display_type !== 'discount' && !isLocked ? 'cursor-grab active:cursor-grabbing' : ''} style={{ ...rowStyle, background: 'var(--c-panel)', opacity: line.discount_approval_status === 'pending' ? 0.6 : 1 }}>
                         <td className="px-2 py-3.5 text-center text-xs" style={{ color: 'var(--c-ghost)' }}>
-                          {isLocked ? '' : '⠿'}
+                          {!isLocked && (
+                            <svg className="inline-block" width="10" height="16" viewBox="0 0 10 16" fill="currentColor" aria-hidden="true">
+                              <circle cx="3" cy="3" r="1"/><circle cx="7" cy="3" r="1"/>
+                              <circle cx="3" cy="8" r="1"/><circle cx="7" cy="8" r="1"/>
+                              <circle cx="3" cy="13" r="1"/><circle cx="7" cy="13" r="1"/>
+                            </svg>
+                          )}
                         </td>
                         <td className="px-4 py-3.5 text-sm font-medium" style={{ color: 'var(--c-amber)' }}>
                           {line.name}
@@ -666,7 +711,11 @@ export default function LineEditor({ quoteId, unitCount, role, isLocked, quoteSt
                         {role === 'admin' && <td className="px-4 py-3.5"></td>}
                         {!isLocked && (
                           <td className="px-2 py-3.5 text-right">
-                            <button aria-label="Eliminar descuento" onClick={() => setDeleteConfirmLine(line)} className="btn-delete text-xs">✕</button>
+                            <button aria-label="Eliminar descuento" onClick={() => setDeleteConfirmLine(line)} className="btn-delete p-1.5 rounded-lg inline-flex items-center justify-center transition-colors" onMouseEnter={e => { e.currentTarget.style.background = 'var(--c-rose-bg)' }} onMouseLeave={e => { e.currentTarget.style.background = 'transparent' }}>
+                              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+                                <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+                              </svg>
+                            </button>
                           </td>
                         )}
                       </tr>
@@ -691,7 +740,13 @@ export default function LineEditor({ quoteId, unitCount, role, isLocked, quoteSt
                     <tr key={line.id} draggable={!isLocked} onDragStart={() => handleDragStart(index)} onDragEnter={() => handleDragEnter(index)} onDragEnd={handleDragEnd} onDragOver={e => e.preventDefault()}
                       className={isLocked ? '' : 'tr-hover cursor-grab active:cursor-grabbing transition-colors'} style={rowStyle}>
                       <td className="px-2 py-3 text-center text-xs" style={{ color: 'var(--c-ghost)' }}>
-                        {isLocked ? '' : '⠿'}
+                        {!isLocked && (
+                            <svg className="inline-block" width="10" height="16" viewBox="0 0 10 16" fill="currentColor" aria-hidden="true">
+                              <circle cx="3" cy="3" r="1"/><circle cx="7" cy="3" r="1"/>
+                              <circle cx="3" cy="8" r="1"/><circle cx="7" cy="8" r="1"/>
+                              <circle cx="3" cy="13" r="1"/><circle cx="7" cy="13" r="1"/>
+                            </svg>
+                          )}
                       </td>
                       <td className="px-4 py-3" style={{ color: 'var(--c-ink)' }}>
                         {line.name}
@@ -822,7 +877,11 @@ export default function LineEditor({ quoteId, unitCount, role, isLocked, quoteSt
                       )}
                       {!isLocked && (
                         <td className="px-2 py-3 text-right">
-                          <button aria-label="Eliminar línea" onClick={() => setDeleteConfirmLine(line)} className="btn-delete text-xs">✕</button>
+                          <button aria-label="Eliminar línea" onClick={() => setDeleteConfirmLine(line)} className="btn-delete p-1.5 rounded-lg inline-flex items-center justify-center transition-colors" onMouseEnter={e => { e.currentTarget.style.background = 'var(--c-rose-bg)' }} onMouseLeave={e => { e.currentTarget.style.background = 'transparent' }}>
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+                              <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+                            </svg>
+                          </button>
                         </td>
                       )}
                     </tr>
