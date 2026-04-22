@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { revalidatePath } from 'next/cache'
 import { getSession, unauthorized, forbidden } from '@/lib/auth-guard'
 import { canViewOwnQuotesOnly } from '@/lib/permissions'
-import { getQuote, updateQuoteFields, deleteQuote } from '@/lib/queries/quotes'
+import { getQuote, updateQuoteFields, deleteQuote, deleteQuoteCascade } from '@/lib/queries/quotes'
 
 export async function GET(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const session = await getSession()
@@ -17,7 +17,7 @@ export async function GET(_req: NextRequest, { params }: { params: Promise<{ id:
   return NextResponse.json(quote)
 }
 
-export async function DELETE(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+export async function DELETE(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const session = await getSession()
   if (!session) return unauthorized()
 
@@ -26,10 +26,15 @@ export async function DELETE(_req: NextRequest, { params }: { params: Promise<{ 
   if (!quote) return NextResponse.json({ error: 'No encontrado' }, { status: 404 })
   if (canViewOwnQuotesOnly(session.role) && quote.user_id !== session.userId) return forbidden()
 
-  await deleteQuote(id)
+  const force = req.nextUrl.searchParams.get('force') === 'true'
+  if (force) {
+    await deleteQuoteCascade(id)
+  } else {
+    await deleteQuote(id)
+  }
   revalidatePath('/quotes')
   revalidatePath('/projects')
-  return NextResponse.json({ ok: true })
+  return NextResponse.json({ ok: true, cascade: force })
 }
 
 export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {

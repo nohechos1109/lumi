@@ -168,6 +168,63 @@ export async function deleteQuote(id: string): Promise<void> {
   await pool.query('DELETE FROM quotes WHERE id = $1', [id])
 }
 
+export interface QuoteDependencies {
+  sales: number
+  sale_amount_total: number
+  payments: number
+  renewed_children: number
+  total_hard: number
+}
+
+export async function getQuoteDependencies(id: string): Promise<QuoteDependencies> {
+  const { rows } = await pool.query(
+    `SELECT
+       (SELECT COUNT(*)::int FROM sales WHERE quote_id = $1) AS sales,
+       COALESCE((SELECT SUM(amount_total) FROM sales WHERE quote_id = $1), 0)::float AS sale_amount_total,
+       (SELECT COUNT(*)::int FROM payments p JOIN sales s ON s.id = p.sale_id WHERE s.quote_id = $1) AS payments,
+       (SELECT COUNT(*)::int FROM quotes WHERE renewed_from_id = $1) AS renewed_children`,
+    [id]
+  )
+  const r = rows[0]
+  // total_hard = registros que se perderán en un borrado en cascada.
+  // renewed_children no cuenta: FK SET NULL conserva los hijos.
+  const total_hard = r.sales + r.payments
+  return { ...r, total_hard }
+}
+
+// Borra la cotización y TODO su historial financiero (ventas, pagos, notas).
+// Orden obligatorio por FKs sin CASCADE desde sales/sale_notes:
+//   1. payment_applications (FK a sale_notes sin CASCADE)
+//   2. payments (FK a sales sin CASCADE)
+//   3. sales (CASCADE a sale_notes → sale_note_lines, psi, sale_anticipos)
+//   4. quote_lines (CASCADE desde quotes en schema nuevo, pero explícito por compat)
+//   5. quotes (CASCADE a discount_approvals)
+export async function deleteQuoteCascade(id: string): Promise<void> {
+  const client = await pool.connect()
+  try {
+    await client.query('BEGIN')
+    await client.query(
+      `DELETE FROM payment_applications
+       WHERE sale_note_id IN (
+         SELECT sn.id FROM sale_notes sn
+         JOIN sales s ON s.id = sn.sale_id
+         WHERE s.quote_id = $1
+       )`,
+      [id]
+    )
+    await client.query('DELETE FROM payments WHERE sale_id IN (SELECT id FROM sales WHERE quote_id = $1)', [id])
+    await client.query('DELETE FROM sales WHERE quote_id = $1', [id])
+    await client.query('DELETE FROM quote_lines WHERE quote_id = $1', [id])
+    await client.query('DELETE FROM quotes WHERE id = $1', [id])
+    await client.query('COMMIT')
+  } catch (err) {
+    await client.query('ROLLBACK')
+    throw err
+  } finally {
+    client.release()
+  }
+}
+
 export async function duplicateQuote(
   quoteId: string,
   userId: string,

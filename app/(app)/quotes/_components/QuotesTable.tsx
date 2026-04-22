@@ -3,9 +3,9 @@
 import { useState, useMemo, useCallback, useRef } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import ConfirmModal from '@/components/ui/ConfirmModal'
+import QuoteDeleteModal, { type QuoteDeps } from '@/components/ui/QuoteDeleteModal'
 import FilterSelect from '@/components/ui/FilterSelect'
-import { notifyRefresh } from '@/lib/toast'
+import { toast, notifyRefresh } from '@/lib/toast'
 import { canViewOwnQuotesOnly } from '@/lib/permissions'
 import { useSSE } from '@/hooks/useSSE'
 
@@ -66,6 +66,8 @@ export default function QuotesTable({
 }) {
   const router = useRouter()
   const [deleteId, setDeleteId] = useState<string | null>(null)
+  const [deleteDeps, setDeleteDeps] = useState<QuoteDeps | null>(null)
+  const [deleteLoading, setDeleteLoading] = useState(false)
 
   const refreshTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const handleQuotesUpdated = useCallback(() => {
@@ -101,11 +103,45 @@ export default function QuotesTable({
     }
   }
 
-  async function handleDelete(id: string) {
-    await fetch(`/api/quotes/${id}`, { method: 'DELETE' })
-    notifyRefresh()
+  async function openDelete(id: string) {
+    setDeleteId(id)
+    setDeleteDeps(null)
+    setDeleteLoading(true)
+    try {
+      const res = await fetch(`/api/quotes/${id}/dependencies`)
+      if (!res.ok) throw new Error('deps fetch failed')
+      setDeleteDeps(await res.json())
+    } catch {
+      toast('No se pudieron obtener las dependencias', 'error')
+      setDeleteId(null)
+    } finally {
+      setDeleteLoading(false)
+    }
+  }
+
+  function closeDelete() {
     setDeleteId(null)
+    setDeleteDeps(null)
+  }
+
+  async function runDelete(force: boolean) {
+    if (!deleteId) return
+    const url = `/api/quotes/${deleteId}${force ? '?force=true' : ''}`
+    const res = await fetch(url, { method: 'DELETE' })
+    if (res.ok) {
+      toast(force ? 'Cotización y ventas eliminadas' : 'Cotización eliminada')
+      notifyRefresh()
+    } else {
+      toast('No se pudo eliminar', 'error')
+    }
+    closeDelete()
     router.refresh()
+  }
+
+  async function doArchiveFromModal() {
+    if (!deleteId) return
+    await handleArchive(deleteId, true)
+    closeDelete()
   }
 
   // Pre-calculate unique values for filters (memoized to avoid re-creating Date objects on every render)
@@ -416,7 +452,7 @@ export default function QuotesTable({
                         {!isSales && (
                           <button
                             aria-label="Eliminar cotización"
-                            onClick={(e) => { e.stopPropagation(); setDeleteId(q.id) }}
+                            onClick={(e) => { e.stopPropagation(); openDelete(q.id) }}
                             className="btn-delete p-1.5 rounded-lg transition-colors"
                             onMouseEnter={(e) => { e.currentTarget.style.background = 'var(--c-rose-bg)' }}
                             onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent' }}
@@ -444,11 +480,14 @@ export default function QuotesTable({
       </div>
 
       {deleteId && deleteTarget && (
-        <ConfirmModal
-          message={`¿Eliminar la cotización ${deleteTarget.number}? Se borrarán todas sus líneas. Esta acción no se puede deshacer.`}
-          confirmLabel="Eliminar"
-          onConfirm={() => handleDelete(deleteId)}
-          onCancel={() => setDeleteId(null)}
+        <QuoteDeleteModal
+          quoteNumber={deleteTarget.number}
+          deps={deleteDeps}
+          loading={deleteLoading}
+          onCancel={closeDelete}
+          onArchive={deleteTarget.archived_at ? undefined : doArchiveFromModal}
+          onDeletePreserve={() => runDelete(false)}
+          onDeleteCascade={() => runDelete(true)}
         />
       )}
     </>
