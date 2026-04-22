@@ -113,7 +113,6 @@ export default function ProductFormModal({ product, onClose, onSave, onDelete }:
     <div
       className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto"
       style={{ background: 'rgba(9,11,16,0.6)', backdropFilter: 'blur(4px)' }}
-      onClick={onClose}
     >
       <div
         className="w-full max-w-2xl lg:max-w-5xl rounded-2xl p-6 md:p-8 flex flex-col gap-6"

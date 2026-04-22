@@ -53,7 +53,6 @@ export default function AbonoModal({ noteId, remision, balance, onClose, onCreat
     <div
       className="fixed inset-0 z-50 flex items-center justify-center p-4"
       style={{ background: 'rgba(0,0,0,0.45)' }}
-      onClick={onClose}
     >
       <div
         className="w-full max-w-sm rounded-2xl p-6"

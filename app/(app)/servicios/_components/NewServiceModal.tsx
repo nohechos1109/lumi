@@ -115,7 +115,6 @@ export default function NewServiceModal({ onClose, prefillOrderId, prefillCustom
     <div
       className="fixed inset-0 z-50 flex items-center justify-center p-4"
       style={{ background: 'rgba(9,11,16,0.45)' }}
-      onClick={onClose}
     >
       <div
         role="dialog"

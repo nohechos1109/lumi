@@ -46,7 +46,6 @@ export default function EditFieldsModal({
     <div
       className="fixed inset-0 z-50 flex items-center justify-center p-4"
       style={{ background: 'rgba(0,0,0,0.45)' }}
-      onClick={onClose}
     >
       <div
         className="w-full max-w-md rounded-2xl p-6"

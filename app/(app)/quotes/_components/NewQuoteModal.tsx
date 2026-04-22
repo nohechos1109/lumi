@@ -93,7 +93,6 @@ export default function NewQuoteModal({ onClose, projectId, customerId, customer
     <div
       className="fixed inset-0 z-50 flex items-center justify-center p-4"
       style={{ background: 'rgba(9,11,16,0.5)', backdropFilter: 'blur(2px)' }}
-      onClick={onClose}
     >
       <div
         role="dialog"
