@@ -177,11 +177,24 @@ export interface QuoteDependencies {
 }
 
 export async function getQuoteDependencies(id: string): Promise<QuoteDependencies> {
+  const hasPayments = (await pool.query(`SELECT to_regclass('public.payments') AS t`)).rows[0].t !== null
+  const hasSales    = (await pool.query(`SELECT to_regclass('public.sales')    AS t`)).rows[0].t !== null
+
+  const salesQuery = hasSales
+    ? `(SELECT COUNT(*)::int FROM sales WHERE quote_id = $1)`
+    : `0::int`
+  const saleAmountQuery = hasSales
+    ? `COALESCE((SELECT SUM(amount_total) FROM sales WHERE quote_id = $1), 0)::float`
+    : `0::float`
+  const paymentsQuery = hasPayments && hasSales
+    ? `(SELECT COUNT(*)::int FROM payments p JOIN sales s ON s.id = p.sale_id WHERE s.quote_id = $1)`
+    : `0::int`
+
   const { rows } = await pool.query(
     `SELECT
-       (SELECT COUNT(*)::int FROM sales WHERE quote_id = $1) AS sales,
-       COALESCE((SELECT SUM(amount_total) FROM sales WHERE quote_id = $1), 0)::float AS sale_amount_total,
-       (SELECT COUNT(*)::int FROM payments p JOIN sales s ON s.id = p.sale_id WHERE s.quote_id = $1) AS payments,
+       ${salesQuery}      AS sales,
+       ${saleAmountQuery} AS sale_amount_total,
+       ${paymentsQuery}   AS payments,
        (SELECT COUNT(*)::int FROM quotes WHERE renewed_from_id = $1) AS renewed_children`,
     [id]
   )
@@ -203,17 +216,27 @@ export async function deleteQuoteCascade(id: string): Promise<void> {
   const client = await pool.connect()
   try {
     await client.query('BEGIN')
-    await client.query(
-      `DELETE FROM payment_applications
-       WHERE sale_note_id IN (
-         SELECT sn.id FROM sale_notes sn
-         JOIN sales s ON s.id = sn.sale_id
-         WHERE s.quote_id = $1
-       )`,
-      [id]
-    )
-    await client.query('DELETE FROM payments WHERE sale_id IN (SELECT id FROM sales WHERE quote_id = $1)', [id])
-    await client.query('DELETE FROM sales WHERE quote_id = $1', [id])
+    const hasPaymentApps = (await client.query(`SELECT to_regclass('public.payment_applications') AS t`)).rows[0].t !== null
+    const hasPayments    = (await client.query(`SELECT to_regclass('public.payments')             AS t`)).rows[0].t !== null
+    const hasSales       = (await client.query(`SELECT to_regclass('public.sales')                AS t`)).rows[0].t !== null
+
+    if (hasPaymentApps) {
+      await client.query(
+        `DELETE FROM payment_applications
+         WHERE sale_note_id IN (
+           SELECT sn.id FROM sale_notes sn
+           JOIN sales s ON s.id = sn.sale_id
+           WHERE s.quote_id = $1
+         )`,
+        [id]
+      )
+    }
+    if (hasPayments) {
+      await client.query('DELETE FROM payments WHERE sale_id IN (SELECT id FROM sales WHERE quote_id = $1)', [id])
+    }
+    if (hasSales) {
+      await client.query('DELETE FROM sales WHERE quote_id = $1', [id])
+    }
     await client.query('DELETE FROM quote_lines WHERE quote_id = $1', [id])
     await client.query('DELETE FROM quotes WHERE id = $1', [id])
     await client.query('COMMIT')
