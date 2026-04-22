@@ -17,7 +17,7 @@ import pool from '@/lib/db'
 import OrderEditor from './_components/OrderEditor'
 import OrderServicesList from './_components/OrderServicesList'
 import FileUploader from '../../services/[id]/_components/FileUploader'
-import WorkflowStepper from '@/components/ui/WorkflowStepper'
+import StepperSidebar from '@/components/ui/StepperSidebar'
 import { stepsFromOrder } from '@/lib/servicios-workflow'
 import ActivityLog from '@/components/ActivityLog'
 import QuoteLinks from '../../projects/[id]/_components/QuoteLinks'
@@ -68,38 +68,44 @@ export default async function ServiceOrderDetailPage({ params }: { params: Promi
         <ActivityLog entity="service_order" entityId={id} />
       </div>
 
-      <WorkflowStepper steps={stepsFromOrder(order)} />
+      <div className="grid gap-8 grid-cols-1 lg:grid-cols-[minmax(0,1fr)_240px]" style={{ alignItems: 'start' }}>
+        <div>
+          <OrderEditor
+            order={order}
+            services={services}
+            canManage={canManage}
+            canCancel={canCancel}
+            orderTechs={orderTechs}
+            allTecnicos={allTecnicos}
+          />
 
-      <OrderEditor
-        order={order}
-        services={services}
-        canManage={canManage}
-        canCancel={canCancel}
-        orderTechs={orderTechs}
-        allTecnicos={allTecnicos}
-      />
+          {quoteId && (
+            <QuoteLinks quoteId={quoteId} showQuoteLink={canViewQuoteLink(session.role)} />
+          )}
 
-      {quoteId && (
-        <QuoteLinks quoteId={quoteId} showQuoteLink={canViewQuoteLink(session.role)} />
-      )}
+          <OrderServicesList
+            orderId={id}
+            customerId={order.customer_id ?? null}
+            tipoLugar={order.tipo_lugar ?? null}
+            motivo={order.motivo_del_servicio ?? null}
+            services={services}
+            canCreate={canAddServices}
+            role={session.role}
+          />
 
-      <OrderServicesList
-        orderId={id}
-        customerId={order.customer_id ?? null}
-        tipoLugar={order.tipo_lugar ?? null}
-        motivo={order.motivo_del_servicio ?? null}
-        services={services}
-        canCreate={canAddServices}
-        role={session.role}
-      />
+          <FileUploader
+            entityType="service_order"
+            entityId={id}
+            files={files}
+            canEdit={canManage}
+            label="Referencias"
+          />
+        </div>
 
-      <FileUploader
-        entityType="service_order"
-        entityId={id}
-        files={files}
-        canEdit={canManage}
-        label="Referencias"
-      />
+        <div className="order-first lg:order-last lg:sticky" style={{ top: 80 }}>
+          <StepperSidebar steps={stepsFromOrder(order)} />
+        </div>
+      </div>
     </div>
   )
 }

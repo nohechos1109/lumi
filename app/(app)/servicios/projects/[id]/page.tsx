@@ -23,7 +23,7 @@ import ProjectHeader from './_components/ProjectHeader'
 import ProjectOrdersList from './_components/ProjectOrdersList'
 import ProgressPanel from './_components/ProgressPanel'
 import QuoteLinks from './_components/QuoteLinks'
-import WorkflowStepper from '@/components/ui/WorkflowStepper'
+import StepperSidebar from '@/components/ui/StepperSidebar'
 import { stepsFromProject } from '@/lib/servicios-workflow'
 import ActivityLog from '@/components/ActivityLog'
 import Breadcrumbs from '@/components/ui/Breadcrumbs'
@@ -62,31 +62,37 @@ export default async function ServiceProjectDetailPage({ params }: { params: Pro
         <ActivityLog entity="service_project" entityId={id} />
       </div>
 
-      <ProjectHeader
-        project={project}
-        canClose={canClose}
-        canCloseAction={canCloseServiceProject(role)}
-        canReopen={canReopenServiceProject(role)}
-      />
+      <div className="grid gap-8 grid-cols-1 lg:grid-cols-[minmax(0,1fr)_240px]" style={{ alignItems: 'start' }}>
+        <div>
+          <ProjectHeader
+            project={project}
+            canClose={canClose}
+            canCloseAction={canCloseServiceProject(role)}
+            canReopen={canReopenServiceProject(role)}
+          />
 
-      <WorkflowStepper steps={stepsFromProject(project)} />
+          {quoteId && (
+            <QuoteLinks quoteId={quoteId} showQuoteLink={canViewQuoteLink(role)} />
+          )}
 
-      {quoteId && (
-        <QuoteLinks quoteId={quoteId} showQuoteLink={canViewQuoteLink(role)} />
-      )}
+          <ProjectOrdersList
+            projectId={id}
+            orders={orders}
+            canCreate={allowNewOrder}
+          />
 
-      <ProjectOrdersList
-        projectId={id}
-        orders={orders}
-        canCreate={allowNewOrder}
-      />
+          {canViewProgressEntries(role) && (
+            <ProgressPanel
+              projectId={id}
+              canAdd={canAddProgressEntry(role)}
+            />
+          )}
+        </div>
 
-      {canViewProgressEntries(role) && (
-        <ProgressPanel
-          projectId={id}
-          canAdd={canAddProgressEntry(role)}
-        />
-      )}
+        <div className="order-first lg:order-last lg:sticky" style={{ top: 80 }}>
+          <StepperSidebar steps={stepsFromProject(project)} />
+        </div>
+      </div>
     </div>
   )
 }

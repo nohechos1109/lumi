@@ -27,7 +27,7 @@ import { getSettings } from '@/lib/queries/settings'
 import ServiceEditor from './_components/ServiceEditor'
 import FileUploader from './_components/FileUploader'
 import MaterialsEditor from './_components/MaterialsEditor'
-import WorkflowStepper from '@/components/ui/WorkflowStepper'
+import StepperSidebar from '@/components/ui/StepperSidebar'
 import { stepsFromService } from '@/lib/servicios-workflow'
 import Breadcrumbs from '@/components/ui/Breadcrumbs'
 
@@ -108,44 +108,50 @@ export default async function ServiceDetailPage({
         <ActivityLog entity="service" entityId={id} />
       </div>
 
-      <WorkflowStepper steps={stepsFromService(service)} />
+      <div className="grid gap-8 grid-cols-1 lg:grid-cols-[minmax(0,1fr)_240px]" style={{ alignItems: 'start' }}>
+        <div>
+          <ServiceEditor
+            service={service}
+            canEdit={canEdit}
+            canEditReport={canEditReport}
+            canChangeStatus={canChangeStatus}
+            canManageTech={canManageTech}
+            canApprove={canApproveServiceRequest(session.role)}
+            hasMaterials={materials.length > 0}
+            tecnicos={tecnicos}
+            isAdmin={session.role === 'admin' || session.role === 'manager'}
+            parentOrderEstatus={parentOrder?.estatus ?? null}
+            unidad={unidad}
+            isNewUnit={isNewUnit}
+          />
 
-      <ServiceEditor
-        service={service}
-        canEdit={canEdit}
-        canEditReport={canEditReport}
-        canChangeStatus={canChangeStatus}
-        canManageTech={canManageTech}
-        canApprove={canApproveServiceRequest(session.role)}
-        hasMaterials={materials.length > 0}
-        tecnicos={tecnicos}
-        isAdmin={session.role === 'admin' || session.role === 'manager'}
-        parentOrderEstatus={parentOrder?.estatus ?? null}
-        unidad={unidad}
-        isNewUnit={isNewUnit}
-      />
+          {quoteId && (
+            <QuoteLinks quoteId={quoteId} showQuoteLink={canViewQuoteLink(session.role)} />
+          )}
 
-      {quoteId && (
-        <QuoteLinks quoteId={quoteId} showQuoteLink={canViewQuoteLink(session.role)} />
-      )}
+          <MaterialsEditor
+            serviceId={id}
+            materials={materials}
+            canEdit={canEdit}
+            saleId={saleId}
+            saleQuoteLines={saleQuoteLines}
+            globalDiscount={globalDiscount}
+            fxRate={fxRate}
+            unidadId={service.unidad_id ?? null}
+          />
 
-      <MaterialsEditor
-        serviceId={id}
-        materials={materials}
-        canEdit={canEdit}
-        saleId={saleId}
-        saleQuoteLines={saleQuoteLines}
-        globalDiscount={globalDiscount}
-        fxRate={fxRate}
-        unidadId={service.unidad_id ?? null}
-      />
+          <FileUploader
+            entityType="service"
+            entityId={id}
+            files={files}
+            canEdit={canEdit}
+          />
+        </div>
 
-      <FileUploader
-        entityType="service"
-        entityId={id}
-        files={files}
-        canEdit={canEdit}
-      />
+        <div className="order-first lg:order-last lg:sticky" style={{ top: 80 }}>
+          <StepperSidebar steps={stepsFromService(service)} />
+        </div>
+      </div>
     </div>
   )
 }

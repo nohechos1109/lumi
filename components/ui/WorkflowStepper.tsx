@@ -15,6 +15,7 @@ export interface WorkflowStep {
 interface Props {
   steps: WorkflowStep[]
   compact?: boolean
+  orientation?: 'horizontal' | 'vertical'
 }
 
 const DOT = 36
@@ -80,8 +81,88 @@ function StepInner({
   )
 }
 
-export default function WorkflowStepper({ steps, compact = false }: Props) {
+function stepColors(state: StepState) {
+  return {
+    dotBg:
+      state === 'done'    ? 'var(--c-navy)'    :
+      state === 'current' ? 'var(--c-navy-bg)' :
+      state === 'error'   ? '#FFE4E6'          : 'var(--c-card)',
+    dotBorder:
+      state === 'done'    ? 'var(--c-navy)'  :
+      state === 'current' ? 'var(--c-navy)'  :
+      state === 'error'   ? '#BE123C'        : 'var(--c-rim)',
+    dotColor:
+      state === 'done'    ? '#fff'           :
+      state === 'current' ? 'var(--c-navy)'  :
+      state === 'error'   ? '#BE123C'        : 'var(--c-ghost)',
+    labelColor:
+      state === 'current' ? 'var(--c-navy)'  :
+      state === 'done'    ? 'var(--c-ink)'   :
+      state === 'error'   ? '#BE123C'        : 'var(--c-ghost)',
+  }
+}
+
+export default function WorkflowStepper({ steps, compact = false, orientation = 'horizontal' }: Props) {
   const dot = compact ? DOT_COMPACT : DOT
+
+  if (orientation === 'vertical') {
+    return (
+      <div className="flex flex-col">
+        {steps.map((step, i) => {
+          const isLast = i === steps.length - 1
+          const { dotBg, dotBorder, dotColor, labelColor } = stepColors(step.state)
+          const isClickable = step.state === 'done' && !!step.href
+          const lineFilled = step.state === 'done'
+          const dotStyle: React.CSSProperties = {
+            width: 28, height: 28, borderRadius: '50%',
+            border: `2px solid ${dotBorder}`,
+            background: dotBg, color: dotColor,
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            flexShrink: 0,
+            boxShadow: step.state === 'current' ? '0 0 0 3px color-mix(in srgb, var(--c-navy) 12%, transparent)' : 'none',
+          }
+          const label = (
+            <div style={{ paddingBottom: isLast ? 0 : 20 }}>
+              <span style={{ fontSize: 12, fontWeight: step.state === 'current' ? 700 : 500, color: labelColor, display: 'block' }}>
+                {step.label}
+              </span>
+              {step.sublabel && (
+                <span style={{ fontSize: 10, color: 'var(--c-ghost)', display: 'block', marginTop: 1 }}>{step.sublabel}</span>
+              )}
+            </div>
+          )
+          return (
+            <div key={step.key} style={{ display: 'flex', gap: 10 }}>
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                {isClickable ? (
+                  <Link href={step.href!} style={{ textDecoration: 'none' }}>
+                    <div style={dotStyle}><DotIcon state={step.state} num={i + 1} compact={false} /></div>
+                  </Link>
+                ) : (
+                  <div style={dotStyle}><DotIcon state={step.state} num={i + 1} compact={false} /></div>
+                )}
+                {!isLast && (
+                  <div style={{
+                    flex: 1,
+                    width: 2,
+                    minHeight: 16,
+                    marginTop: 3,
+                    background: lineFilled ? 'var(--c-navy)' : 'transparent',
+                    borderLeft: lineFilled ? 'none' : '2px dashed var(--c-rim)',
+                  }} />
+                )}
+              </div>
+              <div style={{ paddingTop: 4 }}>
+                {isClickable ? (
+                  <Link href={step.href!} style={{ textDecoration: 'none' }}>{label}</Link>
+                ) : label}
+              </div>
+            </div>
+          )
+        })}
+      </div>
+    )
+  }
 
   return (
     <div
@@ -96,26 +177,7 @@ export default function WorkflowStepper({ steps, compact = false }: Props) {
           const next = steps[i + 1]
           const lineFilled = step.state === 'done' && next && (next.state === 'done' || next.state === 'current')
           const isClickable = step.state === 'done' && !!step.href
-
-          const dotBg =
-            step.state === 'done'    ? 'var(--c-navy)'    :
-            step.state === 'current' ? 'var(--c-navy-bg)' :
-            step.state === 'error'   ? '#FFE4E6'          : 'var(--c-card)'
-
-          const dotBorder =
-            step.state === 'done'    ? 'var(--c-navy)'  :
-            step.state === 'current' ? 'var(--c-navy)'  :
-            step.state === 'error'   ? '#BE123C'        : 'var(--c-rim)'
-
-          const dotColor =
-            step.state === 'done'    ? '#fff'           :
-            step.state === 'current' ? 'var(--c-navy)'  :
-            step.state === 'error'   ? '#BE123C'        : 'var(--c-ghost)'
-
-          const labelColor =
-            step.state === 'current' ? 'var(--c-navy)'  :
-            step.state === 'done'    ? 'var(--c-ink)'   :
-            step.state === 'error'   ? '#BE123C'        : 'var(--c-ghost)'
+          const { dotBg, dotBorder, dotColor, labelColor } = stepColors(step.state)
 
           const dotStyle: React.CSSProperties = {
             width: dot, height: dot, borderRadius: '50%',
