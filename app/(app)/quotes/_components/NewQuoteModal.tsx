@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { CustomerFormModal, CustomerSaved } from '@/app/(app)/customers/_components/CustomerFormModal'
 import CustomerSearchSelect from '@/components/ui/CustomerSearchSelect'
 import { notifyRefresh, toast } from '@/lib/toast'
+import DatePicker from '@/components/ui/DatePicker'
 
 interface Customer {
   id: string
@@ -195,11 +196,10 @@ export default function NewQuoteModal({ onClose, projectId, customerId, customer
 
           <div>
             <label className={labelCls} style={labelStyle}>Fecha de expiración</label>
-            <input
+            <DatePicker
               name="expiration_date"
-              type="date"
+              placeholder="Seleccionar fecha"
               min={today}
-              className="w-full"
             />
           </div>
 
