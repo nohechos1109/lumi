@@ -3,9 +3,9 @@
 import { useState, useMemo } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import ConfirmModal from '@/components/ui/ConfirmModal'
+import ProjectDeleteModal, { type ProjectDeps } from '@/components/ui/ProjectDeleteModal'
 import FilterSelect from '@/components/ui/FilterSelect'
-import { notifyRefresh } from '@/lib/toast'
+import { toast, notifyRefresh } from '@/lib/toast'
 import { canViewOwnProjectsOnly } from '@/lib/permissions'
 
 interface Project {
@@ -51,6 +51,8 @@ const MONTH_NAMES_ES: Record<string, string> = {
 export default function ProjectsTable({ projects, role }: { projects: Project[], role: string }) {
   const router = useRouter()
   const [deleteId, setDeleteId] = useState<string | null>(null)
+  const [deleteDeps, setDeleteDeps] = useState<ProjectDeps | null>(null)
+  const [deleteLoading, setDeleteLoading] = useState(false)
   
   // Filtering state
   const [searchQuery, setSearchQuery] = useState('')
@@ -79,13 +81,45 @@ export default function ProjectsTable({ projects, role }: { projects: Project[],
     }
   }
 
-  async function handleDelete(id: string) {
-    const res = await fetch(`/api/projects/${id}`, { method: 'DELETE' })
-    if (res.ok) {
-      notifyRefresh()
+  async function openDelete(id: string) {
+    setDeleteId(id)
+    setDeleteDeps(null)
+    setDeleteLoading(true)
+    try {
+      const res = await fetch(`/api/projects/${id}/dependencies`)
+      if (!res.ok) throw new Error('deps fetch failed')
+      setDeleteDeps(await res.json())
+    } catch {
+      toast('No se pudieron obtener las dependencias', 'error')
       setDeleteId(null)
-      router.refresh()
+    } finally {
+      setDeleteLoading(false)
     }
+  }
+
+  function closeDelete() {
+    setDeleteId(null)
+    setDeleteDeps(null)
+  }
+
+  async function runDelete(force: boolean) {
+    if (!deleteId) return
+    const url = `/api/projects/${deleteId}${force ? '?force=true' : ''}`
+    const res = await fetch(url, { method: 'DELETE' })
+    if (res.ok) {
+      toast(force ? 'Proyecto y registros eliminados' : 'Proyecto eliminado')
+      notifyRefresh()
+    } else {
+      toast('No se pudo eliminar', 'error')
+    }
+    closeDelete()
+    router.refresh()
+  }
+
+  async function doArchiveFromModal() {
+    if (!deleteId) return
+    await handleArchive(deleteId, true)
+    closeDelete()
   }
 
   // Pre-calculate unique values for filters (memoized to avoid re-creating Date objects on every render)
@@ -319,7 +353,7 @@ export default function ProjectsTable({ projects, role }: { projects: Project[],
                         {!isSales && (
                           <button
                             aria-label="Eliminar proyecto"
-                            onClick={(e) => { e.stopPropagation(); setDeleteId(p.id) }}
+                            onClick={(e) => { e.stopPropagation(); openDelete(p.id) }}
                             className="btn-delete p-1.5 rounded-lg transition-colors"
                             onMouseEnter={(e) => { e.currentTarget.style.background = 'var(--c-rose-bg)' }}
                             onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent' }}
@@ -347,11 +381,14 @@ export default function ProjectsTable({ projects, role }: { projects: Project[],
       </div>
 
       {deleteId && deleteTarget && (
-        <ConfirmModal
-          message={`¿Eliminar el proyecto "${deleteTarget.name}"? Las cotizaciones relacionadas no se borrarán, pero dejarán de estar vinculadas a este proyecto.`}
-          confirmLabel="Eliminar"
-          onConfirm={() => handleDelete(deleteId)}
-          onCancel={() => setDeleteId(null)}
+        <ProjectDeleteModal
+          projectName={deleteTarget.name}
+          deps={deleteDeps}
+          loading={deleteLoading}
+          onCancel={closeDelete}
+          onArchive={deleteTarget.archived_at ? undefined : doArchiveFromModal}
+          onDeletePreserve={() => runDelete(false)}
+          onDeleteCascade={() => runDelete(true)}
         />
       )}
     </>

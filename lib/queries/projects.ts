@@ -111,10 +111,76 @@ export async function updateProject(id: string, data: Partial<CreateProjectInput
 }
 
 export async function deleteProject(id: string): Promise<void> {
-  // Option: We might want to just un-link quotes or restrict deletion if it has quotes.
-  // For now, let's allow it but warn the user in UI if it has quotes.
   await pool.query('UPDATE quotes SET project_id = NULL WHERE project_id = $1', [id]);
+  const hasSales = (await pool.query(`SELECT to_regclass('public.sales') AS t`)).rows[0].t !== null
+  if (hasSales) await pool.query('UPDATE sales SET project_id = NULL WHERE project_id = $1', [id])
   await pool.query('DELETE FROM projects WHERE id = $1', [id]);
+}
+
+export interface ProjectDependencies {
+  quotes: number
+  sales: number
+  sale_amount_total: number
+  total_hard: number
+}
+
+export async function getProjectDependencies(id: string): Promise<ProjectDependencies> {
+  const hasSales = (await pool.query(`SELECT to_regclass('public.sales') AS t`)).rows[0].t !== null
+
+  const salesCount = hasSales
+    ? `(SELECT COUNT(*)::int FROM sales WHERE project_id = $1)`
+    : `0::int`
+  const saleAmount = hasSales
+    ? `COALESCE((SELECT SUM(amount_total) FROM sales WHERE project_id = $1), 0)::float`
+    : `0::float`
+
+  const { rows } = await pool.query(
+    `SELECT
+       (SELECT COUNT(*)::int FROM quotes WHERE project_id = $1) AS quotes,
+       ${salesCount}    AS sales,
+       ${saleAmount}    AS sale_amount_total`,
+    [id]
+  )
+  const r = rows[0]
+  const total_hard = r.quotes + r.sales
+  return { ...r, total_hard }
+}
+
+export async function deleteProjectCascade(id: string): Promise<void> {
+  const client = await pool.connect()
+  try {
+    await client.query('BEGIN')
+    const hasPA      = (await client.query(`SELECT to_regclass('public.payment_applications') AS t`)).rows[0].t !== null
+    const hasPayments = (await client.query(`SELECT to_regclass('public.payments') AS t`)).rows[0].t !== null
+    const hasSales   = (await client.query(`SELECT to_regclass('public.sales') AS t`)).rows[0].t !== null
+
+    if (hasPA) {
+      await client.query(
+        `DELETE FROM payment_applications
+         WHERE sale_note_id IN (
+           SELECT sn.id FROM sale_notes sn
+           JOIN sales s ON s.id = sn.sale_id
+           WHERE s.project_id = $1
+         )`,
+        [id]
+      )
+    }
+    if (hasPayments) {
+      await client.query('DELETE FROM payments WHERE sale_id IN (SELECT id FROM sales WHERE project_id = $1)', [id])
+    }
+    if (hasSales) {
+      await client.query('DELETE FROM sales WHERE project_id = $1', [id])
+    }
+    await client.query('DELETE FROM quote_lines WHERE quote_id IN (SELECT id FROM quotes WHERE project_id = $1)', [id])
+    await client.query('DELETE FROM quotes WHERE project_id = $1', [id])
+    await client.query('DELETE FROM projects WHERE id = $1', [id])
+    await client.query('COMMIT')
+  } catch (err) {
+    await client.query('ROLLBACK')
+    throw err
+  } finally {
+    client.release()
+  }
 }
 
 export async function archiveProject(id: string): Promise<void> {

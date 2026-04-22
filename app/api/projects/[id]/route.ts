@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { revalidatePath } from 'next/cache'
 import { getSession, unauthorized } from '@/lib/auth-guard'
-import { getProject, updateProject, deleteProject } from '@/lib/queries/projects'
+import { getProject, updateProject, deleteProject, deleteProjectCascade } from '@/lib/queries/projects'
 import { insertAuditEvent } from '@/lib/queries/audit'
 
 export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
@@ -48,9 +48,14 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ i
   const { id } = await params
 
   try {
-    await deleteProject(id)
+    const force = req.nextUrl.searchParams.get('force') === 'true'
+    if (force) {
+      await deleteProjectCascade(id)
+    } else {
+      await deleteProject(id)
+    }
     revalidatePath('/projects')
-    return NextResponse.json({ ok: true })
+    return NextResponse.json({ ok: true, cascade: force })
   } catch (error) {
     console.error('DELETE /api/projects/[id] ERROR:', error)
     return NextResponse.json({ error: String(error) }, { status: 500 })
