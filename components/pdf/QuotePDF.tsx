@@ -12,7 +12,7 @@ const styles = StyleSheet.create({
 
   // Content Layout
   logo: { width: 140, marginBottom: 20 },
-  topInfo: { flexDirection: 'row', justifyContent: 'space-between', marginTop: 10, marginBottom: 30 },
+  topInfo: { flexDirection: 'row', justifyContent: 'space-between', marginTop: 10, marginBottom: 10 },
   
   column: { width: '48%' },
   sectionTitle: { fontSize: 10, fontWeight: 'bold', color: '#1B3461', marginBottom: 10, borderBottom: '1 solid #E5E7EB', paddingBottom: 4 },
@@ -162,6 +162,14 @@ export default function QuotePDF({ quote, lines, images }: { quote: Quote; lines
             <Text style={styles.value}>{quote.executive_name?.toUpperCase() || 'EQUIPO LUMI'}</Text>
           </View>
         </View>
+
+        {/* Requerimiento */}
+        {quote.description && (
+          <View style={{ marginBottom: 6 }}>
+            <Text style={[styles.label, { marginBottom: 3 }]}>REQUERIMIENTO</Text>
+            <Text style={{ fontSize: 8.5, color: '#374151', lineHeight: 1.5 }}>{quote.description}</Text>
+          </View>
+        )}
 
         {/* Items Table */}
         <View style={styles.table}>

@@ -6,7 +6,7 @@ const styles = StyleSheet.create({
   headerContainer: { position: 'absolute', top: 0, left: 0, right: 0, height: 110 },
   footerContainer: { position: 'absolute', bottom: 0, left: 0, right: 0, height: 75 },
 
-  topInfo: { flexDirection: 'row', justifyContent: 'space-between', marginTop: 10, marginBottom: 30 },
+  topInfo: { flexDirection: 'row', justifyContent: 'space-between', marginTop: 10, marginBottom: 10 },
   column: { width: '48%' },
   sectionTitle: { fontSize: 10, fontWeight: 'bold', color: '#1B3461', marginBottom: 10, borderBottom: '1 solid #E5E7EB', paddingBottom: 4 },
   label: { fontSize: 8, color: '#6B7280', marginBottom: 2 },
@@ -127,6 +127,14 @@ export default function LevantamientoPDF({
             <Text style={styles.value}>{quote.executive_name?.toUpperCase() || 'EQUIPO LUMI'}</Text>
           </View>
         </View>
+
+        {/* Requerimiento */}
+        {quote.description && (
+          <View style={{ marginBottom: 6 }}>
+            <Text style={[styles.label, { marginBottom: 3 }]}>REQUERIMIENTO</Text>
+            <Text style={{ fontSize: 8.5, color: '#374151', lineHeight: 1.5 }}>{quote.description}</Text>
+          </View>
+        )}
 
         {/* Items Table — DESCRIPCIÓN + CANTIDAD only */}
         <View style={styles.table}>
