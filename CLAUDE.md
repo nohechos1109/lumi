@@ -26,6 +26,16 @@ Durante el desarrollo se corre Docker localmente para pruebas — esto **no es u
 
 **Patrón a seguir:** No usar `new Date()` directamente en el JSX de componentes que se renderizan en servidor. Usar `useEffect` para valores que dependen del entorno del cliente, o `suppressHydrationWarning` cuando sea apropiado.
 
+# Modal Behavior
+
+**Los modales solo se cierran con:**
+1. Clic en el botón "X" (o "Cancelar" si aplica)
+2. Tecla `Escape`
+
+**Nunca** agregar `onClick={onClose}` (ni ninguna variante) al div backdrop/overlay externo (`fixed inset-0`). El inner content div puede conservar `onClick={e => e.stopPropagation()}` pero no es necesario si el backdrop no tiene handler.
+
+Este patrón aplica a **todos** los modales del proyecto sin excepción.
+
 # Icons & Visual Elements
 
 **No usar emojis en la UI.** Siempre usar SVG inline para íconos — nunca caracteres Unicode emoji (💰, ✅, ❌, etc.). Esto aplica a botones, badges, tooltips, labels, y cualquier texto visible en la interfaz.
