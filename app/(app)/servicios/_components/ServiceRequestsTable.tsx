@@ -66,7 +66,15 @@ export default function ServiceRequestsTable({ requests, canApprove }: { request
             {requests.map(r => {
               const s = STATUS_MAP[r.status] ?? STATUS_MAP.pending
               return (
-                <tr key={r.id} className="tr-hover transition-colors">
+                <tr
+                  key={r.id}
+                  tabIndex={0}
+                  role="link"
+                  className="tr-hover transition-colors"
+                  style={{ cursor: 'pointer' }}
+                  onClick={() => router.push(`/servicios/requests/${r.id}`)}
+                  onKeyDown={e => { if (e.key === 'Enter') router.push(`/servicios/requests/${r.id}`) }}
+                >
                   <td className="px-5 py-4" style={{ color: 'var(--c-ink)' }}>{r.motivo}</td>
                   <td className="px-5 py-4" style={{ color: 'var(--c-dim)' }}>{r.customer_name ?? '—'}</td>
                   <td className="px-5 py-4" style={{ color: 'var(--c-dim)' }}>{r.requested_by_username ?? '—'}</td>
@@ -81,7 +89,7 @@ export default function ServiceRequestsTable({ requests, canApprove }: { request
                     {canApprove && r.status === 'pending' ? (
                       <div className="flex gap-1.5 justify-end">
                         <button
-                          onClick={() => handleAction(r.id, 'approve')}
+                          onClick={e => { e.stopPropagation(); handleAction(r.id, 'approve') }}
                           disabled={busy === r.id}
                           className="px-3 py-1.5 rounded-full text-xs font-semibold transition-opacity hover:opacity-80"
                           style={{ background: 'var(--c-mint-bg)', color: 'var(--c-mint)', border: '1px solid rgba(11,153,98,0.25)', cursor: busy === r.id ? 'not-allowed' : 'pointer', opacity: busy === r.id ? 0.6 : 1 }}
@@ -89,7 +97,7 @@ export default function ServiceRequestsTable({ requests, canApprove }: { request
                           Aprobar
                         </button>
                         <button
-                          onClick={() => handleAction(r.id, 'reject')}
+                          onClick={e => { e.stopPropagation(); handleAction(r.id, 'reject') }}
                           disabled={busy === r.id}
                           className="px-3 py-1.5 rounded-full text-xs font-semibold transition-opacity hover:opacity-80"
                           style={{ background: 'var(--c-rose-bg)', color: 'var(--c-rose)', border: '1px solid rgba(220,38,38,0.20)', cursor: busy === r.id ? 'not-allowed' : 'pointer', opacity: busy === r.id ? 0.6 : 1 }}

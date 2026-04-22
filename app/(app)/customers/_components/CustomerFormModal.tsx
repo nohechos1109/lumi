@@ -12,6 +12,7 @@ export interface ContactSaved {
   first_name: string | null
   job_title: string | null
   tax_id: string | null
+  archived_at?: string | null
   companies: { id: string; name: string; role: string | null; is_primary: boolean }[]
 }
 

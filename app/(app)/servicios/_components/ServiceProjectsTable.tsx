@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from 'react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import type { ServiceProject } from '@/lib/queries/servicios'
 import FilterSelect from '@/components/ui/FilterSelect'
 
@@ -11,6 +12,7 @@ const STATUS_MAP: Record<string, { label: string; cls: string }> = {
 }
 
 export default function ServiceProjectsTable({ projects }: { projects: ServiceProject[] }) {
+  const router = useRouter()
   const [search, setSearch] = useState('')
   const [statusFilter, setStatusFilter] = useState('')
 
@@ -72,9 +74,17 @@ export default function ServiceProjectsTable({ projects }: { projects: ServicePr
               {filtered.map(p => {
                 const s = STATUS_MAP[p.status] ?? STATUS_MAP.abierto
                 return (
-                  <tr key={p.id} className="tr-hover transition-colors">
+                  <tr
+                    key={p.id}
+                    tabIndex={0}
+                    role="link"
+                    className="tr-hover transition-colors"
+                    style={{ cursor: 'pointer' }}
+                    onClick={() => router.push(`/servicios/projects/${p.id}`)}
+                    onKeyDown={e => { if (e.key === 'Enter') router.push(`/servicios/projects/${p.id}`) }}
+                  >
                     <td className="px-5 py-4 font-mono text-xs font-bold" style={{ letterSpacing: '0.08em' }}>
-                      <Link href={`/servicios/projects/${p.id}`} className="hover:underline" style={{ color: 'var(--c-navy)' }}>
+                      <Link href={`/servicios/projects/${p.id}`} className="hover:underline" style={{ color: 'var(--c-navy)' }} onClick={e => e.stopPropagation()}>
                         {p.number}
                       </Link>
                     </td>

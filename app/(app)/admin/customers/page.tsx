@@ -3,8 +3,8 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
-import ConfirmModal from '@/components/ui/ConfirmModal'
-import { notifyRefresh } from '@/lib/toast'
+import CustomerDeleteModal, { type ContactDeps } from '@/components/ui/CustomerDeleteModal'
+import { toast, notifyRefresh } from '@/lib/toast'
 import { CustomerFormModal, type ContactSaved } from '@/app/(app)/customers/_components/CustomerFormModal'
 
 type Contact = ContactSaved
@@ -29,9 +29,12 @@ export default function AdminCustomersPage() {
   const [contacts, setContacts] = useState<Contact[]>([])
   const [adding, setAdding] = useState(false)
   const [editContact, setEditContact] = useState<Contact | null>(null)
-  const [deleteId, setDeleteId] = useState<string | null>(null)
+  const [deleteTarget, setDeleteTarget] = useState<Contact | null>(null)
+  const [deleteDeps, setDeleteDeps] = useState<ContactDeps | null>(null)
+  const [deleteLoading, setDeleteLoading] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
   const [typeFilter, setTypeFilter] = useState<'all' | 'company' | 'person'>('all')
+  const [showArchived, setShowArchived] = useState(false)
   const searchParams = useSearchParams()
   const highlightId = searchParams.get('highlight')
   const highlightRef = useRef<HTMLTableRowElement>(null)
@@ -43,9 +46,9 @@ export default function AdminCustomersPage() {
   }, [highlightId, contacts])
 
   const load = useCallback(async () => {
-    const r = await fetch('/api/admin/customers')
+    const r = await fetch(`/api/admin/customers${showArchived ? '?includeArchived=true' : ''}`)
     setContacts(await r.json())
-  }, [])
+  }, [showArchived])
 
   useEffect(() => { load() }, [load])
 
@@ -62,11 +65,52 @@ export default function AdminCustomersPage() {
     )
   })
 
-  async function handleDelete(id: string) {
-    const res = await fetch(`/api/admin/customers/${id}`, { method: 'DELETE' })
-    if (res.ok) notifyRefresh()
-    setDeleteId(null)
+  async function openDelete(contact: Contact) {
+    setDeleteTarget(contact)
+    setDeleteDeps(null)
+    setDeleteLoading(true)
+    try {
+      const res = await fetch(`/api/admin/customers/${contact.id}/dependencies`)
+      if (!res.ok) throw new Error('deps fetch failed')
+      setDeleteDeps(await res.json())
+    } catch {
+      toast('No se pudieron obtener las dependencias', 'error')
+      setDeleteTarget(null)
+    } finally {
+      setDeleteLoading(false)
+    }
+  }
+
+  function closeDelete() {
+    setDeleteTarget(null)
+    setDeleteDeps(null)
+  }
+
+  async function runContactAction(url: string, method: 'POST' | 'DELETE', okMsg: string, errMsg: string, close = true) {
+    const res = await fetch(url, { method })
+    if (res.ok) { toast(okMsg); notifyRefresh() }
+    else toast(errMsg, 'error')
+    if (close) closeDelete()
     load()
+  }
+
+  async function doDeleteSimple() {
+    if (!deleteTarget) return
+    await runContactAction(`/api/admin/customers/${deleteTarget.id}`, 'DELETE', 'Contacto eliminado', 'No se pudo eliminar')
+  }
+
+  async function doDeleteCascade() {
+    if (!deleteTarget) return
+    await runContactAction(`/api/admin/customers/${deleteTarget.id}?force=true`, 'DELETE', 'Contacto y registros asociados eliminados', 'No se pudo eliminar')
+  }
+
+  async function doArchive() {
+    if (!deleteTarget) return
+    await runContactAction(`/api/admin/customers/${deleteTarget.id}/archive`, 'POST', 'Contacto archivado', 'No se pudo archivar')
+  }
+
+  async function doUnarchive(id: string) {
+    await runContactAction(`/api/admin/customers/${id}/archive`, 'DELETE', 'Contacto restaurado', 'No se pudo restaurar', false)
   }
 
   return (
@@ -157,6 +201,18 @@ export default function AdminCustomersPage() {
             </button>
           ))}
         </div>
+
+        <button
+          onClick={() => setShowArchived(v => !v)}
+          className="px-4 py-2.5 rounded-xl text-xs font-semibold transition-colors"
+          style={{
+            background: showArchived ? 'var(--c-navy)' : 'var(--c-card)',
+            color: showArchived ? '#fff' : 'var(--c-dim)',
+            border: '1px solid var(--c-rim)',
+          }}
+        >
+          {showArchived ? 'Ocultar archivados' : 'Mostrar archivados'}
+        </button>
       </div>
 
       {(searchQuery || typeFilter !== 'all') && (
@@ -194,8 +250,13 @@ export default function AdminCustomersPage() {
                 <td className="px-5 py-4">
                   <TypeBadge type={c.type} />
                 </td>
-                <td className="px-5 py-4 font-semibold" style={{ color: 'var(--c-ink)' }}>
+                <td className="px-5 py-4 font-semibold" style={{ color: c.archived_at ? 'var(--c-ghost)' : 'var(--c-ink)' }}>
                   {c.name}
+                  {c.archived_at && (
+                    <span className="ml-2 inline-flex items-center text-[10px] px-1.5 py-0.5 rounded-full font-semibold uppercase tracking-widest" style={{ background: 'var(--c-panel)', color: 'var(--c-ghost)', border: '1px solid var(--c-rim)' }}>
+                      Archivado
+                    </span>
+                  )}
                 </td>
                 <td className="px-5 py-4 text-xs" style={{ color: 'var(--c-dim)' }}>
                   {c.type === 'company' && c.tax_id && <span>{c.tax_id}</span>}
@@ -227,12 +288,22 @@ export default function AdminCustomersPage() {
                     >
                       Editar
                     </button>
-                    <button
-                      onClick={() => setDeleteId(c.id)}
-                      className="btn-delete text-xs"
-                    >
-                      Eliminar
-                    </button>
+                    {c.archived_at ? (
+                      <button
+                        onClick={() => doUnarchive(c.id)}
+                        className="text-xs font-semibold transition-opacity hover:opacity-70"
+                        style={{ color: 'var(--c-navy)' }}
+                      >
+                        Restaurar
+                      </button>
+                    ) : (
+                      <button
+                        onClick={() => openDelete(c)}
+                        className="btn-delete text-xs"
+                      >
+                        Eliminar
+                      </button>
+                    )}
                   </div>
                 </td>
               </tr>
@@ -266,12 +337,15 @@ export default function AdminCustomersPage() {
         />
       )}
 
-      {deleteId && (
-        <ConfirmModal
-          message="¿Eliminar este contacto? Esta acción no se puede deshacer."
-          confirmLabel="Eliminar"
-          onConfirm={() => handleDelete(deleteId)}
-          onCancel={() => setDeleteId(null)}
+      {deleteTarget && (
+        <CustomerDeleteModal
+          contactName={deleteTarget.name}
+          deps={deleteDeps}
+          loading={deleteLoading}
+          onCancel={closeDelete}
+          onArchive={doArchive}
+          onDeleteSimple={doDeleteSimple}
+          onDeleteCascade={doDeleteCascade}
         />
       )}
     </div>

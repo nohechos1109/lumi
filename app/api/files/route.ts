@@ -7,7 +7,7 @@ import { canAccessServicios } from '@/lib/permissions'
 import { createFileRecord, listFilesByEntity } from '@/lib/queries/files'
 
 const UPLOAD_DIR = path.join(process.cwd(), 'uploads')
-const MAX_SIZE = 20 * 1024 * 1024 // 20MB
+const MAX_SIZE = 30 * 1024 * 1024 // 30MB
 const ALLOWED_MIME = new Set([
   'image/jpeg', 'image/png', 'image/webp', 'image/gif',
   'application/pdf',
@@ -47,7 +47,7 @@ export async function POST(req: NextRequest) {
   }
 
   if (file.size > MAX_SIZE) {
-    return NextResponse.json({ error: 'Archivo excede 20MB' }, { status: 400 })
+    return NextResponse.json({ error: 'Archivo excede 30MB' }, { status: 400 })
   }
 
   const ext = path.extname(file.name) || ''
