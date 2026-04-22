@@ -7,6 +7,7 @@ import { canViewOwnQuotesOnly, canAccessShowroomQuotes } from '@/lib/permissions
 import { getQuote } from '@/lib/queries/quotes'
 import { getSaleByQuote } from '@/lib/queries/sales'
 import { getSettings } from '@/lib/queries/settings'
+import { listLineStaleness } from '@/lib/queries/quote_lines'
 import LineEditor from './_components/LineEditor'
 import QuoteActions from './_components/QuoteActions'
 import UnitCountEditor from './_components/UnitCountEditor'
@@ -26,9 +27,12 @@ export default async function QuotePage({ params }: { params: Promise<{ id: stri
 
   const isShowroom = !quote.project_id
 
-  // Check for associated sale
-  const sale = quote.state === 'confirmed' ? await getSaleByQuote(id) : null
-  const settings = await getSettings()
+  // Check for associated sale + settings + staleness (all in parallel)
+  const [sale, settings, initialStaleness] = await Promise.all([
+    quote.state === 'confirmed' ? getSaleByQuote(id) : Promise.resolve(null),
+    getSettings(),
+    quote.state === 'draft' ? listLineStaleness(id) : Promise.resolve([]),
+  ])
   const showMargin = settings?.show_margin ?? true
 
   return (
@@ -184,6 +188,7 @@ export default async function QuotePage({ params }: { params: Promise<{ id: stri
         quoteState={quote.state}
         isShowroom={isShowroom}
         showMargin={showMargin}
+        initialStaleness={initialStaleness}
       />
 
       {(session.role === 'manager' || session.role === 'admin') && (

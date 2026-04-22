@@ -1,19 +1,22 @@
 'use client'
 
-import { useState, useEffect, useCallback, useRef } from 'react'
+import { useState, useEffect, useCallback, useRef, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
 import ProductSearch from './ProductSearch'
 import PromptModal from '@/components/ui/PromptModal'
 import ConfirmModal from '@/components/ui/ConfirmModal'
 import PlantillaModal from '@/components/ui/PlantillaModal'
+import RefreshPricesModal, { type RefreshRow } from '@/components/ui/RefreshPricesModal'
 import { toast, notifyRefresh } from '@/lib/toast'
 import { canSetManualPrice } from '@/lib/permissions'
 import { useSSE } from '@/hooks/useSSE'
+import type { QuoteLineStaleness } from '@/lib/queries/quote_lines'
 
 interface QuoteLine {
   id: string; display_type: string; name: string; qty: string | null
   discount_percent: string; unit_price_mxn_effective: string
-  unit_price_mxn_suggested: string; cost_base_snapshot: string
+  unit_price_mxn_suggested: string; unit_price_mxn_manual: string | null
+  cost_base_snapshot: string; product_id: string | null
   subtotal: string; tax_amount: string; total: string
   margin_amount: string; tax_name?: string; sequence: number
   discount_approval_status?: string
@@ -29,6 +32,7 @@ interface Props {
   quoteState?: string
   isShowroom?: boolean
   showMargin?: boolean
+  initialStaleness?: QuoteLineStaleness[]
 }
 
 const inputCls = 'text-right rounded-lg px-2 py-1.5 text-sm font-mono outline-none transition-colors'
@@ -38,7 +42,7 @@ const inputStyle = {
   color: 'var(--c-ink)',
 }
 
-export default function LineEditor({ quoteId, unitCount, role, isLocked, quoteState, isShowroom, showMargin = true }: Props) {
+export default function LineEditor({ quoteId, unitCount, role, isLocked, quoteState, isShowroom, showMargin = true, initialStaleness = [] }: Props) {
   const router = useRouter()
   const [lines, setLines] = useState<QuoteLine[]>([])
   const [totals, setTotals] = useState({ untaxed: 0, tax: 0, total: 0, margin: 0, marginPct: 0 })
@@ -50,8 +54,23 @@ export default function LineEditor({ quoteId, unitCount, role, isLocked, quoteSt
   const [deleteConfirmLine, setDeleteConfirmLine] = useState<QuoteLine | null>(null) // Block B
   const [clearConfirm, setClearConfirm] = useState(false)
   const [editingLine, setEditingLine] = useState<{ id: string; name: string } | null>(null)
+  const [staleMap, setStaleMap] = useState<Map<string, QuoteLineStaleness>>(
+    () => new Map(initialStaleness.map(s => [s.line_id, s]))
+  )
+  const [refreshModal, setRefreshModal] = useState<{
+    title: string
+    rows: RefreshRow[]
+    mode: 'preserve_manual' | 'use_suggested'
+    scope: 'single' | 'all'
+    lineId?: string
+  } | null>(null)
   const dragItem = useRef<number | null>(null)
   const dragOverItem = useRef<number | null>(null)
+
+  const staleCount = useMemo(
+    () => [...staleMap.values()].filter(s => s.reason !== 'product_deleted').length,
+    [staleMap]
+  )
 
   // Block A: error handling in loadLines
   const loadLines = useCallback(async () => {
@@ -71,6 +90,16 @@ export default function LineEditor({ quoteId, unitCount, role, isLocked, quoteSt
     }
   }, [quoteId, router])
 
+  const loadStaleness = useCallback(async () => {
+    if (isLocked) return
+    try {
+      const r = await fetch(`/api/quotes/${quoteId}/lines/staleness`)
+      if (!r.ok) return
+      const data: QuoteLineStaleness[] = await r.json()
+      setStaleMap(new Map(data.map(s => [s.line_id, s])))
+    } catch { /* ignore transient errors */ }
+  }, [quoteId, isLocked])
+
   useEffect(() => { loadLines() }, [loadLines])
 
   useSSE({
@@ -78,7 +107,105 @@ export default function LineEditor({ quoteId, unitCount, role, isLocked, quoteSt
       const d = data as { quoteId: string }
       if (d.quoteId === quoteId) loadLines()
     },
+    fx_changed: () => { loadStaleness() },
+    product_changed: () => { loadStaleness() },
+    quote_lines_refreshed: (data) => {
+      const d = data as { quoteId: string }
+      if (d.quoteId === quoteId) { loadLines(); loadStaleness() }
+    },
   })
+
+  function buildRefreshRow(line: QuoteLine, stale: QuoteLineStaleness | null): RefreshRow {
+    return {
+      line_id: line.id,
+      name: line.name,
+      has_manual: line.unit_price_mxn_manual !== null,
+      old_effective: Number(line.unit_price_mxn_effective),
+      old_suggested: Number(line.unit_price_mxn_suggested),
+      stale,
+    }
+  }
+
+  function openRefreshLineModal(lineId: string, mode: 'preserve_manual' | 'use_suggested') {
+    const line = lines.find(l => l.id === lineId)
+    if (!line) return
+    const stale = staleMap.get(lineId) ?? null
+    if (stale?.reason === 'product_deleted') return
+    if (mode === 'preserve_manual' && !stale) return
+
+    setRefreshModal({
+      title: mode === 'use_suggested' ? 'Usar precio sugerido' : 'Actualizar precio',
+      rows: [buildRefreshRow(line, stale)],
+      mode,
+      scope: 'single',
+      lineId,
+    })
+  }
+
+  function openRefreshAllModal() {
+    const rows: RefreshRow[] = []
+    for (const line of lines) {
+      if (line.display_type !== 'product') continue
+      const stale = staleMap.get(line.id)
+      if (!stale || stale.reason === 'product_deleted') continue
+      rows.push(buildRefreshRow(line, stale))
+    }
+    if (rows.length === 0) return
+    setRefreshModal({
+      title: 'Actualizar precios desactualizados',
+      rows,
+      mode: 'preserve_manual',
+      scope: 'all',
+    })
+  }
+
+  async function confirmRefresh() {
+    if (!refreshModal) return
+    setBusy(true)
+    try {
+      const body = refreshModal.scope === 'all'
+        ? { all: true }
+        : { line_ids: [refreshModal.lineId], mode: refreshModal.mode }
+      const r = await fetch(`/api/quotes/${quoteId}/lines/refresh`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      })
+      if (!r.ok) throw new Error()
+      const { refreshed = 0, skipped = [] } = await r.json().catch(() => ({})) as { refreshed?: number; skipped?: Array<{ reason: string }> }
+      notifyRefresh()
+      await Promise.all([loadLines(), loadStaleness()])
+      router.refresh()
+      if (refreshModal.scope === 'all') {
+        const skippedDeleted = skipped.filter(s => s.reason === 'product_deleted').length
+        toast(
+          `${refreshed} ${refreshed === 1 ? 'actualizada' : 'actualizadas'}` +
+          (skippedDeleted ? ` · ${skippedDeleted} omitidas (producto no disponible)` : '')
+        )
+      } else {
+        toast(refreshModal.mode === 'use_suggested' ? 'Precio sugerido aplicado' : 'Precio actualizado')
+      }
+      setRefreshModal(null)
+    } catch {
+      toast('Error al actualizar precios', 'error')
+    } finally {
+      setBusy(false)
+    }
+  }
+
+  function buildTooltip(s: QuoteLineStaleness, hasManual: boolean): string {
+    const nf = (n: number | null) => n == null ? '' : n.toLocaleString('es-MX', { minimumFractionDigits: 2 })
+    let msg = ''
+    if (s.reason === 'product') {
+      msg = `Producto actualizado. Nuevo sugerido: $${nf(s.new_suggested)} MXN.`
+    } else if (s.reason === 'fx') {
+      msg = `Tipo de cambio: ${s.old_fx} → ${s.new_fx}. Nuevo sugerido: $${nf(s.new_suggested)} MXN.`
+    } else if (s.reason === 'both') {
+      msg = `Producto y tipo de cambio actualizados. Nuevo sugerido: $${nf(s.new_suggested)} MXN.`
+    }
+    if (hasManual) msg += ' El precio manual se conservará al actualizar.'
+    return msg
+  }
 
   // Block A: busy state + error handling on add operations
   async function addProductLine(product: { id: string; name: string; description?: string | null }) {
@@ -95,7 +222,7 @@ export default function LineEditor({ quoteId, unitCount, role, isLocked, quoteSt
       })
       if (!r.ok) throw new Error()
       notifyRefresh()
-      await loadLines()
+      await Promise.all([loadLines(), loadStaleness()])
       router.refresh()
     } catch {
       toast('Error al agregar el producto', 'error')
@@ -114,7 +241,7 @@ export default function LineEditor({ quoteId, unitCount, role, isLocked, quoteSt
       })
       if (!r.ok) throw new Error()
       notifyRefresh()
-      await loadLines()
+      await Promise.all([loadLines(), loadStaleness()])
       router.refresh()
     } catch {
       toast('Error al agregar la línea', 'error')
@@ -183,7 +310,7 @@ export default function LineEditor({ quoteId, unitCount, role, isLocked, quoteSt
       })
       if (!r.ok) throw new Error()
       notifyRefresh()
-      await loadLines()
+      await Promise.all([loadLines(), loadStaleness()])
       router.refresh()
     } catch {
       toast('Error al aplicar la plantilla', 'error')
@@ -216,7 +343,7 @@ export default function LineEditor({ quoteId, unitCount, role, isLocked, quoteSt
       })
       if (!r.ok) throw new Error()
       notifyRefresh()
-      await loadLines()
+      await Promise.all([loadLines(), loadStaleness()])
       router.refresh()
     } catch {
       toast('Error al actualizar el campo', 'error')
@@ -231,7 +358,7 @@ export default function LineEditor({ quoteId, unitCount, role, isLocked, quoteSt
       const r = await fetch(`/api/quotes/${quoteId}/lines/${lineId}`, { method: 'DELETE' })
       if (!r.ok) throw new Error()
       notifyRefresh()
-      await loadLines()
+      await Promise.all([loadLines(), loadStaleness()])
       router.refresh()
     } catch {
       toast('Error al eliminar la línea', 'error')
@@ -244,7 +371,7 @@ export default function LineEditor({ quoteId, unitCount, role, isLocked, quoteSt
       const r = await fetch(`/api/quotes/${quoteId}/lines`, { method: 'DELETE' })
       if (!r.ok) throw new Error()
       notifyRefresh()
-      await loadLines()
+      await Promise.all([loadLines(), loadStaleness()])
       router.refresh()
       toast('Cotización limpiada exitosamente')
     } catch {
@@ -340,6 +467,32 @@ export default function LineEditor({ quoteId, unitCount, role, isLocked, quoteSt
               Guardando...
             </span>
           )}
+        </div>
+      )}
+
+      {/* Stale prices banner */}
+      {!isLocked && staleCount > 0 && (
+        <div
+          className="flex items-center gap-3 rounded-xl px-4 py-2.5 mb-3"
+          style={{ background: 'rgba(251,191,36,0.10)', border: '1px solid rgba(251,191,36,0.35)' }}
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#B45309" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+            <line x1="12" y1="9" x2="12" y2="13"/>
+            <line x1="12" y1="17" x2="12.01" y2="17"/>
+          </svg>
+          <span className="text-sm font-medium" style={{ color: '#B45309' }}>
+            {staleCount === 1 ? '1 precio desactualizado' : `${staleCount} precios desactualizados`}
+          </span>
+          <button
+            onClick={openRefreshAllModal}
+            type="button"
+            disabled={busy}
+            className="ml-auto text-xs font-semibold px-3 py-1.5 rounded-lg disabled:opacity-50"
+            style={{ background: '#B45309', color: 'white' }}
+          >
+            Actualizar todas
+          </button>
         </div>
       )}
 
@@ -523,6 +676,16 @@ export default function LineEditor({ quoteId, unitCount, role, isLocked, quoteSt
                   const margin = Number(line.margin_amount)
                   const sub = Number(line.subtotal)
                   const marginPct = sub > 0 ? (margin / sub) * 100 : 0
+                  const stale = staleMap.get(line.id)
+                  const isDeletedProduct = stale?.reason === 'product_deleted'
+                  const isStalePrice = stale && stale.reason !== 'product_deleted'
+                  const hasManual = line.unit_price_mxn_manual !== null
+                  const currentSuggested = isStalePrice && stale.new_suggested != null
+                    ? stale.new_suggested
+                    : Number(line.unit_price_mxn_suggested)
+                  const manualDiffersFromCurrent = hasManual &&
+                    Math.abs(Number(line.unit_price_mxn_manual) - currentSuggested) > 0.005
+                  const canUseSuggested = !isDeletedProduct && manualDiffersFromCurrent
 
                   return (
                     <tr key={line.id} draggable={!isLocked} onDragStart={() => handleDragStart(index)} onDragEnter={() => handleDragEnter(index)} onDragEnd={handleDragEnd} onDragOver={e => e.preventDefault()}
@@ -532,6 +695,49 @@ export default function LineEditor({ quoteId, unitCount, role, isLocked, quoteSt
                       </td>
                       <td className="px-4 py-3" style={{ color: 'var(--c-ink)' }}>
                         {line.name}
+                        {!isLocked && isDeletedProduct && (
+                          <span
+                            className="ml-2 inline-flex items-center gap-1 align-middle"
+                            title="Producto no disponible en el catálogo. Elimina o reemplaza la línea."
+                            style={{ color: 'var(--c-ghost)' }}
+                          >
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                              <circle cx="12" cy="12" r="10"/>
+                              <line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/>
+                            </svg>
+                            <span className="text-xs font-medium">No disponible</span>
+                          </span>
+                        )}
+                        {!isLocked && isStalePrice && stale && (
+                          <span className="ml-2 inline-flex items-center gap-1.5 align-middle" title={buildTooltip(stale, hasManual)}>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#B45309" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                              <path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+                              <line x1="12" y1="9" x2="12" y2="13"/>
+                              <line x1="12" y1="17" x2="12.01" y2="17"/>
+                            </svg>
+                            <button
+                              type="button"
+                              onClick={() => openRefreshLineModal(line.id, 'preserve_manual')}
+                              disabled={busy}
+                              className="text-xs font-semibold underline disabled:opacity-50"
+                              style={{ color: '#B45309' }}
+                            >
+                              Actualizar
+                            </button>
+                          </span>
+                        )}
+                        {!isLocked && canUseSuggested && (
+                          <button
+                            type="button"
+                            onClick={() => openRefreshLineModal(line.id, 'use_suggested')}
+                            disabled={busy}
+                            className="ml-2 text-xs font-semibold underline disabled:opacity-50 align-middle"
+                            style={{ color: 'var(--c-navy)' }}
+                            title={`Reemplazar precio manual ($${Number(line.unit_price_mxn_manual).toLocaleString('es-MX', { minimumFractionDigits: 2 })}) por precio sugerido ($${currentSuggested.toLocaleString('es-MX', { minimumFractionDigits: 2 })})`}
+                          >
+                            Usar precio sugerido
+                          </button>
+                        )}
                         {line.discount_approval_status === 'pending' && (
                           <span className="ml-2 inline-flex items-center gap-1.5">
                             <span className="text-xs px-2 py-0.5 rounded-full font-semibold"
@@ -738,6 +944,16 @@ export default function LineEditor({ quoteId, unitCount, role, isLocked, quoteSt
           confirmLabel="Limpiar"
           onConfirm={() => { clearLines(); setClearConfirm(false) }}
           onCancel={() => setClearConfirm(false)}
+        />
+      )}
+      {refreshModal && (
+        <RefreshPricesModal
+          title={refreshModal.title}
+          rows={refreshModal.rows}
+          mode={refreshModal.mode}
+          busy={busy}
+          onConfirm={confirmRefresh}
+          onCancel={() => setRefreshModal(null)}
         />
       )}
     </div>

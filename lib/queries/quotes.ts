@@ -1,4 +1,5 @@
 import pool from '@/lib/db'
+import type { PoolClient } from 'pg'
 import { listLines } from '@/lib/queries/quote_lines'
 import { getSettings } from '@/lib/queries/settings'
 
@@ -392,9 +393,10 @@ export async function duplicateQuote(
   }
 }
 
-export async function updateQuoteTotals(id: string): Promise<void> {
+export async function updateQuoteTotals(id: string, client?: PoolClient): Promise<void> {
+  const q = client ?? pool
   // 0. Enforce 16% IVA and margin calculation on all products
-  await pool.query(`
+  await q.query(`
     UPDATE quote_lines
     SET tax_amount = subtotal * 0.16,
         total = subtotal * 1.16,
@@ -404,7 +406,7 @@ export async function updateQuoteTotals(id: string): Promise<void> {
 
   // 1. Recalibrate any 'discount' lines based on the total of 'product' lines
   // Only recalibrate approved discount lines (exclude pending ones)
-  await pool.query(`
+  await q.query(`
     UPDATE quote_lines qld
     SET
       subtotal = - (
@@ -419,14 +421,14 @@ export async function updateQuoteTotals(id: string): Promise<void> {
     WHERE qld.quote_id = $1 AND qld.display_type = 'discount' AND COALESCE(qld.discount_approval_status, 'approved') != 'pending'
   `, [id])
 
-  await pool.query(`
+  await q.query(`
     UPDATE quote_lines
     SET total = subtotal + tax_amount
     WHERE quote_id = $1 AND display_type = 'discount' AND COALESCE(discount_approval_status, 'approved') != 'pending'
   `, [id])
 
   // 2. Recompute totals from ALL lines (products + approved discounts only)
-  await pool.query(`
+  await q.query(`
     UPDATE quotes q SET
       amount_untaxed = COALESCE((SELECT SUM(subtotal) FROM quote_lines WHERE quote_id = q.id AND (display_type = 'product' OR (display_type = 'discount' AND COALESCE(discount_approval_status, 'approved') != 'pending'))), 0),
       amount_tax     = COALESCE((SELECT SUM(tax_amount) FROM quote_lines WHERE quote_id = q.id AND (display_type = 'product' OR (display_type = 'discount' AND COALESCE(discount_approval_status, 'approved') != 'pending'))), 0),

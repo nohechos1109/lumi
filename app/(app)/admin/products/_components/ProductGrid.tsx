@@ -7,6 +7,7 @@ interface ProductGridProps {
   products: Product[]
   onEdit: (product: Product) => void
   onDelete: (id: string) => void
+  fxRate?: number
 }
 
 interface CategoryMeta { bg: string; accent: string; icon: React.ReactNode }
@@ -60,7 +61,7 @@ function CardImage({ src, bg, accent, icon }: { src: string; bg: string; accent:
   )
 }
 
-export default function ProductGrid({ products, onEdit, onDelete }: ProductGridProps) {
+export default function ProductGrid({ products, onEdit, onDelete, fxRate = 1 }: ProductGridProps) {
   if (products.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center p-12 text-center rounded-2xl" style={{ border: '2px dashed var(--c-rim)', background: 'var(--c-panel)' }}>
@@ -74,7 +75,8 @@ export default function ProductGrid({ products, onEdit, onDelete }: ProductGridP
     <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
       {products.map(p => {
         const meta = getCategoryMeta(p.category)
-        const publicPrice = Number(p.cost_base) * Number(p.utility_factor) + Number(p.utility_fixed)
+        const publicPriceRaw = Number(p.cost_base) * Number(p.utility_factor) + Number(p.utility_fixed)
+        const publicPrice = p.currency === 'USD' ? publicPriceRaw * fxRate : publicPriceRaw
         return (
           <div
             key={p.id}

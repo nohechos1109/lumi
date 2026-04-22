@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { revalidatePath } from 'next/cache'
 import { getSession, unauthorized, forbidden } from '@/lib/auth-guard'
 import { updateProduct, deleteProduct } from '@/lib/queries/products'
+import { broadcastToAll } from '@/lib/sse'
 
 export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const session = await getSession()
@@ -11,6 +12,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
   try {
     await updateProduct(id, await req.json())
     revalidatePath('/admin/products')
+    broadcastToAll('product_changed', { product_id: id })
     return NextResponse.json({ ok: true })
   } catch (err) {
     console.error('[PATCH /api/admin/products]', err)

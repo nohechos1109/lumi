@@ -37,6 +37,7 @@ export default function AdminProductsPage() {
   const [currencyFilter, setCurrencyFilter] = useState('')
   const [categoryFilter, setCategoryFilter] = useState('')
   const [viewMode, setViewMode] = useState<'list' | 'grid'>('list')
+  const [fxRate, setFxRate] = useState(1)
 
   async function load() {
     const r = await fetch('/api/admin/products')
@@ -44,6 +45,10 @@ export default function AdminProductsPage() {
   }
 
   useEffect(() => { load() }, [])
+
+  useEffect(() => {
+    fetch('/api/fx').then(r => r.json()).then(d => setFxRate(Number(d.fx_mxn_per_usd) || 1))
+  }, [])
 
   const categories = [...new Set(products.map(p => p.category).filter(Boolean))] as string[]
 
@@ -255,7 +260,11 @@ export default function AdminProductsPage() {
                       $ {Number(p.cost_base).toLocaleString(undefined, { minimumFractionDigits: 2 })}
                     </td>
                     <td className="px-6 py-4.5 text-right font-mono text-[11px] font-semibold" style={{ color: 'var(--c-navy)' }}>
-                      $ {(Number(p.cost_base) * Number(p.utility_factor) + Number(p.utility_fixed)).toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                      $ {(() => {
+                        const raw = Number(p.cost_base) * Number(p.utility_factor) + Number(p.utility_fixed)
+                        const mxn = p.currency === 'USD' ? raw * fxRate : raw
+                        return mxn.toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+                      })()}
                     </td>
                     <td className="px-6 py-4.5 text-right font-mono text-[11px]" style={{ color: 'var(--c-dim)' }}>
                       $ {Number(p.utility_fixed).toLocaleString(undefined, { minimumFractionDigits: 2 })}
@@ -287,6 +296,7 @@ export default function AdminProductsPage() {
           products={filteredProducts}
           onEdit={(p) => { setProductToEdit(p); setShowModal(true) }}
           onDelete={setDeleteId}
+          fxRate={fxRate}
         />
       )}
 
