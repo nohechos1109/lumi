@@ -45,6 +45,23 @@ body {
   color: var(--c-ink);
 }
 
+/* ── Cursor pointer on all interactive elements ── */
+a,
+button,
+[role="button"],
+[role="link"],
+[role="tab"],
+[role="menuitem"],
+[role="option"],
+[role="checkbox"],
+[role="radio"],
+label[for],
+select,
+summary,
+[tabindex]:not([tabindex="-1"]) {
+  cursor: pointer;
+}
+
 /* ── Heading font ──────────────────────────── */
 .font-heading {
   font-family: var(--font-montserrat), sans-serif;
